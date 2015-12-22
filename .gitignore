@@ -1,0 +1,6 @@
+*.class
+*.[oa]
+*~
+test/
+bower_components/
+
