@@ -1,0 +1,7 @@
+*.class
+*.[oa]
+*~
+test/
+bower_components/
+node_modules/
+
