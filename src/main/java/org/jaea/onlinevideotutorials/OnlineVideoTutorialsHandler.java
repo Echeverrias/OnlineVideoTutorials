@@ -51,10 +51,10 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler {
 
     private final Logger log = LoggerFactory.getLogger(OnlineVideoTutorialsHandler.class);
     private static final Gson gson = new GsonBuilder().create();
+    private UserSession me = null;
     private final UserSessionsRegistry users = new UserSessionsRegistry();
     
-    // Store the 'WebSocketSession' for those students who still have not joined into a room
-    private final ConcurrentHashMap<String, WebSocketSession> incomingStudentsSessions = new ConcurrentHashMap<String, WebSocketSession>();
+   
         
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
@@ -66,53 +66,59 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler {
                     
         case "login":
             login(session, jsonMessage);
+            log.info("");
+            log.info("");
             break;
             
         case "joinRoom":
             joinRoom(session, jsonMessage);
+            log.info("");
+            log.info("");
             break;
             
         case "exitRoom":
             exitRoom(session, jsonMessage);
+            log.info("");
+            log.info("");
             break;    
 		
 	}
     }
     
     private void login(final WebSocketSession session, JsonObject jsonMessage){
-        log.info("* login -> Id: {}", session.getId());
+        log.info("<- login - Id: {}", session.getId());
         
-        String name = jsonMessage.get("name").getAsString();
+        String userName = jsonMessage.get("userName").getAsString();
         String password = jsonMessage.get("password").getAsString();
         
-        Boolean isValidUser;
         JsonElement jsonElement = null;
-        String userType = tellMeTheTypeOfUSer(name, password);
+        this.me = validateUSer(userName, password, session);
        
-        if (userType == null ){
+        if (this.me == null ){
             
-            isValidUser = false;
             log.info("Is not a valid user");
+            
         }    
         else{ 
                 
-            isValidUser = true;
-            
             // A tutor create a new room
-            if (userType.equals(UserSession.TUTOR_TYPE)){
+            if (me.getUserType().equals(UserSession.TUTOR_TYPE)){
                 
                 log.info("The user is a tutor");
-                UserSession tutor = new UserSession(session, name, userType);
-                users.addUser(tutor);
-                makeKnowThereIsANewRoom(tutor.getRoomName());
+                users.addParticipant(this.me, userName);
+                makeKnowThereIsANewRoom(userName);
+                log.info("These are now the avaibles rooms: "+ users.getAvaiblesRoomsNames());
+                log.info("These are now the avaibles rooms: "+ users.getAvaiblesRoomsNames().toString());
                 
             }
             else { // The user is an student
                 
                 log.info("The user is a student");
-                incomingStudentsSessions.put(session.getId(), session);
+                log.info("These are the avaibles rooms: "+ users.getAvaiblesRoomsNames());
+                log.info("These are the avaibles rooms: "+ users.getAvaiblesRoomsNames().toString());
+                users.addUser(this.me);
                 synchronized(session){  
-                    jsonElement = gson.toJsonTree(users.getRoomNames(), new TypeToken<List<String>>() {}.getType());
+                    jsonElement = gson.toJsonTree(users.getAvaiblesRoomsNames(), new TypeToken<List<String>>() {}.getType());
                 }
                 
             }
@@ -120,96 +126,100 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler {
          
         JsonObject jsonAnswer = new JsonObject();
         jsonAnswer.addProperty("id","login");
-        jsonAnswer.addProperty("validUser",isValidUser);
-        jsonAnswer.addProperty("userName",name);
-        jsonAnswer.addProperty("userType",userType);
-        jsonAnswer.add("rooms",jsonElement);
+        jsonAnswer.addProperty("validUser",this.me!=null);
+        jsonAnswer.addProperty("name",this.me.getName());
+        jsonAnswer.addProperty("userName",this.me.getUserName());
+        jsonAnswer.addProperty("userType",this.me.getUserType());
+        jsonAnswer.add("roomsNames",jsonElement);
         
         sendMessage(session, jsonAnswer);
+        log.info("/login - the message has been sent");
     }
     
     /**
      * 
-     * @param room 
+     * @param roomName 
      */
-    private void makeKnowThereIsANewRoom(String room){
-        log.info("* makeKnowThereIsANewRoom to...");
+    private void makeKnowThereIsANewRoom(String roomName){
+        log.info(" * makeKnowThereIsANewRoom to...");
         
         JsonObject jsonAnswer = new JsonObject();
         jsonAnswer.addProperty("id", "thereIsANewRoom");
-        jsonAnswer.addProperty("room", room);
+        jsonAnswer.addProperty("roomName", roomName);
         
-        sendMessageToIncomingStudents(jsonAnswer);
+        users.sendAMessageToIncomingParticipants(jsonAnswer);
+        log.info(" /makeKnowThereIsANewRoom - the message has been sent");
      }
     
     
     private void joinRoom (WebSocketSession session, JsonObject jsonMessage){
-        log.info("* joinRoom -> Id: {}", session.getId());
+        log.info("<- joinRoom -> Id: {}", session.getId());
         
+        String name = jsonMessage.get("name").getAsString();
         String userName = jsonMessage.get("userName").getAsString();
         String roomName = jsonMessage.get("roomName").getAsString();
         
-        List<String> studentsNames = users.getStudentsNameByRoomName(roomName);
+        log.info("userName: {}", userName);
+        log.info("roomName: {}", roomName);
+        
+        List<String> studentsNames = users.getStudentsNamesByRoomName(roomName);
         if (studentsNames != null){log.info("These are the students of '{}' room: {}", roomName, studentsNames.toString());}
         String tutorName = users.getTutorNameOfRoom(roomName);
         
-        makeKnowThereIsANewParticipant(userName, roomName);
+        UserSession newParticipant = users.getIncomingParticipantByUserName(userName);
         
-        UserSession newParticipant = new UserSession(session, userName, UserSession.STUDENT_TYPE, roomName);
-        users.addUser(newParticipant);
-        log.info("These are now the students of this room: " + users.getStudentsNameByRoomName(roomName).toString());
+        makeKnowThereIsANewParticipant(newParticipant, roomName);
+        makeKnowTheParticipantsOfRoom(newParticipant, roomName);
+        users.addParticipant(newParticipant, roomName);
+        log.info("These are now the students of this room: " + users.getStudentsNamesByRoomName(roomName).toString());
         
         JsonElement jsonElement = null;
         synchronized(session){  
            jsonElement = gson.toJsonTree(studentsNames, new TypeToken<List<String>>() {}.getType());
         }
         
-        JsonObject jsonAnswer = new JsonObject();
-        jsonAnswer.addProperty("id", "joinedIntoRoom");
-        jsonAnswer.addProperty("roomName", roomName);
-        jsonAnswer.addProperty("tutorName", tutorName);
-        jsonAnswer.add("studentsNames", jsonElement);
-        
-        newParticipant.sendMeAMessage(jsonAnswer);
+       log.info("/joinRoom - the message has been sent");
     }
     
     /**
      * 
-     * @param name
-     * @param room 
+     * @param participant
      */
-    private void makeKnowThereIsANewParticipant(String name, String room){
-        log.info("* makeKnowThereIsANewParticipant to...");
+    private void makeKnowThereIsANewParticipant(UserSession newParticipant, String roomName){
+        log.info("  * makeKnowThereIsANewParticipant to...");
         
         JsonObject jsonAnswer = new JsonObject();
         jsonAnswer.addProperty("id", "thereIsANewParticipant");
-        jsonAnswer.addProperty("studentName", name);
+        jsonAnswer.addProperty("userName", newParticipant.getUserName());
+        jsonAnswer.addProperty("name", newParticipant.getName());
+        jsonAnswer.addProperty("userType", newParticipant.getUserType());
         
-        users.sendAMessageToTheTutor(jsonAnswer, room);
-        users.sendAMessageToAllStudentsOfRoom(jsonAnswer, room);
-        
+        users.sendAMessageToTheTutor(jsonAnswer, roomName);
+        users.sendAMessageToAllStudentsOfRoom(jsonAnswer, roomName);
+        log.info("  /makeKnowThereIsANewParticipant - the messages have been sent");
      }
                     
     /**
      * 
-     * @param name The name of the user.
+     * @param userName The userName of the user.
      * @param password The password of the user.
-     * @return String The type of user ("Tutor" or "Student") or 'null' if the user doesn't exist in the data base. 
+     * @return UserSession/null A new UserSession or 'null' if the user doesn't exist in the data base. 
      */
-    private String tellMeTheTypeOfUSer(String name, String password){
-        String userType = null;
+    private UserSession validateUSer(String userName, String password, WebSocketSession session ){
+        UserSession user = null;
         
         // Here should be a query at the data base of the university
         
         // This is a provisional implementation
-        if (name.toLowerCase().contains(UserSession.TUTOR_TYPE)){
-            userType = UserSession.TUTOR_TYPE;
+        if (userName.toLowerCase().contains(UserSession.TUTOR_TYPE)){
+            user = new UserSession(session, userName, userName, UserSession.TUTOR_TYPE, userName);
         }
-        else if (name.toLowerCase().contains(UserSession.STUDENT_TYPE)){
-            userType = UserSession.STUDENT_TYPE;
-        } 
+        else if (userName.toLowerCase().contains(UserSession.STUDENT_TYPE)){
+            user = new UserSession(session, userName, userName, UserSession.STUDENT_TYPE);
+        }
         
-        return userType;
+        
+        return user;
     }  
     
     /**
@@ -229,65 +239,99 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler {
     }
     
     private void exitRoom (WebSocketSession session, JsonObject jsonMessage){
-        log.info("* exitRoom -> Id: {}", session.getId());
+        log.info("<- exitRoom - Id: {}", session.getId());
         
         String roomName = jsonMessage.get("roomName").getAsString();
-        log.info("room: {}", roomName);
         String userName = jsonMessage.get("userName").getAsString();
         String userType = jsonMessage.get("userType").getAsString();
-      ;
-       
-        users.removeUserFromThisRoom(session.getId());
+        log.info("room: {}", roomName);
         
-        makeKnowAParticipantHasLeftTheRoom(userName, userType, roomName);
+      
+        UserSession participant = users.getParticipantByUserName(userName);
+        users.removeParticipant(participant, roomName);
+        
+        makeKnowAParticipantHasLeftTheRoom(participant, roomName);
+        
+        if (userType.equals(UserSession.TUTOR_TYPE)){
+            makeKnowThereIsAnAvaibleRoomLess(roomName);
+        }
+        
+        log.info("/exitRoom - it has finished");
         
     }
     
     /**
      * 
-     * @param name
-     * @param room 
+     * @param participant
      */
-    private void makeKnowAParticipantHasLeftTheRoom(String name, String userType, String room){
-        log.info("* makeKnowAParticipantHasLeftTheRoom...");
+    private void makeKnowAParticipantHasLeftTheRoom(UserSession participant, String roomName){
+        log.info("  * makeKnowAParticipantHasLeftTheRoom...");
         
         JsonObject jsonAnswer = new JsonObject();
         jsonAnswer.addProperty("id", "aParticipantHasLeftTheRoom");
-        jsonAnswer.addProperty("userName", name);
-        jsonAnswer.addProperty("userType", userType);
-        jsonAnswer.addProperty("roomName", room);
+        jsonAnswer.addProperty("userName", participant.getUserName());
+        jsonAnswer.addProperty("userType", participant.getUserType());
+        jsonAnswer.addProperty("roomName", roomName);
         
-        users.sendAMessageToTheTutor(jsonAnswer, room);
-        users.sendAMessageToAllStudentsOfRoom(jsonAnswer, room);
+        if (participant.isAStudent()){
+            users.sendAMessageToTheTutor(jsonAnswer, roomName);
+        }    
+        users.sendAMessageToAllStudentsOfRoom(jsonAnswer, roomName);
         
-        if (userType.equals(UserSession.TUTOR_TYPE)){
-            makeKnowThereIsARoomLess(room);
-        }
+        log.info("  /makeKnowAParticipantHasLeftTheRoom - the messages have been sent");
+        
+        
         
         
      }
     
     /**
      * 
-     * @param room 
+     * @param roomName 
      */
-    private void makeKnowThereIsARoomLess(String room){
-        log.info("* makeKnowThereIsARoomLess to...");
+    private void makeKnowThereIsAnAvaibleRoomLess(String roomName){
+        log.info("  * makeKnowThereIsARoomLess to...");
         
         JsonObject jsonAnswer = new JsonObject();
-        jsonAnswer.addProperty("id", "thereIsARoomLess");
-        jsonAnswer.addProperty("room", room);
+        jsonAnswer.addProperty("id", "thereIsAnAvaibleRoomLess");
+        jsonAnswer.addProperty("roomName", roomName);
         
-        sendMessageToIncomingStudents(jsonAnswer);
+        users.sendAMessageToIncomingParticipants(jsonAnswer);
+        
+        log.info("  /makeKnowThereIsARoomLess - the message has been sent");
      }
     
-    private void sendMessageToIncomingStudents(JsonObject message){
+    
+    
+    
+    public void makeKnowTheParticipantsOfRoom (UserSession participant, String roomName){
+        log.info("  * makeKnowTheParticipantsOfRoom");
         
-        for (WebSocketSession incomingStudentSession : Collections.list(incomingStudentsSessions.elements())){
-            log.info("Student: {}", incomingStudentSession.getId());
-            
-            sendMessage(incomingStudentSession, message);
-        } 
+        UserSession tutor= users.getTutorOfRoom(roomName);
+        log.info("tutor: {}", tutor.toString());
+        JsonObject jsonAnswer = new JsonObject();
+        jsonAnswer.addProperty("id", "thereIsAParticipant");
+        jsonAnswer.addProperty("userName", tutor.getUserName());
+        jsonAnswer.addProperty("name", tutor.getName());
+        jsonAnswer.addProperty("userType", tutor.getUserType());
+        participant.sendMeAMessage(jsonAnswer);
+        
+        List<UserSession> students = users.getStudentsByRoomName(roomName);
+        if (students != null){
+            for (UserSession student : students){
+                
+                log.info("student: {}", tutor.toString());
+                jsonAnswer = new JsonObject();
+                jsonAnswer.addProperty("id", "thereIsAParticipant");
+                jsonAnswer.addProperty("userName", student.getUserName());
+                jsonAnswer.addProperty("name", student.getName());
+                jsonAnswer.addProperty("userType", student.getUserType());
+                log.info("student: {}", student.toString());
+                participant.sendMeAMessage(jsonAnswer);
+            }
+        }    
+        
+        log.info("  /makeKnowTheParticipantsOfRoom - the messages have been sent");
     }
 	
 }

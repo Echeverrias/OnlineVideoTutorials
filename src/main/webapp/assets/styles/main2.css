@@ -24,7 +24,12 @@ nav {
     
 }
 
-#selectRoom button{
+#waitingRoom button{
     display: block;
+    text-align:center;
     width:100%;
+}
+
+.alert {
+    
 }

@@ -1,0 +1,12 @@
+/* 
+    Created on : 25-ene-2016, 19:24:29
+    Author     : juanan
+*/
+
+waitingRoom{
+    clear:both;
+}
+
+waitingRoom button {
+    display: block;
+}

@@ -28,10 +28,12 @@ public class UserSessionsRegistry {
     
     private final Logger log = LoggerFactory.getLogger(UserSessionsRegistry.class);
     
-    private final ConcurrentHashMap<String, UserSession> usersByName = new ConcurrentHashMap<String, UserSession>();
-    private final ConcurrentHashMap<String, UserSession> usersBySessionId = new ConcurrentHashMap<String, UserSession>();
+    private final ConcurrentHashMap<String, UserSession> participantsByUserName = new ConcurrentHashMap<String, UserSession>();
+    private final ConcurrentHashMap<String, UserSession> participantsBySessionId = new ConcurrentHashMap<String, UserSession>();
     private final ConcurrentHashMap<String, List<UserSession>> studentsByRoomName = new ConcurrentHashMap<String, List<UserSession>>();
     private final ConcurrentHashMap<String, UserSession> tutorsByRoomName = new ConcurrentHashMap<String, UserSession>();
+     // Store the 'WebSocketSession' for those students who still have not joined into a room
+    private final ConcurrentHashMap<String, UserSession> incomingParticipantsByUserName = new ConcurrentHashMap<String, UserSession>();
     //private final ConcurrentHashMap<String, UserSession> participantsByRoomName = new ConcurrentHashMap<String, UserSession>();
     
     public UserSessionsRegistry(){
@@ -39,26 +41,52 @@ public class UserSessionsRegistry {
     }
     
     public void addUser (UserSession user){
-        log.info("* addUser");
+        log.info("* User.addUser: {}", user.getUserName());
         
-        usersByName.put(user.getUserName(), user);
-        usersBySessionId.put(user.getSession().getId(), user);
-        
-        String room = user.getRoomName();
-        
-        if (user.getUserType().equals(UserSession.TUTOR_TYPE)){
-            tutorsByRoomName.put(room, user);
-            log.info("a tutor has been added");
+        if (user.getUserType().equals(UserSession.STUDENT_TYPE)){
+            incomingParticipantsByUserName.put(user.getUserName(), user);
+            log.info("an user has been added");
         }
-        else{
-            
-            if (!studentsByRoomName.containsKey(room)){
-                studentsByRoomName.put(room, new ArrayList<UserSession>());
-            }
-            studentsByRoomName.get(room).add(user);
-            log.info("a student has been added");
-        }  
         
+        log.info("/ addUser");
+        
+    }
+    
+    public void addParticipant (UserSession user, String roomName){
+        log.info("* User.addParticipant: {}", user.getUserName());
+        
+        participantsByUserName.put(user.getUserName(), user);
+        log.info(" add to usersByName");
+        participantsBySessionId.put(user.getSession().getId(), user);
+        log.info(" add to usersBySessionId");
+         
+       log.info(" room name: {}", roomName);
+        
+        if (roomName != null) {
+            if (user.getUserType().equals(UserSession.TUTOR_TYPE)){
+                tutorsByRoomName.put(roomName, user);
+                log.info("a tutor has been added");
+            }
+            else{ log.info("  add a student");
+
+                if (!studentsByRoomName.containsKey(roomName)){
+                    log.info("  add the room");
+                    studentsByRoomName.put(roomName, new ArrayList<UserSession>());
+                }
+                studentsByRoomName.get(roomName).add(user);
+                log.info("a student has been added");
+            } 
+        }    
+        log.info("/ addParticipant");
+        
+    }
+    
+    public UserSession getParticipantByUserName(String userName){
+        return participantsByUserName.get(userName);
+    }
+    
+    public UserSession getIncomingParticipantByUserName(String userName){
+        return incomingParticipantsByUserName.get(userName);
     }
     
     /*
@@ -89,7 +117,7 @@ public class UserSessionsRegistry {
      * @param roomName
      * @return List<String> or null 
      */
-    public List<String> getStudentsNameByRoomName(String roomName){
+    public List<String> getStudentsNamesByRoomName(String roomName){
         
         List <UserSession> students = studentsByRoomName.get(roomName);
         List <String> studentsNames = null;
@@ -118,8 +146,27 @@ public class UserSessionsRegistry {
         log.info("the message has been sent to the tutor of the '{}' room ", room);
     }
     
+    
+    
+    public void sendAMessageToIncomingParticipants(JsonObject message){
+        log.info("* sendAMessageToIncomingParticipants - message: {}", message);
+        
+        if (incomingParticipantsByUserName!=null){
+            
+            for (UserSession user : Collections.list(incomingParticipantsByUserName.elements())){
+                log.info("User: {}", user.getUserName());
+
+                user.sendMeAMessage(message);
+            }  
+            
+        }
+        
+        log.info("the message has been sent to all incoming participants");
+    }
+    
+    
     public void sendAMessageToAllStudentsOfRoom(JsonObject message, String room){
-        log.info("* sendAMessageToAllStudentsOfRoom - message: {}, room: {}", message.get("id").getAsString(), room);
+        log.info("* sendAMessageToAllStudentsOfRoom - message: {}, room: {}, to:", message.get("id").getAsString(), room, getStudentsByRoomName(room));
         
         List<UserSession> students = getStudentsByRoomName(room);
         
@@ -136,7 +183,7 @@ public class UserSessionsRegistry {
         log.info("the message has been sent to all students of the '{}' room ", room);
     }
     
-    public List<String> getRoomNames (){
+    public List<String> getAvaiblesRoomsNames (){
         return Collections.list(tutorsByRoomName.keys());
     }
     
@@ -150,26 +197,25 @@ public class UserSessionsRegistry {
     
     /**
      * 
-     * @param id 
+     * @param participant 
      */
-    public void removeUserFromThisRoom(String id){
-        log.info("* removeUserFromRoom - id: {}", id);
-        log.info("users: {}", usersBySessionId.toString()); 
+    public void removeParticipant(UserSession participant, String roomName){
+        log.info("* removeParticipant {} from {}", participant.getUserName(), roomName);
+        log.info("users: {}", participantsBySessionId.toString()); 
         
-        UserSession user = usersBySessionId.get(id);
-        if (user == null){
-            log.info("user is null");
-        }
-        log.info("user name: {}",user.getUserName());
-        String room = user.getRoomName();
-        log.info("user room: {}",room);
-        user.close();
-        if (!tutorsByRoomName.remove(room, user)){
+        participant.close();
+        participantsByUserName.remove(participant);
+        participantsBySessionId.remove(participant);
+        
+        if (!tutorsByRoomName.remove(roomName, participant)){
             log.info("I'm going to remove a student");
-            studentsByRoomName.get(room).remove(user);
-            log.info("I've removed a student");
+            studentsByRoomName.get(roomName).remove(participant);
+            
         }
-        log.info("the user has been removed from the '{}' room", room);
+        else{
+            log.info("I've removed a tutor");
+        }
+        log.info("/ removeParticipant");
     }
     
     

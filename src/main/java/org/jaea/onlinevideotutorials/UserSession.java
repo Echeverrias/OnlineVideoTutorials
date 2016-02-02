@@ -29,6 +29,7 @@ public class UserSession {
     public static final String STUDENT_TYPE = "student";
             
     private WebSocketSession session;
+    private String name;
     private String userName;
     private String userType;
     private String roomName;
@@ -38,7 +39,15 @@ public class UserSession {
        
     }
     
-    public UserSession(WebSocketSession session, String userName, String userType){
+    /**
+     * 
+     * @param session
+     * @param name
+     * @param userName
+     * @param userType 
+     */
+    public UserSession(WebSocketSession session, String name, String userName, String userType){
+        this.name = name;
         this.session = session;
         this.userName = userName;
         this.userType = userType;
@@ -47,35 +56,46 @@ public class UserSession {
         }
     }
     
-    public UserSession(WebSocketSession session, String userName, String userType, String roomName){
+    public UserSession(WebSocketSession session, String name, String userName, String userType, String roomName){
+        log.info(   "UserSession");
+        this.name = name;
         this.session = session;
         this.userName = userName;
         this.userType = userType;
         this.roomName = roomName;
+        log.info(   "Creating user: {}", name);
     }
 
     public WebSocketSession getSession() {
         return session;
     }
     
+    public String getName() {
+        return this.name;
+    }
+    
     public String getUserName() {
-        return userName;
+        return this.userName;
     }
 
     public String getUserType() {
-        return userType;
+        return this.userType;
     }
 
     public String getRoomName() {
-        return roomName;
-    }
-    
-    public void setUserName (String userName){
-        this.userName = userName;
+        return this.roomName;
     }
     
     public void setRoomName (String roomName){
         this.roomName = roomName;
+    }
+    
+    public boolean isATutor(){
+        return this.userType.equals(TUTOR_TYPE);
+    }
+    
+    public boolean isAStudent(){
+        return this.userType.equals(STUDENT_TYPE);
     }
     
     /**
@@ -86,7 +106,7 @@ public class UserSession {
         TextMessage textAnswer = new TextMessage(message.toString());
         
         try{
-            log.info("sendMeAMessage: " + message.toString());
+            log.info("I'm {}, sendMeAMessage: {}", this.userName,  message.toString());
             session.sendMessage(textAnswer);
         }
         catch(IOException e){

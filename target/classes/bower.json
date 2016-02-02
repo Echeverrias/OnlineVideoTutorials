@@ -27,6 +27,9 @@
     "kurento-utils": "~6.2.0",
     "angular": "~1.4.8",
     "angular-ui-router": "~0.2.15",
-    "angular-sanitize": "~1.4.8"
+    "angular-sanitize": "~1.4.8",
+    "system":"https://code.angularjs.org/tools/system.js",
+    "typescript":"https://code.angularjs.org/tools/typescript.js",	
+    "angular2.dev": "https://code.angularjs.org/2.0.0-alpha.44/angular2.dev.js"
   }
 }

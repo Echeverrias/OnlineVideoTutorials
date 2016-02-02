@@ -1,0 +1,13 @@
+/* 
+    Created on : 27-ene-2016, 16:18:42
+    Author     : juanan
+*/
+
+.ng-valid[required] {
+  border-left: 5px solid #42A948; /* green */
+}
+
+.ng-invalid {
+  border-left: 5px solid #a94442; /* red */
+}
+
