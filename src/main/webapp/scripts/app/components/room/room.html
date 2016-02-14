@@ -1,0 +1,10 @@
+
+<h1>Room</h1>
+<p>I'm {{appService.me.name}}</p>
+<h4>Participants:</h4>
+<participant [id]="user.userName" [class]="user.userType" [name]="user.name" [userType]="user.userType" *ngFor="#user of users" ></participant>
+<button (click)="onExitOfRoom()">Exit</button> 
+
+
+
+    

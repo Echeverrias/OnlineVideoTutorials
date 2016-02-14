@@ -40,16 +40,27 @@ public class UserSessionsRegistry {
         
     }
     
-    public void addUser (UserSession user){
-        log.info("* User.addUser: {}", user.getUserName());
+    public void addIncomingParticipant (UserSession user){
+        log.info("* User.addIncomingParticipant: {}", user.getUserName());
         
         if (user.getUserType().equals(UserSession.STUDENT_TYPE)){
             incomingParticipantsByUserName.put(user.getUserName(), user);
-            log.info("an user has been added");
+            log.info("an incoming participant has been added");
         }
         
-        log.info("/ addUser");
+        log.info("/ addIncomingParticipant");
         
+    }
+    
+    public void removeIncomingParticipant(UserSession user){
+         log.info("* User.removeIncomingParticipant: {}", user.getUserName());
+         
+         if (user.getUserType().equals(UserSession.STUDENT_TYPE)){
+            incomingParticipantsByUserName.remove(user.getUserName());
+            log.info("an incoming participant has been removed");
+        }
+         
+         log.info("/ removeIncomimgParticipant");
     }
     
     public void addParticipant (UserSession user, String roomName){
@@ -204,13 +215,13 @@ public class UserSessionsRegistry {
         log.info("users: {}", participantsBySessionId.toString()); 
         
         participant.close();
-        participantsByUserName.remove(participant);
-        participantsBySessionId.remove(participant);
+        participantsByUserName.remove(participant.getUserName());
+        participantsBySessionId.remove(participant.getSession().getId());
         
         if (!tutorsByRoomName.remove(roomName, participant)){
             log.info("I'm going to remove a student");
             studentsByRoomName.get(roomName).remove(participant);
-            
+                        
         }
         else{
             log.info("I've removed a tutor");

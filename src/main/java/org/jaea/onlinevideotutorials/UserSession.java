@@ -118,6 +118,10 @@ public class UserSession {
         log.info("close");
     }
     
+    public String toString(){
+        return "userName: " + this.userName + ", userType: " + this.userType + ", name: " + this.name;
+    }
+    
     
 	
 }

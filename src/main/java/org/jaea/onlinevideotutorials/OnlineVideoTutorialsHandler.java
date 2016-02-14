@@ -69,7 +69,11 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler {
             log.info("");
             log.info("");
             break;
-            
+        case "waitingRoom":
+            waitingRoom(session, jsonMessage);
+            log.info("");
+            log.info("");
+            break;
         case "joinRoom":
             joinRoom(session, jsonMessage);
             log.info("");
@@ -93,6 +97,14 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler {
         
         JsonElement jsonElement = null;
         this.me = validateUSer(userName, password, session);
+        
+        JsonObject jsonAnswer = new JsonObject();
+        jsonAnswer.addProperty("id","login");
+        jsonAnswer.addProperty("validUser",this.me!=null);
+        jsonAnswer.addProperty("name",this.me.getName());
+        jsonAnswer.addProperty("userName",this.me.getUserName());
+        jsonAnswer.addProperty("userType",this.me.getUserType());
+        
        
         if (this.me == null ){
             
@@ -105,6 +117,7 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler {
             if (me.getUserType().equals(UserSession.TUTOR_TYPE)){
                 
                 log.info("The user is a tutor");
+                jsonAnswer.addProperty("roomName",this.me.getUserName());
                 users.addParticipant(this.me, userName);
                 makeKnowThereIsANewRoom(userName);
                 log.info("These are now the avaibles rooms: "+ users.getAvaiblesRoomsNames());
@@ -116,7 +129,7 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler {
                 log.info("The user is a student");
                 log.info("These are the avaibles rooms: "+ users.getAvaiblesRoomsNames());
                 log.info("These are the avaibles rooms: "+ users.getAvaiblesRoomsNames().toString());
-                users.addUser(this.me);
+                users.addIncomingParticipant(this.me);
                 synchronized(session){  
                     jsonElement = gson.toJsonTree(users.getAvaiblesRoomsNames(), new TypeToken<List<String>>() {}.getType());
                 }
@@ -124,17 +137,24 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler {
             }
         }     
          
-        JsonObject jsonAnswer = new JsonObject();
-        jsonAnswer.addProperty("id","login");
-        jsonAnswer.addProperty("validUser",this.me!=null);
-        jsonAnswer.addProperty("name",this.me.getName());
-        jsonAnswer.addProperty("userName",this.me.getUserName());
-        jsonAnswer.addProperty("userType",this.me.getUserType());
-        jsonAnswer.add("roomsNames",jsonElement);
+        
         
         sendMessage(session, jsonAnswer);
         log.info("/login - the message has been sent");
     }
+    
+     private void waitingRoom (final WebSocketSession session, JsonObject jsonMessage){
+        log.info("<- waitingRoom - Id: {}", session.getId());
+         
+        JsonElement avaibleRoomsNames = gson.toJsonTree(users.getAvaiblesRoomsNames(), new TypeToken<List<String>>() {}.getType());
+        JsonObject jsonAnswer = new JsonObject();
+        jsonAnswer.addProperty("id","avaibleRooms");
+        jsonAnswer.add("avaibleRoomsNames", avaibleRoomsNames);
+        
+        sendMessage(session, jsonAnswer);
+        log.info("/waitingRoom - the message has been sent");
+     
+     }
     
     /**
      * 
@@ -159,14 +179,15 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler {
         String userName = jsonMessage.get("userName").getAsString();
         String roomName = jsonMessage.get("roomName").getAsString();
         
+        UserSession newParticipant = users.getIncomingParticipantByUserName(userName);
+        
+        users.removeIncomingParticipant(newParticipant);
+        
         log.info("userName: {}", userName);
         log.info("roomName: {}", roomName);
         
         List<String> studentsNames = users.getStudentsNamesByRoomName(roomName);
         if (studentsNames != null){log.info("These are the students of '{}' room: {}", roomName, studentsNames.toString());}
-        String tutorName = users.getTutorNameOfRoom(roomName);
-        
-        UserSession newParticipant = users.getIncomingParticipantByUserName(userName);
         
         makeKnowThereIsANewParticipant(newParticipant, roomName);
         makeKnowTheParticipantsOfRoom(newParticipant, roomName);
@@ -186,7 +207,7 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler {
      * @param participant
      */
     private void makeKnowThereIsANewParticipant(UserSession newParticipant, String roomName){
-        log.info("  * makeKnowThereIsANewParticipant to...");
+        log.info("  * makeKnowThereIsANewParticipant ({}) to participants of room {}:", newParticipant.toString(), roomName);
         
         JsonObject jsonAnswer = new JsonObject();
         jsonAnswer.addProperty("id", "thereIsANewParticipant");
@@ -194,6 +215,8 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler {
         jsonAnswer.addProperty("name", newParticipant.getName());
         jsonAnswer.addProperty("userType", newParticipant.getUserType());
         
+        
+        log.info("Mensaje: {}",jsonAnswer.toString());
         users.sendAMessageToTheTutor(jsonAnswer, roomName);
         users.sendAMessageToAllStudentsOfRoom(jsonAnswer, roomName);
         log.info("  /makeKnowThereIsANewParticipant - the messages have been sent");
@@ -249,6 +272,7 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler {
       
         UserSession participant = users.getParticipantByUserName(userName);
         users.removeParticipant(participant, roomName);
+        users.addIncomingParticipant(participant);
         
         makeKnowAParticipantHasLeftTheRoom(participant, roomName);
         
