@@ -15,60 +15,65 @@
 package org.jaea.onlinevideotutorials;
 
 import com.google.gson.JsonObject;
+import java.io.Closeable;
 import java.io.IOException;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.logging.Level;
+import org.kurento.client.Continuation;
+import org.kurento.client.EventListener;
+import org.kurento.client.IceCandidate;
+import org.kurento.client.MediaPipeline;
+import org.kurento.client.OnIceCandidateEvent;
+import org.kurento.client.WebRtcEndpoint;
+import org.kurento.jsonrpc.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-public class UserSession {
+public class UserSession  {
     
     private final Logger log = LoggerFactory.getLogger(UserSession.class);
     
     public static final String TUTOR_TYPE = "tutor";
     public static final String STUDENT_TYPE = "student";
             
-    private WebSocketSession session;
-    private String name;
-    private String userName;
-    private String userType;
-    private String roomName;
     
-    public UserSession(WebSocketSession session){
-        this.session = session;
-       
-    }
+    private final String name;
+    private final String userName;
+    private final String userType;
+    private RoomMedia roomMedia;
     
-    /**
-     * 
-     * @param session
-     * @param name
-     * @param userName
-     * @param userType 
-     */
-    public UserSession(WebSocketSession session, String name, String userName, String userType){
+    
+    private final WebSocketSession session;
+   
+    public UserSession(WebSocketSession session, String userName, String userType, String name){
+        Info.logInfoStart();
+        log.info("% UserSession");
         this.name = name;
         this.session = session;
         this.userName = userName;
         this.userType = userType;
-        if (userType.equals(TUTOR_TYPE)){
-            roomName = userName;
-        }
+        
+        
+        log.info("/ UserSession: {}", name);
+        Info.logInfoFinish();
     }
     
-    public UserSession(WebSocketSession session, String name, String userName, String userType, String roomName){
-        log.info(   "UserSession");
-        this.name = name;
-        this.session = session;
-        this.userName = userName;
-        this.userType = userType;
-        this.roomName = roomName;
-        log.info(   "Creating user: {}", name);
+    public UserSession(UserSession user){
+        Info.logInfoStart();
+        log.info("% UserSession");
+        this.name = user.getName();
+        this.session = user.getSession();
+        this.userName = user.getName();
+        this.userType = user.getUserType();
+        
+        log.info("/ UserSession: {}", name);
+        Info.logInfoFinish();
     }
 
-    public WebSocketSession getSession() {
-        return session;
-    }
+    
     
     public String getName() {
         return this.name;
@@ -82,14 +87,6 @@ public class UserSession {
         return this.userType;
     }
 
-    public String getRoomName() {
-        return this.roomName;
-    }
-    
-    public void setRoomName (String roomName){
-        this.roomName = roomName;
-    }
-    
     public boolean isATutor(){
         return this.userType.equals(TUTOR_TYPE);
     }
@@ -98,29 +95,118 @@ public class UserSession {
         return this.userType.equals(STUDENT_TYPE);
     }
     
+    public WebSocketSession getSession() {
+        return session;
+    }
+    
+    public RoomMedia getRoomMedia(){
+        return this.roomMedia;
+    }
+    
+    
+    public String getRoomName(){
+        return this.roomMedia.getRoomName();
+    }
+    
+    public boolean assignRoomMedia (RoomMedia roomMedia){
+        Info.logInfoStart("User.assignRoomMedia");
+        
+        boolean assignmentSucessfull = false;
+        
+        if (this.roomMedia == null){
+            this.roomMedia = roomMedia;
+            assignmentSucessfull = true;
+        }
+        
+        Info.logInfoFinish("User.assignRoomMedia");
+        return assignmentSucessfull;
+    }
+    
+    
+    
+    public void receivesGreetingsFrom(UserSession participant, String sdpOffer){
+        Info.logInfoStart();
+        log.info("{} User.receivesGreetingsFrom {} <- {}", this.userName, participant.userName, sdpOffer);
+        try {
+            this.roomMedia.receiveVideoFrom(participant, sdpOffer);
+        } catch (IOException ex) {
+            java.util.logging.Logger.getLogger(UserSession.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        Info.logInfoFinish("User.receivesGreetingsFrom");
+    }
+    
+    public void leavesRoom(){
+        Info.logInfoStart();
+        log.info("{} User.leavesRoom: {} - {}", Info.START_SYMBOL, this.name, this.getRoomName());
+        try {
+            
+            this.roomMedia.close();
+            
+        } catch (IOException ex) {
+            
+            java.util.logging.Logger.getLogger(UserSession.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Info.logInfoFinish("User.leavesRoom");
+    }
+    
+    public void receivesFarewellFrom(String userName){
+        Info.logInfoStart();
+        log.info("{} User.receivesFarewellFrom: {}",Info.START_SYMBOL, userName);
+        this.roomMedia.cancelVideoFrom(userName);
+        Info.logInfoFinish("User.receivesFarewellFrom");
+    }
+    
+    public void addCandidate(IceCandidate candidate, String userName) {
+        Info.logInfoStart();
+        log.info("{} User.addCandidate: {} to {}", Info.START_SYMBOL, candidate, userName);
+        this.roomMedia.addCandidate(candidate, userName);
+        Info.logInfoFinish("User.addCandidate");
+    }
+    
     /**
      * 
      * @param message 
      */
     public void sendMeAMessage(JsonObject message){
-        TextMessage textAnswer = new TextMessage(message.toString());
         
-        try{
-            log.info("I'm {}, sendMeAMessage: {}", this.userName,  message.toString());
-            session.sendMessage(textAnswer);
-        }
-        catch(IOException e){
-            log.error("sendMeAMessage: {}", e.getMessage());
-        }
+        SendMessage.toClient(message, this.session);
     }
     
-    public void close(){
-        log.info("close");
-    }
+    
     
     public String toString(){
         return "userName: " + this.userName + ", userType: " + this.userType + ", name: " + this.name;
     }
+    
+    @Override
+    public boolean equals(Object obj) {
+        
+        
+        if (this == obj) {
+            return true;
+	}
+	if (obj == null || !(obj instanceof UserSession)) {
+            return false;
+	}
+	UserSession other = (UserSession) obj;
+	boolean eq = this.userName.equals(other.userName);
+
+	return eq;
+    }
+    
+    /*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+            int result = 1;
+            result = 31 * result + this.userName.hashCode();
+            return result;
+	}
+
     
     
 	

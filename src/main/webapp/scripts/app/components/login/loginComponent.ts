@@ -42,6 +42,8 @@ export class LoginComponent {
     
     
     doLogin() {
+        console.log("");
+        console.log("* " + new Date().toLocaleTimeString());
         console.log(`& Login.doLogin`);
         
         
@@ -55,10 +57,15 @@ export class LoginComponent {
        this.connection.sendMessage(jsonMessage);
        console.log(`-> message: ${JSON.stringify(jsonMessage)}`);
        console.log(`/ Login.doLogin`);
+       
+        console.log("/ " + new Date().toLocaleTimeString());
+        console.log("");
                 
   }
   
     onLogin (jsonMessage: Object): void{
+        console.log("");
+         console.log("* " + new Date().toLocaleTimeString());
         console.log("<- Login.onLogin");
         console.log(`<- message: ${JSON.stringify(jsonMessage)}`);
             
@@ -98,6 +105,8 @@ export class LoginComponent {
             }
             
        console.log("/ Login.onLogin");
+       console.log("/ " + new Date().toLocaleTimeString());
+        console.log("");
     }
     
     

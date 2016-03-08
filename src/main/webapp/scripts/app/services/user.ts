@@ -11,10 +11,14 @@ export class User {
     private _userType: string = null; // 'tutor' or 'student'
     
     constructor(userName: string = "", userType: string = "", name: string = ""){
+         console.log("");
+        console.log("*" + new Date().toLocaleTimeString());
         console.log(`% User`);
         this._userName = userName;
         this._userType = userType;
         this._name = name;
+         console.log("/" + new Date().toLocaleTimeString());
+         console.log("");
                
     }
     

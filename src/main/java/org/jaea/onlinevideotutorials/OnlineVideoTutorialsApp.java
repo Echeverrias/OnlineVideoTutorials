@@ -40,6 +40,16 @@ public class OnlineVideoTutorialsApp implements WebSocketConfigurer {
         return new OnlineVideoTutorialsHandler();
         
     }
+    
+    @Bean
+    public UserSessionsRegistry registry() {
+	return new UserSessionsRegistry();
+    }
+
+    @Bean
+    public RoomManager roomManager() {
+        return new RoomManager();
+    }
 
     @Bean
     public KurentoClient kurentoClient() {

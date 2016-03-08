@@ -1,0 +1,57 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 06-dic-2015, 10:54:14
+    Author     : juanan
+*/
+
+
+video {
+    width:50%;
+    height: auto;
+    border: 2px solid #000000;
+    -webkit-border-radius: 2em;
+    -moz-border-radius: 2em;
+    border-radius: 2em;
+    text-align:center;
+}
+
+
+.mainVideo {
+    position:absolute;
+     height: auto;
+    float:left;
+    width:50%;
+    height: 90%;
+    margin-right: 1em;
+    overflow:hidden;
+    background-color:#000000;
+    color: white;
+    
+}
+
+.secundaryVideo {
+    //position: absolute;
+    float:right;;
+    width:15%;
+    height:25%;
+    margin: 0 0.5em
+}
+
+img {
+    width:100%;
+    height:100%;
+  // -webkit-border-radius: 2em;
+   // -moz-border-radius: 2em;
+    border-radius: 2em;
+}
+
+button[name=exitRoom] {
+    position:absolute;
+    bottom:0;
+    right:2em;
+    
+}
