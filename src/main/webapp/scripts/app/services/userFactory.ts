@@ -4,7 +4,11 @@
  */
 
 import {User} from './user.ts'
-  
+
+/**
+ * It allows to instantiate an object of the class User whith a message that
+ * the server send to the client when he identifies himself.
+ */ 
 export class UserFactory {
      
     constructor(){
@@ -16,5 +20,3 @@ export class UserFactory {
        
     }
  }
-
-

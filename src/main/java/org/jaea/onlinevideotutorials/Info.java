@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
  */
 public class Info {
     
+    static String rutaDescargas = "/home/juanan/Escritorio";
+            
     public static final String INCOMING_MSG = "<----------";
     public static final String OUTGOING_MSG = "---------->";
     
@@ -28,18 +30,16 @@ public class Info {
     
     public static void receiveMsg(String event){
         
-        log.info("");
-        log.info("{} {}", INCOMING_MSG, event);
-        log.info("({})", Hour.getTime());
+        log.info("                {} {} ({})", INCOMING_MSG, event, Hour.getTime());
+        
         
         
     }
     
     public static void SendMsg(String addressee){
         
-        log.info("");
-        log.info("{} to {}", OUTGOING_MSG, addressee);
-        log.info("({})", Hour.getTime());
+        log.info("              {} to {} ({})", OUTGOING_MSG, addressee, Hour.getTime());
+       
         
         
     }
@@ -47,34 +47,34 @@ public class Info {
     public static void logInfoStart(String text) {
         
         log.info("");
-        log.info("{} {}", START_SYMBOL, Hour.getTime());
-        log.info("{} {}", START_SYMBOL, text);
+        // log.info("{} {}", START_SYMBOL, Hour.getTime());
+        log.info("{} {} {}", START_SYMBOL, text, Hour.getTime());
         
     }
     
     public static void logInfoFinish(String text) {
         
-       log.info("{} {}", FINISH_SYMBOL, text);
-        log.info("{} {}", FINISH_SYMBOL, Hour.getTime());
+       log.info("{} {}", FINISH_SYMBOL, text, Hour.getTime());
+        //log.info("{} {}", FINISH_SYMBOL, Hour.getTime());
         log.info("");
         
     }
     
     public static void logInfoStart2(String text) {
         
-        log.info("{} {}", START_SYMBOL_2, text);
+        log.info("{} {} {}", START_SYMBOL_2, text, Hour.getTime());
         
     }
     
     public static void logInfoFinish2(String text) {
         
-        log.info("{} {}", FINISH_SYMBOL_2, text);
+        log.info("{} {} {}", FINISH_SYMBOL_2, text, Hour.getTime());
         
     }
     
     public static void logInfoStart() {
         
-        log.info("");
+        //log.info("");
         log.info("{} {}", START_SYMBOL, Hour.getTime());
        
         
@@ -84,7 +84,7 @@ public class Info {
         
         
         log.info("{} {}", FINISH_SYMBOL, Hour.getTime());
-        log.info("");
+        //log.info("");
         
         
     }

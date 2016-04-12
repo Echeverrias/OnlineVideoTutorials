@@ -3,10 +3,22 @@
     Author     : juanan
 */
 
-waitingRoom{
-    clear:both;
+
+#waitingRoom  {
+    width: 40%;
+    box-sizing: border-box;
+    text-align: center;
+  
+    
+    
 }
 
-waitingRoom button {
-    display: block;
+#waitingRoom .header {
+  width: 100%;
+  
+   
+}
+
+.ovt-container-col .header {
+  margin-bottom:1em;
 }

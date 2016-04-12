@@ -23,7 +23,7 @@ import org.springframework.web.socket.WebSocketSession;
  */
 public class MediaUtilities {
     
-    private static Logger log = LoggerFactory.getLogger(UserSession.class);
+    private static Logger log = LoggerFactory.getLogger(ParticipantSession.class);
      
     public static void sendMessageToClient(JsonObject message, WebSocketSession session){
         TextMessage textAnswer = new TextMessage(message.toString());

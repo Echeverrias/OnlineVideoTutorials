@@ -36,23 +36,22 @@ public class OnlineVideoTutorialsApp implements WebSocketConfigurer {
     final static String DEFAULT_KMS_WS_URI = "ws://localhost:8888/kurento";
 
     @Bean
-    public OnlineVideoTutorialsHandler handler() {
+        public OnlineVideoTutorialsHandler handler() {
         return new OnlineVideoTutorialsHandler();
-        
     }
     
     @Bean
-    public UserSessionsRegistry registry() {
-	return new UserSessionsRegistry();
+        public UserSessionsRegistry registry() {
+	   return new UserSessionsRegistry();
     }
 
     @Bean
-    public RoomManager roomManager() {
+        public RoomManager roomManager() {
         return new RoomManager();
     }
 
     @Bean
-    public KurentoClient kurentoClient() {
+        public KurentoClient kurentoClient() {
         return KurentoClient.create(System.getProperty("kms.ws.uri", DEFAULT_KMS_WS_URI));
     }
 

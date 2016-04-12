@@ -3,6 +3,8 @@
  * 
  */
 
+const TUTOR: string = "tutor";
+const STUDENT: string = "student";
 
 export class User {
     
@@ -10,16 +12,24 @@ export class User {
     private _name: string = null;
     private _userType: string = null; // 'tutor' or 'student'
     
-    constructor(userName: string = "", userType: string = "", name: string = ""){
-         console.log("");
-        console.log("*" + new Date().toLocaleTimeString());
-        console.log(`% User`);
+    constructor(userName: string, userType: string, name: string){
+        console.log("");
+        console.log(`% User ${new Date().toLocaleTimeString()}`);
+        
         this._userName = userName;
         this._userType = userType;
         this._name = name;
-         console.log("/" + new Date().toLocaleTimeString());
-         console.log("");
-               
+        
+        console.log(`/ User ${new Date().toLocaleTimeString()}`);
+        console.log("");
+    }
+    
+    static get tutorType():string{
+        return TUTOR;
+    }
+    
+    static get studentType():string{
+        return STUDENT;
     }
     
     get userName(): string{
@@ -29,18 +39,24 @@ export class User {
     get name(): string{
         return this._name;
     }
-    
-    get userType(): string{
+
+    get userType(): string {
         return this._userType;
     }
     
     isATutor(): boolean {
-        return this._userType === "tutor";
+        return this._userType === User.tutorType;
     }
     
     isAStudent(): boolean {
-        return this._userType === "student";
-    }
+        return this._userType === User.studentType;
+    } 
+
+  
+    /*
+     * 
+    
+    
     
     set userName(userName: string): void{
         this._userName = userName;
@@ -57,10 +73,8 @@ export class User {
     close(){
         console.log(`User ${this._userName} closed`);
     }
+    */
     
-    toString():string{
-        return `{userName: ${this._userName}, userType: ${this._userType}, name: ${this._name}}`;
-    }
     
     
 } 

@@ -1,14 +1,11 @@
 org/jaea/onlinevideotutorials/Room$1.class
 org/jaea/onlinevideotutorials/UserSessionsRegistry.class
 org/jaea/onlinevideotutorials/MediaUtilities$1.class
-org/jaea/onlinevideotutorials/RoomMedia.class
 org/jaea/onlinevideotutorials/OnlineVideoTutorialsApp.class
 org/jaea/onlinevideotutorials/OnlineVideoTutorialsHandler.class
-org/jaea/onlinevideotutorials/RoomMedia$1.class
 org/jaea/onlinevideotutorials/RoomManager.class
 org/jaea/onlinevideotutorials/UserSession.class
 org/jaea/onlinevideotutorials/OnlineVideoTutorialsHandler$1.class
-org/jaea/onlinevideotutorials/RoomMedia$2.class
 org/jaea/onlinevideotutorials/MediaUtilities$2.class
 org/jaea/onlinevideotutorials/MediaUtilities.class
 org/jaea/onlinevideotutorials/Room.class

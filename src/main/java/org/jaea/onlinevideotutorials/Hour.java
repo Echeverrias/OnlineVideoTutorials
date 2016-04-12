@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Hour {
     
-    static Calendar  fecha = new GregorianCalendar();
+    
     
     private static final Logger log = LoggerFactory
 			.getLogger(OnlineVideoTutorialsHandler.class);
@@ -41,6 +41,7 @@ public class Hour {
     
     public static String getTime() {
         
+        Calendar  fecha = new GregorianCalendar();
         
         int hora = fecha.get(Calendar.HOUR_OF_DAY);
         int minuto = fecha.get(Calendar.MINUTE);

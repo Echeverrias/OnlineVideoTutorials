@@ -18,8 +18,9 @@ import {WaitingRoomComponent} from './components/waitingRoom/waitingRoomComponen
 @Component({
     selector: 'app',
     directives: [ROUTER_DIRECTIVES],
-    styleUrls: ["assets/styles/kurento.css"],
+    styleUrls: ["assets/styles/kurento.css", "assets/styles/main.css"],
     template: `
+        
         Online Video Tutorials<br>
         <router-outlet></router-outlet>
        
@@ -32,11 +33,13 @@ import {WaitingRoomComponent} from './components/waitingRoom/waitingRoomComponen
 ])
 class AppComponent {
     
-   constructor() {
+   
+       constructor() {
         console.log(`% AppComponent constructor`);
         
         console.log(`/ AppComponent constructor`);
      }
+     
     
 }
     

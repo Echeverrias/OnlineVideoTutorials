@@ -14,13 +14,10 @@
  */
 package org.jaea.onlinevideotutorials;
 
-import com.google.gson.JsonObject;
-import java.io.IOException;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.kurento.client.KurentoClient;
@@ -29,71 +26,113 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * @author Ivan Gracia (izanmail@gmail.com)
- * @since 4.3.1
- */
+ * @author Juan Antonio Echeverrías Aranda (juanan.echeve@gmail.com)
+*/
 public class RoomManager {
 
     private final Logger log = LoggerFactory.getLogger(RoomManager.class);
 
     @Autowired
     private KurentoClient kurento;
-
+    
+    private final ConcurrentHashMap<String, ParticipantSession> participantsBySessionId = new ConcurrentHashMap();
     private final ConcurrentHashMap<String, Room> rooms = new ConcurrentHashMap<String, Room>(); 
     private final CopyOnWriteArrayList<String> avaibleRoomsNames = new CopyOnWriteArrayList<String>();;
         
+    public void createRoom(String roomName){
+    //We supose the room name will never be repeated
+        log.info("{} Room.createRoom {} not existent. Will create now! {}", Info.START_SYMBOL, roomName, Hour.getTime());
+	
+        Room room = new Room(roomName, kurento.createMediaPipeline());
+	this.rooms.put(roomName, room); 
+        this.avaibleRoomsNames.add(roomName);
+            
+        log.info("{} Room.createRoom {}", Info.FINISH_SYMBOL, Hour.getTime());
+    }
     
-    
-    /**
-    * @param roomName
-    *            the name of the room
-    * @return the room if it was already created
-    */
     public Room getRoom(String roomName) {
-        Info.logInfoStart();
-        log.debug("{} RoomManager.getRoom: {}",Info.START_SYMBOL, roomName);
+        log.info("{} RoomManager.getRoom: {} {}",Info.START_SYMBOL, roomName, Hour.getTime());
+        
         Room room = this.rooms.get(roomName);
 
         if (room == null) {
             log.debug("Room {} not existent.", roomName);
         }
                 
-        log.debug("{} Room {} found!",Info.FINISH_SYMBOL, roomName);
-        Info.logInfoFinish();
+        log.debug("{} Room {} found! {}",Info.FINISH_SYMBOL, roomName, Hour.getTime());
         return room;
     }
     
-    public UserSession getParticipant(String roomName, String userName){
-        Info.logInfoStart();
-        log.info("{} RoomManager.getParticipant {} from {}", Info.START_SYMBOL, userName, roomName);
-        UserSession participant = null;
+    public List getAvaibleRoomsNames(){
+        log.info("{} RoomManager.getAvaibleRoomsNames: {} {}",Info.START_SYMBOL,this.avaibleRoomsNames.toString(), Hour.getTime());
+        
+        int numberOfAvaibleRooms = this.avaibleRoomsNames.size();
+        
+        List avaibleRoomsNames = this.avaibleRoomsNames.subList(0, numberOfAvaibleRooms);
+        
+        log.info("Avaible Rooms Names: {}", avaibleRoomsNames);
+        Info.logInfoFinish("RoomManager.getAvaibleRoomsNames");
+        return avaibleRoomsNames;
+    }
+    
+    
+    /* If the incoming participant is a tutor, a room will be created */    
+    public void addParticipant (UserSession user, String roomName){
+        log.info("{} RoomManager.addParticipant: {} to {} {}",Info.START_SYMBOL,  user.getUserName(), roomName, Hour.getTime());
+        
+        ParticipantSession participant = (ParticipantSession) user;
+        this.participantsBySessionId.put(participant.getSessionId(), participant);
+        Room room = this.rooms.get(roomName);
+        if (room == null && participant.isATutor()){
+            this.createRoom(roomName);
+        }
+        if (room != null) {
+            log.info("Participant {} is going to be added to room {}", participant.getUserName(), room.getName());
+            room.addParticipant(participant);
+        }    
+        Info.logInfoFinish("RoomManager.addParticipant");
+    }
+    
+    public ParticipantSession getParticipant(String sessionId){
+        
+        return this.participantsBySessionId.get(sessionId);
+    }
+    
+    public ParticipantSession getParticipant(String userName, String roomName){
+        log.info("{} RoomManager.getParticipant {} from {} {}", Info.START_SYMBOL, userName, roomName, Hour.getTime());
+        
+        ParticipantSession participant = null;
         Room room = this.rooms.get(roomName);
         
         if (room!=null) {
             participant = room.getParticipant(userName);
         }
-        log.info("{} RoomManager.getParticipant", Info.FINISH_SYMBOL);
         
+        log.info("{} RoomManager.getParticipant", Info.FINISH_SYMBOL, Hour.getTime());
         return participant;
     }
     
-    
-    public List getAvaibleRoomsNames(){
-        Info.logInfoStart();
-        log.info("{} RoomManager.getAvaibleRoomsNames: {}",Info.START_SYMBOL,this.avaibleRoomsNames.toString());
-        int numberOfAvaibleRooms = this.avaibleRoomsNames.size();
+    public List<String> getParticipantsUserNamesByRoomName(String roomName){
+        log.info("{} RoomManager.getStudentsNamesByRoomName: {} {}",Info.START_SYMBOL, roomName, Hour.getTime());
         
-        List avaibleRoomsNames = this.avaibleRoomsNames.subList(0, numberOfAvaibleRooms);
-        log.info("Avaible Rooms Names: {}", avaibleRoomsNames);
-       Info.logInfoFinish("RoomManager.getAvaibleRoomsNames");
-        return avaibleRoomsNames;
+        List <ParticipantSession> participants = this.getParticipantsByRoomName(roomName);
+        List <String> participantsUserNames = null;
         
+        if (participants != null){
+            
+            participantsUserNames = new ArrayList<String>();
+            for(ParticipantSession user : participants){
+                participantsUserNames.add(user.getUserName());
+            }
+            
+        }
+        
+        Info.logInfoFinish("RoomManager.getStudentsNamesByRoomName");
+        return participantsUserNames;
     }
     
-    
-    public List<UserSession> getParticipantsByRoomName(String roomName){
-        Info.logInfoStart();
-        log.info("{} RoomManager.getParticipantsByRoomName: {}",Info.START_SYMBOL, roomName);
+    public List<ParticipantSession> getParticipantsByRoomName(String roomName){
+        log.info("{} RoomManager.getParticipantsByRoomName: {} {}",Info.START_SYMBOL, roomName, Hour.getTime());
         
         Room room = this.rooms.get(roomName);
         
@@ -101,119 +140,44 @@ public class RoomManager {
         return room.getParticipants();
     }
     
-    /**
-     * 
-     * @param roomName
-     * @return List<String> or null 
-     */
-    public List<String> getStudentsNamesByRoomName(String roomName){
-         Info.logInfoStart();
-        log.info("{} RoomManager.getStudentsNamesByRoomName: {}",Info.START_SYMBOL, roomName);
-        
-        List <UserSession> students = this.getParticipantsByRoomName(roomName);
-        List <String> studentsNames = null;
-        if (students != null){
-            
-            studentsNames = new ArrayList<String>();
-            for(UserSession user : students){
-                studentsNames.add(user.getUserName());
-            }
-            
-        }
-        
-        Info.logInfoFinish("RoomManager.getStudentsNamesByRoomName");
-        return studentsNames;
-    }
-    
-    
-    
-    
-    public Room createRoom(String roomName){
-    //We supose the room name will never be repeated
-        Info.logInfoStart();
-        log.info("{} Room.createRoom {} not existent. Will create now!", Info.START_SYMBOL, roomName);
-	Room room = new Room(roomName, kurento.createMediaPipeline());
-	this.rooms.put(roomName, room); 
-        this.avaibleRoomsNames.add(roomName);
-            
-        log.info("{} Room.createRoom", Info.FINISH_SYMBOL);
-        return room;
-    }
-        
-        
-    /* If the incoming participant is a tutor, a room will bre created */    
-    public void addParticipant (UserSession user, String roomName){
-        Info.logInfoStart();
-        log.info("{} RoomManager.addParticipant: {} to {}",Info.START_SYMBOL,  user.getUserName(), roomName);
-        
-        Room room = this.rooms.get(roomName);
-        if (room == null && user.isATutor()){
-            this.createRoom(roomName);
-        }
-        if (room != null) {
-            room.addParticipant(user);
-        }    
-        Info.logInfoFinish("RoomManager.addParticipant");
-        
-    }
-    
-    
-    
-   
-    
-    /**
-     * 
-     * 
-     * 
-     */
-    public UserSession participantLeavesARoom (String participantUserName, String roomName){
-        
-        Info.logInfoStart();
-        log.info("{} RoomManager.participantLeavesARoom {} from {}",Info.START_SYMBOL, participantUserName, roomName);
+    public ParticipantSession participantLeavesARoom (String participantUserName, String roomName){
+        log.info("{} RoomManager.participantLeavesARoom {} from {} {}",Info.START_SYMBOL, participantUserName, roomName, Hour.getTime());
         
         Room room = this.rooms.get(roomName);
         
         if (room.isTheTutor(participantUserName)){
             this.avaibleRoomsNames.remove(roomName);
         }
-        
-        UserSession user = room.leave(participantUserName);
-        
+       
+        ParticipantSession user = room.leave(participantUserName);
+       
         if (room.getParticipantsNumber() == 0){
             room.close();
             this.rooms.remove(roomName);
         }
         
-        
         Info.logInfoFinish("RoomManager.participantLeavesARoom");
-        
         return user;
     }
     
-    
     public void removeRoom(String roomName) {
-        Info.logInfoStart();
-        log.info("{} Room.removeRoom {}",Info.START_SYMBOL, roomName);
+        log.info("{} Room.removeRoom {} {}",Info.START_SYMBOL, roomName, Hour.getTime());
+        
         Room room = this.rooms.get(roomName);
         this.removeRoom(room);
+        
 	Info.logInfoFinish("Room.remove: removed and closed");
     }
-    /**
-    * Removes a room from the list of available rooms
-    *   
-    * @param room
-    * @throws IOException
-    */
+    
     public void removeRoom(Room room) {
-         Info.logInfoStart();
-        log.info("{} Room.removeRoom {}",Info.START_SYMBOL, room.getName());
+        log.info("{} Room.removeRoom {} {}",Info.START_SYMBOL, room.getName(), Hour.getTime());
+        
         String roomName = room.getName();
         room.close();
         this.rooms.remove(roomName);
 	this.avaibleRoomsNames.remove(roomName);
+        
 	Info.logInfoFinish("Room.remove: removed and closed");
     }
-    
-    
-    
+
 }

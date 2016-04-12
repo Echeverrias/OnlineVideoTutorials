@@ -15,116 +15,89 @@
 package org.jaea.onlinevideotutorials;
 
 import com.google.gson.JsonObject;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.socket.WebSocketSession;
 
 public class UserSessionsRegistry {
     
     private final Logger log = LoggerFactory.getLogger(UserSessionsRegistry.class);
     
     /* The next two collections are going to store all the users */
-    private final ConcurrentHashMap<String, UserSession> usersByUserName = new ConcurrentHashMap<String, UserSession>();
-    private final ConcurrentHashMap<String, UserSession> usersBySessionId = new ConcurrentHashMap<String, UserSession>();
+    private final ConcurrentHashMap<String, UserSession> usersByUserName = new ConcurrentHashMap();
+    private final ConcurrentHashMap<String, UserSession> usersBySessionId = new ConcurrentHashMap();
     
-    /* The nex collection is only going to store the users which are not in a room */
-    private final ConcurrentHashMap<String, UserSession> incomingParticipantsByUserName = new ConcurrentHashMap<String, UserSession>();
+    /* It stores the students which are not in a room */
+    private final ConcurrentHashMap<String, UserSession> incomingParticipantsByUserName = new ConcurrentHashMap();
     
-    private final ConcurrentHashMap<String, List<UserSession>> studentsByRoomName = new ConcurrentHashMap<String, List<UserSession>>();
-    private final ConcurrentHashMap<String, UserSession> tutorsByRoomName = new ConcurrentHashMap<String, UserSession>();
-     // Store the 'WebSocketSession' for those students who still have not joined into a room
+    public boolean isThereAlreadyThisUser(String userName) {
+        
+        return this.usersByUserName.containsKey(userName);
+    }
     
-    //private final ConcurrentHashMap<String, UserSession> participantsByRoomName = new ConcurrentHashMap<String, UserSession>();
-    
-    
+    public void addUser (UserSession user){
+        log.info("{} UserRegistry.addUser: {}, {}", Info.START_SYMBOL, user.getUserName(), Hour.getTime());
+        
+        this.usersByUserName.put(user.getUserName(), user);
+        log.info(" add to usersByName");
+        this.usersBySessionId.put(user.getSession().getId(), user);
+        log.info(" add to usersBySessionId");
+        
+        if (user.isAStudent()) {
+            this.addIncomingParticipant(user);
+        }
+        
+        Info.logInfoFinish("UserRegistry.addUser");
+    }
     
     public void addIncomingParticipant (UserSession user){
-        Info.logInfoStart();
-        log.info("{} UserRegistry.addIncomingParticipant: {}",Info.START_SYMBOL, user.getUserName());
+        log.info("{} UserRegistry.addIncomingParticipant: {} {}",Info.START_SYMBOL, user.getUserName(), Hour.getTime());
         
-        if (user.getUserType().equals(UserSession.STUDENT_TYPE)){
+        if (user.isAStudent()){
             incomingParticipantsByUserName.put(user.getUserName(), user);
             log.info("An incoming participant has been added");
             log.info("Now there are {} students in the waiting room",incomingParticipantsByUserName.size());
         }
         
         Info.logInfoFinish("UserRegistry.addIncomingParticipant");
-        
-    }
-    
-    public UserSession removeIncomingParticipant(String userName){
-        Info.logInfoStart();
-         log.info("{} UserRegistry.removeIncomingParticipant: {}",Info.START_SYMBOL, userName);
-         
-        UserSession user = user = incomingParticipantsByUserName.remove(userName);
-        log.info("An incoming participant has been removed");
-        log.info("Now there are {} students in the waiting room",incomingParticipantsByUserName.size());
-        
-        
-        Info.logInfoFinish("UserRegistry.removeIncomimgParticipant");
-        
-        return user;
-    }
-    
-    public void removeIncomingParticipant(UserSession user){
-        Info.logInfoStart();
-         log.info("{} UserRegistry.removeIncomingParticipant: {}",Info.START_SYMBOL, user.getUserName());
-         
-         if (user.getUserType().equals(UserSession.STUDENT_TYPE)){
-            incomingParticipantsByUserName.remove(user.getUserName());
-            log.info("an incoming participant has been removed");
-        }
-         
-        Info.logInfoFinish("UserRegistry.removeIncomimgParticipant");
-    }
-    
-    public void addUser (UserSession user){
-        Info.logInfoStart();
-        log.info("{} UserRegistry.addUser: {}", Info.START_SYMBOL, user.getUserName());
-        
-        usersByUserName.put(user.getUserName(), user);
-        log.info(" add to usersByName");
-        usersBySessionId.put(user.getSession().getId(), user);
-        log.info(" add to usersBySessionId");
-        
-        Info.logInfoFinish("UserRegistry.addUser");
-        
-    }
+     }
     
     public UserSession getUserByUserName(String userName){
-        Info.logInfoStart();
-        log.info("{} UserRegistry.getUserByUserName: {}", Info.START_SYMBOL,userName);
+        log.info("{} UserRegistry.getUserByUserName: {} {}", Info.START_SYMBOL,userName, Hour.getTime());
         Info.logInfoFinish("UserRegistry.getUserByUserName");
+        
         return usersByUserName.get(userName);
     }
     
     public UserSession getUserBySessionId(String sessionId){
-        Info.logInfoStart();
-        log.info("{} UserRegistry.getUserBySessionId: {}", Info.START_SYMBOL,sessionId);
-        Info.logInfoFinish("UserRegistry.getUserBySessionId");
+        log.info("{} UserRegistry.getUserBySessionId: {} {}", Info.START_SYMBOL,sessionId, Hour.getTime());
+        Info.logInfoFinish("UserRegistry.getUserBySessionId: " + usersBySessionId.get(sessionId));
+        
         return usersBySessionId.get(sessionId);
     }
     
-   
-    
     public UserSession getIncomingParticipantByUserName(String userName){
-        Info.logInfoStart();
-        log.info("{} UserRegistry.getIncomingParticipantByUserName: {}", Info.START_SYMBOL,userName);
+        log.info("{} UserRegistry.getIncomingParticipantByUserName: {} {}", Info.START_SYMBOL,userName, Hour.getTime());
         Info.logInfoFinish("UserRegistry.getIncomingParticipantByUserName");
+        
         return incomingParticipantsByUserName.get(userName);
     }
     
+    public UserSession removeIncomingParticipant(UserSession user){
+        log.info("{} UserRegistry.removeIncomingParticipant: {} {}",Info.START_SYMBOL, user.getUserName(), Hour.getTime());
+         
+       UserSession incomingParticipant = this.removeIncomingParticipant(user.getUserName());
+         
+        Info.logInfoFinish("UserRegistry.removeIncomimgParticipant");
+        
+        return incomingParticipant;
+    }
     
     public void sendAMessageToIncomingParticipants(JsonObject message){
-        Info.logInfoStart();
-        log.info("{} UserRegistry.sendAMessageToIncomingParticipants - message: {}",Info.START_SYMBOL, message);
+        log.info("{} UserRegistry.sendAMessageToIncomingParticipants - message: {} {}",Info.START_SYMBOL, message, Hour.getTime());
         
-        if (incomingParticipantsByUserName!=null){
+        if (this.incomingParticipantsByUserName!=null){
             
             for (UserSession user : Collections.list(incomingParticipantsByUserName.elements())){
                 log.info("User: {}", user.getUserName());
@@ -135,7 +108,27 @@ public class UserSessionsRegistry {
         }
         
         log.info("the message has been sent to all incoming participants");
-         Info.logInfoFinish("UserRegistry.sendAMessageToIncomingParticipants");
+        Info.logInfoFinish("UserRegistry.sendAMessageToIncomingParticipants");
+    }
+    
+    public UserSession removeIncomingParticipant(String userName){
+        log.info("{} UserRegistry.removeIncomingParticipant: {} {}",Info.START_SYMBOL, userName, Hour.getTime());
+         
+        UserSession user = this.incomingParticipantsByUserName.remove(userName);
+        
+        log.info("An incoming participant has been removed");
+        log.info("Now there are {} students in the waiting room",incomingParticipantsByUserName.size());
+        Info.logInfoFinish("UserRegistry.removeIncomimgParticipant");
+        
+        return user;
+    }
+    
+    public void removeUser (String userName){
+        log.info("{} UserRegistry.removeUser: {}, {}", Info.START_SYMBOL, userName, Hour.getTime());
+        
+        UserSession outgoingUser = this.usersByUserName.remove(userName);
+        this.usersBySessionId.remove(outgoingUser.getSessionId());
+        this.incomingParticipantsByUserName.remove(userName);
     }
     
 }

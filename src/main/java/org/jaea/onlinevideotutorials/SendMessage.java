@@ -19,7 +19,7 @@ import org.springframework.web.socket.WebSocketSession;
  */
 public class SendMessage {
     
-    private static Logger log = LoggerFactory.getLogger(UserSession.class);
+    private static Logger log = LoggerFactory.getLogger(ParticipantSession.class);
      
     public static boolean toClient(JsonObject message, WebSocketSession session){
         Info.SendMsg(session.getId());
@@ -37,5 +37,14 @@ public class SendMessage {
         }
         log.info("(message has been sent: {})", isSuccessful);
         return isSuccessful;
+    }
+    
+    
+    public static void toClient(String value, WebSocketSession session){
+        
+        JsonObject msg = new JsonObject();
+        msg.addProperty("id", "server");
+        msg.addProperty("value",value);
+        toClient(msg, session);
     }
 }

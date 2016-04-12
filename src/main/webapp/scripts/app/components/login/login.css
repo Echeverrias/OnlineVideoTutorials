@@ -3,6 +3,27 @@
     Author     : juanan
 */
 
+form  {
+    padding: 0% 2%;
+    box-sizing: border-box;
+    
+}
+
+
+
+
+
+
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form div {
+    margin:auto;
+}
+
 .ng-valid[required] {
   border-left: 5px solid #42A948; /* green */
 }
@@ -10,4 +31,3 @@
 .ng-invalid {
   border-left: 5px solid #a94442; /* red */
 }
-
