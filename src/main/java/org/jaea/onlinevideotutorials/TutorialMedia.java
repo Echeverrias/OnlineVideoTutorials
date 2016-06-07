@@ -5,6 +5,7 @@
  */
 package org.jaea.onlinevideotutorials;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.io.Closeable;
 import java.io.IOException;
@@ -33,22 +34,20 @@ public class TutorialMedia implements Closeable{
     
     private final Logger log = LoggerFactory.getLogger(ParticipantSession.class);
     
-    private String roomName;
     private String userName;
     
     private final MediaPipeline pipeline;
     private WebSocketSession session;
 
-	private final WebRtcEndpoint outgoingMedia;
-    private final ConcurrentMap<String, WebRtcEndpoint> incomingMedia = new ConcurrentHashMap<>();;
+    private final WebRtcEndpoint outgoingMedia;
+    private final ConcurrentMap<String, WebRtcEndpoint> incomingMediaByUserName = new ConcurrentHashMap<>();;
 
 
-    public TutorialMedia(final MediaPipeline pipeline, String roomName, final WebSocketSession session, final String userName){
+    public TutorialMedia(final MediaPipeline pipeline, final WebSocketSession session, final String userName){
         //Info.logInfoStart();
         log.info("");
-        log.info("% TutorialMedia Constructor for room: {} and user: {}", roomName, userName, Hour.getTime());
+        log.info("% TutorialMedia Constructor for user: {}", userName, Hour.getTime());
         
-        this.roomName = roomName;
         this.userName = userName;
         this.session = session;
         this.pipeline = pipeline;
@@ -82,36 +81,39 @@ public class TutorialMedia implements Closeable{
          Info.logInfoFinish("TutorialMedia.addOnIceCandidateListenerToWebRtc");
     }
     
-    public String getRoomName() {
-        return this.roomName;
-    }
-    
-    public void addCandidate(IceCandidate candidate, String userName) {
+    public void addCandidate(JsonElement candidate, String userName) {
        // Info.logInfoStart();
         log.info("");
         log.info("{} TutorialMedia.addCandidate {} to {} {}", Info.START_SYMBOL, candidate.toString(), userName, Hour.getTime());
+        JsonObject address = candidate.getAsJsonObject();
+        IceCandidate cand = new IceCandidate(address.get("candidate").getAsString(),
+                                        address.get("sdpMid").getAsString(),
+					address.get("sdpMLineIndex").getAsInt());
+        
         if (this.userName.compareTo(userName) == 0) {
             log.info("I'm going to add me an iceCandidate");
-            outgoingMedia.addIceCandidate(candidate);
+            outgoingMedia.addIceCandidate(cand);
 	} 
         else {
-            WebRtcEndpoint userWebRtc = this.incomingMedia.get(userName);
+            WebRtcEndpoint userWebRtc = this.incomingMediaByUserName.get(userName);
                 if (userWebRtc != null) {
                     log.info("I'm going to add an iceCandidate to a participant");
-                    userWebRtc.addIceCandidate(candidate);
+                    userWebRtc.addIceCandidate(cand);
 		}
 	}
         
-        Info.logInfoFinish("Roomedia.addCandidate");
+        Info.logInfoFinish("/ TutorialMedia.addCandidate");
     }
     
-    public void receiveVideoFrom(ParticipantSession sender, String sdpOffer) throws IOException {
+    public void receiveVideoFrom(ParticipantSession sender, JsonElement sdpOffer) throws IOException {
         log.info("{} TutorialMedia.receiveVideoFrom {} {}",Info.START_SYMBOL, sender.getUserName(), Hour.getTime());
-        log.info("USER {}: connecting with {} in room {}", this.userName, sender.getUserName(), this.roomName);
+        log.info("USER {}: connecting with {}", this.userName, sender.getUserName());
         log.trace("USER {}: SdpOffer for {} is {}", this.userName, sender.getUserName(), sdpOffer);
         
+        String offer = sdpOffer.getAsString();
+        
         WebRtcEndpoint senderWebRtc = this.getEndpointFromUser(sender);
-	    final String ipSdpAnswer = senderWebRtc.processOffer(sdpOffer);
+	    final String ipSdpAnswer = senderWebRtc.processOffer(offer);
         
     	final JsonObject scParams = new JsonObject();
     	scParams.addProperty("id", "receiveVideoAnswer");
@@ -140,13 +142,13 @@ public class TutorialMedia implements Closeable{
         else {
         	log.info("PARTICIPANT {}: receiving video from {}", this.userName, sender.getUserName());
 
-        	incoming = this.incomingMedia.get(sender.getUserName());
+        	incoming = this.incomingMediaByUserName.get(sender.getUserName());
         	if (incoming == null) {
                     log.info("PARTICIPANT {}: creating new endpoint for {}", this.userName, sender.getUserName());
                     
                     incoming = new WebRtcEndpoint.Builder(pipeline).build();
                     this.addOnIceCandidateListenerToWebRtc(incoming, sender.getUserName(), this.session);
-                    this.incomingMedia.put(sender.getUserName(), incoming);
+                    this.incomingMediaByUserName.put(sender.getUserName(), incoming);
             }
         }        
 
@@ -174,11 +176,11 @@ public class TutorialMedia implements Closeable{
     }
 
     public void cancelVideoFrom(final String participantUserName) {
-	    Info.logInfoStart("TutorialMedia.cancelVideoFrom");	
+	Info.logInfoStart("TutorialMedia.cancelVideoFrom");	
         log.info("PARTICIPANT {}: canceling video reception from {}", this.userName, participantUserName);
         log.info("PARTICIPANT {}: removing endpoint for {}", this.userName, participantUserName);
         
-        final WebRtcEndpoint canceledWebRtc = this.incomingMedia.remove(participantUserName);
+        final WebRtcEndpoint canceledWebRtc = this.incomingMediaByUserName.remove(participantUserName);
         this.disconnectToRemote(canceledWebRtc);
         this.releaseWebRtc(canceledWebRtc, participantUserName);
         
@@ -187,6 +189,7 @@ public class TutorialMedia implements Closeable{
     }
     
     public void disconnectToRemote(WebRtcEndpoint incomingMedia) {
+        Info.logInfoStart("TutorialMedia.disconnectToRemote");
         this.outgoingMedia.disconnect(incomingMedia);
     }
 
@@ -227,18 +230,18 @@ public class TutorialMedia implements Closeable{
         Info.logInfoStart("RoomMEdia.close");
         log.info("PARTICIPANT {}: Releasing resources", this.userName);
         
-        for (String remoteParticipantUserName : incomingMedia.keySet()) {
+        for (String remoteParticipantUserName : incomingMediaByUserName.keySet()) {
 
             log.trace("PARTICIPANT {}: Released incoming EP for {}", this.userName, remoteParticipantUserName);
 
-            WebRtcEndpoint participantWebRtc = this.incomingMedia.get(remoteParticipantUserName);
+            WebRtcEndpoint participantWebRtc = this.incomingMediaByUserName.get(remoteParticipantUserName);
             
             this.disconnectToRemote(participantWebRtc);
             this.releaseWebRtc(participantWebRtc, remoteParticipantUserName);
         }
         
         this.releaseWebRtc(this.outgoingMedia, this.userName);
-        this.incomingMedia.clear();
+        this.incomingMediaByUserName.clear();
         
         Info.logInfoFinish("TutorialMedia.close");
     }

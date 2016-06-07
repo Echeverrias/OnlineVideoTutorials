@@ -9,7 +9,9 @@ and open the template in the editor.
 */
 
 
-.video {
+video {
+    width:10%;
+    height: auto;
     border: 2px solid #000000;
     -webkit-border-radius: 2em;
     -moz-border-radius: 2em;
@@ -18,8 +20,9 @@ and open the template in the editor.
 }
 
 
-#mainVideo {
+.mainVideo {
     position:absolute;
+     height: auto;
     float:left;
     width:50%;
     height: 90%;

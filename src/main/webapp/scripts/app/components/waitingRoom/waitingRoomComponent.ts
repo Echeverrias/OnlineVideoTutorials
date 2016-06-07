@@ -3,7 +3,7 @@
  * 
  */
  
-import {Component, EventEmitter, OnDestroy} from 'angular2/core';
+import {Component, EventEmitter, OnInit, OnDestroy} from 'angular2/core';
 import {Router} from 'angular2/router';
 
 import {Connection} from '../../services/connection.ts';
@@ -27,15 +27,19 @@ import {MyService} from '../../services/myService.ts';
         console.log("");
         console.log(`% WaitingRoom constructor ${new Date().toLocaleTimeString()}`); 
         
+       
+        
+        console.log(`/ WaitingRoom constructor ${new Date().toLocaleTimeString()}`);
+        console.log("");
+        
+    }
+    
+    ngOnInit{
         this.onAvaibleRoomsSubscription = connection.subscriptions.subscribeToAllAvaibleRooms(this, this.onSetAvaibleRooms);
         this.onNewAvaibleRoomSubscription = connection.subscriptions.subscribeToNewAvaibleRoom(this, this.onAddAvaibleRoom);
         this.onAvaibleRoomLessSubscription = connection.subscriptions.subscribeToAvaibleRoomLess(this, this.onRemoveAvaibleRoom);
         
         this.lookingForRooms();
-        
-        console.log(`/ WaitingRoom constructor ${new Date().toLocaleTimeString()}`);
-        console.log("");
-        
     }
     
     private lookingForRooms(): void {

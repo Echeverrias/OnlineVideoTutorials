@@ -15,16 +15,6 @@
 package org.jaea.onlinevideotutorials;
 
 import com.google.common.reflect.TypeToken;
-import java.io.IOException;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.kurento.client.EventListener;
-import org.kurento.client.IceCandidate;
-import org.kurento.client.KurentoClient;
-import org.kurento.client.MediaPipeline;
-import org.kurento.client.OnIceCandidateEvent;
-import org.kurento.client.WebRtcEndpoint;
-import org.kurento.jsonrpc.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,11 +26,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.List;
+
 
 /**
  * Online Video Tutorials handler 
@@ -58,8 +45,8 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler {
     @Autowired
     private UserSessionsRegistry usersRegistry;
     
-    @Autowired
-    private KurentoClient kurento;
+    //@Autowired
+    //private KurentoClient kurento;
     
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
@@ -93,9 +80,9 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler {
             this.receiveVideoFrom(session, jsonMessage);
             break;    
             
-        case "onIceCandidate":
-            Info.receiveMsg("onIceCandidate " + session.getId());
-            this.iceCandidate(session, jsonMessage);
+        case "receiveAddress":
+            Info.receiveMsg("receiveAddress " + session.getId());
+            this.receiveAddress(session, jsonMessage);
             break;    
             
         case "exitRoom":
@@ -117,7 +104,7 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler {
     
     /**
     * A client is authenticating himself
-    * If the user is a tutor, he creates a room and join into it and
+    * If the user is a tutor, a room is created and the tutor joins into it and
     * ..if it's a student he goes to the 'waiting room'.
     */
     private void login(final WebSocketSession session, JsonObject jsonMessage){
@@ -172,6 +159,7 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler {
         SendMessage.toClient("->login", session);
         log.info("/login - the message has been sent");
     }
+    
     
     private ParticipantSession validateUSer(String userName, String password, WebSocketSession session ){
         ParticipantSession user = null;
@@ -256,38 +244,25 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler {
     private void receiveVideoFrom(WebSocketSession session, JsonObject jsonMessage){
         log.info("<- receiveVideoFrom -> id: {}, message: {}", session.getId(), jsonMessage.toString());
         
-        //UserSession participant = this.usersRegistry.getUserBySessionId(session.getId());
-        ParticipantSession participant = this.roomManager.getParticipant(session.getId());
+        UserSession user = this.usersRegistry.getUserBySessionId(session.getId());
+        String senderUserName = jsonMessage.get("userName").getAsString();
+        JsonElement sdpOffer = jsonMessage.get("offer");
         
-        final String userName = jsonMessage.get("userName").getAsString();
-        final String roomName = jsonMessage.get("roomName").getAsString();
-        SendMessage.toClient("receiveVideoFrom " + userName + " - " + roomName + session.getId(), session); //$
-        
-        final ParticipantSession sender = this.roomManager.getParticipant(userName, roomName);
-        if (sender == null){
-            log.info ("!!!!!!!!!participante nulo");
-        }
-                                                                                          
-        final String sdpOffer = jsonMessage.get("sdpOffer").getAsString();
-        participant.receivesGreetingsFrom(sender, sdpOffer);
-            
+        this.roomManager.manageOfferVideo(user.getUserName(), senderUserName, sdpOffer);
+                    
         log.info("/ receiveVideoFrom");    
     }
     
-    private void iceCandidate(WebSocketSession session, JsonObject jsonMessage){
+    private void receiveAddress(WebSocketSession session, JsonObject jsonMessage){
         log.info("<- iceCandidate: id: {}, message: {}",session.getId() , jsonMessage.toString());
         
-        JsonObject candidate = jsonMessage.get("candidate").getAsJsonObject();
-        String userName = jsonMessage.get("userName").getAsString();
         
-        ParticipantSession participant = this.roomManager.getParticipant(session.getId());
+        UserSession user = this.usersRegistry.getUserBySessionId(session.getId());
+        String senderUserName = jsonMessage.get("userName").getAsString();
+        JsonElement candidate = jsonMessage.get("address");
         
-	if (participant != null) {
-            IceCandidate cand = new IceCandidate(candidate.get("candidate").getAsString(),
-                                        candidate.get("sdpMid").getAsString(),
-					candidate.get("sdpMLineIndex").getAsInt());
-            participant.addCandidate(cand, jsonMessage.get("userName").getAsString());
-	}
+        this.roomManager.manageAddress(user.getUserName(), senderUserName, candidate);
+       
         log.info("/ iceCandidate"); 
     }
     
@@ -303,7 +278,7 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler {
         
         UserSession user = this.roomManager.participantLeavesARoom(userName, roomName);
         
-        if (userType.equals(ParticipantSession.TUTOR_TYPE)) {
+        if (userType.equals(User.TUTOR_TYPE)) {
             this.makeKnowThereIsAnAvaibleRoomLess(roomName);
             this.usersRegistry.removeUser(userName);
         }

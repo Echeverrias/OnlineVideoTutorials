@@ -19,7 +19,7 @@ import {MyService} from '../../services/myService.ts';
 
 export class ParticipantComponent implements AfterViewInit{
 
-    private @ViewChild('video') video;
+    private @ViewChild('video') video : ElementRef;
     private userName: String;
     private options: Object;
     private constraints: Object;
@@ -113,7 +113,7 @@ export class ParticipantComponent implements AfterViewInit{
         let message = {
             id: "receiveVideoFrom",
             userName: this.userName,
-            sdpOffer: offerSdp,
+            offer: offerSdp,
             roomName: this.roomName
         };
 
@@ -128,8 +128,8 @@ export class ParticipantComponent implements AfterViewInit{
         console.log(`* -> Participant.onIceCandidtae - Local candidate: ${JSON.stringify(candidate)} ${new Date().toLocaleTimeString()}`);
 
         let message = {
-            id: 'onIceCandidate',
-            candidate: candidate,
+            id: 'receiveAddress',
+            address: candidate,
             userName: this.userName,
             roomName: this.roomName
         };

@@ -45,7 +45,6 @@ export class MyService{
     amAStudent(): boolean {
         return this._me.isAStudent();
     }
-
-
+    
 }
 

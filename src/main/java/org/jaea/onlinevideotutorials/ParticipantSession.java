@@ -14,13 +14,10 @@
  */
 package org.jaea.onlinevideotutorials;
 
-import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
 import java.io.IOException;
 import java.util.logging.Level;
-import org.kurento.client.IceCandidate;
 import org.kurento.client.WebRtcEndpoint;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.WebSocketSession;
 
 
@@ -39,27 +36,29 @@ public class ParticipantSession  extends UserSession{
     }
     
     public void assignRoomMedia (TutorialMedia tutorialMedia){
-        Info.logInfoStart("* User.assignRoomMedia: " + this.getUserName());
+        Info.logInfoStart("* Participant.assignRoomMedia: " + this.getUserName());
         
         this.tutorialMedia = tutorialMedia;
         
         Info.logInfoFinish("/ User.assignRoomMedia");
     }
     
-    public void addCandidate(IceCandidate candidate, String userName) {
-        this.tutorialMedia.addCandidate(candidate, userName);
+    public void addAddress (JsonElement address, String userName) {
+        Info.logInfoStart("* Participant.addAddress: " + userName);
+        
+        this.tutorialMedia.addCandidate(address, userName);
     }
     
-    public void receivesGreetingsFrom(ParticipantSession participant, String sdpOffer){
-        log.info("{} User.receivesGreetingsFrom {} from {} {}", this.getUserName(), participant.getUserName(), sdpOffer, Hour.getTime());
+    public void receivesGreetingsFrom(ParticipantSession participant, JsonElement offer){
+        log.info("{} Participant.receivesGreetingsFrom {} from {}", this.getUserName(), participant.getUserName(), Hour.getTime());
         
         try {
-            this.tutorialMedia.receiveVideoFrom(participant, sdpOffer);
+            this.tutorialMedia.receiveVideoFrom(participant, offer);
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(ParticipantSession.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        Info.logInfoFinish("User.receivesGreetingsFrom");
+        Info.logInfoFinish("Participant.receivesGreetingsFrom");
     }
     
     public void connectToRemote(WebRtcEndpoint incomingMedia) {
@@ -67,23 +66,23 @@ public class ParticipantSession  extends UserSession{
     }
     
     public void receivesFarewellFrom(String userName){
-        log.info("{} User.receivesFarewellFrom: {} from {} {}",Info.START_SYMBOL, this.getUserName(), userName, Hour.getTime());
+        log.info("{} Participant.receivesFarewellFrom: {} from {} {}",Info.START_SYMBOL, this.getUserName(), userName, Hour.getTime());
         
         this.tutorialMedia.cancelVideoFrom(userName);
         
-        Info.logInfoFinish("User.receivesFarewellFrom");
+        Info.logInfoFinish("Participant.receivesFarewellFrom");
     }
     
     public void leavesRoom(){
         
-        log.info("{} User.leavesRoom: {} - {} {}", Info.START_SYMBOL, this.getUserName(), this.tutorialMedia.getRoomName(), Hour.getTime());
+        log.info("{} Participant.leavesRoom: {} - {}", Info.START_SYMBOL, this.getUserName(), Hour.getTime());
         try {
             this.tutorialMedia.close();
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(ParticipantSession.class.getName()).log(Level.SEVERE, null, ex);
         
         }
-        Info.logInfoFinish("User.leavesRoom");
+        Info.logInfoFinish("Participant.leavesRoom");
     }
     
     

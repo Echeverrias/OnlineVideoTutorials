@@ -14,9 +14,9 @@
  */
 package org.jaea.onlinevideotutorials;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -27,6 +27,7 @@ import org.kurento.client.MediaPipeline;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Collections;
+
 
 /**
  * Room
@@ -39,7 +40,7 @@ public class Room implements Closeable {
     private ParticipantSession tutor = null;
     
     // The tutor is included in the participants
-    private final ConcurrentHashMap<String, ParticipantSession> participants = new ConcurrentHashMap<String, ParticipantSession>();
+    private final ConcurrentHashMap<String, ParticipantSession> participantsByUserName = new ConcurrentHashMap<>();
     private final MediaPipeline pipeline;
     private final String name;
     
@@ -58,18 +59,18 @@ public class Room implements Closeable {
     
     public int getParticipantsNumber(){
         int participantsNumber = 0;
-        if (participants!=null) {
-            participantsNumber = participants.size();
+        if (participantsByUserName!=null) {
+            participantsNumber = participantsByUserName.size();
         }
         return participantsNumber;
     }
     
     public List<ParticipantSession> getParticipants() {
-        return Collections.list(participants.elements());
+        return Collections.list(participantsByUserName.elements());
     }
 
     public ParticipantSession getParticipant(String userName) {
-        return participants.get(userName);
+        return participantsByUserName.get(userName);
     }
 
     public boolean isTheTutor(ParticipantSession user){
@@ -89,11 +90,11 @@ public class Room implements Closeable {
         log.info("{} ROOM.addParticipant {} to {} {}", Info.START_SYMBOL, user.getUserName(), this.name, Hour.getTime());
         Info.logInfoStart2("assignRoomMedia");
         
-	user.assignRoomMedia(new TutorialMedia(this.pipeline, this.name, user.getSession(), user.getUserName())); 
+	user.assignRoomMedia(new TutorialMedia(this.pipeline, user.getSession(), user.getUserName())); 
 	
         Info.logInfoFinish2("assignRoomMedia");
         
-        participants.put(user.getUserName(), user);
+        participantsByUserName.put(user.getUserName(), user);
         if (user.isATutor()) {
             this.tutor = user;
         }
@@ -101,18 +102,18 @@ public class Room implements Closeable {
         this.makeKnowTheParticipantsOfRoom(user);
         this.makeKnowThereIsANewParticipant(user);
         
-        log.info(participants.keys().toString());
+        log.info(participantsByUserName.keys().toString());
         log.info("{} ROOM.addParticipant {}", Info.FINISH_SYMBOL, Hour.getTime());
     }
     
-    public void makeKnowTheParticipantsOfRoom (ParticipantSession newParticipant){
+    private void makeKnowTheParticipantsOfRoom (ParticipantSession newParticipant){
         log.info("{} Room.makeKnowTheParticipantsOfRoom {}", Info.START_SYMBOL, Hour.getTime());
         
         JsonObject jsonAnswer = new JsonObject();
         jsonAnswer.addProperty("id", "thereIsAParticipant");
         
         Collection<ParticipantSession> participants = new ArrayList<ParticipantSession>();
-        participants.addAll(this.participants.values());
+        participants.addAll(this.participantsByUserName.values());
         
         if (participants.size() != 0){
             
@@ -139,7 +140,7 @@ public class Room implements Closeable {
         jsonAnswer.addProperty("userType", newParticipant.getUserType());
         
        log.info("Mensaje: {}",jsonAnswer.toString());
-       Collection<ParticipantSession> participants = this.participants.values();
+       Collection<ParticipantSession> participants = this.participantsByUserName.values();
         
         if (participants!=null){
             
@@ -159,7 +160,7 @@ public class Room implements Closeable {
     public ParticipantSession leave(String userName) {
         log.info("{} Room.leave - PARTICIPANT {}: Leaving room {} {}", Info.START_SYMBOL, userName, this.name, Hour.getTime());
         
-        ParticipantSession participant = participants.remove(userName);
+        ParticipantSession participant = participantsByUserName.remove(userName);
         
         if (participant != null) {
             makeKnowAParticipantHasLeftTheRoom(participant);
@@ -182,7 +183,7 @@ public class Room implements Closeable {
         
         final List<ParticipantSession> unnotifiedParticipants = new ArrayList<>();
 	boolean hasMessageBeenSend;
-        for (final ParticipantSession participant : participants.values()) {
+        for (final ParticipantSession participant : participantsByUserName.values()) {
             participant.receivesFarewellFrom(userName);
             hasMessageBeenSend = SendMessage.toClient(participantLeftJson, participant.getSession());
             if (!hasMessageBeenSend){
@@ -200,7 +201,7 @@ public class Room implements Closeable {
     }
 
     @PreDestroy
-    private void shutdown() {
+    public void shutdown() {
         Info.logInfoStart("Room.shutdown");
         this.close();
         Info.logInfoFinish("Room.shutdown");
@@ -210,11 +211,11 @@ public class Room implements Closeable {
     public void close() {
         Info.logInfoStart("Room.close");
             
-        for (final ParticipantSession participant : this.participants.values()) {
+        for (final ParticipantSession participant : this.participantsByUserName.values()) {
             participant.leavesRoom();
         }
 
-        this.participants.clear();
+        this.participantsByUserName.clear();
 
         this.pipeline.release(new Continuation<Void>() {
 
@@ -237,7 +238,7 @@ public class Room implements Closeable {
     public void sendAMessageToParticipants(JsonObject message){
         log.info("{} Room.sendAMessageToAllStudentsOfRoom - message: {}, room: {}, to:   {}", Info.START_SYMBOL, message.get("id").getAsString(), this.name, Hour.getTime());
         
-        Collection<ParticipantSession> participants = this.participants.values();
+        Collection<ParticipantSession> participants = this.participantsByUserName.values();
         
         if (participants!=null){
             
@@ -253,6 +254,34 @@ public class Room implements Closeable {
         log.info("{} Room.sendAMessageToAllStudentsOfRoom {}", Info.FINISH_SYMBOL, Hour.getTime()); 
      }
     
+    
+    public void manageOfferVideo(String addresseeUserName, String senderUserName, JsonElement offer){
+        log.info("* Room.manageOfferVideo -> {} <- {}: {}", addresseeUserName, senderUserName);
+        
+        ParticipantSession addressee = this.getParticipant(addresseeUserName);
+        
+        ParticipantSession sender = this.getParticipant(senderUserName);
+        
+        if (sender == null){
+            log.info ("!!!!!!!!!participante nulo");
+        }
+                                                                                          
+        addressee.receivesGreetingsFrom(sender, offer);
+            
+        log.info("/ Room.manageOfferVideo");    
+    }
+    
+    public void manageAddress(String addresseeUserName, String senderUserName, JsonElement address){
+        log.info("* RoomManager.manageAddress -> {} <- {}: {}", addresseeUserName, senderUserName);
+        
+        ParticipantSession addressee = this.getParticipant(addresseeUserName);
+        
+	if (addressee != null) {
+            addressee.addAddress(address, senderUserName);
+	}
+        
+        log.info("/ RoomManager.manageAddress"); 
+    }
     
     
     

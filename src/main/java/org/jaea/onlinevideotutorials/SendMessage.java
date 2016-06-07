@@ -6,7 +6,6 @@
 package org.jaea.onlinevideotutorials;
 
 import com.google.gson.JsonObject;
-import org.jaea.onlinevideotutorials.Info;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +38,7 @@ public class SendMessage {
         return isSuccessful;
     }
     
-    
+    // for debugging
     public static void toClient(String value, WebSocketSession session){
         
         JsonObject msg = new JsonObject();

@@ -25,6 +25,6 @@ public interface User {
     
     public boolean isAStudent();
     
-   public boolean equals(Object object);
+    public boolean equals(Object object);
     
 }

@@ -94,23 +94,6 @@ public class UserSessionsRegistry {
         return incomingParticipant;
     }
     
-    public void sendAMessageToIncomingParticipants(JsonObject message){
-        log.info("{} UserRegistry.sendAMessageToIncomingParticipants - message: {} {}",Info.START_SYMBOL, message, Hour.getTime());
-        
-        if (this.incomingParticipantsByUserName!=null){
-            
-            for (UserSession user : Collections.list(incomingParticipantsByUserName.elements())){
-                log.info("User: {}", user.getUserName());
-
-                user.sendMeAMessage(message);
-            }  
-            
-        }
-        
-        log.info("the message has been sent to all incoming participants");
-        Info.logInfoFinish("UserRegistry.sendAMessageToIncomingParticipants");
-    }
-    
     public UserSession removeIncomingParticipant(String userName){
         log.info("{} UserRegistry.removeIncomingParticipant: {} {}",Info.START_SYMBOL, userName, Hour.getTime());
          
@@ -131,4 +114,20 @@ public class UserSessionsRegistry {
         this.incomingParticipantsByUserName.remove(userName);
     }
     
+    public void sendAMessageToIncomingParticipants(JsonObject message){
+        log.info("{} UserRegistry.sendAMessageToIncomingParticipants - message: {} {}",Info.START_SYMBOL, message, Hour.getTime());
+        
+        if (this.incomingParticipantsByUserName!=null){
+            
+            for (UserSession user : Collections.list(incomingParticipantsByUserName.elements())){
+                log.info("User: {}", user.getUserName());
+
+                user.sendMeAMessage(message);
+            }  
+            
+        }
+        
+        log.info("the message has been sent to all incoming participants");
+        Info.logInfoFinish("UserRegistry.sendAMessageToIncomingParticipants");
+    }
 }

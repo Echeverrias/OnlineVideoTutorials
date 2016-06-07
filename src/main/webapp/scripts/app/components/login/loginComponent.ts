@@ -2,7 +2,7 @@
  * @author Juan Antonio Echeverrías Aranda (juanan.echeve@gmail.com)
  * 
  */
-import {Component, OnDestroy} from 'angular2/core';
+import {Component, OnInit, OnDestroy} from 'angular2/core';
 import {NgIf, NgForm, FORM_DIRECTIVES} from 'angular2/common';
 import {Router} from 'angular2/router';
 
@@ -30,14 +30,17 @@ export class LoginComponent implements OnDestroy{
     constructor (private router: Router, private connection: Connection, private appService: MyService){
         console.log(`% Login constructor `);
       
-        this.onLoginSubscription = connection.subscriptions.subscribeToLogin(this, this.onLogin);
-        console.log(this.onLoginSubscription);
         this.user =  {
             userName: "",
             password: ""
         };
         
         console.log(`/ Login constructor ${new Date().toLocaleTimeString()}`); 
+    }
+    
+    ngOnInit{
+        this.onLoginSubscription = this.connection.subscriptions.subscribeToLogin(this, this.onLogin);
+        console.log(this.onLoginSubscription);
     }
     
     doLogin() {

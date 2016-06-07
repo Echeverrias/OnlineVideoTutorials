@@ -42,6 +42,13 @@ export class RoomComponent implements onDestroy{
       this.name = routeParams.get('roomName');
       this.users = [];
 
+      
+      console.log(this.users);
+      console.log(`/ Room constructor ${new Date().toLocaleTimeString()}`);
+      console.log("");
+    }
+    
+    ngOnInit{
       this.onParticipantLessSubscription = this.connection.subscriptions.subscribeToParticipantLess(this, this.onRemoveParticipant);
       this.onParticipantInRoomSubscription = this.connection.subscriptions.subscribeToParticipantInRoom(this, this.onAddParticipant);
       this.onVideoResponseSubscription = this.connection.subscriptions.subscribeToVideoAnswer(this, this.onReceiveVideoResponse);
@@ -49,9 +56,6 @@ export class RoomComponent implements onDestroy{
       
       this.lookingForParticipants();
       
-      console.log(this.users);
-      console.log(`/ Room constructor ${new Date().toLocaleTimeString()}`);
-      console.log("");
     }
     
     private lookingForParticipants():void{
