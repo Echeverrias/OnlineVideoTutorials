@@ -111,21 +111,40 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>${start-class}</mainClass>
+				</configuration>
 				<executions>
 					<execution>
+						<id>exec-bower-install</id>
 						<phase>generate-sources</phase>
 						<goals>
 							<goal>exec</goal>
 						</goals>
+						<configuration>
+							<executable>bower</executable>
+							<arguments>
+								<argument>install</argument>
+							</arguments>
+						</configuration>
 					</execution>
+                                        <!--
+					<execution>
+						<id>exec-npm-install</id>
+						<phase>generate-sources</phase>
+						<goals>
+                                                    <goal>exec</goal>
+						</goals>
+						<configuration>
+							<executable>npm</executable>
+							<arguments>
+                                                            <argument>install</argument>
+                                                       </arguments>
+						</configuration>
+					</execution>
+                                        -->
 				</executions>
-				<configuration>
-					<executable>bower</executable>
-					<arguments>
-						<argument>install</argument>
-					</arguments>
-					<mainClass>${start-class}</mainClass>
-				</configuration>
+				
 			</plugin>
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
