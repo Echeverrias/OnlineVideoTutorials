@@ -21,19 +21,20 @@
          <script src="bower_components/demo-console/index.js"></script>
         <script src="bower_components/kurento-utils/js/kurento-utils.js"></script>
         
-            <!-- 1. Load libraries -->
-     <!-- Polyfill(s) for older browsers -->
-        <script src="node_modules/core-js/client/shim.min.js"></script>
-        <script src="node_modules/zone.js/dist/zone.js"></script>
-        <script src="node_modules/reflect-metadata/Reflect.js"></script>
-        <script src="node_modules/systemjs/dist/system.src.js"></script>
-        <!-- 2. Configure SystemJS -->
-        <script src="systemjs.config.js"></script>
-        <script>
-          System.import('app').catch(function(err){ console.error(err); });
-        </script>
-  </head>
-        
+        <!-- IE required polyfills, in this exact order -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.33.3/es6-shim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.19.16/system-polyfills.js"></script>
+
+        <script src="https://code.angularjs.org/2.0.0-beta.2/angular2-polyfills.js"></script>
+        <script src="https://code.angularjs.org/tools/system.js"></script>
+        <script src="https://code.angularjs.org/tools/typescript.js"></script>
+        <script src="https://code.angularjs.org/2.0.0-beta.2/Rx.js"></script>
+        <script src="https://code.angularjs.org/2.0.0-beta.2/angular2.dev.js"></script>
+
+        <!-- Add the router library -->
+        <script src="https://code.angularjs.org/2.0.0-beta.2/router.dev.js"></script>
+    
+      </head>
       <body>
           <header></header>
            
@@ -47,6 +48,12 @@
        <footer class="panel-footer">
         <p>JAEA</p> 
        </footer>
-       
+        <script>
+          System.config({
+            transpiler: 'typescript',
+            typescriptOptions: { emitDecoratorMetadata: true }
+          });
+          System.import('./scripts/app/app.ts');
+        </script>
       </body>
     </html>

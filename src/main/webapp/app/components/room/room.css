@@ -1,0 +1,47 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 06-dic-2015, 10:54:14
+    Author     : juanan
+*/
+
+participant {
+  margin: 1em 0.5em;
+  text-align:center;
+  margin: 4;
+}
+
+participant.tutor {
+   
+    display: block;
+    width:45%;
+    height: 75%;
+    color:blue;
+    background-color: yellow;
+   margin-bottom: 2em;
+}
+
+
+
+
+participant.student {
+    
+    display: inline-block;
+    width:20%;
+    height: 55%;
+    background-color:orange;
+ 
+   
+}
+
+
+
+button[name=exitRoom] {
+    position:absolute;
+    bottom:0em;
+    right:2em;
+    
+}

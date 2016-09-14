@@ -1,5 +1,5 @@
 {
-  "name": "OnlineVideoTutorials",
+  "name": "ovt",
   "version": "0.1.0",
   "description": "${project.description}",
   "authors": [
@@ -22,14 +22,8 @@
   "dependencies": {
     "bootstrap": "~3.3.0",
     "ekko-lightbox": "~3.1.4",
-    "adapter.js": "*",
+    "adapter.js": "v0.2.9",
     "demo-console": "1.5.1",
-    "kurento-utils": "~6.2.0",
-    "angular": "~1.4.8",
-    "angular-ui-router": "~0.2.15",
-    "angular-sanitize": "~1.4.8",
-    "system":"https://code.angularjs.org/tools/system.js",
-    "typescript":"https://code.angularjs.org/tools/typescript.js",	
-    "angular2.dev": "https://code.angularjs.org/2.0.0-alpha.44/angular2.dev.js"
+    "kurento-utils": "~6.2.0"
   }
 }
