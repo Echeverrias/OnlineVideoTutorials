@@ -5,6 +5,7 @@
  */
 package org.jaea.onlinevideotutorials;
 
+import org.jaea.onlinevideotutorials.domain.ParticipantSession;
 import com.google.gson.JsonObject;
 import java.io.IOException;
 import org.kurento.client.Continuation;

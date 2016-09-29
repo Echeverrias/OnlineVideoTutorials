@@ -3,14 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.jaea.onlinevideotutorials;
+package org.jaea.onlinevideotutorials.domain;
 
+import org.jaea.onlinevideotutorials.domain.ParticipantSession;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import org.jaea.onlinevideotutorials.Hour;
+import org.jaea.onlinevideotutorials.Info;
+import org.jaea.onlinevideotutorials.SendMessage;
 import org.kurento.client.Continuation;
 import org.kurento.client.EventListener;
 import org.kurento.client.IceCandidate;
@@ -32,7 +36,7 @@ import org.springframework.web.socket.WebSocketSession;
 */
 public class TutorialMedia implements Closeable{
     
-    private final Logger log = LoggerFactory.getLogger(ParticipantSession.class);
+    private final Logger log = LoggerFactory.getLogger(TutorialMedia.class);
     
     private String userName;
     

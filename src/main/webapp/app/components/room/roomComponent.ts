@@ -74,7 +74,7 @@ export class RoomComponent implements OnInit, AfterViewInit, OnDestroy{
 
             this.connection.sendMessage(jsonMessage);
             
-         console.log(this.users);
+        console.log(this.users);
         console.log(`/ Room.lookingForParticipants ${new Date().toLocaleTimeString()}`);  
         console.log("");
           

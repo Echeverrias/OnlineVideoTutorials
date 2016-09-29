@@ -18,7 +18,7 @@ import org.springframework.web.socket.WebSocketSession;
  */
 public class SendMessage {
     
-    private static Logger log = LoggerFactory.getLogger(ParticipantSession.class);
+    private static Logger log = LoggerFactory.getLogger(SendMessage.class);
      
     public static boolean toClient(JsonObject message, WebSocketSession session){
         Info.SendMsg(session.getId());

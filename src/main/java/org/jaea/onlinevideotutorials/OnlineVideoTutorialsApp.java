@@ -16,48 +16,24 @@ package org.jaea.onlinevideotutorials;
 
 import org.kurento.client.KurentoClient;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
-import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
-import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
-
 /**
  * Online Video Tutorials App main class.
  * 
  * @author Juan Antonio Echeverrías Aranda (juanan.echeve@gmail.com)
  */
-@Configuration
-@EnableWebSocket
-@EnableAutoConfiguration
-public class OnlineVideoTutorialsApp implements WebSocketConfigurer {
+//@Configuration
+//@EnableWebSocket
+//@EnableAutoConfiguration
+@SpringBootApplication
+public class OnlineVideoTutorialsApp {
 
     final static String DEFAULT_KMS_WS_URI = "ws://localhost:8888/kurento";
 
     @Bean
-        public OnlineVideoTutorialsHandler handler() {
-        return new OnlineVideoTutorialsHandler();
-    }
-    
-    @Bean
-        public UserSessionsRegistry registry() {
-	   return new UserSessionsRegistry();
-    }
-
-    @Bean
-        public RoomManager roomManager() {
-        return new RoomManager();
-    }
-
-    @Bean
         public KurentoClient kurentoClient() {
         return KurentoClient.create(System.getProperty("kms.ws.uri", DEFAULT_KMS_WS_URI));
-    }
-
-    @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(handler(), "/ovt");
     }
 
     public static void main(String[] args) throws Exception {

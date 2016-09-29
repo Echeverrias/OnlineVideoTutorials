@@ -12,11 +12,13 @@
  * Lesser General Public License for more details.
  *
  */
-package org.jaea.onlinevideotutorials;
+package org.jaea.onlinevideotutorials.domain;
 
 import com.google.gson.JsonElement;
 import java.io.IOException;
 import java.util.logging.Level;
+import org.jaea.onlinevideotutorials.Hour;
+import org.jaea.onlinevideotutorials.Info;
 import org.kurento.client.WebRtcEndpoint;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -28,6 +30,11 @@ public class ParticipantSession  extends UserSession{
    
     public ParticipantSession(WebSocketSession session, String userName, String userType, String name){
         super(session, userName, userType, name);
+    
+    }
+    
+    public ParticipantSession(WebSocketSession session, User user){
+        super(session, user);
     
     }
     

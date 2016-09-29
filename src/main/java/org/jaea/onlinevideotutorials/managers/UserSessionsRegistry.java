@@ -12,11 +12,14 @@
  * Lesser General Public License for more details.
  *
  */
-package org.jaea.onlinevideotutorials;
+package org.jaea.onlinevideotutorials.managers;
 
 import com.google.gson.JsonObject;
 import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
+import org.jaea.onlinevideotutorials.Hour;
+import org.jaea.onlinevideotutorials.Info;
+import org.jaea.onlinevideotutorials.domain.UserSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,8 +34,14 @@ public class UserSessionsRegistry {
     /* It stores the students which are not in a room */
     private final ConcurrentHashMap<String, UserSession> incomingParticipantsByUserName = new ConcurrentHashMap();
     
+
+    public UserSessionsRegistry(){
+        log.info("UserSessionsRegistry");
+    }
+
+
     public boolean isThereAlreadyThisUser(String userName) {
-        
+        log.info("{} UserRegistry.isThereAlreadyThisUser: {}, {}", Info.START_SYMBOL, userName, Hour.getTime());
         return this.usersByUserName.containsKey(userName);
     }
     
@@ -129,5 +138,9 @@ public class UserSessionsRegistry {
         
         log.info("the message has been sent to all incoming participants");
         Info.logInfoFinish("UserRegistry.sendAMessageToIncomingParticipants");
+    }
+
+    public String toString(){
+        return "UserSessionsRegistry";
     }
 }

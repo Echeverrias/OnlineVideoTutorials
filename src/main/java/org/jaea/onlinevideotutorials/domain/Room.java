@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  *
  */
-package org.jaea.onlinevideotutorials;
+package org.jaea.onlinevideotutorials.domain;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -27,6 +27,9 @@ import org.kurento.client.MediaPipeline;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Collections;
+import org.jaea.onlinevideotutorials.Hour;
+import org.jaea.onlinevideotutorials.Info;
+import org.jaea.onlinevideotutorials.SendMessage;
 
 
 /**

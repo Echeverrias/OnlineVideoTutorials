@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  *
  */
-package org.jaea.onlinevideotutorials;
+package org.jaea.onlinevideotutorials.managers;
 
 
 import com.google.gson.JsonElement;
@@ -20,6 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import org.jaea.onlinevideotutorials.Hour;
+import org.jaea.onlinevideotutorials.Info;
+import org.jaea.onlinevideotutorials.domain.ParticipantSession;
+import org.jaea.onlinevideotutorials.domain.Room;
+import org.jaea.onlinevideotutorials.domain.UserSession;
 
 import org.kurento.client.KurentoClient;
 import org.slf4j.Logger;
@@ -29,9 +34,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * @author Juan Antonio Echeverrías Aranda (juanan.echeve@gmail.com)
 */
-public class RoomManager {
+public class RoomsManager {
 
-    private final Logger log = LoggerFactory.getLogger(RoomManager.class);
+    private final Logger log = LoggerFactory.getLogger(RoomsManager.class);
 
     @Autowired
     private KurentoClient kurento;
@@ -39,7 +44,13 @@ public class RoomManager {
     private final ConcurrentHashMap<String, String> roomsNamesByUserName = new ConcurrentHashMap();
     private final ConcurrentHashMap<String, Room> roomsByName = new ConcurrentHashMap<>(); 
     private final CopyOnWriteArrayList<String> avaibleRoomsNames = new CopyOnWriteArrayList<>();;
-        
+    
+
+    public RoomsManager(){
+        log.info("new RoomsManager");
+    }   
+
+
     public void createRoom(String roomName){
     //We supose the room name will never be repeated
         log.info("{} Room.createRoom {} not existent. Will create now! {}", Info.START_SYMBOL, roomName, Hour.getTime());
@@ -182,6 +193,11 @@ public class RoomManager {
         room.manageAddress(addresseeUserName, senderUserName, address);
         
         log.info("/ RoomManager.manageAddress"); 
+    }
+
+
+    public String toString(){
+        return "RoomsManager";
     }
 
 }

@@ -28,11 +28,22 @@
             <artifactId>spring-boot-starter-web</artifactId>
             <version>1.2.1.RELEASE</version>
 	</dependency>
+    <dependency>
+     <groupId>org.springframework</groupId>
+        <artifactId>spring-aspects</artifactId>
+        <version>4.3.3.RELEASE</version>
+</dependency>
 	<dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-websocket</artifactId>
             <version>4.1.4.RELEASE</version>
 	</dependency>
+    <!-- load-time-weaving -->
+    <dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-instrument-tomcat</artifactId>
+    <version>4.3.3.RELEASE</version>
+</dependency>
         <!-- Kurento -->
 	<dependency>
             <groupId>org.kurento</groupId>
@@ -44,6 +55,11 @@
             <artifactId>kurento-utils-js</artifactId>
             <version>6.1.0</version>
 	</dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.7</version>
+        </dependency>
     </dependencies>
 
     <build>
