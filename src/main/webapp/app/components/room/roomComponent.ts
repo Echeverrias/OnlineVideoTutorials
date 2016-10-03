@@ -3,31 +3,34 @@
  * 
  */
  
-import {Component, OnInit, ViewChildren, OnDestroy, AfterViewInit, QueryList} from '@angular/core';
-import {CORE_DIRECTIVES} from '@angular/common';
-import {Router, RouteParams} from '@angular/router-deprecated';
+import { Component, OnInit, ViewChildren, OnDestroy, QueryList } from '@angular/core';
+import { CORE_DIRECTIVES } from '@angular/common';
+import { Router, RouteParams } from '@angular/router-deprecated';
 
-import {Connection} from '../../services/connection';
-import {User} from '../../services/user';
-import {UserFactory} from '../../services/userFactory';
-import {MyService} from '../../services/myService';
-import {ParticipantComponent} from '../participant/participantComponent';
+import { Connection } from '../../services/connection';
+import { User } from '../../services/user';
+import { UserFactory } from '../../services/userFactory';
+import { MyService } from '../../services/myService';
+import { ParticipantComponent } from '../participant/participantComponent';
+import { ChatComponent } from '../chat/chat.component';
 
-import {roomTemplate} from './room.html'
+
+import { roomTemplate } from './room.html'
 
 @Component({
     moduleId: module.id,
     selector: 'room',
-    directives: [CORE_DIRECTIVES, ParticipantComponent],
+    directives: [CORE_DIRECTIVES, ParticipantComponent, ChatComponent],
     styleUrls: ["../../../assets/styles/main.css", "room.css"],
     template: roomTemplate
 })
 
-export class RoomComponent implements OnInit, AfterViewInit, OnDestroy{
+export class RoomComponent implements OnInit, OnDestroy{
     
     @ViewChildren(ParticipantComponent) participants: QueryList<ParticipantComponent>;
     
     private name: string;
+    private address: string;
     private users: User[];
     
     private onParticipantLessSubscription: Object;
@@ -42,6 +45,7 @@ export class RoomComponent implements OnInit, AfterViewInit, OnDestroy{
       console.log(`% Room constructor ${new Date().toLocaleTimeString()}`);
       
       this.name = routeParams.get('roomName');
+      this.address = "/" + this.name;
       this.users = [];
 
       

@@ -2,8 +2,8 @@
  * @author Juan Antonio Echeverrías Aranda (juanan.echeve@gmail.com)
  * 
  */
-import {Injectable} from '@angular/core';
-import {User} from './user';
+import { Injectable } from '@angular/core';
+import { User } from './user';
 
 /**
  * It allows to share information through all the components

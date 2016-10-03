@@ -9,6 +9,12 @@ public class ChatMessage {
     public ChatMessage() {
     }
 
+    public ChatMessage(String sender, String message, String date) {
+        this.sender = sender;
+        this.message = message;
+        this.date = date;
+    }
+
     public String getSender(){
         return this.sender;
     }

@@ -3,12 +3,13 @@
  * 
  */
 
-import {Component, ViewChild, ElementRef, AfterViewInit, Input} from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, Input } from '@angular/core';
 
-import {Connection} from '../../services/connection';
-import {MyService} from '../../services/myService';
+import { Connection } from '../../services/connection';
+import { MyService } from '../../services/myService';
 
-import {participantComponentTemplate} from './participant.html'
+import { participantComponentTemplate } from './participant.html'
+
 @Component({
     moduleId: module.id,
     selector: 'participant',

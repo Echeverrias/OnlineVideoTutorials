@@ -19,6 +19,7 @@ var connection_1 = require('../../services/connection');
 var userFactory_1 = require('../../services/userFactory');
 var myService_1 = require('../../services/myService');
 var participantComponent_1 = require('../participant/participantComponent');
+var chat_component_1 = require('../chat/chat.component');
 var room_html_1 = require('./room.html');
 var RoomComponent = (function () {
     function RoomComponent(router, connection, appService, routeParams) {
@@ -29,6 +30,7 @@ var RoomComponent = (function () {
         console.log("");
         console.log("% Room constructor " + new Date().toLocaleTimeString());
         this.name = routeParams.get('roomName');
+        this.address = "/" + this.name;
         this.users = [];
         console.log(this.users);
         console.log("/ Room constructor " + new Date().toLocaleTimeString());
@@ -204,7 +206,7 @@ var RoomComponent = (function () {
         core_1.Component({
             moduleId: module.id,
             selector: 'room',
-            directives: [common_1.CORE_DIRECTIVES, participantComponent_1.ParticipantComponent],
+            directives: [common_1.CORE_DIRECTIVES, participantComponent_1.ParticipantComponent, chat_component_1.ChatComponent],
             styleUrls: ["../../../assets/styles/main.css", "room.css"],
             template: room_html_1.roomTemplate
         }), 

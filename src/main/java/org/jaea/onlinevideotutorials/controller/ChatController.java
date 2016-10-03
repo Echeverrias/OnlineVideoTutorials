@@ -10,6 +10,8 @@ import org.jaea.onlinevideotutorials.domain.ChatMessage;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  *
  * @author juanan
@@ -17,9 +19,12 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class ChatController {
 
-    @MessageMapping("/mailbox/{room}")
-    @SendTo("ovt/chat/noticeBoard/{room}")
+    private final Logger log = LoggerFactory.getLogger(ChatController.class);
+
+    @MessageMapping("/mailBox/{room}")
+    @SendTo("/ovt/chat/noticeBoard/{room}")
     public ChatMessage deliver(ChatMessage message) throws Exception{
+        log.info("* Deliver the chat Message");
         return message;
     }
 }

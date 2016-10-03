@@ -3,13 +3,13 @@
  * 
  */
  
-import {Component, EventEmitter, OnInit, OnDestroy} from '@angular/core';
-import {Router} from '@angular/router-deprecated';
+import { Component, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router-deprecated';
 
-import {Connection} from '../../services/connection';
-import {MyService} from '../../services/myService';
+import { Connection } from '../../services/connection';
+import { MyService } from '../../services/myService';
 
-import{waitingRoomTemplate} from './waitingRoom.html'
+import{ waitingRoomTemplate } from './waitingRoom.html'
 
  @Component({
     moduleId: module.id, 

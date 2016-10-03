@@ -2,21 +2,21 @@
  * @author Juan Antonio Echeverrías Aranda (juanan.echeve@gmail.com)
  * 
  */
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {NgIf, NgForm, FORM_DIRECTIVES} from '@angular/common';
-import {Router} from '@angular/router-deprecated';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { NgIf, NgForm, FORM_DIRECTIVES } from '@angular/common';
+import { Router } from '@angular/router-deprecated';
 
-import {Connection} from '../../services/connection';
-import {MyService} from '../../services/myService';
-import {UserFactory} from '../../services/userFactory';
-import {loginTemplate} from './login.html'
+import { Connection } from '../../services/connection';
+import { MyService } from '../../services/myService';
+import { UserFactory } from '../../services/userFactory';
+import { loginTemplate } from './login.html';
 
 
 @Component({
     moduleId: module.id,
-    selector:'login',
-    directives:[FORM_DIRECTIVES],
-    styleUrls: ["login.css","../../../assets/styles/main.css"],
+    selector: 'login',
+    directives: [FORM_DIRECTIVES],
+    styleUrls: ["login.css", "../../../assets/styles/main.css"],
     template: loginTemplate
     
 })
@@ -28,9 +28,9 @@ export class LoginComponent implements OnInit, OnDestroy{
     private onLoginSubscription: Object;
     
     
-    constructor (private router: Router, private connection: Connection, private appService: MyService){
+    constructor(private router: Router, private connection: Connection, private appService: MyService){
         console.log(`% Login constructor `);
-      
+        
         this.user =  {
             userName: "",
             password: ""

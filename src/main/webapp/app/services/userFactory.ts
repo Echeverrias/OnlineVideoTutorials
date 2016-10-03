@@ -3,7 +3,7 @@
  * 
  */
 
-import {User} from './user'
+import { User } from './user'
 
 /**
  * It allows to instantiate an object of the class User whith a message that

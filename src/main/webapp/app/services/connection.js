@@ -28,6 +28,13 @@ var Connection = (function () {
         console.log(this._ws);
         console.log(this._ws.onmessage);
     }
+    Object.defineProperty(Connection.prototype, "url", {
+        get: function () {
+            return this._ws.url;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(Connection.prototype, "subscriptions", {
         get: function () {
             return this._subscriptions;

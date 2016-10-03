@@ -40,6 +40,9 @@ public class UniversityBBDD {
         else if (userName.toLowerCase().contains(User.STUDENT_TYPE)){
             userType = User.STUDENT_TYPE;
         }
+        else{
+            return null;
+        }
         
         user = new User(userName, userType, userName);
         

@@ -1,0 +1,40 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 06-dic-2015, 10:54:14
+    Author     : juanan
+*/
+
+
+.sender, .message{
+  font-size: 0.4em;
+ 
+  
+}
+
+.letter{
+  padding: 0.2em;
+  width: 100%;
+}
+
+.message{
+   padding-left: 0.3em;
+}
+
+
+.sender{
+  float:left;
+   margin: 0em 0.3em;
+   padding: 0em 0.5em;
+}
+
+.fulano{
+  background-color:red;
+}
+
+.mengano{
+  background-color:green;
+}

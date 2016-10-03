@@ -2,8 +2,8 @@
  * @author Juan Antonio Echeverrías Aranda (juanan.echeve@gmail.com)
  * 
  */
-import {Injectable} from '@angular/core'; 
-import {EventsEmitter} from './eventsEmitter'; 
+import { Injectable } from '@angular/core'; 
+import { EventsEmitter } from './eventsEmitter'; 
 
 console.log("Module Connection");
 
@@ -30,6 +30,10 @@ export class Connection {
         console.log(this._ws.onmessage);
     }
     
+    get url():string{
+        return this._ws.url; 
+    }
+
     get subscriptions(): Object{
         return this._subscriptions;
     }

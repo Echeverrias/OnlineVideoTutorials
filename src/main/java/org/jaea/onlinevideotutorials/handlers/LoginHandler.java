@@ -124,14 +124,14 @@ public class LoginHandler extends TextMessageWebSocketHandler {
         jsonAnswer.addProperty("id","login");
         
         if (usersRegistry.isThereAlreadyThisUser(userName)) {
-             jsonAnswer.addProperty("validUser",false);
+             jsonAnswer.addProperty("validUser", false);
         }
 
         else {
             
             UserSession newUser = this.validateUser(userName, password, session);
 
-            jsonAnswer.addProperty("validUser",newUser!=null);
+            jsonAnswer.addProperty("validUser", newUser != null);
             
             if (newUser == null ) {
 
