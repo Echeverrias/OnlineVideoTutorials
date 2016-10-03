@@ -17,6 +17,7 @@
     </properties>
     
     <dependencies>
+        
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
@@ -26,7 +27,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>1.2.1.RELEASE</version>
+            <version>1.4.1.RELEASE</version>
 	</dependency>
     <dependency>
      <groupId>org.springframework</groupId>
@@ -36,14 +37,14 @@
 	<dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-websocket</artifactId>
-            <version>4.1.4.RELEASE</version>
+            <version>4.3.3.RELEASE</version>
 	</dependency>
-    <!-- load-time-weaving -->
-    <dependency>
-    <groupId>org.springframework</groupId>
-    <artifactId>spring-instrument-tomcat</artifactId>
-    <version>4.3.3.RELEASE</version>
-</dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-messaging</artifactId>
+            <version>4.3.3.RELEASE</version>
+        </dependency>
+   
         <!-- Kurento -->
 	<dependency>
             <groupId>org.kurento</groupId>
