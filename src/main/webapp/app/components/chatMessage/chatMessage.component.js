@@ -32,6 +32,10 @@ var ChatMessageComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', String)
     ], ChatMessageComponent.prototype, "date", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], ChatMessageComponent.prototype, "color", void 0);
     ChatMessageComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

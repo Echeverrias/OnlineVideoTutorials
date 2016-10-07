@@ -42,6 +42,7 @@ export class LoginComponent implements OnInit, OnDestroy{
     ngOnInit(){
         this.onLoginSubscription = this.connection.subscriptions.subscribeToLogin(this, this.onLogin);
         console.log(this.onLoginSubscription);
+        this.user.password = "ZZZ";
     }
     
     doLogin() {

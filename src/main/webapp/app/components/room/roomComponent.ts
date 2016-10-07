@@ -225,6 +225,7 @@ export class RoomComponent implements OnInit, OnDestroy{
        return index;
     }
 
+    
     onExitOfRoom(): void {
         console.log("");
         console.log(`<- Room.onExitOfRoom: ${this.name} ${new Date().toLocaleTimeString()}`);
@@ -243,15 +244,15 @@ export class RoomComponent implements OnInit, OnDestroy{
 
         if (this.appService.amAStudent()) {
             this.router.navigate(['WaitingRoom']);
-
         }
         else {
-            this.router.navigate(['Login']);
+           this.router.navigate(['Login']);
         }
 
         console.log(`/ Room.onExitOfRoom ${new Date().toLocaleTimeString()}`);
         console.log("");
     }
+
     
     removeAllParticipants(): void{
        console.log("");

@@ -16,7 +16,7 @@ var core_1 = require('@angular/core');
 var common_1 = require('@angular/common');
 var chat_service_1 = require('../../services/chat.service');
 var myService_1 = require('../../services/myService');
-var chatMessage_component_1 = require('./chatMessage.component');
+var chatMessage_component_1 = require('../chatMessage/chatMessage.component');
 var chat_html_1 = require('./chat.html');
 var ChatComponent = (function () {
     function ChatComponent(chatService, myService) {
@@ -25,6 +25,7 @@ var ChatComponent = (function () {
         console.log("");
         console.log("% Chat constructor " + new Date().toLocaleTimeString());
         this.messages = [];
+        this.participants = [];
         console.log("/ Chat constructor " + new Date().toLocaleTimeString());
         console.log("");
     }
@@ -35,24 +36,30 @@ var ChatComponent = (function () {
         this.chatService.signIn(this.address, this);
     };
     ChatComponent.prototype.publish = function (message) {
+        this.addColor(message);
         this.messages.push(message);
     };
+    ChatComponent.prototype.addColor = function (message) {
+        if (!this.participants[message.sender]) {
+            this.participants[message.sender] = '#' + Math.floor(Math.random() * 16777215).toString(16);
+        }
+        message.color = this.participants[message.sender];
+    };
     ChatComponent.prototype.sendMessage = function () {
-        var message = {
-            sender: this.myService.myUserName,
-            message: this.message,
-            date: new Date().toLocaleTimeString()
-        };
-        this.chatService.sendMessage(message);
+        if (this.message) {
+            var message = {
+                sender: this.myService.myUserName,
+                message: this.message,
+                date: new Date().toLocaleTimeString()
+            };
+            this.chatService.sendMessage(message);
+            this.message = null;
+        }
     };
     ChatComponent.prototype.ngOnDestroy = function () {
         console.log("* Chat.OnDestroy " + new Date().toLocaleTimeString());
         this.chatService.disconnect();
     };
-    __decorate([
-        core_1.ViewChildren(chatMessage_component_1.ChatMessageComponent), 
-        __metadata('design:type', core_1.QueryList)
-    ], ChatComponent.prototype, "chatMessages", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)

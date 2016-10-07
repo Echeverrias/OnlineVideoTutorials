@@ -147,7 +147,8 @@ var events = (function(){
 
 
 var serverListener = function(message){
-    
+    console.log("<----- A message from the server has arrived");
+    console.log(JSON.parse(message.data));
     let parsedMessage = JSON.parse(message.data);
             switch (parsedMessage.id){
             case('login'):

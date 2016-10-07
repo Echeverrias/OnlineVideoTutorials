@@ -16,6 +16,7 @@ package org.jaea.onlinevideotutorials.managers;
 
 import com.google.gson.JsonObject;
 import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.jaea.onlinevideotutorials.Hour;
 import org.jaea.onlinevideotutorials.Info;
@@ -62,13 +63,13 @@ public class UserSessionsRegistry {
     
     public void addIncomingParticipant (UserSession user){
         log.info("{} UserRegistry.addIncomingParticipant: {} {}",Info.START_SYMBOL, user.getUserName(), Hour.getTime());
-        
+        this.printIncomingParticipants(); //*
         if (user.isAStudent()){
             incomingParticipantsByUserName.put(user.getUserName(), user);
             log.info("An incoming participant has been added");
             log.info("Now there are {} students in the waiting room",incomingParticipantsByUserName.size());
         }
-        
+        this.printUsers(); //*
         Info.logInfoFinish("UserRegistry.addIncomingParticipant");
      }
     
@@ -125,7 +126,7 @@ public class UserSessionsRegistry {
     
     public void sendAMessageToIncomingParticipants(JsonObject message){
         log.info("{} UserRegistry.sendAMessageToIncomingParticipants - message: {} {}",Info.START_SYMBOL, message, Hour.getTime());
-        
+        log.info("IncomingParticipants: " + this.incomingParticipantsByUserName.size());
         if (this.incomingParticipantsByUserName!=null){
             
             for (UserSession user : Collections.list(incomingParticipantsByUserName.elements())){
@@ -140,7 +141,24 @@ public class UserSessionsRegistry {
         Info.logInfoFinish("UserRegistry.sendAMessageToIncomingParticipants");
     }
 
+    //#
     public String toString(){
         return "UserSessionsRegistry";
+    }
+
+    //#
+    public void printIncomingParticipants(){
+        log.info("The incoming participants are: " + this.incomingParticipantsByUserName.size());
+        for (Map.Entry <String, UserSession> entry : this.incomingParticipantsByUserName.entrySet()){
+            log.info("- " + entry.getKey());
+        }   
+    }
+
+     //#
+    public void printUsers(){
+        log.info("The users are: " + this.usersByUserName.size());
+        for (Map.Entry <String, UserSession> entry : this.usersByUserName.entrySet()){
+            log.info("- " + entry.getKey());
+        }   
     }
 }

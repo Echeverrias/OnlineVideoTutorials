@@ -25,7 +25,7 @@ public class UniversityBBDD {
     }
     
     public User getAnUser(String userName, String password){
-        log.info("UniversityBBDD");
+        log.info("* UniversityBBDD.getAnUser: " + userName);
         User user = null;
         
         /*This is a provisional implementation
@@ -35,18 +35,21 @@ public class UniversityBBDD {
         
         if (userName.toLowerCase().contains(User.TUTOR_TYPE)){
             userType = User.TUTOR_TYPE;
+             log.info(userType);
             
         }
         else if (userName.toLowerCase().contains(User.STUDENT_TYPE)){
             userType = User.STUDENT_TYPE;
+            log.info(userType);
         }
         else{
             return null;
         }
         
         user = new User(userName, userType, userName);
-        
+       
         log.info (user.toString());
+         log.info("/ UniversityBBDD.getAnUser: " + userName);
         return user;
     }
     

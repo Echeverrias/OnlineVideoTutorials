@@ -9,13 +9,15 @@ and open the template in the editor.
 */
 
 .messages{
-  width:100%;
+  width:98%;
   padding: 0.1em 0.1em;
-  border: 0.1em solid grey;
-  border-radius: 2%;
-  max-height: 3em;
-  min-height:3em;
+  border: 0.2em solid grey;
+  border-radius: 0.5em;
+  max-height: 5em;
+  min-height:5em;
   overflow:auto;
+  overflow-x: hidden;
+  margin: 0 auto;
 }
 
 .mailbox {
@@ -26,16 +28,16 @@ and open the template in the editor.
 
 .mailbox input {
   display: inline;
-  font-size: 0.4em;
+  font-size: 1.2em;
 }
 
 #myMessage{
   
-  width:84%;
+  width:94%;
   
 }
 
 #sendMessage{
-  width:15%;
-  
+  width:5%;
+  padding: 0.1em 0.2em;
 }

@@ -9,32 +9,31 @@ and open the template in the editor.
 */
 
 
-.sender, .message{
-  font-size: 0.4em;
- 
-  
-}
-
 .letter{
   padding: 0.2em;
   width: 100%;
 }
 
-.message{
-   padding-left: 0.3em;
-}
 
+.sender, .message{
+  font-size: 1.2em;
+  
+ 
+  
+}
 
 .sender{
   float:left;
    margin: 0em 0.3em;
    padding: 0em 0.5em;
+   border-radius: 1em;
 }
 
-.fulano{
-  background-color:red;
+.message{
+   padding-left: 0.3em;
+   word-break: break-all;
+   word-wrap: break-word;
 }
 
-.mengano{
-  background-color:green;
-}
+
+

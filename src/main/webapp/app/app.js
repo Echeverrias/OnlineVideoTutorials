@@ -14,14 +14,28 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  */
 var core_1 = require('@angular/core');
 var router_deprecated_1 = require('@angular/router-deprecated');
+var connection_1 = require('./services/connection');
 var loginComponent_1 = require('./components/login/loginComponent');
 var roomComponent_1 = require('./components/room/roomComponent');
 var waitingRoomComponent_1 = require('./components/waitingRoom/waitingRoomComponent');
 var AppComponent = (function () {
-    function AppComponent() {
+    function AppComponent(connection) {
+        this.connection = connection;
         console.log("% AppComponent constructor");
         console.log("/ AppComponent constructor");
     }
+    AppComponent.prototype.beforeunloadHandler = function (event) {
+        var jsonMessage = {
+            id: "closeTab"
+        };
+        this.connection.sendMessage(jsonMessage);
+    };
+    __decorate([
+        core_1.HostListener('window:beforeunload', ['$event']), 
+        __metadata('design:type', Function), 
+        __metadata('design:paramtypes', [Object]), 
+        __metadata('design:returntype', void 0)
+    ], AppComponent.prototype, "beforeunloadHandler", null);
     AppComponent = __decorate([
         core_1.Component({
             selector: 'app',
@@ -34,7 +48,7 @@ var AppComponent = (function () {
             { path: '/rooms', name: 'WaitingRoom', component: waitingRoomComponent_1.WaitingRoomComponent },
             { path: '/room/:roomName', name: 'Room', component: roomComponent_1.RoomComponent },
         ]), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [connection_1.Connection])
     ], AppComponent);
     return AppComponent;
 }());

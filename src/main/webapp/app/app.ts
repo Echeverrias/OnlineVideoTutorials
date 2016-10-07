@@ -2,15 +2,15 @@
  * @author Juan Antonio Echeverrías Aranda (juanan.echeve@gmail.com)
  * 
  */
-import {Component} from '@angular/core';
-import {RouteConfig, ROUTER_DIRECTIVES,ROUTER_PROVIDERS} from '@angular/router-deprecated';
+import { Component, HostListener} from '@angular/core';
+import { RouteConfig, ROUTER_DIRECTIVES,ROUTER_PROVIDERS } from '@angular/router-deprecated';
 
-import {Connection} from './services/connection';
-import {MyService} from './services/myService';
+import { Connection } from './services/connection';
+import { MyService } from './services/myService';
 
-import {LoginComponent} from './components/login/loginComponent';
-import {RoomComponent} from './components/room/roomComponent';
-import {WaitingRoomComponent} from './components/waitingRoom/waitingRoomComponent';
+import { LoginComponent } from './components/login/loginComponent';
+import { RoomComponent } from './components/room/roomComponent';
+import { WaitingRoomComponent } from './components/waitingRoom/waitingRoomComponent';
 
 
 
@@ -31,13 +31,25 @@ import {WaitingRoomComponent} from './components/waitingRoom/waitingRoomComponen
     {path:'/room/:roomName', name:'Room', component:RoomComponent},
 ])
 export class AppComponent {
-    
-   
-       constructor() {
+        
+       @HostListener('window:beforeunload', ['$event'])
+       beforeunloadHandler(event) {
+           let jsonMessage = {
+               id: "closeTab"
+           };
+
+           this.connection.sendMessage(jsonMessage);
+       }
+       
+       constructor(private connection: Connection) {
         console.log(`% AppComponent constructor`);
         
         console.log(`/ AppComponent constructor`);
      }
+      
+      
+
+    
      
     
 }

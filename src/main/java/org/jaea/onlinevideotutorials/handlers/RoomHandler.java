@@ -171,13 +171,14 @@ public class RoomHandler extends TextMessageWebSocketHandler{
         String userType = jsonMessage.get("userType").getAsString();
         
         UserSession user = this.roomsManager.participantLeavesARoom(userName, roomName);
-        
+        this.log.info("** The participant has been got out from the room **");
         if (userType.equals(User.TUTOR_TYPE)) {
             this.makeKnowThereIsAnAvaibleRoomLess(roomName);
             this.usersRegistry.removeUser(userName);
         }
         
         else {
+            this.log.info("** The student is going to be pushing into the waiting room **");
             this.usersRegistry.addIncomingParticipant(user);
         }
         

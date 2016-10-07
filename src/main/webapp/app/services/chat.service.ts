@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { Connection } from './connection';
 import { INoticeBoard } from './../components/chat/noticeBoard';
-import { ChatMessage } from './../components/chat/chatMessage';
+import { ChatMessage } from './../components/chatMessage/chatMessage';
 
 
 const ENDPOINT: string = "/chat";

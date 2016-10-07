@@ -46,6 +46,7 @@ var WaitingRoomComponent = (function () {
     WaitingRoomComponent.prototype.onSetAvaibleRooms = function (avaibleRoomsNames) {
         console.log("");
         console.log("* WaitingRoom.avaibleRoomsNames " + new Date().toLocaleTimeString());
+        console.log(avaibleRoomsNames);
         this.allAvaibleRoomsNames = avaibleRoomsNames;
         console.log("/ WaitingRoom.avaibleRoomsNames " + new Date().toLocaleTimeString());
         console.log("");

@@ -29,9 +29,11 @@ public class SendMessage {
         try{
             log.info("Sending message: {} to {}", message.toString(), session.getId());
             session.sendMessage(textAnswer);
+            log.info("message has been sent");
             isSuccessful = true;
         }
         catch(IOException e){
+            log.info("error");
             log.error("Sender: {}", session.getId());
         }
         log.info("(message has been sent: {})", isSuccessful);

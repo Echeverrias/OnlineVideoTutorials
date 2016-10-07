@@ -34,6 +34,7 @@ var LoginComponent = (function () {
     LoginComponent.prototype.ngOnInit = function () {
         this.onLoginSubscription = this.connection.subscriptions.subscribeToLogin(this, this.onLogin);
         console.log(this.onLoginSubscription);
+        this.user.password = "ZZZ";
     };
     LoginComponent.prototype.doLogin = function () {
         console.log("");

@@ -149,8 +149,8 @@ public class RoomsManager {
             room.close();
             this.roomsByName.remove(roomName);
         }
-        
-        Info.logInfoFinish("RoomManager.participantLeavesARoom");
+        room.printTheRoomParticipants(); //*
+        Info.logInfoFinish("/ RoomManager.participantLeavesARoom");
         return user;
     }
     
@@ -160,7 +160,7 @@ public class RoomsManager {
         Room room = this.roomsByName.get(roomName);
         this.removeRoom(room);
         
-	Info.logInfoFinish("Room.remove: removed and closed");
+	Info.logInfoFinish("/ Room.remove: removed and closed");
     }
     
     public void removeRoom(Room room) {
@@ -171,7 +171,7 @@ public class RoomsManager {
         this.roomsByName.remove(roomName);
 	this.avaibleRoomsNames.remove(roomName);
         
-	Info.logInfoFinish("Room.remove: removed and closed");
+	Info.logInfoFinish("/ Room.remove: removed and closed");
     }
     
     public void manageOfferVideo(String addresseeUserName, String senderUserName, JsonElement offer){

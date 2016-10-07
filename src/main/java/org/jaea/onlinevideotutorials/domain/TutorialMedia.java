@@ -186,6 +186,7 @@ public class TutorialMedia implements Closeable{
         
         final WebRtcEndpoint canceledWebRtc = this.incomingMediaByUserName.remove(participantUserName);
         this.disconnectToRemote(canceledWebRtc);
+        log.info("{} has disconnected {}", this.userName, participantUserName);
         this.releaseWebRtc(canceledWebRtc, participantUserName);
         
            
@@ -194,13 +195,21 @@ public class TutorialMedia implements Closeable{
     
     public void disconnectToRemote(WebRtcEndpoint incomingMedia) {
         Info.logInfoStart("TutorialMedia.disconnectToRemote");
-        this.outgoingMedia.disconnect(incomingMedia);
+        log.info("I,m {} and i'm going to disconnect the incoming:", this.userName);
+        log.info(incomingMedia.toString());
+        try{
+            this.outgoingMedia.disconnect(incomingMedia);
+        }
+        catch(Exception e){
+            log.info("ERROR while try to disconnect a webRtcEndpoint");
+        }    
+        Info.logInfoFinish("TutorialMedia.disconnectToRemote");
     }
 
     private void releaseWebRtc(WebRtcEndpoint webRtc, final String userNameReleased) {
         
         //Info.logInfoStart();
-        log.info("{} TutorialMedia.releaseWebRtc from {} {}",Info.START_SYMBOL, userNameReleased, Hour.getTime());
+        log.info("{} TutorialMedia.releaseWebRtc from {} to {}",Info.START_SYMBOL, this.userName, userNameReleased);
         final String  webRtcType;
         
         if (this.userName.equals(userNameReleased)){
@@ -215,15 +224,19 @@ public class TutorialMedia implements Closeable{
             public void onSuccess(Void result) throws Exception {
                 log.trace("PARTICIPANT {}: Released successfully {} EP for {}",
                     userName, webRtcType, userNameReleased);
+                log.info("PARTICIPANT {}: Released successfully {} EP for {}",
+                    userName, webRtcType, userNameReleased);
             }
 
             @Override
             public void onError(Throwable cause) throws Exception {
                 log.warn("PARTICIPANT {}: Could not release {} EP for {}",
                     userName, webRtcType, userNameReleased);
+                log.info("PARTICIPANT {}: Could not release {} EP for {}",
+                    userName, webRtcType, userNameReleased);
             }
         });
-        
+        log.info("/ TutorialMedia.releaseWebRtc");
         Info.logInfoFinish("TutorialMedia.releaseWebRtc {}");
     }
     
@@ -231,11 +244,11 @@ public class TutorialMedia implements Closeable{
     @Override
     public void close() throws IOException {
         
-        Info.logInfoStart("RoomMEdia.close");
-        log.info("PARTICIPANT {}: Releasing resources", this.userName);
+        Info.logInfoStart("TutorialMedia.close");
+        log.info("I'M PARTICIPANT {}: Releasing resources", this.userName);
         
         for (String remoteParticipantUserName : incomingMediaByUserName.keySet()) {
-
+            log.info("I'm going to say googbye to: {}", remoteParticipantUserName);
             log.trace("PARTICIPANT {}: Released incoming EP for {}", this.userName, remoteParticipantUserName);
 
             WebRtcEndpoint participantWebRtc = this.incomingMediaByUserName.get(remoteParticipantUserName);
@@ -244,6 +257,7 @@ public class TutorialMedia implements Closeable{
             this.releaseWebRtc(participantWebRtc, remoteParticipantUserName);
         }
         
+        log.info("I'm {} and I'm going to finish myself", this.userName);
         this.releaseWebRtc(this.outgoingMedia, this.userName);
         this.incomingMediaByUserName.clear();
         

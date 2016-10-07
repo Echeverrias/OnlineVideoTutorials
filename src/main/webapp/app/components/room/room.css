@@ -21,7 +21,7 @@ participant.tutor {
     height: 75%;
     color:blue;
     background-color: yellow;
-   margin-bottom: 2em;
+    margin-bottom: 2em;
 }
 
 
@@ -41,7 +41,5 @@ participant.student {
 
 button[name=exitRoom] {
     position:absolute;
-    bottom:0em;
+    top:1em;
     right:2em;
-    
-}

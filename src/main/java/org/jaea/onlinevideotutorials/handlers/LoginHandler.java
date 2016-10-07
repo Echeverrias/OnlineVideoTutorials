@@ -169,22 +169,26 @@ public class LoginHandler extends TextMessageWebSocketHandler {
     
     
     private ParticipantSession validateUser(String userName, String password, WebSocketSession session ){
-        log.info("LoginHandler.validateUser");
+        log.info("* LoginHandler.validateUser");
         
         ParticipantSession userSession = null;
         
         User user = this.universityBBDD.getAnUser(userName, password);
         
+        
+
         if (user != null){
+            log.info(user.toString());
             userSession = new ParticipantSession(session, user);
         }
         
+         log.info("/ LoginHandler.validateUser");
         return userSession;
     }
     
     private void makeKnowThereIsANewRoom(String roomName){
         log.info(" * makeKnowThereIsANewRoom to...");
-        
+        this.usersRegistry.printIncomingParticipants();//*
         JsonObject jsonAnswer = new JsonObject();
         jsonAnswer.addProperty("id", "thereIsANewRoom");
         jsonAnswer.addProperty("roomName", roomName);

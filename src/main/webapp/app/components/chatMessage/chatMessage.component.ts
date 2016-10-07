@@ -23,11 +23,13 @@ export class ChatMessageComponent implements IMessage{
     @Input() sender: string;
     @Input() message: string;
     @Input() date: string;
+    @Input() color: string;
    
     constructor() {
 
         console.log("");
         console.log(`% Message constructor ${new Date().toLocaleTimeString()}`);
+       
     }    
 
 }

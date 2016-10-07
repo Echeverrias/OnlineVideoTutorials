@@ -61,10 +61,13 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler implements
 
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws HandlerException {
+        log.info(""); 
+        log.info(""); 
         log.info("OnlineVideoTutorialsHandler.handleTextMessage"); 
         
         JsonObject jsonMessage = this.gson.fromJson(message.getPayload(), JsonObject.class);
         String id = jsonMessage.get(this.attributeNameOfTheMessageId).getAsString(); 
+        log.info("+id: " + id);
         TextMessageWebSocketHandler handler = this.handlersMap.get(id);
         try{
             handler.handleTextMessage(session, message);

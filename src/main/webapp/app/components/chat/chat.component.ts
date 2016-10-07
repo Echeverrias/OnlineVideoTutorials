@@ -3,14 +3,14 @@
  * 
  */
  
-import { Component, OnInit, AfterViewInit, Input, ViewChildren, OnDestroy, QueryList } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input, ViewChild, OnDestroy, ElementRef } from '@angular/core';
 import { CORE_DIRECTIVES } from '@angular/common';
 
 import { ChatService } from '../../services/chat.service';
 import { MyService } from '../../services/myService';
 import { INoticeBoard } from './noticeBoard';
-import { ChatMessageComponent } from './chatMessage.component';
-import { ChatMessage } from './chatMessage';
+import { ChatMessageComponent } from '../chatMessage/chatMessage.component';
+import { ChatMessage } from '../chatMessage/chatMessage';
 
 import { chatTemplate } from './chat.html'
 
@@ -26,18 +26,16 @@ import { chatTemplate } from './chat.html'
 
 export class ChatComponent implements OnInit, AfterViewInit, OnDestroy, INoticeBoard{
     
-    @ViewChildren(ChatMessageComponent) chatMessages: QueryList<ChatMessageComponent>;
     @Input() address: string;
 
-    private name: string;
     private message: string;
-
     private messages: ChatMessage[];
-    
+    private participants: string[];
     private onParticipantLessSubscription: Object;
     private onParticipantInRoomSubscription: Object;
     private onVideoResponseSubscription: Object;
     private onIceCandidateSubscription: Object;
+   
     
 
     constructor(private chatService: ChatService, private myService: MyService) {
@@ -47,9 +45,8 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy, INoticeB
       
       
       this.messages = [];
+      this.participants = [];
 
-      
-     
       console.log(`/ Chat constructor ${new Date().toLocaleTimeString()}`);
       console.log("");
     }
@@ -61,20 +58,32 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy, INoticeB
     ngAfterViewInit(){
        console.log(`* Chat.AfterViewInit ${new Date().toLocaleTimeString()}`);
         this.chatService.signIn(this.address, this);
+        
     }
 
-    public publish(message: ChatMessage){
+    public publish(message: ChatMessage): void{
+        this.addColor(message);
         this.messages.push(message);
     }
 
-    public sendMessage(){
-        let message : ChatMessage = {
-            sender: this.myService.myUserName,
-            message: this.message,
-            date: new Date().toLocaleTimeString()
-        };
+    private addColor(message: ChatMessage): void {
+      if (!this.participants[message.sender]){
+          this.participants[message.sender] = '#' + Math.floor(Math.random() * 16777215).toString(16);
+      }
+      message.color = this.participants[message.sender];  
+    }
 
-      this.chatService.sendMessage(message);
+    public sendMessage(): void{
+        if (this.message) {
+            let message: ChatMessage = {
+                sender: this.myService.myUserName,
+                message: this.message,
+                date: new Date().toLocaleTimeString()
+            };
+
+            this.chatService.sendMessage(message);
+            this.message = null;
+        }
     }
     
     ngOnDestroy(){
