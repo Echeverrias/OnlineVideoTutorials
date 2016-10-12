@@ -195,4 +195,4 @@ var ParticipantComponent = (function () {
     return ParticipantComponent;
 }());
 exports.ParticipantComponent = ParticipantComponent;
-//# sourceMappingURL=participantComponent.js.map
+//# sourceMappingURL=participant.component.js.map

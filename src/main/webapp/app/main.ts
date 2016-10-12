@@ -1,7 +1,13 @@
-import {bootstrap}    from '@angular/platform-browser-dynamic';
-import {ROUTER_PROVIDERS} from '@angular/router-deprecated';
-import {AppComponent} from './app';
-import {Connection} from './services/connection';
-import {MyService} from './services/myService';
-bootstrap(AppComponent,[Connection, MyService, ROUTER_PROVIDERS]);
+// main entry point
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { AppModule } from './app.module';
+
+platformBrowserDynamic().bootstrapModule(AppModule);
+
+
+/*
+Copyright 2016 Google Inc. All Rights Reserved.
+Use of this source code is governed by an MIT-style license that
+can be found in the LICENSE file at http://angular.io/license
+*/
 

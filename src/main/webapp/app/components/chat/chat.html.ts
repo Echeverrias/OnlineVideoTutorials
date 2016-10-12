@@ -7,6 +7,3 @@ export const chatTemplate = `<div #messagesBox class="messages" [scrollTop]="mes
 					<input id="sendMessage" (click)="sendMessage()" type="submit" class="btn btn-large btn-block btn-primary"
 						value="Send" />
 				</div>`   
-
-
-// [class]="user.usertType" 

@@ -13,8 +13,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  *
  */
 var core_1 = require('@angular/core');
-var common_1 = require('@angular/common');
-var router_deprecated_1 = require('@angular/router-deprecated');
+var router_1 = require('@angular/router');
 var connection_1 = require('../../services/connection');
 var myService_1 = require('../../services/myService');
 var userFactory_1 = require('../../services/userFactory');
@@ -57,12 +56,12 @@ var LoginComponent = (function () {
             this.appService.addMe(userFactory_1.UserFactory.createAnUser(jsonMessage));
             if (this.appService.amATutor()) {
                 console.log("You are a tutor");
-                this.router.navigate(['Room', { roomName: jsonMessage.roomName }]);
+                this.router.navigate(['/room', jsonMessage.roomName]);
                 console.log("# go to room");
             }
             else {
                 console.log("You are an student");
-                this.router.navigate(['WaitingRoom']);
+                this.router.navigate(['/rooms']);
                 console.log("# go to waitingRoom");
             }
         }
@@ -84,13 +83,12 @@ var LoginComponent = (function () {
         core_1.Component({
             moduleId: module.id,
             selector: 'login',
-            directives: [common_1.FORM_DIRECTIVES],
             styleUrls: ["login.css", "../../../assets/styles/main.css"],
             template: login_html_1.loginTemplate
         }), 
-        __metadata('design:paramtypes', [router_deprecated_1.Router, connection_1.Connection, myService_1.MyService])
+        __metadata('design:paramtypes', [router_1.Router, connection_1.Connection, myService_1.MyService])
     ], LoginComponent);
     return LoginComponent;
 }());
 exports.LoginComponent = LoginComponent;
-//# sourceMappingURL=loginComponent.js.map
+//# sourceMappingURL=login.component.js.map

@@ -3,13 +3,14 @@
  * 
  */
  
-import { Component, OnInit, AfterViewInit, Input, ViewChild, OnDestroy, ElementRef } from '@angular/core';
-import { CORE_DIRECTIVES } from '@angular/common';
+import { Component, OnInit, AfterViewInit, Input, OnDestroy } from '@angular/core';
 
-import { ChatService } from '../../services/chat.service';
-import { MyService } from '../../services/myService';
-import { INoticeBoard } from './noticeBoard';
 import { ChatMessageComponent } from '../chatMessage/chatMessage.component';
+
+import { MyService } from '../../services/myService';
+import { ChatService } from '../../services/chat.service';
+
+import { INoticeBoard } from './noticeBoard';
 import { ChatMessage } from '../chatMessage/chatMessage';
 
 import { chatTemplate } from './chat.html'
@@ -18,11 +19,10 @@ import { chatTemplate } from './chat.html'
 @Component({
     moduleId: module.id,
     selector: 'ovt-chat',
-    directives: [CORE_DIRECTIVES, ChatMessageComponent],
-    providers: [ChatService],
     styleUrls: ["../../../assets/styles/main.css", "chat.css"],
-    template: chatTemplate
-})
+    template: chatTemplate,
+    providers: [ChatService]
+  })
 
 export class ChatComponent implements OnInit, AfterViewInit, OnDestroy, INoticeBoard{
     
@@ -38,7 +38,7 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy, INoticeB
    
     
 
-    constructor(private chatService: ChatService, private myService: MyService) {
+    constructor(private myService: MyService, private chatService: ChatService ) {
       
       console.log("");
       console.log(`% Chat constructor ${new Date().toLocaleTimeString()}`);
@@ -74,9 +74,11 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy, INoticeB
     }
 
     public sendMessage(): void{
+        let myUserName = this.myService.myUserName;
+
         if (this.message) {
             let message: ChatMessage = {
-                sender: this.myService.myUserName,
+                sender: myUserName,
                 message: this.message,
                 date: new Date().toLocaleTimeString()
             };

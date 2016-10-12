@@ -4,23 +4,21 @@
  */
  
 import { Component, OnInit, ViewChildren, OnDestroy, QueryList } from '@angular/core';
-import { CORE_DIRECTIVES } from '@angular/common';
-import { Router, RouteParams } from '@angular/router-deprecated';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 
 import { Connection } from '../../services/connection';
+import { MyService } from '../../services/myService';
+
+import { ParticipantComponent } from '../participant/participant.component';
+
 import { User } from '../../services/user';
 import { UserFactory } from '../../services/userFactory';
-import { MyService } from '../../services/myService';
-import { ParticipantComponent } from '../participant/participantComponent';
-import { ChatComponent } from '../chat/chat.component';
-
 
 import { roomTemplate } from './room.html'
 
 @Component({
     moduleId: module.id,
     selector: 'room',
-    directives: [CORE_DIRECTIVES, ParticipantComponent, ChatComponent],
     styleUrls: ["../../../assets/styles/main.css", "room.css"],
     template: roomTemplate
 })
@@ -39,12 +37,11 @@ export class RoomComponent implements OnInit, OnDestroy{
     private onIceCandidateSubscription: Object;
     
 
-    constructor(private router: Router, private connection: Connection, private appService: MyService, private routeParams: RouteParams) {
+    constructor(private router: Router, private connection: Connection, private appService: MyService, private route: ActivatedRoute) {
       
       console.log("");
       console.log(`% Room constructor ${new Date().toLocaleTimeString()}`);
       
-      this.name = routeParams.get('roomName');
       this.address = "/" + this.name;
       this.users = [];
 
@@ -55,6 +52,11 @@ export class RoomComponent implements OnInit, OnDestroy{
     }
     
     ngOnInit(){
+
+      this.route.params.forEach((params:Params) => {
+          this.name = params['roomName'];
+        });
+      
       this.onParticipantLessSubscription = this.connection.subscriptions.subscribeToParticipantLess(this, this.onRemoveParticipant);
       this.onParticipantInRoomSubscription = this.connection.subscriptions.subscribeToParticipantInRoom(this, this.onAddParticipant);
       this.onVideoResponseSubscription = this.connection.subscriptions.subscribeToVideoAnswer(this, this.onReceiveVideoResponse);
@@ -70,7 +72,7 @@ export class RoomComponent implements OnInit, OnDestroy{
         
             var jsonMessage = {
                 id:"joinRoom",
-                roomName: this.routeParams.get('roomName'),
+                roomName: this.name,
                 userName: this.appService.myUserName,
                 userType: this.appService.myUserType,
                 name: this.appService.myName
@@ -233,7 +235,7 @@ export class RoomComponent implements OnInit, OnDestroy{
 
         let jsonMessage = {
             id: "exitRoom",
-            roomName: this.routeParams.get('roomName'),
+            roomName: this.name,
             userName: this.appService.myUserName,
             userType: this.appService.myUserType,
         }
@@ -243,10 +245,10 @@ export class RoomComponent implements OnInit, OnDestroy{
         this.removeAllParticipants();
 
         if (this.appService.amAStudent()) {
-            this.router.navigate(['WaitingRoom']);
+            this.router.navigate(['/rooms']);
         }
         else {
-           this.router.navigate(['Login']);
+           this.router.navigate(['/login']);
         }
 
         console.log(`/ Room.onExitOfRoom ${new Date().toLocaleTimeString()}`);

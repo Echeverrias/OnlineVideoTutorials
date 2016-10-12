@@ -13,23 +13,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var common_1 = require('@angular/common');
-var router_deprecated_1 = require('@angular/router-deprecated');
+var router_1 = require('@angular/router');
 var connection_1 = require('../../services/connection');
-var userFactory_1 = require('../../services/userFactory');
 var myService_1 = require('../../services/myService');
-var participantComponent_1 = require('../participant/participantComponent');
-var chat_component_1 = require('../chat/chat.component');
+var participant_component_1 = require('../participant/participant.component');
+var userFactory_1 = require('../../services/userFactory');
 var room_html_1 = require('./room.html');
 var RoomComponent = (function () {
-    function RoomComponent(router, connection, appService, routeParams) {
+    function RoomComponent(router, connection, appService, route) {
         this.router = router;
         this.connection = connection;
         this.appService = appService;
-        this.routeParams = routeParams;
+        this.route = route;
         console.log("");
         console.log("% Room constructor " + new Date().toLocaleTimeString());
-        this.name = routeParams.get('roomName');
         this.address = "/" + this.name;
         this.users = [];
         console.log(this.users);
@@ -37,6 +34,10 @@ var RoomComponent = (function () {
         console.log("");
     }
     RoomComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.route.params.forEach(function (params) {
+            _this.name = params['roomName'];
+        });
         this.onParticipantLessSubscription = this.connection.subscriptions.subscribeToParticipantLess(this, this.onRemoveParticipant);
         this.onParticipantInRoomSubscription = this.connection.subscriptions.subscribeToParticipantInRoom(this, this.onAddParticipant);
         this.onVideoResponseSubscription = this.connection.subscriptions.subscribeToVideoAnswer(this, this.onReceiveVideoResponse);
@@ -48,7 +49,7 @@ var RoomComponent = (function () {
         console.log("* Room.lookingForParticipants " + new Date().toLocaleTimeString());
         var jsonMessage = {
             id: "joinRoom",
-            roomName: this.routeParams.get('roomName'),
+            roomName: this.name,
             userName: this.appService.myUserName,
             userType: this.appService.myUserType,
             name: this.appService.myName
@@ -168,17 +169,17 @@ var RoomComponent = (function () {
         console.log("<- Room.onExitOfRoom: " + this.name + " " + new Date().toLocaleTimeString());
         var jsonMessage = {
             id: "exitRoom",
-            roomName: this.routeParams.get('roomName'),
+            roomName: this.name,
             userName: this.appService.myUserName,
             userType: this.appService.myUserType,
         };
         this.connection.sendMessage(jsonMessage);
         this.removeAllParticipants();
         if (this.appService.amAStudent()) {
-            this.router.navigate(['WaitingRoom']);
+            this.router.navigate(['/rooms']);
         }
         else {
-            this.router.navigate(['Login']);
+            this.router.navigate(['/login']);
         }
         console.log("/ Room.onExitOfRoom " + new Date().toLocaleTimeString());
         console.log("");
@@ -199,20 +200,19 @@ var RoomComponent = (function () {
         this.onIceCandidateSubscription.unsubscribe();
     };
     __decorate([
-        core_1.ViewChildren(participantComponent_1.ParticipantComponent), 
+        core_1.ViewChildren(participant_component_1.ParticipantComponent), 
         __metadata('design:type', core_1.QueryList)
     ], RoomComponent.prototype, "participants", void 0);
     RoomComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
             selector: 'room',
-            directives: [common_1.CORE_DIRECTIVES, participantComponent_1.ParticipantComponent, chat_component_1.ChatComponent],
             styleUrls: ["../../../assets/styles/main.css", "room.css"],
             template: room_html_1.roomTemplate
         }), 
-        __metadata('design:paramtypes', [router_deprecated_1.Router, connection_1.Connection, myService_1.MyService, router_deprecated_1.RouteParams])
+        __metadata('design:paramtypes', [router_1.Router, connection_1.Connection, myService_1.MyService, router_1.ActivatedRoute])
     ], RoomComponent);
     return RoomComponent;
 }());
 exports.RoomComponent = RoomComponent;
-//# sourceMappingURL=roomComponent.js.map
+//# sourceMappingURL=room.component.js.map

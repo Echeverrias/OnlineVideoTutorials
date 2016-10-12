@@ -3,19 +3,19 @@
  * 
  */
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { NgIf, NgForm, FORM_DIRECTIVES } from '@angular/common';
-import { Router } from '@angular/router-deprecated';
+import { Router } from '@angular/router';
 
 import { Connection } from '../../services/connection';
 import { MyService } from '../../services/myService';
+
 import { UserFactory } from '../../services/userFactory';
+
 import { loginTemplate } from './login.html';
 
 
 @Component({
     moduleId: module.id,
     selector: 'login',
-    directives: [FORM_DIRECTIVES],
     styleUrls: ["login.css", "../../../assets/styles/main.css"],
     template: loginTemplate
     
@@ -75,14 +75,14 @@ export class LoginComponent implements OnInit, OnDestroy{
             if (this.appService.amATutor()){
                 console.log("You are a tutor");
                 
-                this.router.navigate(['Room',{roomName:jsonMessage.roomName}]);
+                this.router.navigate(['/room', jsonMessage.roomName]);
                 
                 console.log("# go to room");
             }
             else{
                 console.log("You are an student");
                 
-                this.router.navigate(['WaitingRoom']);
+                this.router.navigate(['/rooms']);
                 
                 console.log("# go to waitingRoom");
             }

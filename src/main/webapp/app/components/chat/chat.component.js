@@ -13,15 +13,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var common_1 = require('@angular/common');
-var chat_service_1 = require('../../services/chat.service');
 var myService_1 = require('../../services/myService');
-var chatMessage_component_1 = require('../chatMessage/chatMessage.component');
+var chat_service_1 = require('../../services/chat.service');
 var chat_html_1 = require('./chat.html');
 var ChatComponent = (function () {
-    function ChatComponent(chatService, myService) {
-        this.chatService = chatService;
+    function ChatComponent(myService, chatService) {
         this.myService = myService;
+        this.chatService = chatService;
         console.log("");
         console.log("% Chat constructor " + new Date().toLocaleTimeString());
         this.messages = [];
@@ -46,9 +44,10 @@ var ChatComponent = (function () {
         message.color = this.participants[message.sender];
     };
     ChatComponent.prototype.sendMessage = function () {
+        var myUserName = this.myService.myUserName;
         if (this.message) {
             var message = {
-                sender: this.myService.myUserName,
+                sender: myUserName,
                 message: this.message,
                 date: new Date().toLocaleTimeString()
             };
@@ -68,12 +67,11 @@ var ChatComponent = (function () {
         core_1.Component({
             moduleId: module.id,
             selector: 'ovt-chat',
-            directives: [common_1.CORE_DIRECTIVES, chatMessage_component_1.ChatMessageComponent],
-            providers: [chat_service_1.ChatService],
             styleUrls: ["../../../assets/styles/main.css", "chat.css"],
-            template: chat_html_1.chatTemplate
+            template: chat_html_1.chatTemplate,
+            providers: [chat_service_1.ChatService]
         }), 
-        __metadata('design:paramtypes', [chat_service_1.ChatService, myService_1.MyService])
+        __metadata('design:paramtypes', [myService_1.MyService, chat_service_1.ChatService])
     ], ChatComponent);
     return ChatComponent;
 }());

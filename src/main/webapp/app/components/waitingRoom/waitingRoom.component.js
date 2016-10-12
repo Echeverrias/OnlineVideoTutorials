@@ -13,7 +13,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var router_deprecated_1 = require('@angular/router-deprecated');
+var router_1 = require('@angular/router');
 var connection_1 = require('../../services/connection');
 var myService_1 = require('../../services/myService');
 var waitingRoom_html_1 = require('./waitingRoom.html');
@@ -73,7 +73,7 @@ var WaitingRoomComponent = (function () {
     WaitingRoomComponent.prototype.joinRoom = function (roomName) {
         console.log("");
         console.log("* WaitingRoom.joinRoom: " + roomName + " " + new Date().toLocaleTimeString());
-        this.router.navigate(['Room', { roomName: roomName }]);
+        this.router.navigate(['/room', roomName]);
         console.log("/ WaitingRoom.joinRoom " + new Date().toLocaleTimeString());
         console.log("");
     };
@@ -85,7 +85,7 @@ var WaitingRoomComponent = (function () {
             userName: this.appService.myUserName,
         };
         this.connection.sendMessage(jsonMessage);
-        this.router.navigate(['Login']);
+        this.router.navigate(['/login']);
         console.log("/ WaitingRoom.onLogOut " + new Date().toLocaleTimeString());
         console.log("");
     };
@@ -105,9 +105,9 @@ var WaitingRoomComponent = (function () {
             styleUrls: ["../../../assets/styles/main.css", "waitingRoom.css"],
             template: waitingRoom_html_1.waitingRoomTemplate
         }), 
-        __metadata('design:paramtypes', [router_deprecated_1.Router, connection_1.Connection, myService_1.MyService])
+        __metadata('design:paramtypes', [router_1.Router, connection_1.Connection, myService_1.MyService])
     ], WaitingRoomComponent);
     return WaitingRoomComponent;
 }());
 exports.WaitingRoomComponent = WaitingRoomComponent;
-//# sourceMappingURL=waitingRoomComponent.js.map
+//# sourceMappingURL=waitingRoom.component.js.map

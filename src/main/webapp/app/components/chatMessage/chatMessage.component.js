@@ -13,7 +13,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var common_1 = require('@angular/common');
 var chatMessage_html_1 = require('./chatMessage.html');
 var ChatMessageComponent = (function () {
     function ChatMessageComponent() {
@@ -40,7 +39,6 @@ var ChatMessageComponent = (function () {
         core_1.Component({
             moduleId: module.id,
             selector: 'ovt-chatMessage',
-            directives: [common_1.CORE_DIRECTIVES],
             styleUrls: ["../../../assets/styles/main.css", "chatMessage.css"],
             template: chatMessage_html_1.chatMessageTemplate
         }), 

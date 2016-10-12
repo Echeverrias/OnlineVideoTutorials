@@ -1,8 +1,11 @@
 "use strict";
+// main entry point
 var platform_browser_dynamic_1 = require('@angular/platform-browser-dynamic');
-var router_deprecated_1 = require('@angular/router-deprecated');
-var app_1 = require('./app');
-var connection_1 = require('./services/connection');
-var myService_1 = require('./services/myService');
-platform_browser_dynamic_1.bootstrap(app_1.AppComponent, [connection_1.Connection, myService_1.MyService, router_deprecated_1.ROUTER_PROVIDERS]);
+var app_module_1 = require('./app.module');
+platform_browser_dynamic_1.platformBrowserDynamic().bootstrapModule(app_module_1.AppModule);
+/*
+Copyright 2016 Google Inc. All Rights Reserved.
+Use of this source code is governed by an MIT-style license that
+can be found in the LICENSE file at http://angular.io/license
+*/
 //# sourceMappingURL=main.js.map

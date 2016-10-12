@@ -4,7 +4,7 @@
  */
  
 import { Component, EventEmitter, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router-deprecated';
+import { Router } from '@angular/router';
 
 import { Connection } from '../../services/connection';
 import { MyService } from '../../services/myService';
@@ -98,7 +98,7 @@ import{ waitingRoomTemplate } from './waitingRoom.html'
         console.log("");
         console.log(`* WaitingRoom.joinRoom: ${roomName} ${new Date().toLocaleTimeString()}`);
         
-        this.router.navigate(['Room' ,{roomName: roomName}]);
+        this.router.navigate(['/room' ,roomName]);
         
         console.log(`/ WaitingRoom.joinRoom ${new Date().toLocaleTimeString()}`);  
         console.log("");
@@ -116,7 +116,7 @@ import{ waitingRoomTemplate } from './waitingRoom.html'
                
         this.connection.sendMessage(jsonMessage);
         
-        this.router.navigate(['Login']);
+        this.router.navigate(['/login']);
         
         console.log(`/ WaitingRoom.onLogOut ${new Date().toLocaleTimeString()}`);
         console.log("")
