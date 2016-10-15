@@ -2,12 +2,13 @@ import { Component, HostListener} from '@angular/core';
 import { Connection } from './services/connection';
 
 @Component({
-    selector: 'app',
-    styleUrls: ["assets/styles/kurento.css", "assets/styles/main.css"],
+    moduleId: module.id,
+    selector: 'ovt-app',
+    styleUrls: ["app.css"],
     template: `
-        
-        Online Video Tutorials<br>
-       <router-outlet></router-outlet>`
+        <div id="ovt-app">
+       <router-outlet></router-outlet>
+       </div>`
 })
 
 export class AppComponent {

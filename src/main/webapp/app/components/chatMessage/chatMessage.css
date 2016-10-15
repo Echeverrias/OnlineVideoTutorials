@@ -9,9 +9,10 @@ and open the template in the editor.
 */
 
 
-.letter{
-  padding: 0.2em;
+.ovt-chatMessage{
+  padding:0.2em;
   width: 100%;
+ 
 }
 
 
@@ -24,15 +25,16 @@ and open the template in the editor.
 
 .sender{
   float:left;
-   margin: 0em 0.3em;
+   margin-right: 0.5em;
    padding: 0em 0.5em;
    border-radius: 1em;
+   font-weight: bold;
 }
 
 .message{
-   padding-left: 0.3em;
    word-break: break-all;
    word-wrap: break-word;
+   
 }
 
 

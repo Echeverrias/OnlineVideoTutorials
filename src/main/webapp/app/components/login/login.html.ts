@@ -1,4 +1,4 @@
-export const loginTemplate = ` <div id="login" class="animate join container">
+export const loginTemplate = ` <div id="ovt-login" class="animate container">
     
     <div class="ovt-header">Login</div>
     

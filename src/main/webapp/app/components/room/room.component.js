@@ -27,7 +27,6 @@ var RoomComponent = (function () {
         this.route = route;
         console.log("");
         console.log("% Room constructor " + new Date().toLocaleTimeString());
-        this.address = "/" + this.name;
         this.users = [];
         console.log(this.users);
         console.log("/ Room constructor " + new Date().toLocaleTimeString());
@@ -38,6 +37,7 @@ var RoomComponent = (function () {
         this.route.params.forEach(function (params) {
             _this.name = params['roomName'];
         });
+        this.address = "/" + this.name;
         this.onParticipantLessSubscription = this.connection.subscriptions.subscribeToParticipantLess(this, this.onRemoveParticipant);
         this.onParticipantInRoomSubscription = this.connection.subscriptions.subscribeToParticipantInRoom(this, this.onAddParticipant);
         this.onVideoResponseSubscription = this.connection.subscriptions.subscribeToVideoAnswer(this, this.onReceiveVideoResponse);
@@ -65,15 +65,22 @@ var RoomComponent = (function () {
         console.log("<- message: " + JSON.stringify(jsonMessage));
         console.log(this.users);
         var user;
+        // My video will be the last 
         if (jsonMessage.userName === this.appService.myUserName) {
             user = this.appService.getMe();
+            this.users.push(user);
             console.log("It's me");
         }
         else {
             user = userFactory_1.UserFactory.createAnUser(jsonMessage);
             console.log("A new participant created");
+            if (user.isATutor() || (this.appService.amATutor && !this.mainUser)) {
+                this.mainUser = user;
+            }
+            else {
+                this.users.splice(this.users.length - 1, 0, user);
+            }
         }
-        this.users.push(user);
         console.log(this.users);
         console.log("/ Room.onAddParticipant " + new Date().toLocaleTimeString());
         console.log("");
@@ -200,13 +207,17 @@ var RoomComponent = (function () {
         this.onIceCandidateSubscription.unsubscribe();
     };
     __decorate([
+        core_1.ViewChild(participant_component_1.ParticipantComponent), 
+        __metadata('design:type', participant_component_1.ParticipantComponent)
+    ], RoomComponent.prototype, "mainParticipant", void 0);
+    __decorate([
         core_1.ViewChildren(participant_component_1.ParticipantComponent), 
         __metadata('design:type', core_1.QueryList)
     ], RoomComponent.prototype, "participants", void 0);
     RoomComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
-            selector: 'room',
+            selector: 'ovt-room',
             styleUrls: ["../../../assets/styles/main.css", "room.css"],
             template: room_html_1.roomTemplate
         }), 

@@ -8,36 +8,49 @@ and open the template in the editor.
     Author     : juanan
 */
 
-.messages{
-  width:98%;
-  padding: 0.1em 0.1em;
-  border: 0.2em solid grey;
-  border-radius: 0.5em;
-  max-height: 5em;
-  min-height:5em;
-  overflow:auto;
-  overflow-x: hidden;
-  margin: 0 auto;
+
+.ovt-chat{
+  min-height:100%;
 }
 
-.mailbox {
-  line-height: 0.4em ;
-  padding:0.9em;
-  
+.messages{
+  width: 94%;
+  background-color: #EEFACA;
+  margin-bottom: 0.9em;
+  padding: 0.1em 1em;
+  border: 0.2em solid grey;
+  border-radius: 0.5em;
+  max-height: 4.2em;
+  min-height:4.2em;
+  overflow:auto;
+  overflow-x: hidden;
+  box-shadow: -2px 2px 2px #299D29;
 }
+
 
 .mailbox input {
   display: inline;
   font-size: 1.2em;
+
 }
 
 #myMessage{
-  
+  resize:none;
   width:94%;
-  
+  box-shadow: -2px 2px 2px #299D29;
+  background-color: #EEFACA;
+  border-radius: 0.5em;
+  border: 0.15em solid grey;
+  line-height: 1.3em;
+  height: 3em;
+  vertical-align: middle;
+  padding: 0 1em;
+  font-size: 1.2em;
+  height:2.8em;
 }
 
 #sendMessage{
   width:5%;
   padding: 0.1em 0.2em;
+  vertical-align: middle;
 }

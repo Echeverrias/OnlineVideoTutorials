@@ -3,7 +3,7 @@
  * 
  */
  
-import { Component, OnInit, ViewChildren, OnDestroy, QueryList } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewChildren, OnDestroy, QueryList } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
 import { Connection } from '../../services/connection';
@@ -18,17 +18,19 @@ import { roomTemplate } from './room.html'
 
 @Component({
     moduleId: module.id,
-    selector: 'room',
+    selector: 'ovt-room',
     styleUrls: ["../../../assets/styles/main.css", "room.css"],
     template: roomTemplate
 })
 
 export class RoomComponent implements OnInit, OnDestroy{
     
+    @ViewChild(ParticipantComponent) mainParticipant: ParticipantComponent;
     @ViewChildren(ParticipantComponent) participants: QueryList<ParticipantComponent>;
     
     private name: string;
     private address: string;
+    private mainUser: User;
     private users: User[];
     
     private onParticipantLessSubscription: Object;
@@ -42,7 +44,6 @@ export class RoomComponent implements OnInit, OnDestroy{
       console.log("");
       console.log(`% Room constructor ${new Date().toLocaleTimeString()}`);
       
-      this.address = "/" + this.name;
       this.users = [];
 
       
@@ -56,6 +57,8 @@ export class RoomComponent implements OnInit, OnDestroy{
       this.route.params.forEach((params:Params) => {
           this.name = params['roomName'];
         });
+      this.address = "/" + this.name;
+
       
       this.onParticipantLessSubscription = this.connection.subscriptions.subscribeToParticipantLess(this, this.onRemoveParticipant);
       this.onParticipantInRoomSubscription = this.connection.subscriptions.subscribeToParticipantInRoom(this, this.onAddParticipant);
@@ -94,17 +97,23 @@ export class RoomComponent implements OnInit, OnDestroy{
 
         let user: User;
 
+        // My video will be the last 
         if (jsonMessage.userName === this.appService.myUserName) {
             user = this.appService.getMe();
+            this.users.push(user);
             console.log("It's me")
         }
         else {
             user = UserFactory.createAnUser(jsonMessage);
             console.log("A new participant created")
-        }
+            if (user.isATutor()|| (this.appService.amATutor && !this.mainUser)){
+                this.mainUser = user;
+            }
+            else {
+                this.users.splice(this.users.length - 1, 0, user);
+            }
 
-        this.users.push(user);
-
+        }  
         console.log(this.users);
         console.log(`/ Room.onAddParticipant ${new Date().toLocaleTimeString()}`);
         console.log("");

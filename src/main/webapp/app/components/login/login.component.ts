@@ -15,8 +15,8 @@ import { loginTemplate } from './login.html';
 
 @Component({
     moduleId: module.id,
-    selector: 'login',
-    styleUrls: ["login.css", "../../../assets/styles/main.css"],
+    selector: 'ovt-login',
+    styleUrls: ["login.css"],
     template: loginTemplate
     
 })

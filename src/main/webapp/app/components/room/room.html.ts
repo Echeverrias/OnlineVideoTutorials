@@ -1,9 +1,16 @@
 
-export const roomTemplate = `<p>Room: {{name}}</p>
-<p>I'm {{appService.myName}}</p>
-
-<participant [id]="user.userName" [ngClass]="{'tutor':'tutor'===user.userType, 'student':'student'===user.userType}" [name]="user.name" [userType]="user.userType" [roomName]="name" *ngFor="let user of users"></participant>
-\n\
-<ovt-chat [address]="address"></ovt-chat>
-\n\
-<button name="exitRoom" (click)="onExitOfRoom()">Exit</button>`
+export const roomTemplate = `<div id="ovt-room">
+<div class="main">
+    <div class="dashboard">
+        <ovt-participant *ngIf="mainUser" [id]="mainUser.userName" [ngClass]="{'mainParticipant':mainUser}" [name]="mainUser.name" [userType]="mainUser.userType" [roomName]="name"></ovt-participant>
+        <div><!--ovt-file--></div>
+    </div>
+    \n\
+    <ovt-chat class="chat" [address]="address"></ovt-chat>
+    \n\
+</div>
+<div class="secundary">
+    <ovt-participant [id]="user.userName" [ngClass]="{'tutor':user.isATutor(), 'student':user.isAStudent()}" [name]="user.name" [userType]="user.userType" [roomName]="name" *ngFor="let user of users"></ovt-participant>
+</div>
+<button name="exitRoom" (click)="onExitOfRoom()">Exit</button>
+</div>`

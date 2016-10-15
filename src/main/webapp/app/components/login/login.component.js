@@ -82,8 +82,8 @@ var LoginComponent = (function () {
     LoginComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
-            selector: 'login',
-            styleUrls: ["login.css", "../../../assets/styles/main.css"],
+            selector: 'ovt-login',
+            styleUrls: ["login.css"],
             template: login_html_1.loginTemplate
         }), 
         __metadata('design:paramtypes', [router_1.Router, connection_1.Connection, myService_1.MyService])

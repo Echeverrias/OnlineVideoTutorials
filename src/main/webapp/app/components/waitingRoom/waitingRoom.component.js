@@ -101,7 +101,7 @@ var WaitingRoomComponent = (function () {
     WaitingRoomComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
-            selector: 'waitingRoom',
+            selector: 'ovt-waitingRoom',
             styleUrls: ["../../../assets/styles/main.css", "waitingRoom.css"],
             template: waitingRoom_html_1.waitingRoomTemplate
         }), 

@@ -1,7 +1,7 @@
 /*
  * @author Juan Antonio Echeverrías Aranda (juanan.echeve@gmail.com)
  */
- export const waitingRoomTemplate = `<div id="waitingRoom" class="animate join">
+ export const waitingRoomTemplate = `<div id="ovt-waitingRoom" class="animate join">
       
     <div class="ovt-header">Welcome <span>{{appService.myName}}</span></div>
     <div class="ovt-container-col">

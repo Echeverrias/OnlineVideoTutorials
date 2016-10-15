@@ -15,6 +15,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var myService_1 = require('../../services/myService');
 var chat_service_1 = require('../../services/chat.service');
+var hexColorGenerator_1 = require('./hexColorGenerator');
 var chat_html_1 = require('./chat.html');
 var ChatComponent = (function () {
     function ChatComponent(myService, chatService) {
@@ -22,6 +23,7 @@ var ChatComponent = (function () {
         this.chatService = chatService;
         console.log("");
         console.log("% Chat constructor " + new Date().toLocaleTimeString());
+        this.colorGenerator = new hexColorGenerator_1.HexColorGenerator();
         this.messages = [];
         this.participants = [];
         console.log("/ Chat constructor " + new Date().toLocaleTimeString());
@@ -39,7 +41,7 @@ var ChatComponent = (function () {
     };
     ChatComponent.prototype.addColor = function (message) {
         if (!this.participants[message.sender]) {
-            this.participants[message.sender] = '#' + Math.floor(Math.random() * 16777215).toString(16);
+            this.participants[message.sender] = this.colorGenerator.getAColor();
         }
         message.color = this.participants[message.sender];
     };

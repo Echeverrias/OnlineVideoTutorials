@@ -30,9 +30,10 @@ var AppComponent = (function () {
     ], AppComponent.prototype, "beforeunloadHandler", null);
     AppComponent = __decorate([
         core_1.Component({
-            selector: 'app',
-            styleUrls: ["assets/styles/kurento.css", "assets/styles/main.css"],
-            template: "\n        \n        Online Video Tutorials<br>\n       <router-outlet></router-outlet>"
+            moduleId: module.id,
+            selector: 'ovt-app',
+            styleUrls: ["app.css"],
+            template: "\n        <div id=\"ovt-app\">\n       <router-outlet></router-outlet>\n       </div>"
         }), 
         __metadata('design:paramtypes', [connection_1.Connection])
     ], AppComponent);

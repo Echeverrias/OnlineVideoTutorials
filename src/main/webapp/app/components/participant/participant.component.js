@@ -22,6 +22,7 @@ var ParticipantComponent = (function () {
         this.appService = appService;
         console.log("");
         console.log("% Participant constructor " + new Date().toLocaleTimeString());
+        console.log("constructor - userType: " + this.userType);
         this.important = false;
         this.constraints = {
             audio: true,
@@ -36,6 +37,7 @@ var ParticipantComponent = (function () {
         console.log("/ Participant constructor " + new Date().toLocaleTimeString());
         console.log("");
     }
+    ParticipantComponent.prototype.ngOnInit = function () { console.log("Participnat.onInit - userType: " + this.userType); };
     ParticipantComponent.prototype.ngAfterViewInit = function () {
         console.log("   ngAfterViewInit");
         console.log("* Participant.afterViewInit: " + this.userName + " " + new Date().toLocaleTimeString());
@@ -186,7 +188,7 @@ var ParticipantComponent = (function () {
     ParticipantComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
-            selector: 'participant',
+            selector: 'ovt-participant',
             styleUrls: ["participant.css"],
             template: participant_html_1.participantComponentTemplate
         }), 

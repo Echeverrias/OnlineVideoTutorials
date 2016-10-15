@@ -3,7 +3,7 @@
  * 
  */
 
-import { Component, ViewChild, ElementRef, AfterViewInit, Input } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, Input, OnInit } from '@angular/core';
 
 import { Connection } from '../../services/connection';
 import { MyService } from '../../services/myService';
@@ -12,12 +12,12 @@ import { participantComponentTemplate } from './participant.html'
 
 @Component({
     moduleId: module.id,
-    selector: 'participant',
+    selector: 'ovt-participant',
     styleUrls: ["participant.css"],
     template: participantComponentTemplate
 })
 
-export class ParticipantComponent implements AfterViewInit{
+export class ParticipantComponent implements AfterViewInit, OnInit{
 
     @ViewChild('video') video : ElementRef;
     @Input() id : string;
@@ -39,7 +39,7 @@ export class ParticipantComponent implements AfterViewInit{
 
         console.log("");
         console.log(`% Participant constructor ${new Date().toLocaleTimeString()}`);
-       
+        console.log(`constructor - userType: ${this.userType}`);   
 
         this.important = false;
         
@@ -59,7 +59,7 @@ export class ParticipantComponent implements AfterViewInit{
         console.log("");
     }
 
-    
+    ngOnInit() { console.log(`Participnat.onInit - userType: ${this.userType}`); }
 
     ngAfterViewInit() {
         console.log("   ngAfterViewInit");

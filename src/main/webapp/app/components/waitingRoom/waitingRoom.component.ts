@@ -13,7 +13,7 @@ import{ waitingRoomTemplate } from './waitingRoom.html'
 
  @Component({
     moduleId: module.id, 
-    selector:'waitingRoom',
+    selector:'ovt-waitingRoom',
     styleUrls: ["../../../assets/styles/main.css", "waitingRoom.css"],
     template: waitingRoomTemplate
  })

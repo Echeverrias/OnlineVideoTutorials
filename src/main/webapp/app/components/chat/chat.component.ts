@@ -12,6 +12,7 @@ import { ChatService } from '../../services/chat.service';
 
 import { INoticeBoard } from './noticeBoard';
 import { ChatMessage } from '../chatMessage/chatMessage';
+import { HexColorGenerator } from './hexColorGenerator';
 
 import { chatTemplate } from './chat.html'
 
@@ -31,6 +32,7 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy, INoticeB
     private message: string;
     private messages: ChatMessage[];
     private participants: string[];
+    private colorGenerator: HexColorGenerator;
     private onParticipantLessSubscription: Object;
     private onParticipantInRoomSubscription: Object;
     private onVideoResponseSubscription: Object;
@@ -43,7 +45,7 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy, INoticeB
       console.log("");
       console.log(`% Chat constructor ${new Date().toLocaleTimeString()}`);
       
-      
+      this.colorGenerator = new HexColorGenerator();
       this.messages = [];
       this.participants = [];
 
@@ -68,7 +70,7 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy, INoticeB
 
     private addColor(message: ChatMessage): void {
       if (!this.participants[message.sender]){
-          this.participants[message.sender] = '#' + Math.floor(Math.random() * 16777215).toString(16);
+          this.participants[message.sender] = this.colorGenerator.getAColor();
       }
       message.color = this.participants[message.sender];  
     }
