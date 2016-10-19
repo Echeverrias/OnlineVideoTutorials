@@ -195,9 +195,15 @@ export class RoomComponent implements OnInit, OnDestroy{
         console.log("");
         console.log(`* Room.getParticipant: ${userName} of ...  ${new Date().toLocaleTimeString()}`);
         console.log(this.participants);
-      
-        let participant = this.participants._results.filter(participant => participant.id === userName)[0];
-      
+        
+        let participant; 
+        if (this.mainParticipant && this.mainParticipant.userName === userName){
+         participant = this.mainParticipant;
+        }
+        else{
+         participant = this.participants._results.filter(participant => participant.id === userName)[0];
+        }
+     
         console.log(`/ Room.getParticipant -> ${participant.userName} ${new Date().toLocaleTimeString()}`);
         console.log("");
         return participant;    
@@ -208,9 +214,14 @@ export class RoomComponent implements OnInit, OnDestroy{
         console.log(`* Room.deleteUser: ${userName} ${new Date().toLocaleTimeString()}`);
         console.log(`users before: ${JSON.stringify(this.users)}`);
         
-        let index = this.getIndexOfUser(userName);
-        this.users.splice(index,1);
-        
+        if (this.mainUser && this.mainUser.userName === userName){
+         this.mainUser = null;
+        }
+        else{ 
+         let index = this.getIndexOfUser(userName);
+         this.users.splice(index,1);
+        }
+     
         console.log(`users after: ${JSON.stringify(this.users)}`);
         console.log(`/ Room.deleteUser ${new Date().toLocaleTimeString()}`);
         console.log("");
@@ -232,6 +243,10 @@ export class RoomComponent implements OnInit, OnDestroy{
                i++;
            }
        }
+     
+       if (!found){
+        index = length;
+       } 
        
        return index;
     }
@@ -269,6 +284,10 @@ export class RoomComponent implements OnInit, OnDestroy{
        console.log("");
        console.log(`* Room.removeAllParticipants ${new Date().toLocaleTimeString()}`);
        
+       if (this.mainParticipant){
+        this.mainParticipant.dispose();
+        this.mainUser = null;
+       } 
        this.participants._results.map(participant => participant.dispose());
        this.users.length = 0;
        
