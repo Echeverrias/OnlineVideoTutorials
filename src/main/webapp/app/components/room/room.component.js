@@ -16,11 +16,15 @@ var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var connection_1 = require('../../services/connection');
 var myService_1 = require('../../services/myService');
+var room_service_1 = require('../../services/room.service');
+var login_service_1 = require('../../services/login.service');
 var participant_component_1 = require('../participant/participant.component');
 var userFactory_1 = require('../../services/userFactory');
 var room_html_1 = require('./room.html');
 var RoomComponent = (function () {
-    function RoomComponent(router, connection, appService, route) {
+    function RoomComponent(room, login, router, connection, appService, route) {
+        this.room = room;
+        this.login = login;
         this.router = router;
         this.connection = connection;
         this.appService = appService;
@@ -37,7 +41,8 @@ var RoomComponent = (function () {
         this.route.params.forEach(function (params) {
             _this.name = params['roomName'];
         });
-        this.address = "/" + this.name;
+        this.address = this.name;
+        // this.room.init(this.name);
         this.onParticipantLessSubscription = this.connection.subscriptions.subscribeToParticipantLess(this, this.onRemoveParticipant);
         this.onParticipantInRoomSubscription = this.connection.subscriptions.subscribeToParticipantInRoom(this, this.onAddParticipant);
         this.onVideoResponseSubscription = this.connection.subscriptions.subscribeToVideoAnswer(this, this.onReceiveVideoResponse);
@@ -139,8 +144,14 @@ var RoomComponent = (function () {
     RoomComponent.prototype.getParticipant = function (userName) {
         console.log("");
         console.log("* Room.getParticipant: " + userName + " of ...  " + new Date().toLocaleTimeString());
-        console.log(this.participants);
-        var participant = this.participants._results.filter(function (participant) { return participant.id === userName; })[0];
+        console.log(this.users);
+        var participant;
+        if (this.mainParticipant && this.mainParticipant.userName === userName) {
+            participant = this.mainParticipant;
+        }
+        else {
+            participant = this.participants._results.filter(function (participant) { return participant.id === userName; })[0];
+        }
         console.log("/ Room.getParticipant -> " + participant.userName + " " + new Date().toLocaleTimeString());
         console.log("");
         return participant;
@@ -149,8 +160,13 @@ var RoomComponent = (function () {
         console.log("");
         console.log("* Room.deleteUser: " + userName + " " + new Date().toLocaleTimeString());
         console.log("users before: " + JSON.stringify(this.users));
-        var index = this.getIndexOfUser(userName);
-        this.users.splice(index, 1);
+        if (this.mainUser && this.mainUser.userName === userName) {
+            this.mainUser = null;
+        }
+        else {
+            var index = this.getIndexOfUser(userName);
+            this.users.splice(index, 1);
+        }
         console.log("users after: " + JSON.stringify(this.users));
         console.log("/ Room.deleteUser " + new Date().toLocaleTimeString());
         console.log("");
@@ -168,6 +184,9 @@ var RoomComponent = (function () {
             else {
                 i++;
             }
+        }
+        if (!found) {
+            index = length;
         }
         return index;
     };
@@ -194,6 +213,10 @@ var RoomComponent = (function () {
     RoomComponent.prototype.removeAllParticipants = function () {
         console.log("");
         console.log("* Room.removeAllParticipants " + new Date().toLocaleTimeString());
+        if (this.mainParticipant) {
+            this.mainParticipant.dispose();
+            this.mainParticipant = null;
+        }
         this.participants._results.map(function (participant) { return participant.dispose(); });
         this.users.length = 0;
         console.log("/ Room.removeAllParticipants " + new Date().toLocaleTimeString());
@@ -205,6 +228,7 @@ var RoomComponent = (function () {
         this.onParticipantInRoomSubscription.unsubscribe();
         this.onVideoResponseSubscription.unsubscribe();
         this.onIceCandidateSubscription.unsubscribe();
+        //this.room.destroy();
     };
     __decorate([
         core_1.ViewChild(participant_component_1.ParticipantComponent), 
@@ -218,10 +242,11 @@ var RoomComponent = (function () {
         core_1.Component({
             moduleId: module.id,
             selector: 'ovt-room',
-            styleUrls: ["../../../assets/styles/main.css", "room.css"],
-            template: room_html_1.roomTemplate
+            styleUrls: ["room.css"],
+            template: room_html_1.roomTemplate,
+            providers: [room_service_1.RoomService, login_service_1.LoginService]
         }), 
-        __metadata('design:paramtypes', [router_1.Router, connection_1.Connection, myService_1.MyService, router_1.ActivatedRoute])
+        __metadata('design:paramtypes', [room_service_1.RoomService, login_service_1.LoginService, router_1.Router, connection_1.Connection, myService_1.MyService, router_1.ActivatedRoute])
     ], RoomComponent);
     return RoomComponent;
 }());
