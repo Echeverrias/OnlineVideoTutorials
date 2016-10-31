@@ -12,10 +12,12 @@ var User = (function () {
         this._userType = null; // 'tutor' or 'student'
         console.log("");
         console.log("% User " + new Date().toLocaleTimeString());
-        console.log("username: " + userName + ", userType: " + userType + ", name: " + name);
-        this._userName = userName;
-        this._userType = userType;
-        this._name = name;
+        if (arguments.length == 3) {
+            console.log("username: " + userName + ", userType: " + userType + ", name: " + name);
+            this._userName = userName;
+            this._userType = userType;
+            this._name = name;
+        }
         console.log("/ User " + new Date().toLocaleTimeString());
         console.log("");
     }
@@ -54,12 +56,24 @@ var User = (function () {
         enumerable: true,
         configurable: true
     });
+    User.prototype.set = function (user) {
+        this._userName = user.userName;
+        this._userType = user.userType;
+        this._name = user.name;
+    };
+    User.prototype.setToUndefined = function () {
+        this._userName = null;
+        this._userType = null;
+        this._name = null;
+    };
     User.prototype.isATutor = function () {
-        console.log("my userType is " + this._userType + " ");
         return this._userType === User.tutorType;
     };
     User.prototype.isAStudent = function () {
         return this._userType === User.studentType;
+    };
+    User.prototype.exist = function () {
+        return this._userName != null;
     };
     return User;
 }());

@@ -15,9 +15,11 @@
 package org.jaea.onlinevideotutorials.managers;
 
 
-import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.jaea.onlinevideotutorials.Hour;
@@ -43,23 +45,25 @@ public class RoomsManager {
     
     private final ConcurrentHashMap<String, String> roomsNamesByUserName = new ConcurrentHashMap();
     private final ConcurrentHashMap<String, Room> roomsByName = new ConcurrentHashMap<>(); 
-    private final CopyOnWriteArrayList<String> avaibleRoomsNames = new CopyOnWriteArrayList<>();;
-    
+    private final CopyOnWriteArrayList<String> availableRoomsNames = new CopyOnWriteArrayList<>();;
+    // It stores the students which are not still in a room
+    private final ConcurrentHashMap<String, UserSession> incomingParticipantsByUserName = new ConcurrentHashMap();
 
     public RoomsManager(){
         log.info("new RoomsManager");
     }   
 
 
-    public void createRoom(String roomName){
-    //We supose the room name will never be repeated
+    public Room createRoom(String roomName){
+        //We supose the room name will never be repeated
         log.info("{} Room.createRoom {} not existent. Will create now! {}", Info.START_SYMBOL, roomName, Hour.getTime());
 	
         Room room = new Room(roomName, kurento.createMediaPipeline());
-	this.roomsByName.put(roomName, room); 
-        this.avaibleRoomsNames.add(roomName);
+	    this.roomsByName.put(roomName, room); 
+        this.availableRoomsNames.add(roomName);
             
         log.info("{} Room.createRoom {}", Info.FINISH_SYMBOL, Hour.getTime());
+        return room;
     }
     
     public Room getRoom(String roomName) {
@@ -75,12 +79,12 @@ public class RoomsManager {
         return room;
     }
     
-    public List getAvaibleRoomsNames(){
-        log.info("{} RoomManager.getAvaibleRoomsNames: {} {}",Info.START_SYMBOL,this.avaibleRoomsNames.toString(), Hour.getTime());
+    public List<String> getAvailableRoomsNames(){
+        log.info("{} RoomManager.getAvaibleRoomsNames: {} {}",Info.START_SYMBOL,this.availableRoomsNames.toString(), Hour.getTime());
         
-        int numberOfAvaibleRooms = this.avaibleRoomsNames.size();
+        int numberOfAvaibleRooms = this.availableRoomsNames.size();
         
-        List avaibleRoomsNames = this.avaibleRoomsNames.subList(0, numberOfAvaibleRooms);
+        List<String> avaibleRoomsNames = this.availableRoomsNames.subList(0, numberOfAvaibleRooms);
         
         log.info("Avaible Rooms Names: {}", avaibleRoomsNames);
         Info.logInfoFinish("RoomManager.getAvaibleRoomsNames");
@@ -88,19 +92,22 @@ public class RoomsManager {
     }
     
     
-    /* If the incoming participant is a tutor, a room will be created */    
+    /* If the incoming participant is a tutor and there is no room it will be created */    
     public void addParticipant (UserSession user, String roomName){
         log.info("{} RoomManager.addParticipant: {} to {} {}",Info.START_SYMBOL,  user.getUserName(), roomName, Hour.getTime());
         
         ParticipantSession participant = (ParticipantSession) user;
-        this.roomsNamesByUserName.put(participant.getUserName(), roomName);
+        
         Room room = this.roomsByName.get(roomName);
         if (room == null && participant.isATutor()){
-            this.createRoom(roomName);
+            log.info("The user is a tutor named {}", participant.getUserName());
+            room = this.createRoom(roomName);
+           
         }
         if (room != null) {
             log.info("Participant {} is going to be added to room {}", participant.getUserName(), room.getName());
             room.addParticipant(participant);
+            this.roomsNamesByUserName.put(participant.getUserName(), roomName);
         }    
         Info.logInfoFinish("RoomManager.addParticipant");
     }
@@ -127,29 +134,35 @@ public class RoomsManager {
     public List<ParticipantSession> getParticipantsByRoomName(String roomName){
         log.info("{} RoomManager.getParticipantsByRoomName: {} {}",Info.START_SYMBOL, roomName, Hour.getTime());
         
+        List<ParticipantSession> participants = null;
         Room room = this.roomsByName.get(roomName);
         
-        Info.logInfoFinish("RoomManager.getParticipantsByRoomName");
-        return room.getParticipants();
+        if (room != null){
+            Info.logInfoFinish("RoomManager.getParticipantsByRoomName");
+            participants = room.getParticipants();
+        }    
+        
+        return participants;
     }
     
     public UserSession participantLeavesARoom (String participantUserName, String roomName){
         log.info("{} RoomManager.participantLeavesARoom {} from {} {}",Info.START_SYMBOL, participantUserName, roomName, Hour.getTime());
         
+        UserSession user = null;
+
         Room room = this.roomsByName.get(roomName);
         
-        if (room.isTheTutor(participantUserName)){
-            this.avaibleRoomsNames.remove(roomName);
+        if (room != null){
+
+            user = room.leave(participantUserName);
+            this.roomsNamesByUserName.remove(user.getUserName());
+            
+            if (room.isEmpty()){
+                this.removeRoom(roomName);
+            }
+            
+            room.printTheRoomParticipants(); //*
         }
-       
-        UserSession user = room.leave(participantUserName);
-        this.roomsNamesByUserName.remove(user.getUserName());
-        
-        if (room.getParticipantsNumber() == 0){
-            room.close();
-            this.roomsByName.remove(roomName);
-        }
-        room.printTheRoomParticipants(); //*
         Info.logInfoFinish("/ RoomManager.participantLeavesARoom");
         return user;
     }
@@ -160,42 +173,107 @@ public class RoomsManager {
         Room room = this.roomsByName.get(roomName);
         this.removeRoom(room);
         
-	Info.logInfoFinish("/ Room.remove: removed and closed");
+	   Info.logInfoFinish("/ Room.remove: removed and closed");
     }
     
     public void removeRoom(Room room) {
         log.info("{} Room.removeRoom {} {}",Info.START_SYMBOL, room.getName(), Hour.getTime());
         
-        String roomName = room.getName();
-        room.close();
-        this.roomsByName.remove(roomName);
-	this.avaibleRoomsNames.remove(roomName);
-        
+        if (room != null){
+            String roomName = room.getName();
+            this.availableRoomsNames.remove(roomName);
+            room.close();
+            this.roomsByName.remove(roomName);
+	    }
 	Info.logInfoFinish("/ Room.remove: removed and closed");
     }
     
-    public void manageOfferVideo(String addresseeUserName, String senderUserName, JsonElement offer){
+    public String manageOfferVideo(String addresseeUserName, String senderUserName, String offer){
         log.info("* RoomManager.manageOfferVideo -> {} <- {}: {}", addresseeUserName, senderUserName);
         
         String roomName = this.roomsNamesByUserName.get(addresseeUserName);
         Room room = this.roomsByName.get(roomName);
-        room.manageOfferVideo(addresseeUserName, senderUserName, offer);
-        
-        log.info("/ RoomManager.manageOfferVideo");    
+        String sdpAnswer = null;
+
+        if (room != null){
+            sdpAnswer = room.manageOfferVideo(addresseeUserName, senderUserName, offer);
+        }
+
+        log.info("/ RoomManager.manageOfferVideo"); 
+        return sdpAnswer;
     }
     
-    public void manageAddress(String addresseeUserName, String senderUserName, JsonElement address){
-        log.info("* RoomManager.manageAddress -> {} <- {}: {}", addresseeUserName, senderUserName);
+    public void manageAddress(String addresseeUserName, String senderUserName, JsonObject address){
+    //    log.info("* RoomManager.manageAddress -> {} <- {}: {}", addresseeUserName, senderUserName);
         
          
         String roomName = this.roomsNamesByUserName.get(addresseeUserName);
         Room room = this.roomsByName.get(roomName);
-        room.manageAddress(addresseeUserName, senderUserName, address);
-        
-        log.info("/ RoomManager.manageAddress"); 
+        if (room != null){
+            room.manageAddress(addresseeUserName, senderUserName, address);
+        }
+     //   log.info("/ RoomManager.manageAddress"); 
     }
 
+    public boolean existRoom(String roomName){
+        return roomsByName.containsKey(roomName);
+    }
 
+    public void addIncomingParticipant (UserSession user){
+        log.info("{} RoomManager.addIncomingParticipant: {} {}",Info.START_SYMBOL, user.getUserName(), Hour.getTime());
+        this.printIncomingParticipants(); //*
+        if (user.isAStudent()){
+            this.incomingParticipantsByUserName.put(user.getUserName(), user);
+            log.info("An incoming participant has been added");
+            log.info("Now there are {} students in the waiting room",this.incomingParticipantsByUserName.size());
+        }
+        this.printIncomingParticipants(); //*
+        Info.logInfoFinish("RoomManager.addIncomingParticipant");
+     }
+    
+    public UserSession getIncomingParticipantByUserName(String userName){
+        log.info("{} RoomManager.getIncomingParticipantByUserName: {} {}", Info.START_SYMBOL,userName, Hour.getTime());
+        Info.logInfoFinish("RoomManager.getIncomingParticipantByUserName");
+        
+        return incomingParticipantsByUserName.get(userName);
+    }
+    
+    public List<UserSession> getIncomingParticipants(){
+        return Collections.list(this.incomingParticipantsByUserName.elements());
+    }
+    
+    public UserSession removeIncomingParticipant(UserSession user){
+        log.info("{} RoomManager.removeIncomingParticipant: {} {}",Info.START_SYMBOL, user.getUserName(), Hour.getTime());
+         
+       UserSession incomingParticipant = this.removeIncomingParticipant(user.getUserName());
+         
+        Info.logInfoFinish("RoomManager.removeIncomimgParticipant");
+        
+        return incomingParticipant;
+    }
+    
+    public UserSession removeIncomingParticipant(String userName){
+        log.info("{} RoomManager.removeIncomingParticipant: {} {}",Info.START_SYMBOL, userName, Hour.getTime());
+         
+        UserSession user = this.incomingParticipantsByUserName.remove(userName);
+        
+        log.info("An incoming participant has been removed");
+        log.info("Now there are {} students in the waiting room",incomingParticipantsByUserName.size());
+        Info.logInfoFinish("RoomManager.removeIncomimgParticipant");
+        
+        return user;
+    }
+    
+   
+    //#
+    public void printIncomingParticipants(){
+        log.info("The incoming participants are: " + this.incomingParticipantsByUserName.size());
+        for (Map.Entry <String, UserSession> entry : this.incomingParticipantsByUserName.entrySet()){
+            log.info("- " + entry.getKey());
+        }   
+    }
+
+    //#
     public String toString(){
         return "RoomsManager";
     }

@@ -21,6 +21,9 @@ var chat_component_1 = require('./components/chat/chat.component');
 var chatMessage_component_1 = require('./components/chatMessage/chatMessage.component');
 var connection_1 = require('./services/connection');
 var myService_1 = require('./services/myService');
+var handler_service_1 = require('./services/handler.service');
+var eventsEmitter_1 = require('./services/eventsEmitter');
+var auth_guard_1 = require('./guards/auth.guard');
 var AppModule = (function () {
     function AppModule() {
     }
@@ -41,8 +44,11 @@ var AppModule = (function () {
                 chatMessage_component_1.ChatMessageComponent
             ],
             providers: [
+                handler_service_1.HandlerService,
+                eventsEmitter_1.EventsEmitter,
                 connection_1.Connection,
-                myService_1.MyService
+                myService_1.MyService,
+                auth_guard_1.AuthGuard
             ],
             bootstrap: [app_component_1.AppComponent]
         }), 

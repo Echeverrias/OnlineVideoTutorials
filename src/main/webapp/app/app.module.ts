@@ -13,6 +13,11 @@ import { ChatMessageComponent } from './components/chatMessage/chatMessage.compo
 
 import { Connection } from './services/connection';
 import { MyService } from './services/myService';
+import { HandlerService } from './services/handler.service';
+import { LoginService } from './services/login.service';
+import { EventsEmitter } from './services/eventsEmitter'; 
+
+import { AuthGuard } from './guards/auth.guard';
 
 
 @NgModule({
@@ -31,8 +36,11 @@ import { MyService } from './services/myService';
     ChatMessageComponent
   ],
   providers: [
+      HandlerService,
+      EventsEmitter,
       Connection, 
-      MyService
+      MyService,
+      AuthGuard
   ],
   bootstrap: [ AppComponent ]
 })

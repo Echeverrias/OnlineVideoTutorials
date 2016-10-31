@@ -3,11 +3,13 @@
  * 
  */
  
-import { Component, OnInit, ViewChild, ViewChildren, OnDestroy, QueryList } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewChildren, OnDestroy, QueryList , EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
 import { Connection } from '../../services/connection';
 import { MyService } from '../../services/myService';
+import { RoomService } from '../../services/room.service';
+import { HandlerService } from '../../services/handler.service';
 
 import { ParticipantComponent } from '../participant/participant.component';
 
@@ -19,8 +21,9 @@ import { roomTemplate } from './room.html'
 @Component({
     moduleId: module.id,
     selector: 'ovt-room',
-    styleUrls: ["../../../assets/styles/main.css", "room.css"],
-    template: roomTemplate
+    styleUrls: ["room.css"],
+    template: roomTemplate,
+    providers: [RoomService]
 })
 
 export class RoomComponent implements OnInit, OnDestroy{
@@ -30,22 +33,25 @@ export class RoomComponent implements OnInit, OnDestroy{
     
     private name: string;
     private address: string;
-    private mainUser: User;
+    private mainUser: User = new User();
     private users: User[];
     
-    private onParticipantLessSubscription: Object;
-    private onParticipantInRoomSubscription: Object;
-    private onVideoResponseSubscription: Object;
-    private onIceCandidateSubscription: Object;
-    
+   // private eeReceiveVideoAnswer: EventEmitter;
+   // private eeIceCandidate: EventEmitter;
 
-    constructor(private router: Router, private connection: Connection, private appService: MyService, private route: ActivatedRoute) {
+    constructor(private handler: HandlerService, private room: RoomService, private router: Router, private me: MyService, private route: ActivatedRoute) {
       
       console.log("");
       console.log(`% Room constructor ${new Date().toLocaleTimeString()}`);
-      
-      this.users = [];
-
+      /*
+      this.eeReceiveVideoAnswer = new EventEmitter();
+      this.eeReceiveVideoAnswer.subscribe(data => this.onReceiveVideoResponse(data));
+      this.handler.attach('receiveVideoAnswer', this.eeReceiveVideoAnswer);
+                           
+      this.eeIceCandidate = new EventEmitter();
+      this.eeIceCandidate.subscribe(data => this.onAddIceCandidate(data));
+      this.handler.attach('iceCandidate', this.eeIceCandidate);
+      */
       
       console.log(this.users);
       console.log(`/ Room constructor ${new Date().toLocaleTimeString()}`);
@@ -53,236 +59,93 @@ export class RoomComponent implements OnInit, OnDestroy{
     }
     
     ngOnInit(){
-
-      this.route.params.forEach((params:Params) => {
-          this.name = params['roomName'];
+      this.route.params.forEach((params: Params) => {
+            this.name = params['roomName'];
         });
-      this.address = "/" + this.name;
+      this.address = this.name;
 
-      
-      this.onParticipantLessSubscription = this.connection.subscriptions.subscribeToParticipantLess(this, this.onRemoveParticipant);
-      this.onParticipantInRoomSubscription = this.connection.subscriptions.subscribeToParticipantInRoom(this, this.onAddParticipant);
-      this.onVideoResponseSubscription = this.connection.subscriptions.subscribeToVideoAnswer(this, this.onReceiveVideoResponse);
-      this.onIceCandidateSubscription = this.connection.subscriptions.subscribeToIceCandidate(this, this.onAddIceCandidate);
-      
-      this.lookingForParticipants();
-      
+      this.room.init(this.name);
+      this.room.getParticipants().subscribe(users => this.users = users);
+      this.room.getMainParticipant().subscribe(mainUser => this.mainUser = mainUser);
     }
-    
-    private lookingForParticipants():void{
-         console.log("");
-         console.log(`* Room.lookingForParticipants ${new Date().toLocaleTimeString()}`);
-        
-            var jsonMessage = {
-                id:"joinRoom",
-                roomName: this.name,
-                userName: this.appService.myUserName,
-                userType: this.appService.myUserType,
-                name: this.appService.myName
-            };
-
-            this.connection.sendMessage(jsonMessage);
-            
-        console.log(this.users);
-        console.log(`/ Room.lookingForParticipants ${new Date().toLocaleTimeString()}`);  
+    /*
+    onReceiveVideoResponse(jsonMessage: Object): void {
         console.log("");
-          
-    }
-
-    onAddParticipant(jsonMessage: Object): void {
-        console.log("");
-        console.log(`* <- Room.onAddParticipant ${new Date().toLocaleTimeString()}`);
-        console.log(`<- message: ${JSON.stringify(jsonMessage)}`);
-        console.log(this.users);
-
-        let user: User;
-
-        // My video will be the last 
-        if (jsonMessage.userName === this.appService.myUserName) {
-            user = this.appService.getMe();
-            this.users.push(user);
-            console.log("It's me")
-        }
-        else {
-            user = UserFactory.createAnUser(jsonMessage);
-            console.log("A new participant created")
-            if (user.isATutor()|| (this.appService.amATutor && !this.mainUser)){
-                this.mainUser = user;
-            }
-            else {
-                this.users.splice(this.users.length - 1, 0, user);
-            }
-
-        }  
-        console.log(this.users);
-        console.log(`/ Room.onAddParticipant ${new Date().toLocaleTimeString()}`);
-        console.log("");
-    }
-    
-    onReceiveVideoResponse(jsonMessage: Object): void{
-        console.log("");
-        console.log(`<- Room.onReceiveVideoResponse ${new Date().toLocaleTimeString()}`);
-        console.log(`<- message: ${JSON.stringify(jsonMessage)}`);
-        
+        console.log(`<- Room.onReceiveVideoResponse from ${jsonMessage.userName} ${new Date().toLocaleTimeString()}`);
+        //console.log(`<- message: ${JSON.stringify(jsonMessage)}`);
+         
         let userName = jsonMessage.userName;
         let sdpAnswer = jsonMessage.sdpAnswer;
-        
         let participant = this.getParticipant(userName);
-        
+
         console.log(`participant:`);
         console.log(participant);
-        
+
         participant.receiveVideoResponse(sdpAnswer);
-        
         console.log(`/ Room.onReceiveVideoResponse ${new Date().toLocaleTimeString()}`);
         console.log("");
     }
-    
-    onAddIceCandidate(jsonMessage: Object): void{
-        console.log("");
-        console.log(`<- Room.onIceCandidate ${new Date().toLocaleTimeString()}`);
-        console.log(`<- message: ${JSON.stringify(jsonMessage)}`);
-        
+
+    onAddIceCandidate(jsonMessage: Object): void {
+      //  console.log("");
+       //// console.log(`<- Room.onIceCandidate from ${jsonMessage.userName} ${new Date().toLocaleTimeString()}`);
+        //console.log(`<- message: ${JSON.stringify(jsonMessage)}`);
+
         let userName = jsonMessage.userName;
         let candidate = jsonMessage.candidate;
 
         let participant = this.getParticipant(userName);
-        
-        console.log(`participant:`);
-        console.log(participant);
-        
+
+      //  console.log(`participant:`);
+      //  console.log(participant);
+
         participant.addIceCandidate(candidate);
-        
-        console.log(`/ Room.onIceCandidate`);
-        console.log("/ " + new Date().toLocaleTimeString());
-        console.log("");
-    }
-    
-    onRemoveParticipant (jsonMessage: Object): void {
-        console.log("");
-        console.log(`<- Room.onRemoveParticipant - name: ${jsonMessage.userName} ${new Date().toLocaleTimeString()}`)
-        console.log(`<- message: ${JSON.stringify(jsonMessage)}`);
-        
-        this.removeParticipantComponent(jsonMessage.userName);
-        
-        console.log("/ Room.onRemoveParticipant ${new Date().toLocaleTimeString()}");
-        console.log("");
-    }
-    
-    private removeParticipantComponent(userName: string): void{
-        console.log("");
-        console.log(`* Room.removeParticipantComponent: ${userName} ${new Date().toLocaleTimeString()}`);
-        
-        this.closeParticipant(userName);
-        this.deleteUser(userName);
-        
-        console.log(`/ Room.removeParticipantComponent ${new Date().toLocaleTimeString()}`);
-        console.log("");
-    }
-    
-    private closeParticipant(userName:string): void{
-        console.log("");
-        console.log(`* Room.closeParticipant: ${userName} ${new Date().toLocaleTimeString()}`);
-        
-        let participant = this.getParticipant(userName);
-        participant.dispose();
-        
-        console.log(`/ Room.closeParticipant ${new Date().toLocaleTimeString()}`);
-        console.log("");
-    }
-    
-    private getParticipant (userName: string): ParticipantComponent{
-        console.log("");
-        console.log(`* Room.getParticipant: ${userName} of ...  ${new Date().toLocaleTimeString()}`);
-        console.log(this.participants);
-      
-        let participant = this.participants._results.filter(participant => participant.id === userName)[0];
-      
-        console.log(`/ Room.getParticipant -> ${participant.userName} ${new Date().toLocaleTimeString()}`);
-        console.log("");
-        return participant;    
-    }
-    
-    private deleteUser(userName: string): void{
-        console.log("");
-        console.log(`* Room.deleteUser: ${userName} ${new Date().toLocaleTimeString()}`);
-        console.log(`users before: ${JSON.stringify(this.users)}`);
-        
-        let index = this.getIndexOfUser(userName);
-        this.users.splice(index,1);
-        
-        console.log(`users after: ${JSON.stringify(this.users)}`);
-        console.log(`/ Room.deleteUser ${new Date().toLocaleTimeString()}`);
-        console.log("");
-        
-    }
-    
-    private getIndexOfUser(userName: string): number{
-       let index = 0;
-       let i = index;
-       let length = this.users.length;
-       let found = false;
-       
-       while (!found && i < length){
-           if (this.users[i].userName === userName){
-               found = true;
-               index = i;
-           }
-           else {
-               i++;
-           }
-       }
-       
-       return index;
+
+      //  console.log(`/ Room.onIceCandidate`);
+      //  console.log("/ " + new Date().toLocaleTimeString());
+       // console.log("");
     }
 
-    
+    private getParticipant(userName: string): ParticipantComponent {
+        //console.log("");
+       // console.log(`* Room.getParticipant: ${userName} of ...  ${new Date().toLocaleTimeString()}`);
+       // console.log(this.users);
+        let participant: ParticipantComponent;
+        if (this.mainParticipant.userName === userName) {
+            participant = this.mainParticipant;
+        }
+        else {
+            participant = this.participants._results.filter(participant => participant.id === userName)[0];
+        }
+
+       // console.log(`/ Room.getParticipant -> ${participant.userName} ${new Date().toLocaleTimeString()}`);
+       // console.log("");
+        return participant;
+    }
+  */
+
     onExitOfRoom(): void {
         console.log("");
         console.log(`<- Room.onExitOfRoom: ${this.name} ${new Date().toLocaleTimeString()}`);
-
-
-        let jsonMessage = {
-            id: "exitRoom",
-            roomName: this.name,
-            userName: this.appService.myUserName,
-            userType: this.appService.myUserType,
-        }
-
-        this.connection.sendMessage(jsonMessage);
-
-        this.removeAllParticipants();
-
-        if (this.appService.amAStudent()) {
+         
+        this.room.onExit();
+        
+        if (this.me.amAStudent()) {
             this.router.navigate(['/rooms']);
         }
         else {
            this.router.navigate(['/login']);
         }
-
+      
         console.log(`/ Room.onExitOfRoom ${new Date().toLocaleTimeString()}`);
         console.log("");
     }
 
     
-    removeAllParticipants(): void{
-       console.log("");
-       console.log(`* Room.removeAllParticipants ${new Date().toLocaleTimeString()}`);
-       
-       this.participants._results.map(participant => participant.dispose());
-       this.users.length = 0;
-       
-       console.log(`/ Room.removeAllParticipants ${new Date().toLocaleTimeString()}`);
-       console.log("");
-    }
-   
     ngOnDestroy(){
-       console.log(`* Room.OnDestroy ${new Date().toLocaleTimeString()}`);
+      console.log(`* Room.OnDestroy ${new Date().toLocaleTimeString()}`);
         
-      this.onParticipantLessSubscription.unsubscribe();
-      this.onParticipantInRoomSubscription.unsubscribe();
-      this.onVideoResponseSubscription.unsubscribe();
-      this.onIceCandidateSubscription.unsubscribe();
+      this.room.destroy();
     }
    
 }

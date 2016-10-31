@@ -10,18 +10,26 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var connection_1 = require('./services/connection');
+var myService_1 = require('./services/myService');
 var AppComponent = (function () {
-    function AppComponent(connection) {
+    function AppComponent(connection, me) {
         this.connection = connection;
+        this.me = me;
         console.log("% AppComponent constructor");
         console.log("/ AppComponent constructor");
     }
     AppComponent.prototype.beforeunloadHandler = function (event) {
+        console.log(this.me);
+        console.log(this.me.myUserName);
         var jsonMessage = {
-            id: "closeTab"
+            id: "closeTab",
+            userName: this.me.myUserName,
+            roomName: this.me.myRoomName
         };
+        console.log(jsonMessage);
         this.connection.sendMessage(jsonMessage);
     };
+    ;
     __decorate([
         core_1.HostListener('window:beforeunload', ['$event']), 
         __metadata('design:type', Function), 
@@ -35,7 +43,7 @@ var AppComponent = (function () {
             styleUrls: ["app.css"],
             template: "\n        <div id=\"ovt-app\">\n       <router-outlet></router-outlet>\n       </div>"
         }), 
-        __metadata('design:paramtypes', [connection_1.Connection])
+        __metadata('design:paramtypes', [connection_1.Connection, myService_1.MyService])
     ], AppComponent);
     return AppComponent;
 }());

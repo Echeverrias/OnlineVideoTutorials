@@ -3,11 +3,21 @@
  *
  */
 "use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 /**
 *
 * Here are the events triggered by server messages, that are reachable through the EventsEmitter class.
 */
 var core_1 = require('@angular/core');
+var handler_service_1 = require('./handler.service');
 var SingletonEvents = (function () {
     var events;
     function createInstance() {
@@ -48,11 +58,13 @@ var events = (function () {
             console.log("-> emitLogin");
             events.login.next(jsonMessage);
         },
+        // Login
         subscribeToLogin: function (component, callback) {
             console.log("subscribeToLogin");
             console.log(events.login);
             return events.login.subscribe(function (data) { return callback.call(component, data); });
         },
+        // WaitingRoom
         emitNewAvaibleRoom: function (roomName) {
             console.log("-> emitNewAvaibleRoom: " + roomName);
             events.newAvaibleRoom.next(roomName);
@@ -77,6 +89,7 @@ var events = (function () {
             console.log("subscribeToAvaibleRoomLessRoom");
             return events.avaibleRoomLess.subscribe(function (data) { return callback.call(component, data); });
         },
+        // Room
         emitParticipantLess: function (jsonMessage) {
             console.log("-> emitParticipantLess");
             events.participantLess.next(jsonMessage);
@@ -111,62 +124,70 @@ var events = (function () {
         }
     };
 })();
-var serverListener = function (message) {
-    console.log("<----- A message from the server has arrived");
-    console.log(JSON.parse(message.data));
-    var parsedMessage = JSON.parse(message.data);
-    switch (parsedMessage.id) {
-        case ('login'):
-            console.log("");
-            console.log("<---------- login " + new Date().toLocaleTimeString());
-            login(parsedMessage);
-            break;
-        case ('avaibleRooms'):
-            console.log("");
-            console.log("<---------- avaibleRooms " + new Date().toLocaleTimeString());
-            avaibleRooms(parsedMessage);
-            break;
-        case ('thereIsANewRoom'):
-            console.log("");
-            console.log("<---------- thereIsANewRoom " + new Date().toLocaleTimeString());
-            thereIsANewRoom(parsedMessage);
-            break;
-        case ('thereIsANewParticipant'):
-            console.log("");
-            console.log("<---------- thereIsANewParticipant " + new Date().toLocaleTimeString());
-            thereIsANewParticipant(parsedMessage);
-            break;
-        case ('thereIsAParticipant'):
-            console.log("");
-            console.log("<---------- thereIsAParticipant " + new Date().toLocaleTimeString());
-            thereIsAParticipant(parsedMessage);
-            break;
-        case ('aParticipantHasLeftTheRoom'):
-            console.log("");
-            console.log("<---------- aParticipantHasLeftTheRoom " + new Date().toLocaleTimeString());
-            aParticipantHasLeftTheRoom(parsedMessage);
-            break;
-        case ('thereIsAnAvaibleRoomLess'):
-            console.log("");
-            console.log("<---------- thereIsAnAvaibleRoomLess " + new Date().toLocaleTimeString());
-            thereIsAnAvaibleRoomLess(parsedMessage);
-            break;
-        case ('receiveVideoAnswer'):
-            console.log("");
-            console.log("<---------- receiveVideoAnswer " + new Date().toLocaleTimeString());
-            receiveVideoAnswer(parsedMessage);
-            break;
-        case ('iceCandidate'):
-            console.log("");
-            console.log("<---------- iceCandidate " + new Date().toLocaleTimeString());
-            iceCandidate(parsedMessage);
-            break;
-        case ('server'):
-            console.log("<---------- $$$ SERVER:  " + parsedMessage.value + " " + new Date().toLocaleTimeString());
-            break;
-        default:
-            console.error("The message: {}, isn't valid", parsedMessage.id);
-    }
+var serverListener = function (someHandler) {
+    return function (message) {
+        var handler = someHandler;
+        if (!JSON.parse(message.data).id.includes('iceCandidate')) {
+            console.log("<----- A message from the server has arrived");
+            console.log(JSON.parse(message.data));
+        }
+        if (!handler.handler(message)) {
+            console.log("The handler can't hanler the message");
+            var parsedMessage = JSON.parse(message.data);
+            switch (parsedMessage.id) {
+                case ('login'):
+                    console.log("");
+                    console.log("<---------- login " + new Date().toLocaleTimeString());
+                    login(parsedMessage);
+                    break;
+                case ('avaibleRooms'):
+                    console.log("");
+                    console.log("<---------- avaibleRooms " + new Date().toLocaleTimeString());
+                    avaibleRooms(parsedMessage);
+                    break;
+                case ('thereIsANewRoom'):
+                    console.log("");
+                    console.log("<---------- thereIsANewRoom " + new Date().toLocaleTimeString());
+                    thereIsANewRoom(parsedMessage);
+                    break;
+                case ('thereIsANewParticipant'):
+                    console.log("");
+                    console.log("<---------- thereIsANewParticipant " + new Date().toLocaleTimeString());
+                    thereIsANewParticipant(parsedMessage);
+                    break;
+                case ('thereIsAParticipant'):
+                    console.log("");
+                    console.log("<---------- thereIsAParticipant " + new Date().toLocaleTimeString());
+                    thereIsAParticipant(parsedMessage);
+                    break;
+                case ('aParticipantHasLeftTheRoom'):
+                    console.log("");
+                    console.log("<---------- aParticipantHasLeftTheRoom " + new Date().toLocaleTimeString());
+                    aParticipantHasLeftTheRoom(parsedMessage);
+                    break;
+                case ('thereIsAnAvaibleRoomLess'):
+                    console.log("");
+                    console.log("<---------- thereIsAnAvaibleRoomLess " + new Date().toLocaleTimeString());
+                    thereIsAnAvaibleRoomLess(parsedMessage);
+                    break;
+                case ('receiveVideoAnswer'):
+                    console.log("");
+                    console.log("<---------- receiveVideoAnswer " + new Date().toLocaleTimeString());
+                    receiveVideoAnswer(parsedMessage);
+                    break;
+                case ('iceCandidate'):
+                    console.log("");
+                    console.log("<---------- iceCandidate " + new Date().toLocaleTimeString());
+                    iceCandidate(parsedMessage);
+                    break;
+                case ('server'):
+                    console.log("<---------- $$$ SERVER:  " + parsedMessage.value + " " + new Date().toLocaleTimeString());
+                    break;
+                default:
+                    console.error("The message: {}, isn't valid", parsedMessage.id);
+            }
+        }
+    };
 };
 var login = function (jsonMessage) {
     console.log("<- login");
@@ -237,8 +258,10 @@ var subscriptions = {
 * It emit some events triggered by the events and allows to subscribe to these events
 */
 var EventsEmitter = (function () {
-    function EventsEmitter() {
-        this._serverListener = serverListener;
+    function EventsEmitter(handler) {
+        this.handler = handler;
+        console.log("EventsEmitter constructor");
+        this._serverListener = serverListener(handler);
         this._subscriptions = subscriptions;
     }
     ;
@@ -256,6 +279,10 @@ var EventsEmitter = (function () {
         enumerable: true,
         configurable: true
     });
+    EventsEmitter = __decorate([
+        core_1.Injectable(), 
+        __metadata('design:paramtypes', [handler_service_1.HandlerService])
+    ], EventsEmitter);
     return EventsEmitter;
 }());
 exports.EventsEmitter = EventsEmitter;

@@ -10,7 +10,9 @@
 
 
 
-import { EventEmitter } from '@angular/core'; 
+import { EventEmitter, Injectable } from '@angular/core'; 
+
+import { HandlerService} from './handler.service';
  
 
 
@@ -65,11 +67,16 @@ var events = (function(){
             events.login.next(jsonMessage);
         },
 
+        // Login
+
         subscribeToLogin: function(component, callback) {
             console.log(`subscribeToLogin`);
             console.log(events.login);
             return events.login.subscribe(data => callback.call(component, data));
         },
+
+
+        // WaitingRoom
 
         emitNewAvaibleRoom: function(roomName: string){
             console.log(`-> emitNewAvaibleRoom: ${roomName}`);
@@ -101,6 +108,8 @@ var events = (function(){
             return events.avaibleRoomLess.subscribe(data => callback.call(component, data));
         },
 
+
+        // Room
 
         emitParticipantLess: function(jsonMessage: Object){
             console.log(`-> emitParticipantLess`);
@@ -146,64 +155,74 @@ var events = (function(){
 })();
 
 
-var serverListener = function(message){
-    console.log("<----- A message from the server has arrived");
-    console.log(JSON.parse(message.data));
-    let parsedMessage = JSON.parse(message.data);
-            switch (parsedMessage.id){
-            case('login'):
-                console.log("");
-                console.log(`<---------- login ${new Date().toLocaleTimeString()}`);
-                login(parsedMessage);
-                break;
-            case('avaibleRooms'):
-                 console.log("");
-                console.log(`<---------- avaibleRooms ${new Date().toLocaleTimeString()}`);
-                avaibleRooms(parsedMessage);
-                break;
-            case('thereIsANewRoom'):
-                 console.log("");
-                console.log(`<---------- thereIsANewRoom ${new Date().toLocaleTimeString()}`);
-                thereIsANewRoom(parsedMessage);
-                break;    
-            case('thereIsANewParticipant'):
-                 console.log("");
-                console.log(`<---------- thereIsANewParticipant ${new Date().toLocaleTimeString()}`);
-                thereIsANewParticipant(parsedMessage);
-                break;
-            case('thereIsAParticipant'):
-                 console.log("");
-                console.log(`<---------- thereIsAParticipant ${new Date().toLocaleTimeString()}`);
-                thereIsAParticipant(parsedMessage);
-                break;
-            case('aParticipantHasLeftTheRoom'):
-                 console.log("");
-                console.log(`<---------- aParticipantHasLeftTheRoom ${new Date().toLocaleTimeString()}`);
-                aParticipantHasLeftTheRoom(parsedMessage);
-                break;
-            case('thereIsAnAvaibleRoomLess'):
-                 console.log("");
-                console.log(`<---------- thereIsAnAvaibleRoomLess ${new Date().toLocaleTimeString()}`);
-                thereIsAnAvaibleRoomLess(parsedMessage);
-                break;    
-            case('receiveVideoAnswer'):
-                 console.log("");
-                console.log(`<---------- receiveVideoAnswer ${new Date().toLocaleTimeString()}`);
-                receiveVideoAnswer(parsedMessage);
-                break;
-            case('iceCandidate'):
-                 console.log("");
-                console.log(`<---------- iceCandidate ${new Date().toLocaleTimeString()}`);
-                iceCandidate(parsedMessage);
-                break;
-            case('server'):
-                 console.log(`<---------- $$$ SERVER:  ${parsedMessage.value} ${new Date().toLocaleTimeString()}`);
-                break;
-            default:
-                console.error("The message: {}, isn't valid", parsedMessage.id);   
+var serverListener = function(someHandler) {
+
+    return function(message) {
+        let handler = someHandler;
+        if (!JSON.parse(message.data).id.includes('iceCandidate')) {
+            console.log("<----- A message from the server has arrived");
+            console.log(JSON.parse(message.data));
+        }    
+        if (!handler.handler(message)) { 
+            console.log("The handler can't hanler the message");
+            let parsedMessage = JSON.parse(message.data);
+            switch (parsedMessage.id) {
+                case ('login'):
+                    console.log("");
+                    console.log(`<---------- login ${new Date().toLocaleTimeString()}`);
+                    login(parsedMessage);
+                    break;
+                case ('avaibleRooms'):
+                    console.log("");
+                    console.log(`<---------- avaibleRooms ${new Date().toLocaleTimeString()}`);
+                    avaibleRooms(parsedMessage);
+                    break;
+                case ('thereIsANewRoom'):
+                    console.log("");
+                    console.log(`<---------- thereIsANewRoom ${new Date().toLocaleTimeString()}`);
+                    thereIsANewRoom(parsedMessage);
+                    break;
+                case ('thereIsANewParticipant'):
+                    console.log("");
+                    console.log(`<---------- thereIsANewParticipant ${new Date().toLocaleTimeString()}`);
+                    thereIsANewParticipant(parsedMessage);
+                    break;
+                case ('thereIsAParticipant'):
+                    console.log("");
+                    console.log(`<---------- thereIsAParticipant ${new Date().toLocaleTimeString()}`);
+                    thereIsAParticipant(parsedMessage);
+                    break;
+                case ('aParticipantHasLeftTheRoom'):
+                    console.log("");
+                    console.log(`<---------- aParticipantHasLeftTheRoom ${new Date().toLocaleTimeString()}`);
+                    aParticipantHasLeftTheRoom(parsedMessage);
+                    break;
+                case ('thereIsAnAvaibleRoomLess'):
+                    console.log("");
+                    console.log(`<---------- thereIsAnAvaibleRoomLess ${new Date().toLocaleTimeString()}`);
+                    thereIsAnAvaibleRoomLess(parsedMessage);
+                    break;
+                case ('receiveVideoAnswer'):
+                    console.log("");
+                    console.log(`<---------- receiveVideoAnswer ${new Date().toLocaleTimeString()}`);
+                    receiveVideoAnswer(parsedMessage);
+                    break;
+                case ('iceCandidate'):
+                    console.log("");
+                    console.log(`<---------- iceCandidate ${new Date().toLocaleTimeString()}`);
+                    iceCandidate(parsedMessage);
+                    break;
+                case ('server'):
+                    console.log(`<---------- $$$ SERVER:  ${parsedMessage.value} ${new Date().toLocaleTimeString()}`);
+                    break;
+                default:
+                    console.error("The message: {}, isn't valid", parsedMessage.id);
                 //Events.emitShowComponent('error');
             }
+        }    
     }
+
+}    
 
 var login = function (jsonMessage){
     console.log("<- login");
@@ -305,6 +324,8 @@ var subscriptions = {
 /**
 * It emit some events triggered by the events and allows to subscribe to these events
 */
+
+@Injectable()
 export class EventsEmitter{
     
     // Listens the messages sent by the server and triggers some event
@@ -313,9 +334,9 @@ export class EventsEmitter{
     // The events subscriptions
     private _subscriptions: Object;
     
-    constructor(){
-        
-        this._serverListener = serverListener;
+    constructor(private handler: HandlerService){
+        console.log("EventsEmitter constructor");
+        this._serverListener = serverListener(handler);
         this._subscriptions = subscriptions;
         
     };

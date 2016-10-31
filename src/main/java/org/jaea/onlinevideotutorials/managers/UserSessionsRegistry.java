@@ -14,8 +14,6 @@
  */
 package org.jaea.onlinevideotutorials.managers;
 
-import com.google.gson.JsonObject;
-import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.jaea.onlinevideotutorials.Hour;
@@ -33,7 +31,7 @@ public class UserSessionsRegistry {
     private final ConcurrentHashMap<String, UserSession> usersBySessionId = new ConcurrentHashMap();
     
     /* It stores the students which are not in a room */
-    private final ConcurrentHashMap<String, UserSession> incomingParticipantsByUserName = new ConcurrentHashMap();
+    //private final ConcurrentHashMap<String, UserSession> incomingParticipantsByUserName = new ConcurrentHashMap();
     
 
     public UserSessionsRegistry(){
@@ -53,14 +51,35 @@ public class UserSessionsRegistry {
         log.info(" add to usersByName");
         this.usersBySessionId.put(user.getSession().getId(), user);
         log.info(" add to usersBySessionId");
-        
-        if (user.isAStudent()) {
-            this.addIncomingParticipant(user);
-        }
-        
+       
         Info.logInfoFinish("UserRegistry.addUser");
     }
     
+    public UserSession getUserByUserName(String userName){
+     //   log.info("{} UserRegistry.getUserByUserName: {} {}", Info.START_SYMBOL,userName, Hour.getTime());
+      //  Info.logInfoFinish("UserRegistry.getUserByUserName");
+        
+        return usersByUserName.get(userName);
+    }
+    
+    public UserSession getUserBySessionId(String sessionId){
+       // log.info("{} UserRegistry.getUserBySessionId: {} {}", Info.START_SYMBOL,sessionId, Hour.getTime());
+      //  Info.logInfoFinish("UserRegistry.getUserBySessionId: " + usersBySessionId.get(sessionId));
+        
+        return usersBySessionId.get(sessionId);
+    }
+
+    public UserSession removeUser (String userName){
+        log.info("{} UserRegistry.removeUser: {}, {}", Info.START_SYMBOL, userName, Hour.getTime());
+        
+        UserSession outgoingUser = this.usersByUserName.remove(userName);
+        if (outgoingUser != null) {
+            this.usersBySessionId.remove(outgoingUser.getSessionId());
+        }
+        return outgoingUser;
+    }
+    
+    /*
     public void addIncomingParticipant (UserSession user){
         log.info("{} UserRegistry.addIncomingParticipant: {} {}",Info.START_SYMBOL, user.getUserName(), Hour.getTime());
         this.printIncomingParticipants(); //*
@@ -73,25 +92,15 @@ public class UserSessionsRegistry {
         Info.logInfoFinish("UserRegistry.addIncomingParticipant");
      }
     
-    public UserSession getUserByUserName(String userName){
-        log.info("{} UserRegistry.getUserByUserName: {} {}", Info.START_SYMBOL,userName, Hour.getTime());
-        Info.logInfoFinish("UserRegistry.getUserByUserName");
-        
-        return usersByUserName.get(userName);
-    }
-    
-    public UserSession getUserBySessionId(String sessionId){
-        log.info("{} UserRegistry.getUserBySessionId: {} {}", Info.START_SYMBOL,sessionId, Hour.getTime());
-        Info.logInfoFinish("UserRegistry.getUserBySessionId: " + usersBySessionId.get(sessionId));
-        
-        return usersBySessionId.get(sessionId);
-    }
-    
     public UserSession getIncomingParticipantByUserName(String userName){
         log.info("{} UserRegistry.getIncomingParticipantByUserName: {} {}", Info.START_SYMBOL,userName, Hour.getTime());
         Info.logInfoFinish("UserRegistry.getIncomingParticipantByUserName");
         
         return incomingParticipantsByUserName.get(userName);
+    }
+    
+    public List<UserSession> getIncomingParticipants(){
+        return Collections.list(this.incomingParticipantsByUserName.elements());
     }
     
     public UserSession removeIncomingParticipant(UserSession user){
@@ -116,36 +125,7 @@ public class UserSessionsRegistry {
         return user;
     }
     
-    public void removeUser (String userName){
-        log.info("{} UserRegistry.removeUser: {}, {}", Info.START_SYMBOL, userName, Hour.getTime());
-        
-        UserSession outgoingUser = this.usersByUserName.remove(userName);
-        this.usersBySessionId.remove(outgoingUser.getSessionId());
-        this.incomingParticipantsByUserName.remove(userName);
-    }
-    
-    public void sendAMessageToIncomingParticipants(JsonObject message){
-        log.info("{} UserRegistry.sendAMessageToIncomingParticipants - message: {} {}",Info.START_SYMBOL, message, Hour.getTime());
-        log.info("IncomingParticipants: " + this.incomingParticipantsByUserName.size());
-        if (this.incomingParticipantsByUserName!=null){
-            
-            for (UserSession user : Collections.list(incomingParticipantsByUserName.elements())){
-                log.info("User: {}", user.getUserName());
-
-                user.sendMeAMessage(message);
-            }  
-            
-        }
-        
-        log.info("the message has been sent to all incoming participants");
-        Info.logInfoFinish("UserRegistry.sendAMessageToIncomingParticipants");
-    }
-
-    //#
-    public String toString(){
-        return "UserSessionsRegistry";
-    }
-
+   
     //#
     public void printIncomingParticipants(){
         log.info("The incoming participants are: " + this.incomingParticipantsByUserName.size());
@@ -153,7 +133,15 @@ public class UserSessionsRegistry {
             log.info("- " + entry.getKey());
         }   
     }
+    */
+    
 
+    //#
+    public String toString(){
+        return "UserSessionsRegistry";
+    }
+
+    
      //#
     public void printUsers(){
         log.info("The users are: " + this.usersByUserName.size());

@@ -10,35 +10,29 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var connection_1 = require('./connection');
+var myService_1 = require('./myService');
+var hexColorGenerator_1 = require('./../components/chat/hexColorGenerator');
 var ENDPOINT = "/chat";
 var ChatService = (function () {
-    function ChatService(connection) {
+    function ChatService(connection, me) {
         this.connection = connection;
-        this.subscription = "/ovt/chat/noticeBoard";
-        this.destiny = "/ovt/chat/mailBox";
+        this.me = me;
+        this.subscription = "/ovt/chat/noticeBoard/";
+        this.destiny = "/ovt/chat/mailBox/";
         console.log("");
         console.log("% new ChatService");
-        this.wsUrl = connection.url;
-        /*
-        stompClient = Stomp.client(ws.url + "/chat");
-        console.log("The stompClient is going to be connected");
-        stompClient.connect({}, function(frame) {
-            setConnected(true);
-            console.log('Connected: ' + frame);
-            stompClient.subscribe(SUBSCRIPTION, function(greeting) {
-                console.log("Msg received:");
-                console.log(greeting);
-                showGreeting(JSON.parse(greeting.body).content);
-            });
-        });
-        */
+        this.wsUrl = this.connection.url;
+        this.colorGenerator = new hexColorGenerator_1.HexColorGenerator();
+        this.messages = [];
+        this.participants = [];
     }
-    ChatService.prototype.signIn = function (address, noticeBoard) {
-        console.log("* ChatService.signIn");
-        this.noticeBoard = noticeBoard;
+    ChatService.prototype.init = function (address) {
         this.destiny = this.destiny + address;
         this.subscription = this.subscription + address;
         this.connect();
+    };
+    ChatService.prototype.getMessages = function () {
+        return this.messages;
     };
     ChatService.prototype.connect = function () {
         var _this = this;
@@ -56,19 +50,37 @@ var ChatService = (function () {
         });
     };
     ChatService.prototype.publish = function (message) {
-        this.noticeBoard.publish(message);
+        this.addColor(message);
+        this.messages.push(message);
+    };
+    ChatService.prototype.addColor = function (message) {
+        if (!this.participants[message.sender]) {
+            this.participants[message.sender] = this.colorGenerator.getAColor();
+        }
+        message.color = this.participants[message.sender];
     };
     ChatService.prototype.sendMessage = function (message) {
-        this.stompClient.send(this.destiny, {}, JSON.stringify(message));
+        var myUserName = this.me.myUserName;
+        var msg = {
+            sender: myUserName,
+            message: message,
+            date: new Date().toLocaleTimeString(),
+            color: undefined
+        };
+        this.stompClient.send(this.destiny, {}, JSON.stringify(msg));
     };
     ChatService.prototype.disconnect = function () {
         if (this.stompClient !== null) {
             this.stompClient.disconnect();
         }
     };
+    ChatService.prototype.destroy = function () {
+        this.disconnect();
+        this.messages.length = 0;
+    };
     ChatService = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [connection_1.Connection])
+        __metadata('design:paramtypes', [connection_1.Connection, myService_1.MyService])
     ], ChatService);
     return ChatService;
 }());

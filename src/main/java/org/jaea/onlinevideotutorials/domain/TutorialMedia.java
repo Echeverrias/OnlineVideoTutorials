@@ -5,8 +5,6 @@
  */
 package org.jaea.onlinevideotutorials.domain;
 
-import org.jaea.onlinevideotutorials.domain.ParticipantSession;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.io.Closeable;
 import java.io.IOException;
@@ -46,7 +44,7 @@ public class TutorialMedia implements Closeable{
     private final WebRtcEndpoint outgoingMedia;
     private final ConcurrentMap<String, WebRtcEndpoint> incomingMediaByUserName = new ConcurrentHashMap<>();;
 
-
+    
     public TutorialMedia(final MediaPipeline pipeline, final WebSocketSession session, final String userName){
         //Info.logInfoStart();
         log.info("");
@@ -63,112 +61,91 @@ public class TutorialMedia implements Closeable{
         
         Info.logInfoFinish("/ TutorialMedia");
     }
-
+    
     private void addOnIceCandidateListenerToWebRtc(WebRtcEndpoint webRtc, final String userName, final WebSocketSession session){
-        Info.logInfoStart("TutorialMedia.addOnIceCandidateListenerToWebRtc");
+       // Info.logInfoStart("TutorialMedia.addOnIceCandidateListenerToWebRtc");
         webRtc.addOnIceCandidateListener(new EventListener<OnIceCandidateEvent>() {
 
                 @Override
                 public void onEvent(OnIceCandidateEvent event) {
-                    Info.logInfoStart2("OnIceCandidateEvent");
-                    JsonObject response = new JsonObject();
-                    response.addProperty("id", "iceCandidate");
-                    response.addProperty("userName", userName);
-                    response.add("candidate",
-                    JsonUtils.toJsonObject(event.getCandidate()));
+                    //Info.logInfoStart2("OnIceCandidateEvent");
+                    JsonObject response = OnIceCandidateMessage.getMessage(userName, event.getCandidate());
                     synchronized (session) {
                         SendMessage.toClient(response, session);
                     }
-                    Info.logInfoFinish2("OnIceCandidateEvent");
+                 //   Info.logInfoFinish2("OnIceCandidateEvent");
                 }    
             });
-         Info.logInfoFinish("TutorialMedia.addOnIceCandidateListenerToWebRtc");
+       //  Info.logInfoFinish("TutorialMedia.addOnIceCandidateListenerToWebRtc");
     }
     
-    public void addCandidate(JsonElement candidate, String userName) {
+    public void addCandidate(JsonObject candidate, ParticipantSession participant) {
        // Info.logInfoStart();
-        log.info("");
-        log.info("{} TutorialMedia.addCandidate {} to {} {}", Info.START_SYMBOL, candidate.toString(), userName, Hour.getTime());
-        JsonObject address = candidate.getAsJsonObject();
-        IceCandidate cand = new IceCandidate(address.get("candidate").getAsString(),
-                                        address.get("sdpMid").getAsString(),
-					address.get("sdpMLineIndex").getAsInt());
+      //  log.info("");
+      //  log.info("{} TutorialMedia.addCandidate {} to {} {}", Info.START_SYMBOL, candidate.toString(), userName, Hour.getTime());
+       // JsonObject address = candidate.getAsJsonObject();
+        IceCandidate cand = new IceCandidate( candidate.get("candidate").getAsString(),
+                                              candidate.get("sdpMid").getAsString(),
+					                          candidate.get("sdpMLineIndex").getAsInt()
+                                              );
         
-        if (this.userName.compareTo(userName) == 0) {
-            log.info("I'm going to add me an iceCandidate");
-            outgoingMedia.addIceCandidate(cand);
-	} 
-        else {
-            WebRtcEndpoint userWebRtc = this.incomingMediaByUserName.get(userName);
-                if (userWebRtc != null) {
-                    log.info("I'm going to add an iceCandidate to a participant");
-                    userWebRtc.addIceCandidate(cand);
-		}
-	}
+       WebRtcEndpoint userWebRtc = this.getEndpointFromUser(participant);
+        userWebRtc.addIceCandidate(cand);
+	
         
-        Info.logInfoFinish("/ TutorialMedia.addCandidate");
+      //  Info.logInfoFinish("/ TutorialMedia.addCandidate");
     }
     
-    public void receiveVideoFrom(ParticipantSession sender, JsonElement sdpOffer) throws IOException {
+    public String receiveVideoFrom(ParticipantSession sender, String offer) throws IOException {
         log.info("{} TutorialMedia.receiveVideoFrom {} {}",Info.START_SYMBOL, sender.getUserName(), Hour.getTime());
         log.info("USER {}: connecting with {}", this.userName, sender.getUserName());
-        log.trace("USER {}: SdpOffer for {} is {}", this.userName, sender.getUserName(), sdpOffer);
-        
-        String offer = sdpOffer.getAsString();
+        log.trace("USER {}: SdpOffer for {} is {}", this.userName, sender.getUserName(), offer);
         
         WebRtcEndpoint senderWebRtc = this.getEndpointFromUser(sender);
+        sender.connectToRemote(senderWebRtc); 
 	    final String ipSdpAnswer = senderWebRtc.processOffer(offer);
         
-    	final JsonObject scParams = new JsonObject();
-    	scParams.addProperty("id", "receiveVideoAnswer");
-    	scParams.addProperty("userName", sender.getUserName());
-    	scParams.addProperty("sdpAnswer", ipSdpAnswer);
-
-    	log.trace("USER {}: SdpAnswer for {} is {}", this.userName, sender.getUserName(), ipSdpAnswer);
-    	SendMessage.toClient(scParams, this.session);
-    	log.debug("gather candidates");
+        log.debug("gather candidates");
     	senderWebRtc.gatherCandidates();
-
-        Info.logInfoFinish("TutorialMedia.receiveVideoFrom");    
+        Info.logInfoFinish("TutorialMedia.receiveVideoFrom");  
+        
+        return ipSdpAnswer;
     }
     
-    private WebRtcEndpoint getEndpointFromUser(final ParticipantSession sender) {
+    private WebRtcEndpoint getEndpointFromUser(final ParticipantSession participant) {
         //Info.logInfoStart();
-        log.info("{} TutorialMedia.getEndpointFromUser {}",  Info.START_SYMBOL, sender.getUserName());
+       // log.info("{} TutorialMedia.getEndpointFromUser {}",  Info.START_SYMBOL, participant.getUserName());
         
         WebRtcEndpoint incoming;
 
-        if (sender.getUserName().equals(this.userName)) {
-            log.info("I'm the PARTICIPANT {}: configuring loopback", this.userName);
+        if (participant.getUserName().equals(this.userName)) {
+          //  log.info("I'm the PARTICIPANT {}: configuring loopback", this.userName);
             incoming = outgoingMedia;
 	    }
 
         else {
-        	log.info("PARTICIPANT {}: receiving video from {}", this.userName, sender.getUserName());
+        	//log.info("PARTICIPANT {}: receiving video from {}", this.userName, participant.getUserName());
 
-        	incoming = this.incomingMediaByUserName.get(sender.getUserName());
+        	incoming = this.incomingMediaByUserName.get(participant.getUserName());
         	if (incoming == null) {
-                    log.info("PARTICIPANT {}: creating new endpoint for {}", this.userName, sender.getUserName());
+                 //   log.info("PARTICIPANT {}: creating new endpoint for {}", this.userName, participant.getUserName());
                     
                     incoming = new WebRtcEndpoint.Builder(pipeline).build();
-                    this.addOnIceCandidateListenerToWebRtc(incoming, sender.getUserName(), this.session);
-                    this.incomingMediaByUserName.put(sender.getUserName(), incoming);
+                    this.addOnIceCandidateListenerToWebRtc(incoming, participant.getUserName(), this.session);
+                    this.incomingMediaByUserName.put(participant.getUserName(), incoming);
             }
         }        
 
-    	log.info("PARTICIPANT {}: obtained endpoint for {}", this.userName, sender.getUserName());
-    	sender.connectToRemote(incoming);
+    //	log.info("PARTICIPANT {}: obtained endpoint for {}", this.userName, participant.getUserName());
+    	// sender.connectToRemote(incoming); // -> receiveVideoFrom
         
-        Info.logInfoFinish("TutorialMedia.getEndpointFromUser ");
+        //Info.logInfoFinish("TutorialMedia.getEndpointFromUser ");
         return incoming;
     }
-    
     
     public void connectToRemote(WebRtcEndpoint incomingMedia) {
         this.outgoingMedia.connect(incomingMedia);
     }
-    
-    
     
     public void cancelVideoFrom(final ParticipantSession participant) {
         //Info.logInfoStart();

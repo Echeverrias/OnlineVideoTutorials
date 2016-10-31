@@ -9,15 +9,16 @@ and open the template in the editor.
 */
 
 
-.ovt-chat{
-  min-height:100%;
+#ovt-chat{
+  height:100%;
+  font.size: 0.8em;
 }
 
 .messages{
   width: 94%;
   background-color: #EEFACA;
   margin-bottom: 0.9em;
-  padding: 0.1em 1em;
+  padding: 0.1em 0.7em;
   border: 0.2em solid grey;
   border-radius: 0.5em;
   max-height: 4.2em;
@@ -30,8 +31,6 @@ and open the template in the editor.
 
 .mailbox input {
   display: inline;
-  font-size: 1.2em;
-
 }
 
 #myMessage{
@@ -42,15 +41,19 @@ and open the template in the editor.
   border-radius: 0.5em;
   border: 0.15em solid grey;
   line-height: 1.3em;
-  height: 3em;
+  height: 20%;
   vertical-align: middle;
-  padding: 0 1em;
-  font-size: 1.2em;
-  height:2.8em;
+  padding: 0 0.7em;
+  font-size: 0.9em;
 }
 
 #sendMessage{
-  width:5%;
+  width:auto;
   padding: 0.1em 0.2em;
+  font-size: 0.9em;
   vertical-align: middle;
+}
+
+ovt-chatmessage{
+  
 }

@@ -10,18 +10,17 @@ and open the template in the editor.
 
 
 .ovt-chatMessage{
-  padding:0.2em;
+  padding:0.2em 0;
   width: 100%;
  
 }
 
 
 .sender, .message{
-  font-size: 1.2em;
+  font-size: 1em;
   
- 
-  
-}
+ }
+
 
 .sender{
   float:left;

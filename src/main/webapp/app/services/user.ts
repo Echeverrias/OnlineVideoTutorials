@@ -12,14 +12,17 @@ export class User {
     private _name: string = null;
     private _userType: string = null; // 'tutor' or 'student'
     
-    constructor(userName: string, userType: string, name: string){
+    constructor();
+    constructor(userName: string, userType: string, name: string);
+    constructor(userName?: string, userType?: string, name?: string) {
         console.log("");
         console.log(`% User ${new Date().toLocaleTimeString()}`);
-        console.log(`username: ${userName}, userType: ${userType}, name: ${name}`);
-        this._userName = userName;
-        this._userType = userType;
-        this._name = name;
-        
+        if (arguments.length == 3) {
+            console.log(`username: ${userName}, userType: ${userType}, name: ${name}`);
+            this._userName = userName;
+            this._userType = userType;
+            this._name = name;
+        }
         console.log(`/ User ${new Date().toLocaleTimeString()}`);
         console.log("");
     }
@@ -43,9 +46,20 @@ export class User {
     get userType(): string {
         return this._userType;
     }
+
+    set (user: User){
+        this._userName = user.userName;
+        this._userType = user.userType;
+        this._name = user.name;
+    }
+
+    setToUndefined (): void{
+        this._userName = null;
+        this._userType = null;
+        this._name = null;
+    }
     
     isATutor(): boolean {
-        console.log(`my userType is ${this._userType} `);
         return this._userType === User.tutorType;
     }
     
@@ -53,30 +67,10 @@ export class User {
         return this._userType === User.studentType;
     } 
 
+    exist(): boolean{
+        return this._userName != null;
+    }
+
   
-    /*
-     * 
-    
-    
-    
-    set userName(userName: string): void{
-        this._userName = userName;
-    }
-    
-    set name(name: string): void{
-        this._name = name;
-    }
-    
-    set userType(userType: string): void{
-        this._userType = userType;
-    }
-    
-    close(){
-        console.log(`User ${this._userName} closed`);
-    }
-    */
-    
-    
-    
 } 
 

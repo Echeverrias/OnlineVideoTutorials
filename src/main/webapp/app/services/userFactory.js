@@ -12,8 +12,8 @@ var UserFactory = (function () {
     function UserFactory() {
         console.log("% UserFactory");
     }
-    UserFactory.createAnUser = function (jsonMessage) {
-        return new user_1.User(jsonMessage.userName, jsonMessage.userType, jsonMessage.name);
+    UserFactory.createAnUser = function (msg) {
+        return new user_1.User(msg.userName, msg.userType, msg.name);
     };
     return UserFactory;
 }());

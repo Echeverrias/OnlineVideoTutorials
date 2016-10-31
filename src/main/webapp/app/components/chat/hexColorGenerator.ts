@@ -1,11 +1,11 @@
 export class HexColorGenerator{
 
     private colors: string[] = ['#00ced1', '#1e90ff', '#c393f6','#ba3232', '#beed00', '#26857e', '#ffe700', '#f4200d', '#b51138'];
-    private colorsGenerated: Object;
+    private colorsGenerated: Set<string>;
     
 
     constructor(){
-        this.colorsGenerated = new Set();
+        this.colorsGenerated = new Set<string>();
         this.colorsGenerated.add("#ffffff");
         this.colorsGenerated.add("#000000");
     }

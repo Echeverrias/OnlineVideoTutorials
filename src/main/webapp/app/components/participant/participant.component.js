@@ -13,17 +13,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var connection_1 = require('../../services/connection');
-var myService_1 = require('../../services/myService');
+var participant_service_1 = require('../../services/participant.service');
 var participant_html_1 = require('./participant.html');
 var ParticipantComponent = (function () {
-    function ParticipantComponent(connection, appService) {
-        this.connection = connection;
-        this.appService = appService;
+    function ParticipantComponent(participant) {
+        this.participant = participant;
         console.log("");
         console.log("% Participant constructor " + new Date().toLocaleTimeString());
-        console.log("constructor - userType: " + this.userType);
         this.important = false;
+        /*
         this.constraints = {
             audio: true,
             video: {
@@ -34,132 +32,181 @@ var ParticipantComponent = (function () {
                 }
             }
         };
+        */
         console.log("/ Participant constructor " + new Date().toLocaleTimeString());
         console.log("");
     }
-    ParticipantComponent.prototype.ngOnInit = function () { console.log("Participnat.onInit - userType: " + this.userType); };
+    ParticipantComponent.prototype.ngOnInit = function () {
+        //console.log(`Participnat.onInit - userType: ${this.userType}`);
+        // this.myUserType = this.userType;
+        //this._userName = this.id;
+        //this.participant.signIn(this); 
+    };
     ParticipantComponent.prototype.ngAfterViewInit = function () {
         console.log("   ngAfterViewInit");
-        console.log("* Participant.afterViewInit: " + this.userName + " " + new Date().toLocaleTimeString());
-        this.myUserType = this.userType;
-        this.userName = this.id;
-        console.log("@ {onicecandidate: participant.onIceCandidate.bind(participant)}");
+        console.log("* Participant.afterViewInit: " + this.id + " " + new Date().toLocaleTimeString());
+        this._userName = this.id;
+        this.participant.init(this.id, this.video.nativeElement, this.roomName);
+        //this.participant.signIn(this);
+        /*
+       // console.log("@ {onicecandidate: participant.onIceCandidate.bind(participant)}");
         this.options = {
             onicecandidate: this.onIceCandidate.bind(this)
-        };
-        console.log("# {onicecandidate: participant.onIceCandidate.bind(participant)}");
-        var participant = this;
+        }
+     //   console.log("# {onicecandidate: participant.onIceCandidate.bind(participant)}");
+        
+        let participant = this;
         // It is me
         if (this.appService.myUserName === this.id) {
+       
             this.options.localVideo = this.video.nativeElement;
-            console.log("video:");
-            console.log(this.video.nativeElement);
+
+          //  console.log("video:");
+            //console.log(this.video.nativeElement);
+            
             this.options.mediaConstraints = this.constraints;
-            console.log("@ creating rtcPeer");
-            this._rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(this.options, function (error) {
-                if (error) {
-                    return console.error(error);
-                }
-                this.generateOffer(participant.offerToReceiveVideo.bind(participant));
-            });
-            console.log(this._rtcPeer);
-            console.log("# created rtcPeer");
+
+          //  console.log("@ creating rtcPeer");
+            this._rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(this.options,
+                function(error) {
+                    if (error) {
+                        return console.error(error);
+                    }
+                    this.generateOffer(participant.offerToReceiveVideo.bind(participant));
+                });
+         //   console.log(this._rtcPeer);
+           // console.log("# created rtcPeer");
         }
+        
         else {
+            
             this.options.remoteVideo = this.video.nativeElement;
-            console.log("@ creating rtcPeer");
-            this._rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(this.options, function (error) {
-                if (error) {
-                    return console.error(error);
-                }
-                this.generateOffer(participant.offerToReceiveVideo.bind(participant));
-            });
-            console.log(this._rtcPeer);
-            console.log("# creating rtcPeer");
+           // console.log("@ creating rtcPeer");
+            this._rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(this.options,
+                function(error) {
+                    if (error) {
+                        return console.error(error);
+                    }
+                    this.generateOffer(participant.offerToReceiveVideo.bind(participant));
+                });
+           // console.log(this._rtcPeer);
+            //console.log("# creating rtcPeer");
         }
-        console.log("constraints: " + JSON.stringify(this.constraints));
-        console.log("options: " + JSON.stringify(this.options));
-        console.log("I'm " + this.userName + " with " + this._rtcPeer);
-        console.log("/ Participant.afterViewInit " + new Date().toLocaleTimeString());
+       // console.log("constraints: " + JSON.stringify(this.constraints));
+        //console.log("options: " + JSON.stringify(this.options));
+       // console.log(`I'm ${this._userName} with ${this._rtcPeer}`);
+        console.log(`/ Participant.afterViewInit ${new Date().toLocaleTimeString()}`);
         console.log("");
+    */
     };
+    Object.defineProperty(ParticipantComponent.prototype, "userName", {
+        get: function () {
+            return this._userName;
+        },
+        enumerable: true,
+        configurable: true
+    });
     ParticipantComponent.prototype.setClasses = function () {
         var classes = {
             'important': this.important,
         };
         return classes;
     };
-    ParticipantComponent.prototype.offerToReceiveVideo = function (error, offerSdp, wp) {
+    /*
+    offerToReceiveVideo(error, offerSdp, wp): void {
         console.log("");
-        console.log("*-> Participant.offerToReceiveVideo  " + new Date().toLocaleTimeString());
-        console.log("offerSdp: ...");
+        console.log(`*-> Participant.offerToReceiveVideo  ${this.id} ${new Date().toLocaleTimeString()}`);
+        //console.log(`offerSdp: ...`);
         //console.log(offerSdp);
-        console.log('Invoking SDP offer callback function');
-        var message = {
+        //alert(`I'm ${this._userName} and i'm going to send an offer`);
+        //console.log('Invoking SDP offer callback function');
+        let message = {
             id: "receiveVideoFrom",
-            userName: this.userName,
+            userName: this._userName,
             offer: offerSdp,
             roomName: this.roomName
         };
+
         this.connection.sendMessage(message);
-        console.log("/ Participant.offerToReceiveVideo " + new Date().toLocaleTimeString());
+
+        console.log(`/ Participant.offerToReceiveVideo ${new Date().toLocaleTimeString()}`);
         console.log("");
-    };
-    ParticipantComponent.prototype.onIceCandidate = function (candidate, wp) {
-        console.log("");
-        console.log("* -> Participant.onIceCandidtae - Local candidate: " + JSON.stringify(candidate) + " " + new Date().toLocaleTimeString());
-        var message = {
+    }
+
+    onIceCandidate(candidate, wp): void {
+       // console.log("");
+       // console.log(`* -> Participant.onIceCandidtae - Local candidate: ${JSON.stringify(candidate)} ${new Date().toLocaleTimeString()}`);
+
+        let message = {
             id: 'receiveAddress',
             address: candidate,
-            userName: this.userName,
+            userName: this._userName,
             roomName: this.roomName
         };
+
         this.connection.sendMessage(message);
-        console.log("/ Local candidate " + new Date().toLocaleTimeString());
+       // console.log(`/ Local candidate ${new Date().toLocaleTimeString()}`);
         console.log("");
-    };
-    ParticipantComponent.prototype.receiveVideoResponse = function (sdpAnswer) {
+
+    }
+    
+    receiveVideoResponse(sdpAnswer): void {
         console.log("");
-        console.log("* Participant.receiveVideoResponse - sdpAnswer: " + sdpAnswer + " " + new Date().toLocaleTimeString());
-        console.log("sdpAnswer: ...");
-        // console.log(sdpAnswer);
-        console.log("my rtcPeer: ");
-        console.log(this._rtcPeer);
-        console.log("@ processing answer");
-        this._rtcPeer.processAnswer(sdpAnswer, function (error) {
+        console.log(`* Participant.receiveVideoResponse ${this.id} ${new Date().toLocaleTimeString()}`);
+       // console.log(`* Participant.receiveVideoResponse - sdpAnswer: ${sdpAnswer} ${new Date().toLocaleTimeString()}`);
+        //console.log(`sdpAnswer: ...`);
+         //console.log(sdpAnswer);
+        //console.log(`my rtcPeer: `);
+       // console.log(this._rtcPeer);
+        
+     //   console.log("@ processing answer");
+        this._rtcPeer.processAnswer(sdpAnswer, function(error) {
             if (error) {
+                console.error(`!! ERROR:Participant.receiveVideoResponse`);
                 console.error(error);
+                
             }
         });
-        console.log("# processing answer");
-        console.log("/ Participant.receiveVideoResponse " + new Date().toLocaleTimeString());
+      //  console.log("# processed answer");
+        console.log(`/ Participant.receiveVideoResponse ${new Date().toLocaleTimeString()}`);
         console.log("");
-    };
-    ParticipantComponent.prototype.addIceCandidate = function (candidate) {
-        console.log("");
-        console.log("* Participant.addIceCandidate  - candidate: " + JSON.stringify(candidate) + " " + new Date().toLocaleTimeString());
-        console.log("@ addIceCandidate");
-        console.log("my rtcPeer: ");
-        console.log(this._rtcPeer);
-        this._rtcPeer.addIceCandidate(candidate, function (error) {
-            if (error) {
-                console.error("Error adding candidate: " + error);
-                return;
-            }
+    }
+
+    addIceCandidate(candidate): void {
+       // console.log("");
+      //  console.log(`* Participant.addIceCandidate  ${new Date().toLocaleTimeString()}`);
+       // console.log(`* Participant.addIceCandidate  - candidate: ${JSON.stringify(candidate)} ${new Date().toLocaleTimeString()}`);
+       // console.log("@ addIceCandidate");
+        //console.log(`my rtcPeer: `);
+        //console.log(this._rtcPeer);
+
+        this._rtcPeer.addIceCandidate (candidate, function (error) {
+            if (error){
+                        console.error(`!! ERROR:Participant.addIceCandidate`);
+                        console.error(error);
+                        return;
+                    }
         });
-        console.log("# addIceCandidate");
-        console.log("/ Participant.addIceCandidate " + new Date().toLocaleTimeString());
+
+       // console.log("# addIceCandidate");
+        //console.log(`/ Participant.addIceCandidate ${new Date().toLocaleTimeString()}`);
+       // console.log("");
+    }
+    
+    private dispose(): void {
         console.log("");
-    };
-    ParticipantComponent.prototype.dispose = function () {
-        console.log("");
-        console.log("* Participant.dispose I'm " + this.id + " and i'm disposed " + new Date().toLocaleTimeString());
+        console.log(`* Participant.dispose I'm ${this.id} and i'm disposed ${new Date().toLocaleTimeString()}`);
+        
         this._rtcPeer.dispose();
-        console.log("/ Participant.dispose I'm " + this.id + " and i'm disposed " + new Date().toLocaleTimeString());
+        
+        console.log(`/ Participant.dispose I'm ${this.id} and i'm disposed ${new Date().toLocaleTimeString()}`);
         console.log("");
-    };
+    }
+    */
     ParticipantComponent.prototype.ngOnDestroy = function () {
-        console.log("* Participant(" + this.userName + ").onDestroy " + new Date().toLocaleTimeString());
+        console.log("* Participant(" + this._userName + ").onDestroy " + new Date().toLocaleTimeString());
+        //this.dispose();
+        this.participant.destroy();
     };
     __decorate([
         core_1.ViewChild('video'), 
@@ -190,9 +237,10 @@ var ParticipantComponent = (function () {
             moduleId: module.id,
             selector: 'ovt-participant',
             styleUrls: ["participant.css"],
-            template: participant_html_1.participantComponentTemplate
+            template: participant_html_1.participantComponentTemplate,
+            providers: [participant_service_1.ParticipantService]
         }), 
-        __metadata('design:paramtypes', [connection_1.Connection, myService_1.MyService])
+        __metadata('design:paramtypes', [participant_service_1.ParticipantService])
     ], ParticipantComponent);
     return ParticipantComponent;
 }());

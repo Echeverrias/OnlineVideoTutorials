@@ -2,7 +2,7 @@
 export const roomTemplate = `<div id="ovt-room">
 <div class="main">
     <div class="dashboard">
-        <ovt-participant *ngIf="mainUser" [id]="mainUser.userName" [ngClass]="{'mainParticipant':mainUser}" [name]="mainUser.name" [userType]="mainUser.userType" [roomName]="name"></ovt-participant>
+        <ovt-participant *ngIf="mainUser.userName" [id]="mainUser.userName" [ngClass]="{'mainParticipant':mainUser}" [name]="mainUser.name" [userType]="mainUser.userType" [roomName]="name"></ovt-participant>
         <div><!--ovt-file--></div>
     </div>
     \n\

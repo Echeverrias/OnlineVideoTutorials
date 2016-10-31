@@ -13,18 +13,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  *
  */
 var core_1 = require('@angular/core');
-var eventsEmitter_1 = require('./eventsEmitter');
+//import { EventsEmitter } from './eventsEmitter'; 
+var handler_service_1 = require('./handler.service');
 console.log("Module Connection");
 /**
 * It allows the communication between the server and the components
 */
 var Connection = (function () {
-    function Connection() {
+    //private _subscriptions: Object;
+    function Connection(handler) {
+        var _this = this;
+        this.handler = handler;
         console.log("% Connection");
         this._ws = new WebSocket('ws://localhost:8080/ovt');
-        var eventsEmitter = new eventsEmitter_1.EventsEmitter();
-        this._subscriptions = eventsEmitter.subscriptions;
-        this._ws.onmessage = eventsEmitter.serverListener;
+        // let eventsEmitter : EventsEmitter = ee;
+        // this._subscriptions = eventsEmitter.subscriptions;
+        this._ws.onmessage = (function (message) { return _this.handler.handle(message); });
         console.log(this._ws);
         console.log(this._ws.onmessage);
     }
@@ -35,23 +39,23 @@ var Connection = (function () {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Connection.prototype, "subscriptions", {
-        get: function () {
-            return this._subscriptions;
-        },
-        enumerable: true,
-        configurable: true
-    });
+    /*
+    get subscriptions(): Object{
+        return this._subscriptions;
+    }
+    */
     Connection.prototype.sendMessage = function (jsonMessage) {
-        console.log("---------->  " + jsonMessage.id + " " + new Date().toLocaleTimeString());
-        console.log("-> message: " + JSON.stringify(jsonMessage));
+        //console.log(`---------->  ${jsonMessage.id} ${new Date().toLocaleTimeString()}`);
+        //console.log(`-> message: ${JSON.stringify(jsonMessage)}`);
         var stringifyMessage = JSON.stringify(jsonMessage);
         this._ws.send(stringifyMessage);
-        console.log("The message has been send");
+        if (!jsonMessage.id.includes('receiveAddress')) {
+            console.log("----------> The message " + jsonMessage.id + " has been send");
+        }
     };
     Connection = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [handler_service_1.HandlerService])
     ], Connection);
     return Connection;
 }());

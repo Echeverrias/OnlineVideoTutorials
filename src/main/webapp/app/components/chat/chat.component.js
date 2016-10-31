@@ -13,53 +13,29 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var myService_1 = require('../../services/myService');
 var chat_service_1 = require('../../services/chat.service');
-var hexColorGenerator_1 = require('./hexColorGenerator');
 var chat_html_1 = require('./chat.html');
 var ChatComponent = (function () {
-    function ChatComponent(myService, chatService) {
-        this.myService = myService;
-        this.chatService = chatService;
+    function ChatComponent(chat) {
+        this.chat = chat;
         console.log("");
         console.log("% Chat constructor " + new Date().toLocaleTimeString());
-        this.colorGenerator = new hexColorGenerator_1.HexColorGenerator();
-        this.messages = [];
-        this.participants = [];
         console.log("/ Chat constructor " + new Date().toLocaleTimeString());
         console.log("");
     }
     ChatComponent.prototype.ngOnInit = function () {
-    };
-    ChatComponent.prototype.ngAfterViewInit = function () {
-        console.log("* Chat.AfterViewInit " + new Date().toLocaleTimeString());
-        this.chatService.signIn(this.address, this);
-    };
-    ChatComponent.prototype.publish = function (message) {
-        this.addColor(message);
-        this.messages.push(message);
-    };
-    ChatComponent.prototype.addColor = function (message) {
-        if (!this.participants[message.sender]) {
-            this.participants[message.sender] = this.colorGenerator.getAColor();
-        }
-        message.color = this.participants[message.sender];
+        this.chat.init(this.address);
+        this.messages = this.chat.getMessages();
     };
     ChatComponent.prototype.sendMessage = function () {
-        var myUserName = this.myService.myUserName;
         if (this.message) {
-            var message = {
-                sender: myUserName,
-                message: this.message,
-                date: new Date().toLocaleTimeString()
-            };
-            this.chatService.sendMessage(message);
+            this.chat.sendMessage(this.message);
             this.message = null;
         }
     };
     ChatComponent.prototype.ngOnDestroy = function () {
         console.log("* Chat.OnDestroy " + new Date().toLocaleTimeString());
-        this.chatService.disconnect();
+        this.chat.destroy();
     };
     __decorate([
         core_1.Input(), 
@@ -69,11 +45,11 @@ var ChatComponent = (function () {
         core_1.Component({
             moduleId: module.id,
             selector: 'ovt-chat',
-            styleUrls: ["../../../assets/styles/main.css", "chat.css"],
+            styleUrls: ["chat.css"],
             template: chat_html_1.chatTemplate,
             providers: [chat_service_1.ChatService]
         }), 
-        __metadata('design:paramtypes', [myService_1.MyService, chat_service_1.ChatService])
+        __metadata('design:paramtypes', [chat_service_1.ChatService])
     ], ChatComponent);
     return ChatComponent;
 }());

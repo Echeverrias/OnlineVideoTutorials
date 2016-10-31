@@ -4,7 +4,7 @@
  */
 
 
-export type ChatMessage = { sender: string, message: string, date: string };
+export type ChatMessage = { sender: string, message: string, date: string, color: string };
 
 export interface IMessage {
     sender: string;
