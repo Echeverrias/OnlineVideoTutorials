@@ -19,7 +19,7 @@ var user_1 = require('../models/user');
  */
 var UserService = (function () {
     function UserService() {
-        this._myRoomName = null;
+        this._myRoomName = "";
         console.log("% MyService");
         this._me = new user_1.User();
     }
@@ -63,7 +63,7 @@ var UserService = (function () {
         configurable: true
     });
     UserService.prototype.deleteMyRoomName = function () {
-        this._myRoomName = null;
+        this._myRoomName = "";
     };
     UserService.prototype.amATutor = function () {
         return this._me.isATutor();
@@ -76,6 +76,7 @@ var UserService = (function () {
     };
     UserService.prototype.deleteMe = function () {
         this._me.setToUndefined();
+        this._myRoomName = "";
         this.logged = false;
     };
     UserService = __decorate([

@@ -7,9 +7,9 @@ var TUTOR = "tutor";
 var STUDENT = "student";
 var User = (function () {
     function User(userName, userType, name) {
-        this._userName = null;
-        this._name = null;
-        this._userType = null; // 'tutor' or 'student'
+        this._userName = "";
+        this._name = "";
+        this._userType = ""; // 'tutor' or 'student'
         console.log("");
         console.log("% User " + new Date().toLocaleTimeString());
         if (arguments.length == 3) {
@@ -62,9 +62,9 @@ var User = (function () {
         this._name = user.name;
     };
     User.prototype.setToUndefined = function () {
-        this._userName = null;
-        this._userType = null;
-        this._name = null;
+        this._userName = "";
+        this._userType = "";
+        this._name = "";
     };
     User.prototype.isATutor = function () {
         return this._userType === User.tutorType;
@@ -73,7 +73,12 @@ var User = (function () {
         return this._userType === User.studentType;
     };
     User.prototype.exist = function () {
-        return this._userName != null;
+        if (this._userName) {
+            return true;
+        }
+        else {
+            return false;
+        }
     };
     return User;
 }());

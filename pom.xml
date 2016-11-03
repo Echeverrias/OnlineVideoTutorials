@@ -134,7 +134,7 @@
 					<mainClass>${start-class}</mainClass>
                     <basedir>src/main/webapp</basedir>
 				</configuration>
-				<!--<executions>
+				<executions>
 					<execution>
 						<id>exec-bower-install</id>
 						<phase>generate-sources</phase>
@@ -162,7 +162,7 @@
 						</configuration>
 					</execution> 
                     
-                </executions>-->
+                </executions>
 				
 			</plugin>
 			<plugin>
@@ -170,14 +170,14 @@
 				<artifactId>maven-clean-plugin</artifactId>
                                 <version>3.0.0</version>
 				<configuration>
-				<!--	<filesets>
+					<filesets>
 						<fileset>
 							<directory>src/main/webapp/bower_components</directory>
                         </fileset>
                         <fileset>
                             <directory>src/main/webapp/node_modules</directory>
                         </fileset> 
-					</filesets> -->
+					</filesets>
 				</configuration> 
 			</plugin>
         </plugins>

@@ -156,15 +156,13 @@ public class RoomHandler extends TextMessageWebSocketHandler{
        
         List<UserSession> unnotifiedUsers = new ArrayList<>();
         
-        if (!users.isEmpty()){
-            for (UserSession user : users){
-                log.info("User: {}", user.getUserName());
+        for (UserSession user : users){
+            log.info("User: {}", user.getUserName());
 
-                if (!user.sendMeAMessage(message)){
-                     unnotifiedUsers.add(user);
-                }
-            }  
-        }
+            if (!user.sendMeAMessage(message)){
+                unnotifiedUsers.add(user);
+            }
+        }  
         
         if (!unnotifiedUsers.isEmpty()) {
             log.debug("{} users don't have receive the message", unnotifiedUsers.size());
@@ -206,18 +204,16 @@ public class RoomHandler extends TextMessageWebSocketHandler{
         JsonObject jsonAnswer = new JsonObject();
         jsonAnswer.addProperty("id", "thereIsAParticipant");
         
-        if (!participants.isEmpty()){
+        for (ParticipantSession participant : participants){
+            log.info("participant: {}", participant.toString());
+
+            jsonAnswer.addProperty("userName", participant.getUserName());
+            jsonAnswer.addProperty("name", participant.getName());
+            jsonAnswer.addProperty("userType", participant.getUserType());
+
+            newParticipant.sendMeAMessage(jsonAnswer);
+        }
             
-            for (ParticipantSession participant : participants){
-                log.info("participant: {}", participant.toString());
-
-                jsonAnswer.addProperty("userName", participant.getUserName());
-                jsonAnswer.addProperty("name", participant.getName());
-                jsonAnswer.addProperty("userType", participant.getUserType());
-
-                newParticipant.sendMeAMessage(jsonAnswer);
-            }
-        }    
         log.info("{} RoomHandelr.makeKnowTheParticipantsOfRoom - the messages have been sent", Info.FINISH_SYMBOL, Hour.getTime());
     }
     
@@ -234,19 +230,16 @@ public class RoomHandler extends TextMessageWebSocketHandler{
         
        log.info("Message to send to: {}",jsonAnswer.toString());
        
-        if (!participants.isEmpty()){
+        for (ParticipantSession participant : participants){
+            log.debug(roomName +":");
+            log.debug("- " + participant.getUserName());
+            // The new participant already knows he's in the room
+            if (!participant.equals(newParticipant)){
+                log.info("Student/Tutor: {} {}", participant.getUserName(), participant.getSession().getId());
+                participant.sendMeAMessage(jsonAnswer);
+            }    
+        }  
             
-            for (ParticipantSession participant : participants){
-                log.debug(roomName +":");
-                log.debug("- " + participant.getUserName());
-                // The new participant already knows he's in the room
-                if (!participant.equals(newParticipant)){
-                    log.info("Student/Tutor: {} {}", participant.getUserName(), participant.getSession().getId());
-                    participant.sendMeAMessage(jsonAnswer);
-                }    
-            }  
-            
-        }
         log.info("{} Room.makeKnowThereIsANewParticipant - the messages have been sent {}", Info.FINISH_SYMBOL, Hour.getTime());
     }
     

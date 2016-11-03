@@ -13,7 +13,7 @@ import { User } from '../models/user';
 export class UserService{
     
     private _me: User;
-    private _myRoomName: string = null;
+    private _myRoomName: string = "";
     private logged: boolean;
     
     constructor (){
@@ -52,7 +52,7 @@ export class UserService{
     }
     
     deleteMyRoomName():void {
-        this._myRoomName = null;
+        this._myRoomName = "";
     }
 
     amATutor(): boolean{
@@ -68,6 +68,7 @@ export class UserService{
 
     deleteMe(): void{
         this._me.setToUndefined();
+        this._myRoomName = "";
         this.logged = false;
     }
     

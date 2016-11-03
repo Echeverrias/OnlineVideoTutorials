@@ -8,9 +8,9 @@ const STUDENT: string = "student";
 
 export class User {
     
-    private _userName: string = null;
-    private _name: string = null;
-    private _userType: string = null; // 'tutor' or 'student'
+    private _userName: string = "";
+    private _name: string = "";
+    private _userType: string = ""; // 'tutor' or 'student'
     
     constructor();
     constructor(userName: string, userType: string, name: string);
@@ -54,9 +54,9 @@ export class User {
     }
 
     setToUndefined (): void{
-        this._userName = null;
-        this._userType = null;
-        this._name = null;
+        this._userName = "";
+        this._userType = "";
+        this._name = "";
     }
     
     isATutor(): boolean {
@@ -68,7 +68,12 @@ export class User {
     } 
 
     exist(): boolean{
-        return this._userName != null;
+        if (this._userName){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
   

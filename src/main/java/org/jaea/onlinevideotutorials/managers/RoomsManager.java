@@ -116,17 +116,12 @@ public class RoomsManager {
         log.info("{} RoomManager.getStudentsNamesByRoomName: {} {}",Info.START_SYMBOL, roomName, Hour.getTime());
         
         List <ParticipantSession> participants = this.getParticipantsByRoomName(roomName);
-        List <String> participantsUserNames = null;
+        List <String> participantsUserNames = new ArrayList();
         
-        if (participants != null){
-            
-            participantsUserNames = new ArrayList<String>();
-            for(ParticipantSession user : participants){
-                participantsUserNames.add(user.getUserName());
-            }
-            
+        for(ParticipantSession user : participants){
+            participantsUserNames.add(user.getUserName());
         }
-        
+            
         Info.logInfoFinish("RoomManager.getStudentsNamesByRoomName");
         return participantsUserNames;
     }
@@ -134,12 +129,12 @@ public class RoomsManager {
     public List<ParticipantSession> getParticipantsByRoomName(String roomName){
         log.info("{} RoomManager.getParticipantsByRoomName: {} {}",Info.START_SYMBOL, roomName, Hour.getTime());
         
-        List<ParticipantSession> participants = null;
+        List<ParticipantSession> participants = new ArrayList();
         Room room = this.roomsByName.get(roomName);
         
         if (room != null){
             Info.logInfoFinish("RoomManager.getParticipantsByRoomName");
-            participants = room.getParticipants();
+            participants.addAll(room.getParticipants());
         }    
         
         return participants;
