@@ -13,47 +13,43 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  *
  */
 var core_1 = require('@angular/core');
-var eventsEmitter_1 = require('./eventsEmitter');
+var handler_service_1 = require('./handler.service');
 console.log("Module Connection");
 /**
 * It allows the communication between the server and the components
 */
-var Connection = (function () {
-    function Connection() {
+var ConnectionService = (function () {
+    function ConnectionService(handler) {
+        var _this = this;
+        this.handler = handler;
         console.log("% Connection");
         this._ws = new WebSocket('ws://localhost:8080/ovt');
-        var eventsEmitter = new eventsEmitter_1.EventsEmitter();
-        this._subscriptions = eventsEmitter.subscriptions;
-        this._ws.onmessage = eventsEmitter.serverListener;
+        this._ws.onmessage = function (message) { _this.handler.handle(message); };
+        { }
         console.log(this._ws);
         console.log(this._ws.onmessage);
     }
-    Object.defineProperty(Connection.prototype, "url", {
+    Object.defineProperty(ConnectionService.prototype, "url", {
         get: function () {
             return this._ws.url;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Connection.prototype, "subscriptions", {
-        get: function () {
-            return this._subscriptions;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Connection.prototype.sendMessage = function (jsonMessage) {
-        console.log("---------->  " + jsonMessage.id + " " + new Date().toLocaleTimeString());
-        console.log("-> message: " + JSON.stringify(jsonMessage));
+    ConnectionService.prototype.sendMessage = function (jsonMessage) {
+        //console.log(`---------->  ${jsonMessage.id} ${new Date().toLocaleTimeString()}`);
+        //console.log(`-> message: ${JSON.stringify(jsonMessage)}`);
         var stringifyMessage = JSON.stringify(jsonMessage);
         this._ws.send(stringifyMessage);
-        console.log("The message has been send");
+        if (!jsonMessage.id.includes('receiveAddress')) {
+            console.log("----------> The message " + jsonMessage.id + " has been send");
+        }
     };
-    Connection = __decorate([
+    ConnectionService = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [])
-    ], Connection);
-    return Connection;
+        __metadata('design:paramtypes', [handler_service_1.HandlerService])
+    ], ConnectionService);
+    return ConnectionService;
 }());
-exports.Connection = Connection;
-//# sourceMappingURL=connection.js.map
+exports.ConnectionService = ConnectionService;
+//# sourceMappingURL=connection.service.js.map

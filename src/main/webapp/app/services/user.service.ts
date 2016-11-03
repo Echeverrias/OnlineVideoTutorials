@@ -3,26 +3,31 @@
  * 
  */
 import { Injectable } from '@angular/core';
-import { User } from './user';
+import { User } from '../models/user';
+
 
 /**
  * It allows to share information through all the components
  */
 @Injectable()
-export class MyService{
+export class UserService{
     
     private _me: User;
+    private _myRoomName: string = "";
+    private logged: boolean;
     
     constructor (){
         console.log(`% MyService`); 
+        this._me = new User();
      }
     
     getMe(): User{
         return this._me;
     }
 
-    addMe (user: User): void {
-        this._me = user;
+    registerMe (user: User): void {
+        this._me.set(user);
+        this.logged = true;
         console.log(`* MyService.me: ${this._me} `);
     }
     
@@ -38,12 +43,33 @@ export class MyService{
         return this._me.name;
     }
 
+    get myRoomName(): string {
+        return this._myRoomName;
+    }
+    
+    set myRoomName(roomName: string) {
+        this._myRoomName = roomName;
+    }
+    
+    deleteMyRoomName():void {
+        this._myRoomName = "";
+    }
+
     amATutor(): boolean{
         return this._me.isATutor();
     }
 
     amAStudent(): boolean {
         return this._me.isAStudent();
+    }
+    amLogged(): boolean{
+        return this.logged;
+    }
+
+    deleteMe(): void{
+        this._me.setToUndefined();
+        this._myRoomName = "";
+        this.logged = false;
     }
     
 }

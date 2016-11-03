@@ -17,9 +17,8 @@ and open the template in the editor.
 
 
 .main{
-    min-height: 100%;
-    max-height: 100%;
-    flex: 1 4 79%;
+    height: 100%;
+    flex: 1 4 75%;
     order: 1;
     display: flex;
     flex-direction: column;
@@ -37,31 +36,35 @@ and open the template in the editor.
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
+    overflow-x: hidden;
     overflow-y: auto;
     flex-wrap: wrap;
 }
 
 .dashboard{
     width:100%;
-    flex: 1 9 80%;
+    flex: 1 9 79%;
     order: 1;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
+    margin: auto;
+    padding: 1em 0;
 }
 
 ovt-chat{
     width:98%;
-    flex: 9 1 10%;
+    flex: 9 1 9%;
     order: 2;
 }
 
 
 ovt-participant.mainParticipant {
    
-    width:98%;
-    height: 95%;
+    width: 57%;
+    height: auto;
+    margin:auto;
 }
 
 
@@ -69,12 +72,15 @@ ovt-participant.mainParticipant {
 
 .secundary ovt-participant {
     width: 95%;
-    height: 30%;
+    height: auto;
     margin: 0.5em;
+    font-size: 0.8em;
 }
 
 
 button[name=exitRoom] {
     position:absolute;
-    bottom:1em;
-    right:2em;
+    bottom:0.3em;
+    right:1em;
+    z-index: 1;
+}    

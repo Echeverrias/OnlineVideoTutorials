@@ -5,14 +5,14 @@
  
 import { Component, Input } from '@angular/core';
 
-import { IMessage } from './chatMessage';
+import { IMessage } from './../../models/types';
 
 import { chatMessageTemplate } from './chatMessage.html'
 
 @Component({
     moduleId: module.id,
     selector: 'ovt-chatMessage',
-    styleUrls: ["../../../assets/styles/main.css", "chatMessage.css"],
+    styleUrls: ["chatMessage.css"],
     template: chatMessageTemplate
 })
 

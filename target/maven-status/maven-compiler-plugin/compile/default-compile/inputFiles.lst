@@ -3,6 +3,7 @@
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/domain/User.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/domain/TutorialMedia.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/controller/ChatController.java
+/home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/domain/OnIceCandidateMessage.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/Hour.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/controller/ChatConfig.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/handlers/TextMessageWebSocketHandler.java

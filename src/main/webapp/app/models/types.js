@@ -3,4 +3,4 @@
  *
  */
 "use strict";
-//# sourceMappingURL=chatMessage.js.map
+//# sourceMappingURL=types.js.map

@@ -42,16 +42,6 @@ public class WebSocketConfig implements WebSocketConfigurer {
         return new RoomHandler(onlineVideoTutorialsHandler());
     }
 
-
-    
-    
-    /*
-    @Bean
-    public HandlerFactory handlerFactory(){
-        return new HandlerFactory(ATTRIBUTE_NAME_MESSAGE_ID);
-    }
-    */
-    
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(onlineVideoTutorialsHandler(), "/ovt");

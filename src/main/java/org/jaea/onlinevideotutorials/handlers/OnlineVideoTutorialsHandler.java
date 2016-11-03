@@ -20,12 +20,10 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonElement;
 import java.util.HashMap;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Map;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 /**
@@ -42,14 +40,10 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler implements
      * how handle the message.
      */
     private String attributeNameOfTheMessageId;
-    private final Logger log = LoggerFactory.getLogger(LoginHandler.class);
-    
+    private final Logger log = LoggerFactory.getLogger(OnlineVideoTutorialsHandler.class);
     private Gson gson = new GsonBuilder().create();
-    /*
-    @Autowired
-    private HandlerFactory handlerFactory;
-*/
-    private HashMap<String, TextMessageWebSocketHandler> handlersMap = new HashMap();
+    
+    private HashMap<String, TextMessageWebSocketHandler> handlers = new HashMap();
     
 
 
@@ -60,22 +54,36 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler implements
 
 
     @Override
-    public void handleTextMessage(WebSocketSession session, TextMessage message) throws HandlerException {
-        log.info(""); 
-        log.info(""); 
-        log.info("OnlineVideoTutorialsHandler.handleTextMessage"); 
-        
+    public synchronized void handleTextMessage(WebSocketSession session, TextMessage message) throws HandlerException {
+       // log.info(""); 
+       
         JsonObject jsonMessage = this.gson.fromJson(message.getPayload(), JsonObject.class);
         String id = jsonMessage.get(this.attributeNameOfTheMessageId).getAsString(); 
-        log.info("+id: " + id);
-        TextMessageWebSocketHandler handler = this.handlersMap.get(id);
+        
+        //#
+        if (!id.equals("receiveAddress")){ //**
+             log.info(""); 
+            log.info("OnlineVideoTutorialsHandler.handleTextMessage"); 
+            log.info("<- A message has arrived: " + id);
+        }   
+
+        TextMessageWebSocketHandler handler = this.handlers.get(id);
         try{
             handler.handleTextMessage(session, message);
         }
         catch(Exception e){
-            throw new HandlerException("There is no handler avaible for this message");
+           try{ 
+                /* If the general handler doesn't find a specific handler for the message,
+               it send the message to all the handlers with the hope that one knows how to
+               handler the message */            
+               for(Map.Entry<String,TextMessageWebSocketHandler> entry : this.handlers.entrySet()){
+                    entry.getValue().handleTextMessage(session, message);
+                }
+           }
+           catch(Exception e2){
+               throw new HandlerException("There is no handler avaible for this message");
+           }
         }
-        
     }
 
     @Override
@@ -87,7 +95,7 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler implements
     public void attach (String messageId, TextMessageWebSocketHandler handler){
         log.info("OnlineVideoTutorialsHandler.attach");
 
-        this.handlersMap.put(messageId, handler);
+        this.handlers.put(messageId, handler);
     }
 
 

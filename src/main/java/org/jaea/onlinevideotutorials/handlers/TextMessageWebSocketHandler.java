@@ -16,8 +16,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
  */
 public abstract class TextMessageWebSocketHandler extends TextWebSocketHandler {
     
-
-   abstract public void handleTextMessage(WebSocketSession session, TextMessage message)  throws Exception;
+    abstract public void handleTextMessage(WebSocketSession session, TextMessage message)  throws Exception;
 
     
 }

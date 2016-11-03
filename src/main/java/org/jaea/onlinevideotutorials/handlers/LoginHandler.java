@@ -17,22 +17,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonElement;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonElement;
 import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Autowire;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 /**
  *
@@ -45,6 +37,8 @@ public class LoginHandler extends TextMessageWebSocketHandler {
      * Valid values of the message payload 'id' attribute which tell 
      * the handler how handle the message.
      */
+    private static final String ID_CLOSE_TAB = "closeTab";
+
     public static final String ID_LOGIN = "login";
     public static final String ID_LOGOUT = "logout";
     private String [] ids = {ID_LOGIN, ID_LOGOUT}; 
@@ -91,7 +85,7 @@ public class LoginHandler extends TextMessageWebSocketHandler {
     }
 
     @Override
-    public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception{
+    public synchronized void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception{
         JsonObject jsonMessage = gson.fromJson(message.getPayload(), JsonObject.class);
         JsonElement jsonElement = jsonMessage.get(this.attributeNameOfTheMessageId);
         String id = jsonElement.getAsString(); 
@@ -100,22 +94,20 @@ public class LoginHandler extends TextMessageWebSocketHandler {
         case ID_LOGIN:
             this.login(session, jsonMessage);
             break;
-        case ID_LOGOUT:
+        case ID_LOGOUT: case ID_CLOSE_TAB :
             this.logout(session, jsonMessage);
             break;
-        default:log.info("id doesn't found");
-            throw new HandlerException("The handler does't know how handle the message");   
+        default:log.info("id {} doesn't found", id);
+            throw new HandlerException("The handler does't know how handle the " + id + " message");   
         }
     }
-    
-    
     
     /**
     * A client is authenticating himself
     * If the user is a tutor, a room is created and the tutor joins into it and
     * ..if it's a student he goes to the 'waiting room'.
     */
-    private void login(final WebSocketSession session, JsonObject jsonMessage){
+    private synchronized void login(final WebSocketSession session, JsonObject jsonMessage){
         log.info("<- login - id: {}, message: {}", session.getId(), jsonMessage.toString());
         
         String userName = jsonMessage.get("userName").getAsString();
@@ -146,37 +138,27 @@ public class LoginHandler extends TextMessageWebSocketHandler {
                 jsonAnswer.addProperty("userType",newUser.getUserType());
             
                 this.usersRegistry.addUser(newUser);
-
-                // A tutor create a new room
-                if (newUser.isATutor()){
-
-                    log.info("The user is a tutor named {}", newUser.getUserName());
-
-                    this.roomsManager.createRoom(newUser.getUserName());
-                    jsonAnswer.addProperty("roomName",newUser.getUserName());
-                    this.makeKnowThereIsANewRoom(newUser.getUserName());
-                 }
-
+                /*
+                if (newUser.isAStudent()){
+                    this.usersRegistry.addIncomingParticipant(newUser);
+                }
+                */
             }     
         
         }
-        log.info("/login - the message has been sent");
+        
         SendMessage.toClient(jsonAnswer, session);
         
         SendMessage.toClient("->login", session);
         log.info("/login - the message has been sent");
     }
     
-    
     private ParticipantSession validateUser(String userName, String password, WebSocketSession session ){
         log.info("* LoginHandler.validateUser");
         
         ParticipantSession userSession = null;
-        
         User user = this.universityBBDD.getAnUser(userName, password);
         
-        
-
         if (user != null){
             log.info(user.toString());
             userSession = new ParticipantSession(session, user);
@@ -186,26 +168,14 @@ public class LoginHandler extends TextMessageWebSocketHandler {
         return userSession;
     }
     
-    private void makeKnowThereIsANewRoom(String roomName){
-        log.info(" * makeKnowThereIsANewRoom to...");
-        this.usersRegistry.printIncomingParticipants();//*
-        JsonObject jsonAnswer = new JsonObject();
-        jsonAnswer.addProperty("id", "thereIsANewRoom");
-        jsonAnswer.addProperty("roomName", roomName);
-        
-        this.usersRegistry.sendAMessageToIncomingParticipants(jsonAnswer);
-        
-        log.info(" /makeKnowThereIsANewRoom - the message has been sent");
-     }
-    
-    
     /**
     * An user has left the application.
     */
-    private void logout(final WebSocketSession session, JsonObject jsonMessage){
+    private synchronized void logout(final WebSocketSession session, JsonObject jsonMessage){
         log.info("<- logout - id: {}, message: {}", session.getId(), jsonMessage.toString());
         
        String userName = jsonMessage.get("userName").getAsString();
+       //this.usersRegistry.removeIncomingParticipant(userName);
        this.usersRegistry.removeUser(userName);
        
        log.info("/logout");

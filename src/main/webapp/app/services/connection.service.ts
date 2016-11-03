@@ -3,29 +3,30 @@
  * 
  */
 import { Injectable } from '@angular/core'; 
-import { EventsEmitter } from './eventsEmitter'; 
+
+import { HandlerService } from './handler.service';
+
+import { Message } from './../models/types';
 
 console.log("Module Connection");
+
 
 /**
 * It allows the communication between the server and the components
 */
 @Injectable()
-export class Connection {
+export class ConnectionService {
     
     
     private _ws: WebSocket;
-    private _subscriptions: Object;
-   
-    constructor(){
+    
+    constructor(private handler: HandlerService){
         console.log(`% Connection`);
         
         this._ws = new WebSocket('ws://localhost:8080/ovt');
         
-        let eventsEmitter : EventsEmitter = new EventsEmitter();
-        this._subscriptions = eventsEmitter.subscriptions;
-        this._ws.onmessage = eventsEmitter.serverListener;
-        
+        this._ws.onmessage = (message: any): void => { this.handler.handle(message) };
+         {}
         console.log(this._ws);
         console.log(this._ws.onmessage);
     }
@@ -33,19 +34,17 @@ export class Connection {
     get url():string{
         return this._ws.url; 
     }
-
-    get subscriptions(): Object{
-        return this._subscriptions;
-    }
     
-    sendMessage(jsonMessage){
-        console.log(`---------->  ${jsonMessage.id} ${new Date().toLocaleTimeString()}`);
-        console.log(`-> message: ${JSON.stringify(jsonMessage)}`);
+    sendMessage(jsonMessage: Message){
+        //console.log(`---------->  ${jsonMessage.id} ${new Date().toLocaleTimeString()}`);
+        //console.log(`-> message: ${JSON.stringify(jsonMessage)}`);
             
         let stringifyMessage = JSON.stringify(jsonMessage);
         this._ws.send(stringifyMessage);
-            
-        console.log("The message has been send");
+        
+        if (!jsonMessage.id.includes('receiveAddress')){
+            console.log( `----------> The message ${jsonMessage.id} has been send`);
+        }
     }
     
    

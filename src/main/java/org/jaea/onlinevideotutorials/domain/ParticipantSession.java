@@ -14,7 +14,7 @@
  */
 package org.jaea.onlinevideotutorials.domain;
 
-import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.util.logging.Level;
 import org.jaea.onlinevideotutorials.Hour;
@@ -50,22 +50,25 @@ public class ParticipantSession  extends UserSession{
         Info.logInfoFinish("/ User.assignRoomMedia");
     }
     
-    public void addAddress (JsonElement address, String userName) {
-        Info.logInfoStart("* Participant.addAddress: " + userName);
+    public void addAddress (JsonObject address, ParticipantSession participant) {
+       // Info.logInfoStart("* Participant.addAddress: " + participant.getUserName());
         
-        this.tutorialMedia.addCandidate(address, userName);
+        this.tutorialMedia.addCandidate(address, participant);
+       // Info.logInfoStart("/ Participant.addAddress: " + participant.getUserName());
     }
     
-    public void receivesGreetingsFrom(ParticipantSession participant, JsonElement offer){
+    public String receivesGreetingsFrom(ParticipantSession participant, String offer){
         log.info("{} Participant.receivesGreetingsFrom {} from {}", this.getUserName(), participant.getUserName(), Hour.getTime());
         
+        String sdpAnswer = null;
         try {
-            this.tutorialMedia.receiveVideoFrom(participant, offer);
+            sdpAnswer = this.tutorialMedia.receiveVideoFrom(participant, offer);
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(ParticipantSession.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         Info.logInfoFinish("Participant.receivesGreetingsFrom");
+        return sdpAnswer;
     }
     
     public void connectToRemote(WebRtcEndpoint incomingMedia) {
@@ -92,6 +95,4 @@ public class ParticipantSession  extends UserSession{
         Info.logInfoFinish("Participant.leavesRoom");
     }
     
-    
-
 }

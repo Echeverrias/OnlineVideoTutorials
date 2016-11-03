@@ -14,79 +14,56 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  */
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
-var connection_1 = require('../../services/connection');
-var myService_1 = require('../../services/myService');
-var userFactory_1 = require('../../services/userFactory');
+var login_service_1 = require('../../services/login.service');
+var user_service_1 = require('../../services/user.service');
 var login_html_1 = require('./login.html');
 var LoginComponent = (function () {
-    function LoginComponent(router, connection, appService) {
+    function LoginComponent(router, login, me) {
         this.router = router;
-        this.connection = connection;
-        this.appService = appService;
+        this.login = login;
+        this.me = me;
         console.log("% Login constructor ");
-        this.user = {
-            userName: "",
-            password: ""
-        };
+        this.user = { userName: "", password: "ZZZ" };
         console.log("/ Login constructor " + new Date().toLocaleTimeString());
     }
     LoginComponent.prototype.ngOnInit = function () {
-        this.onLoginSubscription = this.connection.subscriptions.subscribeToLogin(this, this.onLogin);
-        console.log(this.onLoginSubscription);
-        this.user.password = "ZZZ";
+        this.login.init();
+        this.user.userName = this.login.getLastUserName();
     };
     LoginComponent.prototype.doLogin = function () {
+        var _this = this;
         console.log("");
         console.log("* Login.doLogin " + new Date().toLocaleTimeString());
-        var jsonMessage = {
-            id: "login",
-            userName: this.user.userName,
-            password: this.user.password,
-        };
-        this.connection.sendMessage(jsonMessage);
-        console.log("/ Login.doLogin " + new Date().toLocaleTimeString());
-        console.log("");
-    };
-    LoginComponent.prototype.onLogin = function (jsonMessage) {
-        console.log("");
-        console.log("* <- Login.onLogin " + new Date().toLocaleTimeString());
-        if (jsonMessage.validUser) {
-            console.log("is a valid user?: " + jsonMessage.validUser);
-            console.log("Type user: " + jsonMessage.userType);
-            this.appService.addMe(userFactory_1.UserFactory.createAnUser(jsonMessage));
-            if (this.appService.amATutor()) {
-                console.log("You are a tutor");
-                this.router.navigate(['/room', jsonMessage.roomName]);
-                console.log("# go to room");
+        this.login.doLogin(this.user.userName, this.user.password).subscribe(function (validUser) {
+            if (validUser) {
+                if (_this.me.amATutor()) {
+                    console.log("You are a tutor");
+                    _this.router.navigate(['/room', _this.me.myUserName]);
+                    console.log("# go to room");
+                }
+                else {
+                    console.log("You are an student");
+                    _this.router.navigate(['/rooms']);
+                    console.log("# go to waitingRoom");
+                }
             }
             else {
-                console.log("You are an student");
-                this.router.navigate(['/rooms']);
-                console.log("# go to waitingRoom");
+                alert("Invalid user name or password");
+                console.error("Invalid user");
             }
-        }
-        else {
-            alert("Invalid user name or password");
-            console.error(jsonMessage.id);
-            console.error(jsonMessage.validUser);
-            console.error(jsonMessage.typeUSer);
-            console.error("Invalid user");
-        }
-        console.log("/ Login.onLogin " + new Date().toLocaleTimeString());
+        });
+        console.log("/ Login.doLogin " + new Date().toLocaleTimeString());
         console.log("");
-    };
-    LoginComponent.prototype.ngOnDestroy = function () {
-        console.log("* Login.onDestroy ");
-        this.onLoginSubscription.unsubscribe();
     };
     LoginComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
             selector: 'ovt-login',
             styleUrls: ["login.css"],
-            template: login_html_1.loginTemplate
+            template: login_html_1.loginTemplate,
+            providers: [login_service_1.LoginService]
         }), 
-        __metadata('design:paramtypes', [router_1.Router, connection_1.Connection, myService_1.MyService])
+        __metadata('design:paramtypes', [router_1.Router, login_service_1.LoginService, user_service_1.UserService])
     ], LoginComponent);
     return LoginComponent;
 }());
