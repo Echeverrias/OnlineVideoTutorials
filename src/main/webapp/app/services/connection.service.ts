@@ -3,7 +3,7 @@
  * 
  */
 import { Injectable } from '@angular/core'; 
-//import { EventsEmitter } from './eventsEmitter'; 
+
 import { HandlerService } from './handler.service';
 
 import { Message } from './../models/types';
@@ -15,19 +15,16 @@ console.log("Module Connection");
 * It allows the communication between the server and the components
 */
 @Injectable()
-export class Connection {
+export class ConnectionService {
     
     
     private _ws: WebSocket;
-    //private _subscriptions: Object;
-   
+    
     constructor(private handler: HandlerService){
         console.log(`% Connection`);
         
         this._ws = new WebSocket('ws://localhost:8080/ovt');
         
-       // let eventsEmitter : EventsEmitter = ee;
-       // this._subscriptions = eventsEmitter.subscriptions;
         this._ws.onmessage = (message: any): void => { this.handler.handle(message) };
          {}
         console.log(this._ws);
@@ -37,11 +34,7 @@ export class Connection {
     get url():string{
         return this._ws.url; 
     }
-    /*
-    get subscriptions(): Object{
-        return this._subscriptions;
-    }
-    */
+    
     sendMessage(jsonMessage: Message){
         //console.log(`---------->  ${jsonMessage.id} ${new Date().toLocaleTimeString()}`);
         //console.log(`-> message: ${JSON.stringify(jsonMessage)}`);

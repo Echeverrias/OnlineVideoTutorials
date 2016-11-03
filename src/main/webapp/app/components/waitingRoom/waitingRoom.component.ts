@@ -7,7 +7,7 @@ import { Component, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { WaitingRoomService } from '../../services/waitingRoom.service';
-import { MyService } from '../../services/myService';
+import { UserService } from '../../services/user.service';
 
 import{ waitingRoomTemplate } from './waitingRoom.html'
 
@@ -27,7 +27,7 @@ import{ waitingRoomTemplate } from './waitingRoom.html'
     private onNewavailableRoomSubscription: Object;
     private onavailableRoomLessSubscription: Object;
      
-    constructor(private waitingRoom: WaitingRoomService, private router: Router, private me: MyService){
+    constructor(private waitingRoom: WaitingRoomService, private router: Router, private me: UserService){
         console.log("");
         console.log(`% WaitingRoom constructor ${new Date().toLocaleTimeString()}`); 
         console.log(`/ WaitingRoom constructor ${new Date().toLocaleTimeString()}`);

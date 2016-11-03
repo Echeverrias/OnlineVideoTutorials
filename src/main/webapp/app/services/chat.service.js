@@ -9,8 +9,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var connection_1 = require('./connection');
-var myService_1 = require('./myService');
+var connection_service_1 = require('./connection.service');
+var user_service_1 = require('./user.service');
 var hexColorGenerator_1 = require('./../models/hexColorGenerator');
 var ENDPOINT = "/chat";
 var ChatService = (function () {
@@ -80,7 +80,7 @@ var ChatService = (function () {
     };
     ChatService = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [connection_1.Connection, myService_1.MyService])
+        __metadata('design:paramtypes', [connection_service_1.ConnectionService, user_service_1.UserService])
     ], ChatService);
     return ChatService;
 }());

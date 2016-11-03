@@ -13,39 +13,30 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  *
  */
 var core_1 = require('@angular/core');
-//import { EventsEmitter } from './eventsEmitter'; 
 var handler_service_1 = require('./handler.service');
 console.log("Module Connection");
 /**
 * It allows the communication between the server and the components
 */
-var Connection = (function () {
-    //private _subscriptions: Object;
-    function Connection(handler) {
+var ConnectionService = (function () {
+    function ConnectionService(handler) {
         var _this = this;
         this.handler = handler;
         console.log("% Connection");
         this._ws = new WebSocket('ws://localhost:8080/ovt');
-        // let eventsEmitter : EventsEmitter = ee;
-        // this._subscriptions = eventsEmitter.subscriptions;
         this._ws.onmessage = function (message) { _this.handler.handle(message); };
         { }
         console.log(this._ws);
         console.log(this._ws.onmessage);
     }
-    Object.defineProperty(Connection.prototype, "url", {
+    Object.defineProperty(ConnectionService.prototype, "url", {
         get: function () {
             return this._ws.url;
         },
         enumerable: true,
         configurable: true
     });
-    /*
-    get subscriptions(): Object{
-        return this._subscriptions;
-    }
-    */
-    Connection.prototype.sendMessage = function (jsonMessage) {
+    ConnectionService.prototype.sendMessage = function (jsonMessage) {
         //console.log(`---------->  ${jsonMessage.id} ${new Date().toLocaleTimeString()}`);
         //console.log(`-> message: ${JSON.stringify(jsonMessage)}`);
         var stringifyMessage = JSON.stringify(jsonMessage);
@@ -54,11 +45,11 @@ var Connection = (function () {
             console.log("----------> The message " + jsonMessage.id + " has been send");
         }
     };
-    Connection = __decorate([
+    ConnectionService = __decorate([
         core_1.Injectable(), 
         __metadata('design:paramtypes', [handler_service_1.HandlerService])
-    ], Connection);
-    return Connection;
+    ], ConnectionService);
+    return ConnectionService;
 }());
-exports.Connection = Connection;
-//# sourceMappingURL=connection.js.map
+exports.ConnectionService = ConnectionService;
+//# sourceMappingURL=connection.service.js.map

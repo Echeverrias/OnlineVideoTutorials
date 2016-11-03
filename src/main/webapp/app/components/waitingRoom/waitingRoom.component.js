@@ -15,7 +15,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var waitingRoom_service_1 = require('../../services/waitingRoom.service');
-var myService_1 = require('../../services/myService');
+var user_service_1 = require('../../services/user.service');
 var waitingRoom_html_1 = require('./waitingRoom.html');
 var WaitingRoomComponent = (function () {
     function WaitingRoomComponent(waitingRoom, router, me) {
@@ -59,7 +59,7 @@ var WaitingRoomComponent = (function () {
             template: waitingRoom_html_1.waitingRoomTemplate,
             providers: [waitingRoom_service_1.WaitingRoomService]
         }), 
-        __metadata('design:paramtypes', [waitingRoom_service_1.WaitingRoomService, router_1.Router, myService_1.MyService])
+        __metadata('design:paramtypes', [waitingRoom_service_1.WaitingRoomService, router_1.Router, user_service_1.UserService])
     ], WaitingRoomComponent);
     return WaitingRoomComponent;
 }());

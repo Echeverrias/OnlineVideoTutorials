@@ -14,7 +14,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
-var myService_1 = require('../../services/myService');
+var user_service_1 = require('../../services/user.service');
 var room_service_1 = require('../../services/room.service');
 var participant_component_1 = require('../participant/participant.component');
 var user_1 = require('../../models/user');
@@ -75,7 +75,7 @@ var RoomComponent = (function () {
             template: room_html_1.roomTemplate,
             providers: [room_service_1.RoomService]
         }), 
-        __metadata('design:paramtypes', [room_service_1.RoomService, router_1.Router, myService_1.MyService, router_1.ActivatedRoute])
+        __metadata('design:paramtypes', [room_service_1.RoomService, router_1.Router, user_service_1.UserService, router_1.ActivatedRoute])
     ], RoomComponent);
     return RoomComponent;
 }());

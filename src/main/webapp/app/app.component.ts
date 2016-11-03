@@ -1,7 +1,7 @@
 import { Component, HostListener} from '@angular/core';
 
-import { Connection } from './services/connection';
-import { MyService } from './services/myService';
+import { ConnectionService } from './services/connection.service';
+import { UserService } from './services/user.service';
 
 @Component({
     moduleId: module.id,
@@ -28,7 +28,7 @@ export class AppComponent {
            this.connection.sendMessage(jsonMessage);
        }
        
-       constructor(private connection: Connection, private me: MyService) {
+       constructor(private connection: ConnectionService, private me: UserService) {
         console.log(`% AppComponent constructor`);
         
         console.log(`/ AppComponent constructor`);

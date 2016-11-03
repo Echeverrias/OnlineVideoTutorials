@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 
-import { Connection } from './connection';
+import { ConnectionService } from './connection.service';
 import { ChatMessage } from '../models/types';
 
-import { MyService } from './myService';
+import { UserService } from './user.service';
 
 import { HexColorGenerator } from './../models/hexColorGenerator';
 
@@ -22,7 +22,7 @@ export class ChatService{
     private destiny: string = "/ovt/chat/mailBox/"; 
 
 
-    constructor(private connection: Connection, private me: MyService) {
+    constructor(private connection: ConnectionService, private me: UserService) {
         console.log("");
         console.log("% new ChatService");
         this.wsUrl = this.connection.url;

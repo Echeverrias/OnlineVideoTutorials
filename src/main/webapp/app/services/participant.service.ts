@@ -3,8 +3,8 @@ import { Injectable, EventEmitter } from '@angular/core';
 
 import { ParticipantComponent } from '../components/participant/participant.component';
 import { HandlerService } from './handler.service';
-import { Connection } from './connection';
-import { MyService } from './myService';
+import { ConnectionService } from './connection.service';
+import { UserService } from './user.service';
 import { RoomService } from './room.service';
 
 import { User } from '../models/user';
@@ -35,7 +35,7 @@ export class ParticipantService {
     private options: Object;
     private _rtcPeer: any;
 
-    constructor(private handler: HandlerService, private connection: Connection, private me: MyService) {
+    constructor(private handler: HandlerService, private connection: ConnectionService, private me: UserService) {
         //this.participants = ParticipantComponent[];
 
         this.constraints = {

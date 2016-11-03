@@ -9,8 +9,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var connection_1 = require('./services/connection');
-var myService_1 = require('./services/myService');
+var connection_service_1 = require('./services/connection.service');
+var user_service_1 = require('./services/user.service');
 var AppComponent = (function () {
     function AppComponent(connection, me) {
         this.connection = connection;
@@ -43,7 +43,7 @@ var AppComponent = (function () {
             styleUrls: ["app.css"],
             template: "\n        <div id=\"ovt-app\">\n       <router-outlet></router-outlet>\n       </div>"
         }), 
-        __metadata('design:paramtypes', [connection_1.Connection, myService_1.MyService])
+        __metadata('design:paramtypes', [connection_service_1.ConnectionService, user_service_1.UserService])
     ], AppComponent);
     return AppComponent;
 }());

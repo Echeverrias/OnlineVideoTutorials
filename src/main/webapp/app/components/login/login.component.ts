@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { LoginService } from '../../services/login.service';
-import { MyService } from '../../services/myService';
+import { UserService } from '../../services/user.service';
 
 import { loginTemplate } from './login.html';
 
@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
     
     private user: Object;
 
-    constructor(private router: Router, private login: LoginService, private me: MyService) {
+    constructor(private router: Router, private login: LoginService, private me: UserService) {
         console.log(`% Login constructor `);
         this.user = { userName: "", password: "ZZZ" };
         console.log(`/ Login constructor ${new Date().toLocaleTimeString()}`); 

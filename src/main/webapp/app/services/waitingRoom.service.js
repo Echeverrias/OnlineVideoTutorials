@@ -10,9 +10,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var Subject_1 = require('rxjs/Subject');
-var connection_1 = require('./connection');
+var connection_service_1 = require('./connection.service');
 var handler_service_1 = require('./handler.service');
-var myService_1 = require('./myService');
+var user_service_1 = require('./user.service');
 var WaitingRoomService = (function () {
     function WaitingRoomService(connection, handler, me) {
         var _this = this;
@@ -96,7 +96,7 @@ var WaitingRoomService = (function () {
     };
     WaitingRoomService = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [connection_1.Connection, handler_service_1.HandlerService, myService_1.MyService])
+        __metadata('design:paramtypes', [connection_service_1.ConnectionService, handler_service_1.HandlerService, user_service_1.UserService])
     ], WaitingRoomService);
     return WaitingRoomService;
 }());

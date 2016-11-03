@@ -11,11 +11,10 @@ import { ParticipantComponent } from './components/participant/participant.compo
 import { ChatComponent } from './components/chat/chat.component';
 import { ChatMessageComponent } from './components/chatMessage/chatMessage.component';
 
-import { Connection } from './services/connection';
-import { MyService } from './services/myService';
+import { ConnectionService } from './services/connection.service';
+import { UserService } from './services/user.service';
 import { HandlerService } from './services/handler.service';
 import { LoginService } from './services/login.service';
-import { EventsEmitter } from './services/eventsEmitter'; 
 
 import { AuthGuard } from './guards/auth.guard';
 
@@ -37,9 +36,8 @@ import { AuthGuard } from './guards/auth.guard';
   ],
   providers: [
       HandlerService,
-      EventsEmitter,
-      Connection, 
-      MyService,
+      ConnectionService, 
+      UserService,
       AuthGuard
   ],
   bootstrap: [ AppComponent ]

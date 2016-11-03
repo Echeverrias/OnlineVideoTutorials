@@ -2,8 +2,8 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 
 import { HandlerService } from './handler.service';
-import { MyService } from './myService';
-import { Connection } from './connection';
+import { UserService } from './user.service';
+import { ConnectionService } from './connection.service';
 
 import { User } from '../models/user';
 import { UserFactory } from '../models/userFactory';
@@ -28,7 +28,7 @@ export class RoomService {
     private mainParticipantObserver: Subject<User>;
     private participantsObserver: Subject<User[]>;
  
-    constructor(private handler: HandlerService, private connection: Connection, private me: MyService){
+    constructor(private handler: HandlerService, private connection: ConnectionService, private me: UserService){
         
         this.mainParticipantObserver = new Subject<User>();
         this.participantsObserver = new Subject<User[]>();

@@ -1,9 +1,9 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 
-import { Connection } from './connection';
+import { ConnectionService } from './connection.service';
 import { HandlerService } from './handler.service';
-import { MyService } from './myService';
+import { UserService } from './user.service';
 
 import { User } from '../models/user';
 import { UserFactory } from '../models/userFactory';
@@ -20,7 +20,7 @@ export class LoginService {
     private eeLogin: EventEmitter<Message>;
     private userValidationObserver: Subject<boolean>;
 
-    constructor(private connection: Connection, private handler: HandlerService, private me: MyService){
+    constructor(private connection: ConnectionService, private handler: HandlerService, private me: UserService){
           console.log("*LoginService constructor");
 
         this.userValidationObserver = new Subject<boolean>();

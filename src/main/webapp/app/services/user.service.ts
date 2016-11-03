@@ -10,7 +10,7 @@ import { User } from '../models/user';
  * It allows to share information through all the components
  */
 @Injectable()
-export class MyService{
+export class UserService{
     
     private _me: User;
     private _myRoomName: string = null;

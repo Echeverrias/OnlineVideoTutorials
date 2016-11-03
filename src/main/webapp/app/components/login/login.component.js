@@ -15,7 +15,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var login_service_1 = require('../../services/login.service');
-var myService_1 = require('../../services/myService');
+var user_service_1 = require('../../services/user.service');
 var login_html_1 = require('./login.html');
 var LoginComponent = (function () {
     function LoginComponent(router, login, me) {
@@ -63,7 +63,7 @@ var LoginComponent = (function () {
             template: login_html_1.loginTemplate,
             providers: [login_service_1.LoginService]
         }), 
-        __metadata('design:paramtypes', [router_1.Router, login_service_1.LoginService, myService_1.MyService])
+        __metadata('design:paramtypes', [router_1.Router, login_service_1.LoginService, user_service_1.UserService])
     ], LoginComponent);
     return LoginComponent;
 }());

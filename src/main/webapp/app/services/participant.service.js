@@ -10,8 +10,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var handler_service_1 = require('./handler.service');
-var connection_1 = require('./connection');
-var myService_1 = require('./myService');
+var connection_service_1 = require('./connection.service');
+var user_service_1 = require('./user.service');
 var ParticipantService = (function () {
     function ParticipantService(handler, connection, me) {
         //this.participants = ParticipantComponent[];
@@ -160,7 +160,7 @@ var ParticipantService = (function () {
     };
     ParticipantService = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [handler_service_1.HandlerService, connection_1.Connection, myService_1.MyService])
+        __metadata('design:paramtypes', [handler_service_1.HandlerService, connection_service_1.ConnectionService, user_service_1.UserService])
     ], ParticipantService);
     return ParticipantService;
 }());

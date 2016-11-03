@@ -6,7 +6,7 @@
 import { Component, OnInit, ViewChild, ViewChildren, OnDestroy, QueryList , EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
-import { MyService } from '../../services/myService';
+import { UserService } from '../../services/user.service';
 import { RoomService } from '../../services/room.service';
 
 import { ParticipantComponent } from '../participant/participant.component';
@@ -33,7 +33,7 @@ export class RoomComponent implements OnInit, OnDestroy{
     private mainUser: User = new User();
     private users: User[];
     
-    constructor(private room: RoomService, private router: Router, private me: MyService, private route: ActivatedRoute) {
+    constructor(private room: RoomService, private router: Router, private me: UserService, private route: ActivatedRoute) {
       
       console.log("");
       console.log(`% Room constructor ${new Date().toLocaleTimeString()}`);
