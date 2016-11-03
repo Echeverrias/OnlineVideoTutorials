@@ -17,22 +17,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonElement;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonElement;
 import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Autowire;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 /**
  *
@@ -93,7 +85,7 @@ public class LoginHandler extends TextMessageWebSocketHandler {
     }
 
     @Override
-    public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception{
+    public synchronized void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception{
         JsonObject jsonMessage = gson.fromJson(message.getPayload(), JsonObject.class);
         JsonElement jsonElement = jsonMessage.get(this.attributeNameOfTheMessageId);
         String id = jsonElement.getAsString(); 
@@ -115,7 +107,7 @@ public class LoginHandler extends TextMessageWebSocketHandler {
     * If the user is a tutor, a room is created and the tutor joins into it and
     * ..if it's a student he goes to the 'waiting room'.
     */
-    private void login(final WebSocketSession session, JsonObject jsonMessage){
+    private synchronized void login(final WebSocketSession session, JsonObject jsonMessage){
         log.info("<- login - id: {}, message: {}", session.getId(), jsonMessage.toString());
         
         String userName = jsonMessage.get("userName").getAsString();
@@ -179,7 +171,7 @@ public class LoginHandler extends TextMessageWebSocketHandler {
     /**
     * An user has left the application.
     */
-    private void logout(final WebSocketSession session, JsonObject jsonMessage){
+    private synchronized void logout(final WebSocketSession session, JsonObject jsonMessage){
         log.info("<- logout - id: {}, message: {}", session.getId(), jsonMessage.toString());
         
        String userName = jsonMessage.get("userName").getAsString();

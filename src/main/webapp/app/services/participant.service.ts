@@ -7,12 +7,16 @@ import { Connection } from './connection';
 import { MyService } from './myService';
 import { RoomService } from './room.service';
 
-import { User } from './user';
+import { User } from '../models/user';
+import { Message } from '../models/types';
+import { IdMessage } from '../models/types';
 
+type RtcPeerOptions = { mediaConstraints: Object, onicecandidate: any, localVideo: HTMLElement, remoteVideo: HTMLElement};
+type SdpAnswerMessage = { sdpAnswer: any } & IdMessage;
+type IceCandidateMessage = { candidate: any } & IdMessage;
+type OfferMessage = { userName: string, offer: any, roomName: string } & IdMessage;
+type AddressMessage = { userName: string, address: any, roomName: string } & IdMessage;
 
-type UserMessage = { userName: string, userType: string, name: string };
-type SdpAnswerMessage = { sdpAnswer: any };
-type IceCandidateMessage = { candidate: any };
 
 @Injectable()
 export class ParticipantService {
@@ -24,8 +28,8 @@ export class ParticipantService {
     private participantUserName: string;
     private videoParticipant: HTMLElement;
     
-    private eeReceiveVideoAnswer: EventEmitter;
-    private eeIceCandidate: EventEmitter;
+    private eeReceiveVideoAnswer: EventEmitter<Message>;
+    private eeIceCandidate: EventEmitter<Message>;
 
     private constraints: Object;
     private options: Object;
@@ -47,18 +51,18 @@ export class ParticipantService {
 
     }
 
-    init(participantName: string, video: HTMLElement, roomName: string):void {
-        
+    init(participantName: string, video: HTMLElement, roomName: string): void {
+
         this.participantUserName = participantName;
         this.videoParticipant = video;
         this.roomName = roomName;
 
-        this.eeReceiveVideoAnswer = new EventEmitter();
-        this.eeReceiveVideoAnswer.subscribe(data => this.receiveVideoResponse(data));
+        this.eeReceiveVideoAnswer = new EventEmitter<Message>();
+        this.eeReceiveVideoAnswer.subscribe((data: SdpAnswerMessage): void => { this.receiveVideoResponse(data) });
         this.handler.attach(`receiveVideoAnswer-${participantName}`, this.eeReceiveVideoAnswer);
-        
-        this.eeIceCandidate = new EventEmitter();
-        this.eeIceCandidate.subscribe(data => this.addIceCandidate(data));
+
+        this.eeIceCandidate = new EventEmitter<Message>();
+        this.eeIceCandidate.subscribe((data: IceCandidateMessage): void => { this.addIceCandidate(data) });
         this.handler.attach(`iceCandidate-${participantName}`, this.eeIceCandidate);
 
         this.createRtcPeer();
@@ -66,15 +70,17 @@ export class ParticipantService {
 
     private createRtcPeer():void{
 
-        let options = {
-            onicecandidate: this.onIceCandidate.bind(this)
-        }
+        var participant = this;
+        
+        var options: RtcPeerOptions = { mediaConstraints: null, onicecandidate: null, localVideo: null, remoteVideo: null};
+        options.onicecandidate = participant.onIceCandidate.bind(participant);
+
         //   console.log("# {onicecandidate: participant.onIceCandidate.bind(participant)}");
 
-        let participant = this;
+        
         // It is me
         if (this.me.myUserName === this.participantUserName) {
-
+            
             options.localVideo = this.videoParticipant;
 
             //  console.log("video:");
@@ -115,14 +121,14 @@ export class ParticipantService {
         console.log("");
     }    
 
-    offerToReceiveVideo(error, offerSdp, wp): void {
+    offerToReceiveVideo(error: any , offerSdp: any, wp: any): void {
         console.log("");
         console.log(`*-> Participant.offerToReceiveVideo  ${this.participantUserName} ${new Date().toLocaleTimeString()}`);
         //console.log(`offerSdp: ...`);
         //console.log(offerSdp);
         //alert(`I'm ${this._userName} and i'm going to send an offer`);
         //console.log('Invoking SDP offer callback function');
-        let message = {
+        let message: OfferMessage = {
             id: "receiveVideoFrom",
             userName: this.participantUserName,
             offer: offerSdp,
@@ -135,11 +141,11 @@ export class ParticipantService {
         console.log("");
     }
 
-    onIceCandidate(candidate, wp): void {
+    onIceCandidate(candidate:any, wp: any): void {
         // console.log("");
         // console.log(`* -> Participant.onIceCandidtae - Local candidate: ${JSON.stringify(candidate)} ${new Date().toLocaleTimeString()}`);
 
-        let message = {
+        let message: AddressMessage = {
             id: 'receiveAddress',
             address: candidate,
             userName: this.participantUserName,
@@ -206,8 +212,8 @@ export class ParticipantService {
         console.log("");
     }
     
-
     destroy() {
+        this.dispose();
         this.eeReceiveVideoAnswer.unsubscribe();
         this.eeIceCandidate.unsubscribe();
     }

@@ -35,19 +35,18 @@ var ParticipantService = (function () {
         this.videoParticipant = video;
         this.roomName = roomName;
         this.eeReceiveVideoAnswer = new core_1.EventEmitter();
-        this.eeReceiveVideoAnswer.subscribe(function (data) { return _this.receiveVideoResponse(data); });
+        this.eeReceiveVideoAnswer.subscribe(function (data) { _this.receiveVideoResponse(data); });
         this.handler.attach("receiveVideoAnswer-" + participantName, this.eeReceiveVideoAnswer);
         this.eeIceCandidate = new core_1.EventEmitter();
-        this.eeIceCandidate.subscribe(function (data) { return _this.addIceCandidate(data); });
+        this.eeIceCandidate.subscribe(function (data) { _this.addIceCandidate(data); });
         this.handler.attach("iceCandidate-" + participantName, this.eeIceCandidate);
         this.createRtcPeer();
     };
     ParticipantService.prototype.createRtcPeer = function () {
-        var options = {
-            onicecandidate: this.onIceCandidate.bind(this)
-        };
-        //   console.log("# {onicecandidate: participant.onIceCandidate.bind(participant)}");
         var participant = this;
+        var options = { mediaConstraints: null, onicecandidate: null, localVideo: null, remoteVideo: null };
+        options.onicecandidate = participant.onIceCandidate.bind(participant);
+        //   console.log("# {onicecandidate: participant.onIceCandidate.bind(participant)}");
         // It is me
         if (this.me.myUserName === this.participantUserName) {
             options.localVideo = this.videoParticipant;
@@ -155,6 +154,7 @@ var ParticipantService = (function () {
         console.log("");
     };
     ParticipantService.prototype.destroy = function () {
+        this.dispose();
         this.eeReceiveVideoAnswer.unsubscribe();
         this.eeIceCandidate.unsubscribe();
     };

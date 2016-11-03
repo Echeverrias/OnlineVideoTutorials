@@ -9,7 +9,7 @@ import { ChatMessageComponent } from '../chatMessage/chatMessage.component';
 
 import { ChatService } from '../../services/chat.service';
 
-import { ChatMessage } from '../chatMessage/chatMessage';
+import { ChatMessage } from '../../models/types';
 
 import { chatTemplate } from './chat.html'
 

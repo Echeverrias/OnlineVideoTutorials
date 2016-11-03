@@ -5,11 +5,14 @@ import { HandlerService } from './handler.service';
 import { MyService } from './myService';
 import { Connection } from './connection';
 
-import { User } from './user';
-import { UserFactory } from './userFactory';
+import { User } from '../models/user';
+import { UserFactory } from '../models/userFactory';
+import { Message } from '../models/types';
+import { IdMessage } from '../models/types';
 
-type UserMessage = { userName: string, userType: string, name: string };
-type UserNameMessage = { userName: string, user };
+type UserMessage = { userName: string, userType: string, name: string } & IdMessage;
+type UserNameMessage = { userName: string, user } & IdMessage;
+type ParticipantMessage = { roomName: string, userName: string, userType: string, name: string } & IdMessage;;
 
 @Injectable()
 export class RoomService {
@@ -19,8 +22,8 @@ export class RoomService {
 
     private roomName: string;
 
-    private eeThereIsANewParticipant: EventEmitter;
-    private eeAParticipantHasLefTheRoom: EventEmitter;
+    private eeThereIsANewParticipant: EventEmitter<Message>;
+    private eeAParticipantHasLefTheRoom: EventEmitter<Message>;
     
     private mainParticipantObserver: Subject<User>;
     private participantsObserver: Subject<User[]>;
@@ -33,13 +36,13 @@ export class RoomService {
         this.mainParticipant = new User();
         this.participants = [];
 
-        this.eeThereIsANewParticipant = new EventEmitter();
-        this.eeThereIsANewParticipant.subscribe(data => this.onAddParticipant(data));
+        this.eeThereIsANewParticipant = new EventEmitter<Message>();
+        this.eeThereIsANewParticipant.subscribe((data: UserMessage): void => { this.onAddParticipant(data) });
         this.handler.attach('thereIsANewParticipant', this.eeThereIsANewParticipant);
         this.handler.attach('thereIsAParticipant', this.eeThereIsANewParticipant);
 
-        this.eeAParticipantHasLefTheRoom = new EventEmitter();
-        this.eeAParticipantHasLefTheRoom.subscribe(data => this.onRemoveParticipant(data));
+        this.eeAParticipantHasLefTheRoom = new EventEmitter<Message>();
+        this.eeAParticipantHasLefTheRoom.subscribe((data: UserNameMessage): void => { this.onRemoveParticipant(data) });
         this.handler.attach('aParticipantHasLeftTheRoom', this.eeAParticipantHasLefTheRoom);
     }
 
@@ -52,7 +55,7 @@ export class RoomService {
         console.log("");
         console.log(`* Room.lookingForParticipants ${new Date().toLocaleTimeString()}`);
 
-        var jsonMessage = {
+        let jsonMessage: ParticipantMessage = {
             id: "joinRoom",
             roomName: this.roomName,
             userName: this.me.myUserName,
@@ -154,11 +157,12 @@ export class RoomService {
         console.log("");
         console.log(`<- RoomService.onExit: ${this.roomName} ${new Date().toLocaleTimeString()}`);
         
-        let jsonMessage = {
+        let jsonMessage: ParticipantMessage = {
             id: "exitRoom",
             roomName: this.roomName,
             userName: this.me.myUserName,
             userType: this.me.myUserType,
+            name: undefined
         }
 
         this.connection.sendMessage(jsonMessage);

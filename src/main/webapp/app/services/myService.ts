@@ -3,7 +3,8 @@
  * 
  */
 import { Injectable } from '@angular/core';
-import { User } from './user';
+import { User } from '../models/user';
+
 
 /**
  * It allows to share information through all the components

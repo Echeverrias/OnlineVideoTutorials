@@ -113,7 +113,8 @@
             <plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
+                                <version>1.4.1.RELEASE</version>
+                                <configuration>
 					<mainClass>${start-class}</mainClass>
 					<layout>ZIP</layout>
 				</configuration>
@@ -128,7 +129,8 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
-				<configuration>
+                                <version>1.5.0</version>
+                                <configuration>
 					<mainClass>${start-class}</mainClass>
                     <basedir>src/main/webapp</basedir>
 				</configuration>
@@ -164,7 +166,9 @@
 				
 			</plugin>
 			<plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
+                                <version>3.0.0</version>
 				<configuration>
 				<!--	<filesets>
 						<fileset>

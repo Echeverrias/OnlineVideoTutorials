@@ -1,18 +1,18 @@
 import { Injectable, EventEmitter } from '@angular/core';
 
-type ServerMessage = { id: string };
+import { Message } from '../models/types';
 
 @Injectable()
 export class HandlerService{
 
-    private handlers: Map<string, EventEmitter>;
+    private handlers: Map<string, EventEmitter<Object>>;
 
     constructor(){
         console.log("*HandlerService constructor");
-        this.handlers = new Map<string, EventEmitter>();
+        this.handlers = new Map<string, EventEmitter<Object>>();
     }
 
-    attach(id: string, ee: EventEmitter):void{
+    attach(id: string, ee: EventEmitter<Object>):void{
         console.log(`HandlerService.attach ${id}`);
         this.handlers.set(id, ee);
     }
@@ -22,12 +22,12 @@ export class HandlerService{
         this.handlers.delete(id);
     }
 
-    handle(message: Object): boolean{
-        let parsedMessage: ServerMessage = JSON.parse(message.data);
+    handle(message: any): boolean{
+        let parsedMessage: Message = JSON.parse(message.data);
         let idMessage: string = parsedMessage.id;
         console.log(`HandlerService.handler ${idMessage}`);
         
-        let ee: EventEmitter = this.handlers.get(idMessage);
+        let ee: EventEmitter<Message> = this.handlers.get(idMessage);
         try {
             console.log(`ee${idMessage}.next`);
             ee.next(parsedMessage);

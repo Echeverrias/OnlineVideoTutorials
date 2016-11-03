@@ -22,13 +22,13 @@ var WaitingRoomService = (function () {
         console.log("*WaitingRoomService constructor");
         this.availableRoomsObserver = new Subject_1.Subject();
         this.eeAvailableRooms = new core_1.EventEmitter();
-        this.eeAvailableRooms.subscribe(function (data) { return _this.onSetAvailableRooms(data); });
+        this.eeAvailableRooms.subscribe(function (data) { _this.onSetAvailableRooms(data); });
         this.handler.attach('availableRooms', this.eeAvailableRooms);
         this.eeThereIsANewRooms = new core_1.EventEmitter();
-        this.eeThereIsANewRooms.subscribe(function (data) { return _this.onAddAvailableRoom(data); });
+        this.eeThereIsANewRooms.subscribe(function (data) { _this.onAddAvailableRoom(data); });
         this.handler.attach('thereIsANewRoom', this.eeThereIsANewRooms);
         this.eeThereIsAnAvailableRoomLess = new core_1.EventEmitter();
-        this.eeThereIsAnAvailableRoomLess.subscribe(function (data) { return _this.onRemoveAvailableRoom(data); });
+        this.eeThereIsAnAvailableRoomLess.subscribe(function (data) { _this.onRemoveAvailableRoom(data); });
         this.handler.attach('thereIsAnAvailableRoomLess', this.eeThereIsAnAvailableRoomLess);
     }
     WaitingRoomService.prototype.init = function () {

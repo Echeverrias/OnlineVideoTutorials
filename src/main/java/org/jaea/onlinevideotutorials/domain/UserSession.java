@@ -63,10 +63,6 @@ public class UserSession extends User{
         return result;
     }
     
-    
-    
-    
-    
     /*
 	 * (non-Javadoc)
 	 * 

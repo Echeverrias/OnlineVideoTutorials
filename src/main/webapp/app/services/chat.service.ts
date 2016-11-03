@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 
 import { Connection } from './connection';
-import { ChatMessage } from './../components/chatMessage/chatMessage';
+import { ChatMessage } from '../models/types';
 
 import { MyService } from './myService';
 
-import { HexColorGenerator } from './../components/chat/hexColorGenerator';
+import { HexColorGenerator } from './../models/hexColorGenerator';
 
 const ENDPOINT: string = "/chat";
 

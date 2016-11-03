@@ -28,7 +28,8 @@ var Connection = (function () {
         this._ws = new WebSocket('ws://localhost:8080/ovt');
         // let eventsEmitter : EventsEmitter = ee;
         // this._subscriptions = eventsEmitter.subscriptions;
-        this._ws.onmessage = (function (message) { return _this.handler.handle(message); });
+        this._ws.onmessage = function (message) { _this.handler.handle(message); };
+        { }
         console.log(this._ws);
         console.log(this._ws.onmessage);
     }

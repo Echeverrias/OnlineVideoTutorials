@@ -13,7 +13,7 @@ var Subject_1 = require('rxjs/Subject');
 var connection_1 = require('./connection');
 var handler_service_1 = require('./handler.service');
 var myService_1 = require('./myService');
-var userFactory_1 = require('./userFactory');
+var userFactory_1 = require('../models/userFactory');
 var LoginService = (function () {
     function LoginService(connection, handler, me) {
         var _this = this;
@@ -23,13 +23,13 @@ var LoginService = (function () {
         console.log("*LoginService constructor");
         this.userValidationObserver = new Subject_1.Subject();
         this.eeLogin = new core_1.EventEmitter();
-        this.eeLogin.subscribe(function (data) { return _this.onLogin(data); });
+        this.eeLogin.subscribe(function (data) { _this.onLogin(data); });
         this.handler.attach('login', this.eeLogin);
         this.logOut();
     }
     LoginService.prototype.init = function () {
         console.log("*LoginService.init");
-        // reset login status
+        // Reset login status
         //this.destroyMe();
     };
     LoginService.prototype.doLogin = function (userName, password) {

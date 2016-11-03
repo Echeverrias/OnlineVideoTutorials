@@ -11,7 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var connection_1 = require('./connection');
 var myService_1 = require('./myService');
-var hexColorGenerator_1 = require('./../components/chat/hexColorGenerator');
+var hexColorGenerator_1 = require('./../models/hexColorGenerator');
 var ENDPOINT = "/chat";
 var ChatService = (function () {
     function ChatService(connection, me) {

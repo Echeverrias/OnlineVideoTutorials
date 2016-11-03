@@ -20,13 +20,10 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonElement;
 import java.util.HashMap;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 /**
@@ -44,12 +41,8 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler implements
      */
     private String attributeNameOfTheMessageId;
     private final Logger log = LoggerFactory.getLogger(OnlineVideoTutorialsHandler.class);
-    
     private Gson gson = new GsonBuilder().create();
-    /*
-    @Autowired
-    private HandlerFactory handlerFactory;
-*/
+    
     private HashMap<String, TextMessageWebSocketHandler> handlers = new HashMap();
     
 
@@ -61,10 +54,9 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler implements
 
 
     @Override
-    public void handleTextMessage(WebSocketSession session, TextMessage message) throws HandlerException {
+    public synchronized void handleTextMessage(WebSocketSession session, TextMessage message) throws HandlerException {
        // log.info(""); 
        
-        
         JsonObject jsonMessage = this.gson.fromJson(message.getPayload(), JsonObject.class);
         String id = jsonMessage.get(this.attributeNameOfTheMessageId).getAsString(); 
         
@@ -91,11 +83,7 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler implements
            catch(Exception e2){
                throw new HandlerException("There is no handler avaible for this message");
            }
-
-
-
         }
-        
     }
 
     @Override

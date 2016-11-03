@@ -5,7 +5,7 @@
  
 import { Component, Input } from '@angular/core';
 
-import { IMessage } from './chatMessage';
+import { IMessage } from './../../models/types';
 
 import { chatMessageTemplate } from './chatMessage.html'
 

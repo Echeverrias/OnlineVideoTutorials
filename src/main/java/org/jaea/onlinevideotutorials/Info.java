@@ -27,7 +27,7 @@ public class Info {
     public static final String FINISH_SYMBOL_2 = "#";
     
     private static final Logger log = LoggerFactory
-			.getLogger(OnlineVideoTutorialsHandler.class);
+			.getLogger(Info.class);
     
     public static void receiveMsg(String event){
         

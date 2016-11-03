@@ -17,18 +17,15 @@ import org.jaea.onlinevideotutorials.managers.RoomsManager;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 /**
  * 
@@ -87,7 +84,7 @@ public class RoomHandler extends TextMessageWebSocketHandler{
     }
 
     @Override
-    public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+    public synchronized void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         JsonObject jsonMessage = this.gson.fromJson(message.getPayload(), JsonObject.class);
         String id = jsonMessage.get(this.attributeNameOfTheMessageId).getAsString();                
         switch (id){
@@ -111,7 +108,7 @@ public class RoomHandler extends TextMessageWebSocketHandler{
     /**
     * An user has come into the waiting room.
     */
-    private void joinRoom (WebSocketSession session, JsonObject jsonMessage){
+    private synchronized void joinRoom (WebSocketSession session, JsonObject jsonMessage){
         this.log.info("<- joinRoom -> id: {}, message: {}", session.getId(), jsonMessage.toString());
         
         String name = jsonMessage.get("name").getAsString();
@@ -120,21 +117,13 @@ public class RoomHandler extends TextMessageWebSocketHandler{
         String userType = jsonMessage.get("userType").getAsString();
         
         UserSession newParticipant;
-        /*
-        if (userType.equals(ParticipantSession.STUDENT_TYPE)) {
-               
-            newParticipant = this.usersRegistry.removeIncomingParticipant(userName);
-            
-        } 
-        else { // The user is a tutor
-         */   
-            if (!this.roomsManager.existRoom(roomName)){
-                this.roomsManager.createRoom(roomName);
-                this.makeKnowThereIsANewRoom(roomName);
-            }
-            newParticipant = this.usersRegistry.getUserBySessionId(session.getId());
         
-        //}
+        if (!this.roomsManager.existRoom(roomName)){
+            this.roomsManager.createRoom(roomName);
+            this.makeKnowThereIsANewRoom(roomName);
+        }
+        
+        newParticipant = this.usersRegistry.getUserBySessionId(session.getId());
         
         this.log.info("userName: {}", userName);
         this.log.info("roomName: {}", roomName);
@@ -261,7 +250,7 @@ public class RoomHandler extends TextMessageWebSocketHandler{
         log.info("{} Room.makeKnowThereIsANewParticipant - the messages have been sent {}", Info.FINISH_SYMBOL, Hour.getTime());
     }
     
-    private void receiveVideoFrom(WebSocketSession session, JsonObject jsonMessage){
+    private synchronized void receiveVideoFrom(WebSocketSession session, JsonObject jsonMessage){
         this.log.info("<- receiveVideoFrom -> id: {}, message: {}", session.getId(), jsonMessage.toString());
         this.log.info("");
         this.log.info("---------------------   RECEIVEVIDEOFROM      -------------------");
@@ -288,9 +277,8 @@ public class RoomHandler extends TextMessageWebSocketHandler{
         this.log.info("/ receiveVideoFrom {} from {}", user, jsonMessage.get("userName").getAsString());    
     }
     
-    private void receiveAddress(WebSocketSession session, JsonObject jsonMessage){
+    private synchronized void receiveAddress(WebSocketSession session, JsonObject jsonMessage){
         //this.log.info("* RoomHandler.receiveAddress <- iceCandidate: id: {}, message: {}",session.getId() , jsonMessage.toString());
-        
         
         UserSession user = this.usersRegistry.getUserBySessionId(session.getId());
 
@@ -307,7 +295,7 @@ public class RoomHandler extends TextMessageWebSocketHandler{
     /**
     * An user has left the room.
     */
-    private void exitRoom (WebSocketSession session, JsonObject jsonMessage){
+    private synchronized void exitRoom (WebSocketSession session, JsonObject jsonMessage){
         this.log.info("<- exitRoom: id: {}, message: {}", session.getId(), jsonMessage.toString());
         
         String roomName = jsonMessage.get("roomName").getAsString();
@@ -317,12 +305,7 @@ public class RoomHandler extends TextMessageWebSocketHandler{
 
         if (user != null){
             this.log.info("** The participant {} has been got out from the room **", user.getUserName());
-            /*
-            if (user.isAStudent()) {
-                this.log.info("** The student is going to be pushing into the waiting room **");
-                this.usersRegistry.addIncomingParticipant(user);
-            }
-            */
+            
             if (!this.roomsManager.existRoom(roomName)){
                 this.makeKnowThereIsAnAvailableRoomLess(roomName);
             }

@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.Map;
 import org.jaea.onlinevideotutorials.Hour;
 import org.jaea.onlinevideotutorials.Info;
-import org.jaea.onlinevideotutorials.SendMessage;
 
 
 /**
@@ -137,7 +136,7 @@ public class Room implements Closeable {
             if (this.isTheTutor(participant)){
                 this.tutor = null;
             }
-            //this.makeKnowAParticipantHasLeftTheRoom(participant);
+            
         }  
         
         this.printTheRoomParticipants();//*

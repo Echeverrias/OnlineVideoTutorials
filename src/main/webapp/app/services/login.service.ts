@@ -5,15 +5,19 @@ import { Connection } from './connection';
 import { HandlerService } from './handler.service';
 import { MyService } from './myService';
 
-import { User } from './user';
-import { UserFactory } from './userFactory';
+import { User } from '../models/user';
+import { UserFactory } from '../models/userFactory';
+import { Message } from '../models/types';
+import { IdMessage } from '../models/types';
 
-type ValiditingUserMessage = {validUser: boolean, userName: string, userType: string, name: string}
+type ValiditingUserMessage = { validUser: boolean, userName: string, userType: string, name: string } & IdMessage;
+type LoginMessage = { userName: string, password: string } & IdMessage;
+
 
 @Injectable()
 export class LoginService {
 
-    private eeLogin: EventEmitter;
+    private eeLogin: EventEmitter<Message>;
     private userValidationObserver: Subject<boolean>;
 
     constructor(private connection: Connection, private handler: HandlerService, private me: MyService){
@@ -21,16 +25,16 @@ export class LoginService {
 
         this.userValidationObserver = new Subject<boolean>();
        
-        this.eeLogin = new EventEmitter();
-        this.eeLogin.subscribe(data => this.onLogin(data));
-        this.handler.attach('login', this.eeLogin);  
+        this.eeLogin = new EventEmitter<Message>();
+        this.eeLogin.subscribe((data: ValiditingUserMessage): void => { this.onLogin(data) });
+        this.handler.attach('login', this.eeLogin);
         
         this.logOut();
     }
 
     init(){
         console.log("*LoginService.init");
-        // reset login status
+        // Reset login status
         //this.destroyMe();
     }
 
@@ -38,7 +42,7 @@ export class LoginService {
         console.log("");
         console.log(`* LogiService.doLogin ${new Date().toLocaleTimeString()}`);
         
-        let jsonMessage = {
+        let jsonMessage: LoginMessage = {
             id: "login",
             userName: userName,
             password: password,

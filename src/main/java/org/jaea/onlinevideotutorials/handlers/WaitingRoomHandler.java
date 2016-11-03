@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 /**
  * 
@@ -69,6 +68,7 @@ public class WaitingRoomHandler extends TextMessageWebSocketHandler {
         this.signIn(generalHandler);
     }
 
+    
     private void signIn(GeneralHandler generalHandler){
         List<String> idsList = new ArrayList<>(Arrays.asList(this.ids));
         for(String id : idsList){
@@ -77,7 +77,7 @@ public class WaitingRoomHandler extends TextMessageWebSocketHandler {
     }
     
     @Override
-    public void handleTextMessage(WebSocketSession session, TextMessage message) throws  Exception{
+    public synchronized void handleTextMessage(WebSocketSession session, TextMessage message) throws  Exception{
         JsonObject jsonMessage = this.gson.fromJson(message.getPayload(), JsonObject.class);
         String id = jsonMessage.get(this.attributeNameOfTheMessageId).getAsString(); 
         String userName = jsonMessage.get("userName").getAsString(); 
@@ -99,7 +99,7 @@ public class WaitingRoomHandler extends TextMessageWebSocketHandler {
     /**
     * A student user has come into the waiting room.
     */
-    private void enter (final WebSocketSession session, String userName){
+    private synchronized void enter (final WebSocketSession session, String userName){
         this.log.info("* waitingRoom.enter");
         
         UserSession user = this.usersRegistry.getUserByUserName(userName);
@@ -116,7 +116,7 @@ public class WaitingRoomHandler extends TextMessageWebSocketHandler {
         this.log.info("/waitingRoom.enter - the message has been sent");
     }
 
-    private void exit (final WebSocketSession session, String userName){
+    private synchronized void exit (final WebSocketSession session, String userName){
         this.log.info("* waitingRoom.exit");
         this.roomsManager.removeIncomingParticipant(userName);
         this.log.info("/waitingRoom.exit");

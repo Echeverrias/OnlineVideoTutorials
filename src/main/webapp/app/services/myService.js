@@ -13,7 +13,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  *
  */
 var core_1 = require('@angular/core');
-var user_1 = require('./user');
+var user_1 = require('../models/user');
 /**
  * It allows to share information through all the components
  */

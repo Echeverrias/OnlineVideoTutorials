@@ -155,8 +155,9 @@ public class RoomsManager {
         if (room != null){
 
             user = room.leave(participantUserName);
-            this.roomsNamesByUserName.remove(user.getUserName());
-            
+            if (user != null){
+                this.roomsNamesByUserName.remove(user.getUserName());
+            }
             if (room.isEmpty()){
                 this.removeRoom(roomName);
             }

@@ -19,7 +19,6 @@ import org.kurento.client.IceCandidate;
 import org.kurento.client.MediaPipeline;
 import org.kurento.client.OnIceCandidateEvent;
 import org.kurento.client.WebRtcEndpoint;
-import org.kurento.jsonrpc.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.WebSocketSession;
@@ -83,7 +82,7 @@ public class TutorialMedia implements Closeable{
        // Info.logInfoStart();
       //  log.info("");
       //  log.info("{} TutorialMedia.addCandidate {} to {} {}", Info.START_SYMBOL, candidate.toString(), userName, Hour.getTime());
-       // JsonObject address = candidate.getAsJsonObject();
+       
         IceCandidate cand = new IceCandidate( candidate.get("candidate").getAsString(),
                                               candidate.get("sdpMid").getAsString(),
 					                          candidate.get("sdpMLineIndex").getAsInt()
@@ -123,23 +122,19 @@ public class TutorialMedia implements Closeable{
             incoming = outgoingMedia;
 	    }
 
-        else {
+        else{
         	//log.info("PARTICIPANT {}: receiving video from {}", this.userName, participant.getUserName());
-
-        	incoming = this.incomingMediaByUserName.get(participant.getUserName());
-        	if (incoming == null) {
+            incoming = this.incomingMediaByUserName.get(participant.getUserName());
+            if (incoming == null) {
                  //   log.info("PARTICIPANT {}: creating new endpoint for {}", this.userName, participant.getUserName());
-                    
-                    incoming = new WebRtcEndpoint.Builder(pipeline).build();
-                    this.addOnIceCandidateListenerToWebRtc(incoming, participant.getUserName(), this.session);
-                    this.incomingMediaByUserName.put(participant.getUserName(), incoming);
+                incoming = new WebRtcEndpoint.Builder(pipeline).build();
+                this.addOnIceCandidateListenerToWebRtc(incoming, participant.getUserName(), this.session);
+                this.incomingMediaByUserName.put(participant.getUserName(), incoming);
             }
         }        
 
     //	log.info("PARTICIPANT {}: obtained endpoint for {}", this.userName, participant.getUserName());
-    	// sender.connectToRemote(incoming); // -> receiveVideoFrom
-        
-        //Info.logInfoFinish("TutorialMedia.getEndpointFromUser ");
+    	//Info.logInfoFinish("TutorialMedia.getEndpointFromUser ");
         return incoming;
     }
     

@@ -5,16 +5,21 @@ import { Connection } from './connection';
 import { HandlerService } from './handler.service';
 import { MyService } from './myService';
 
-type RoomMessage = { roomName: string }
-type availableRoomsMessage = { availableRoomsNames: string [] }
+import { Message } from '../models/types';
+import { IdMessage } from '../models/types';
+
+
+type RoomMessage = { roomName: string } & IdMessage;
+type AvailableRoomsMessage = { availableRoomsNames: string[] } & IdMessage;
+type UserNameMessage = { userName: string } & IdMessage;
 
 @Injectable()
 export class WaitingRoomService {
 
     private availableRoomsNames: string[];
-    private eeAvailableRooms: EventEmitter;
-    private eeThereIsANewRooms: EventEmitter;
-    private eeThereIsAnAvailableRoomLess: EventEmitter;
+    private eeAvailableRooms: EventEmitter<Message>;
+    private eeThereIsANewRooms: EventEmitter<Message>;
+    private eeThereIsAnAvailableRoomLess: EventEmitter<Message>;
 
     private availableRoomsObserver: Subject<string[]>;
 
@@ -23,16 +28,16 @@ export class WaitingRoomService {
 
         this.availableRoomsObserver = new Subject<string[]>();
 
-        this.eeAvailableRooms = new EventEmitter();
-        this.eeAvailableRooms.subscribe(data => this.onSetAvailableRooms(data));
+        this.eeAvailableRooms = new EventEmitter<Message>();
+        this.eeAvailableRooms.subscribe((data: AvailableRoomsMessage): void => { this.onSetAvailableRooms(data) });
         this.handler.attach('availableRooms', this.eeAvailableRooms);
 
-        this.eeThereIsANewRooms = new EventEmitter();
-        this.eeThereIsANewRooms.subscribe(data => this.onAddAvailableRoom(data));
+        this.eeThereIsANewRooms = new EventEmitter<Message>();
+        this.eeThereIsANewRooms.subscribe((data: RoomMessage): void => { this.onAddAvailableRoom(data) });
         this.handler.attach('thereIsANewRoom', this.eeThereIsANewRooms);
 
-        this.eeThereIsAnAvailableRoomLess = new EventEmitter();
-        this.eeThereIsAnAvailableRoomLess.subscribe(data => this.onRemoveAvailableRoom(data));
+        this.eeThereIsAnAvailableRoomLess = new EventEmitter<Message>();
+        this.eeThereIsAnAvailableRoomLess.subscribe((data: RoomMessage): void => { this.onRemoveAvailableRoom(data) });
         this.handler.attach('thereIsAnAvailableRoomLess', this.eeThereIsAnAvailableRoomLess);
     }
 
@@ -44,11 +49,12 @@ export class WaitingRoomService {
         console.log("");
         console.log(`* <- WaitingRoomService.lookingForRooms ${new Date().toLocaleTimeString()}`);
 
-        var jsonMessage = {
+        let jsonMessage: UserNameMessage = {
             id:"enterWaitingRoom",
             userName: this.me.myUserName
         };
         
+
         this.connection.sendMessage(jsonMessage);
         console.log(`/ WaitingRoomService.lookingForRooms ${new Date().toLocaleTimeString()}`);
         console.log("");
@@ -60,7 +66,7 @@ export class WaitingRoomService {
         return this.availableRoomsObserver;
     }
 
-    onSetAvailableRooms(msg: availableRoomsMessage): void{
+    onSetAvailableRooms(msg: AvailableRoomsMessage): void{
         console.log("");
         console.log(`* WaitingRoomService.onSetavailableRooms ${new Date().toLocaleTimeString()}`);
         console.log(msg.availableRoomsNames);
@@ -107,7 +113,7 @@ export class WaitingRoomService {
         console.log("");
         console.log(`* <- WaitingRoomService.exit ${new Date().toLocaleTimeString()}`);
 
-        var jsonMessage = {
+        let jsonMessage: UserNameMessage = {
             id: "exitWaitingRoom",
             userName: this.me.myUserName
         };

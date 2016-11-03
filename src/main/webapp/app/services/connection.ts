@@ -6,6 +6,8 @@ import { Injectable } from '@angular/core';
 //import { EventsEmitter } from './eventsEmitter'; 
 import { HandlerService } from './handler.service';
 
+import { Message } from './../models/types';
+
 console.log("Module Connection");
 
 
@@ -26,8 +28,8 @@ export class Connection {
         
        // let eventsEmitter : EventsEmitter = ee;
        // this._subscriptions = eventsEmitter.subscriptions;
-        this._ws.onmessage = (message => this.handler.handle(message));
-         
+        this._ws.onmessage = (message: any): void => { this.handler.handle(message) };
+         {}
         console.log(this._ws);
         console.log(this._ws.onmessage);
     }
@@ -40,7 +42,7 @@ export class Connection {
         return this._subscriptions;
     }
     */
-    sendMessage(jsonMessage){
+    sendMessage(jsonMessage: Message){
         //console.log(`---------->  ${jsonMessage.id} ${new Date().toLocaleTimeString()}`);
         //console.log(`-> message: ${JSON.stringify(jsonMessage)}`);
             

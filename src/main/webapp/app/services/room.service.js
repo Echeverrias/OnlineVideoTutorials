@@ -13,8 +13,9 @@ var Subject_1 = require('rxjs/Subject');
 var handler_service_1 = require('./handler.service');
 var myService_1 = require('./myService');
 var connection_1 = require('./connection');
-var user_1 = require('./user');
-var userFactory_1 = require('./userFactory');
+var user_1 = require('../models/user');
+var userFactory_1 = require('../models/userFactory');
+;
 var RoomService = (function () {
     function RoomService(handler, connection, me) {
         var _this = this;
@@ -26,11 +27,11 @@ var RoomService = (function () {
         this.mainParticipant = new user_1.User();
         this.participants = [];
         this.eeThereIsANewParticipant = new core_1.EventEmitter();
-        this.eeThereIsANewParticipant.subscribe(function (data) { return _this.onAddParticipant(data); });
+        this.eeThereIsANewParticipant.subscribe(function (data) { _this.onAddParticipant(data); });
         this.handler.attach('thereIsANewParticipant', this.eeThereIsANewParticipant);
         this.handler.attach('thereIsAParticipant', this.eeThereIsANewParticipant);
         this.eeAParticipantHasLefTheRoom = new core_1.EventEmitter();
-        this.eeAParticipantHasLefTheRoom.subscribe(function (data) { return _this.onRemoveParticipant(data); });
+        this.eeAParticipantHasLefTheRoom.subscribe(function (data) { _this.onRemoveParticipant(data); });
         this.handler.attach('aParticipantHasLeftTheRoom', this.eeAParticipantHasLefTheRoom);
     }
     RoomService.prototype.init = function (roomName) {
@@ -130,6 +131,7 @@ var RoomService = (function () {
             roomName: this.roomName,
             userName: this.me.myUserName,
             userType: this.me.myUserType,
+            name: undefined
         };
         this.connection.sendMessage(jsonMessage);
         this.me.deleteMyRoomName();
