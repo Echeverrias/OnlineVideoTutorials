@@ -6,6 +6,8 @@
 package org.jaea.onlinevideotutorials.handlers;
 
 import org.jaea.onlinevideotutorials.managers.RoomsManager;
+import org.jaea.onlinevideotutorials.managers.UserSessionsRegistry;
+import org.jaea.onlinevideotutorials.domain.UserSession;
 import org.jaea.onlinevideotutorials.SendMessage;
 
 import com.google.gson.Gson;
@@ -21,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 /**
  * 
@@ -33,8 +34,11 @@ public class WaitingRoomHandler extends TextMessageWebSocketHandler {
      * Valid values of the message payload 'id' attribute which tell 
      * the handler how handle the message.
      */
-    public static final String ID_WAITING_ROOM = "waitingRoom";
-    private String [] ids = {ID_WAITING_ROOM }; 
+    private static final String ID_CLOSE_TAB = "closeTab";
+
+    public static final String ID_ENTER = "enterWaitingRoom";
+    public static final String ID_EXIT = "exitWaitingRoom";
+    private String [] ids = { ID_ENTER, ID_EXIT}; 
 
     /**
      * Name of the message payload attribute that tells 
@@ -44,6 +48,9 @@ public class WaitingRoomHandler extends TextMessageWebSocketHandler {
 
     @Autowired
     private RoomsManager roomsManager;
+
+    @Autowired
+    private UserSessionsRegistry usersRegistry;
 
     private final Logger log = LoggerFactory.getLogger(WaitingRoomHandler.class);
     private Gson gson = new GsonBuilder().create();
@@ -61,6 +68,7 @@ public class WaitingRoomHandler extends TextMessageWebSocketHandler {
         this.signIn(generalHandler);
     }
 
+    
     private void signIn(GeneralHandler generalHandler){
         List<String> idsList = new ArrayList<>(Arrays.asList(this.ids));
         for(String id : idsList){
@@ -69,35 +77,49 @@ public class WaitingRoomHandler extends TextMessageWebSocketHandler {
     }
     
     @Override
-    public void handleTextMessage(WebSocketSession session, TextMessage message) throws  Exception{
+    public synchronized void handleTextMessage(WebSocketSession session, TextMessage message) throws  Exception{
         JsonObject jsonMessage = this.gson.fromJson(message.getPayload(), JsonObject.class);
         String id = jsonMessage.get(this.attributeNameOfTheMessageId).getAsString(); 
+        String userName = jsonMessage.get("userName").getAsString(); 
         
         this.log.info("<- waitingRoom - id: {}, message: {}", session.getId(), jsonMessage.toString());
         
         switch (id){
-            case ID_WAITING_ROOM:
-                this.waitingRoom(session);
+            case ID_ENTER:
+                this.enter(session, userName);
                 break;
-            default:
-                throw new HandlerException("The handler does't know how handle the message");
+            case ID_EXIT : case ID_CLOSE_TAB  :
+                this.exit(session, userName);
+                break;    
+            default:log.info("id {} doesn't found", id);
+                throw new HandlerException("The handler does't know how handle the " + id + " message");   
         }        
     }
-    
     
     /**
     * A student user has come into the waiting room.
     */
-    private void waitingRoom (final WebSocketSession session){
+    private synchronized void enter (final WebSocketSession session, String userName){
+        this.log.info("* waitingRoom.enter");
         
-        JsonElement avaibleRoomsNames = gson.toJsonTree(this.roomsManager.getAvaibleRoomsNames(), new TypeToken<List<String>>() {}.getType());
+        UserSession user = this.usersRegistry.getUserByUserName(userName);
+        this.roomsManager.addIncomingParticipant(user);
+
+        JsonElement availableRoomsNames = gson.toJsonTree(this.roomsManager.getAvailableRoomsNames(), new TypeToken<List<String>>() {}.getType());
+        
         JsonObject jsonAnswer = new JsonObject();
-        jsonAnswer.addProperty("id","avaibleRooms");
-        jsonAnswer.add("avaibleRoomsNames", avaibleRoomsNames);
+        jsonAnswer.addProperty("id","availableRooms");
+        jsonAnswer.add("availableRoomsNames", availableRoomsNames);
         
         SendMessage.toClient(jsonAnswer, session);
         
-        this.log.info("/waitingRoom - the message has been sent");
+        this.log.info("/waitingRoom.enter - the message has been sent");
+    }
+
+    private synchronized void exit (final WebSocketSession session, String userName){
+        this.log.info("* waitingRoom.exit");
+        this.roomsManager.removeIncomingParticipant(userName);
+        this.log.info("/waitingRoom.exit");
     }
     
     public String getAttributeNameOfTheMessageId(){

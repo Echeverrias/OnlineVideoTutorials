@@ -18,6 +18,7 @@ org/jaea/onlinevideotutorials/MediaUtilities$1.class
 org/jaea/onlinevideotutorials/managers/ManagersConfig.class
 org/jaea/onlinevideotutorials/handlers/WaitingRoomHandler$1.class
 org/jaea/onlinevideotutorials/services/UniversityBBDDConfig.class
+org/jaea/onlinevideotutorials/domain/OnIceCandidateMessage.class
 org/jaea/onlinevideotutorials/handlers/GeneralHandler.class
 org/jaea/onlinevideotutorials/OnlineVideoTutorialsApp.class
 org/jaea/onlinevideotutorials/services/UniversityBBDD.class

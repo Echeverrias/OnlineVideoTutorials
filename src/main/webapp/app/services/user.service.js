@@ -13,52 +13,77 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  *
  */
 var core_1 = require('@angular/core');
+var user_1 = require('../models/user');
 /**
  * It allows to share information through all the components
  */
-var MyService = (function () {
-    function MyService() {
+var UserService = (function () {
+    function UserService() {
+        this._myRoomName = "";
         console.log("% MyService");
+        this._me = new user_1.User();
     }
-    MyService.prototype.getMe = function () {
+    UserService.prototype.getMe = function () {
         return this._me;
     };
-    MyService.prototype.addMe = function (user) {
-        this._me = user;
+    UserService.prototype.registerMe = function (user) {
+        this._me.set(user);
+        this.logged = true;
         console.log("* MyService.me: " + this._me + " ");
     };
-    Object.defineProperty(MyService.prototype, "myUserName", {
+    Object.defineProperty(UserService.prototype, "myUserName", {
         get: function () {
             return this._me.userName;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(MyService.prototype, "myUserType", {
+    Object.defineProperty(UserService.prototype, "myUserType", {
         get: function () {
             return this._me.userType;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(MyService.prototype, "myName", {
+    Object.defineProperty(UserService.prototype, "myName", {
         get: function () {
             return this._me.name;
         },
         enumerable: true,
         configurable: true
     });
-    MyService.prototype.amATutor = function () {
+    Object.defineProperty(UserService.prototype, "myRoomName", {
+        get: function () {
+            return this._myRoomName;
+        },
+        set: function (roomName) {
+            this._myRoomName = roomName;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    UserService.prototype.deleteMyRoomName = function () {
+        this._myRoomName = "";
+    };
+    UserService.prototype.amATutor = function () {
         return this._me.isATutor();
     };
-    MyService.prototype.amAStudent = function () {
+    UserService.prototype.amAStudent = function () {
         return this._me.isAStudent();
     };
-    MyService = __decorate([
+    UserService.prototype.amLogged = function () {
+        return this.logged;
+    };
+    UserService.prototype.deleteMe = function () {
+        this._me.setToUndefined();
+        this._myRoomName = "";
+        this.logged = false;
+    };
+    UserService = __decorate([
         core_1.Injectable(), 
         __metadata('design:paramtypes', [])
-    ], MyService);
-    return MyService;
+    ], UserService);
+    return UserService;
 }());
-exports.MyService = MyService;
-//# sourceMappingURL=myService.js.map
+exports.UserService = UserService;
+//# sourceMappingURL=user.service.js.map

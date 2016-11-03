@@ -6,95 +6,40 @@
 import { Component, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Connection } from '../../services/connection';
-import { MyService } from '../../services/myService';
+import { WaitingRoomService } from '../../services/waitingRoom.service';
+import { UserService } from '../../services/user.service';
 
 import{ waitingRoomTemplate } from './waitingRoom.html'
 
  @Component({
     moduleId: module.id, 
     selector:'ovt-waitingRoom',
-    styleUrls: ["../../../assets/styles/main.css", "waitingRoom.css"],
-    template: waitingRoomTemplate
+    styleUrls: ["waitingRoom.css"],
+    template: waitingRoomTemplate,
+    providers: [WaitingRoomService]
  })
 
  export class WaitingRoomComponent implements OnInit, OnDestroy{
      
-    private allAvaibleRoomsNames : string[];
+    private availableRoomsNames : string[];
     
-    private onAvaibleRoomsSubscription : Object; 
-    private onNewAvaibleRoomSubscription: Object;
-    private onAvaibleRoomLessSubscription: Object;
+    private onavailableRoomsSubscription : Object; 
+    private onNewavailableRoomSubscription: Object;
+    private onavailableRoomLessSubscription: Object;
      
-    constructor(private router: Router, private connection: Connection, private appService: MyService){
+    constructor(private waitingRoom: WaitingRoomService, private router: Router, private me: UserService){
         console.log("");
         console.log(`% WaitingRoom constructor ${new Date().toLocaleTimeString()}`); 
-        
-       
-        
         console.log(`/ WaitingRoom constructor ${new Date().toLocaleTimeString()}`);
         console.log("");
-        
     }
     
     ngOnInit(){
-        this.onAvaibleRoomsSubscription = this.connection.subscriptions.subscribeToAllAvaibleRooms(this, this.onSetAvaibleRooms);
-        this.onNewAvaibleRoomSubscription = this.connection.subscriptions.subscribeToNewAvaibleRoom(this, this.onAddAvaibleRoom);
-        this.onAvaibleRoomLessSubscription = this.connection.subscriptions.subscribeToAvaibleRoomLess(this, this.onRemoveAvaibleRoom);
-        
-        this.lookingForRooms();
-    }
-    
-    private lookingForRooms(): void {
-        console.log("");
-        console.log(`* <- WaitingRoom.lookingForRooms ${new Date().toLocaleTimeString()}`);
-
-        var jsonMessage = {
-            id:"waitingRoom"
-        };
-        
-        this.connection.sendMessage(jsonMessage);
-        console.log(`/ WaitingRoom.lookingForRooms ${new Date().toLocaleTimeString()}`);
-        console.log("");
-        
-    }
-    
-    onSetAvaibleRooms(avaibleRoomsNames: string[]){
-        console.log("");
-        console.log(`* WaitingRoom.avaibleRoomsNames ${new Date().toLocaleTimeString()}`);
-        console.log(avaibleRoomsNames);
-        this.allAvaibleRoomsNames = avaibleRoomsNames;
-        
-        console.log(`/ WaitingRoom.avaibleRoomsNames ${new Date().toLocaleTimeString()}`);
-        console.log("");
+        this.waitingRoom.init();
+        this.waitingRoom.getAvailableRooms().subscribe(availableRooms => this.availableRoomsNames = availableRooms);
     }
 
-    onAddAvaibleRoom (roomName: string){
-        console.log("");
-        console.log(`* <- WaitingRoom.onAddAvaibleRoom: ${roomName} to ${this.allAvaibleRoomsNames} ${new Date().toLocaleTimeString()}`)
-        
-        this.allAvaibleRoomsNames.push(roomName);  
-        
-        console.log(`this.avaibleRooms: ${this.allAvaibleRoomsNames} `)
-        console.log(`/WaitingRoom.onAddAvaibleRoom ${new Date().toLocaleTimeString()}`);
-        console.log("");
-        
-    };
-    
-    onRemoveAvaibleRoom (roomName: string){
-        console.log("");
-        console.log(`* <- WaitingRoom.onRemoveAvaibleRoom : ${roomName} ${new Date().toLocaleTimeString()}`); 
-         
-        let i = this.allAvaibleRoomsNames.indexOf(roomName);
-        this.allAvaibleRoomsNames.splice(i,1);
-        
-        console.log(`this.avaibleRooms: ${this.allAvaibleRoomsNames}`);
-        console.log(`/ WaitingRoom.onRemoveAvaibleRoom : ${roomName} ${new Date().toLocaleTimeString()}`);
-        console.log("");
-        
-    };
-    
-    joinRoom (roomName: string){
+    onJoinRoom (roomName: string){
         console.log("");
         console.log(`* WaitingRoom.joinRoom: ${roomName} ${new Date().toLocaleTimeString()}`);
         
@@ -102,33 +47,20 @@ import{ waitingRoomTemplate } from './waitingRoom.html'
         
         console.log(`/ WaitingRoom.joinRoom ${new Date().toLocaleTimeString()}`);  
         console.log("");
-        
     }
     
     onLogOut(){
         console.log("");
         console.log(`* <- WaitingRoom.onLogOut ${new Date().toLocaleTimeString()}`);
-        
-        let jsonMessage = {
-            id: "logout",
-            userName: this.appService.myUserName,
-        };
-               
-        this.connection.sendMessage(jsonMessage);
-        
+       
         this.router.navigate(['/login']);
-        
-        console.log(`/ WaitingRoom.onLogOut ${new Date().toLocaleTimeString()}`);
-        console.log("")
-    }
+     }
     
     ngOnDestroy(){
         console.log("");
         console.log(`* <- WaitingRoom.ngOnDestroy ${new Date().toLocaleTimeString()}`);
         
-        this.onAvaibleRoomsSubscription.unsubscribe();
-        this.onNewAvaibleRoomSubscription.unsubscribe();
-        this.onAvaibleRoomLessSubscription.unsubscribe();
+        this.waitingRoom.destroy();
         
         console.log(`/ WaitingRoom.ngOnDestroy ${new Date().toLocaleTimeString()}`);
         console.log("")

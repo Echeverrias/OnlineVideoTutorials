@@ -20,8 +20,6 @@ public class UserSession extends User{
     
     protected final Logger log = LoggerFactory.getLogger(UserSession.class);
     
-    
-    
     private final WebSocketSession session;
 
     public UserSession(WebSocketSession session, String userName, String userType, String name){
@@ -59,14 +57,11 @@ public class UserSession extends User{
         return session.getId();
     }
     
-    public void sendMeAMessage(JsonObject message){
+    public boolean sendMeAMessage(JsonObject message){
         
-        SendMessage.toClient(message, this.session);
+        boolean result = SendMessage.toClient(message, this.session);
+        return result;
     }
-    
-    
-    
-    
     
     /*
 	 * (non-Javadoc)

@@ -39,7 +39,7 @@ var ChatMessageComponent = (function () {
         core_1.Component({
             moduleId: module.id,
             selector: 'ovt-chatMessage',
-            styleUrls: ["../../../assets/styles/main.css", "chatMessage.css"],
+            styleUrls: ["chatMessage.css"],
             template: chatMessage_html_1.chatMessageTemplate
         }), 
         __metadata('design:paramtypes', [])

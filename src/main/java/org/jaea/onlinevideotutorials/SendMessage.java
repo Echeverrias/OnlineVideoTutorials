@@ -20,28 +20,35 @@ public class SendMessage {
     
     private static Logger log = LoggerFactory.getLogger(SendMessage.class);
      
-    public static boolean toClient(JsonObject message, WebSocketSession session){
-        Info.SendMsg(session.getId());
+    public static synchronized boolean toClient(JsonObject message, WebSocketSession session){
+        //log.info("SendMessage.toClient");
+        //log.info("session: {}", session);
+        //Info.SendMsg(session.getId());
         boolean isSuccessful = false;
         
         TextMessage textAnswer = new TextMessage(message.toString());
         
         try{
-            log.info("Sending message: {} to {}", message.toString(), session.getId());
+           
+             //   log.info("Sending message: {} to {}", message.toString(), session.getId());
+            
             session.sendMessage(textAnswer);
-            log.info("message has been sent");
+            //log.info("message has been sent");
             isSuccessful = true;
         }
         catch(IOException e){
-            log.info("error");
+            log.info("error"); 
+            log.info("Can't deliver the message: {} to {} ", message.toString(), session.getId());
             log.error("Sender: {}", session.getId());
         }
-        log.info("(message has been sent: {})", isSuccessful);
+        
+          // log.info("(message has been sent: {})", isSuccessful);
+          
         return isSuccessful;
     }
     
     // for debugging
-    public static void toClient(String value, WebSocketSession session){
+    public static synchronized void toClient(String value, WebSocketSession session){
         
         JsonObject msg = new JsonObject();
         msg.addProperty("id", "server");

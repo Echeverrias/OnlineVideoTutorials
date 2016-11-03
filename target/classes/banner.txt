@@ -8,5 +8,5 @@
                                    | |   | |    
                                    |_|   |_|              
                                              
-       OnlineVideoTutorials
-       Version 0.1.0
+       ${groupId}
+       Version ${version}

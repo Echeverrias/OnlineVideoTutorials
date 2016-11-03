@@ -1,49 +1,44 @@
 import { Injectable } from '@angular/core';
 
-import { Connection } from './connection';
-import { INoticeBoard } from './../components/chat/noticeBoard';
-import { ChatMessage } from './../components/chatMessage/chatMessage';
+import { ConnectionService } from './connection.service';
+import { ChatMessage } from '../models/types';
 
+import { UserService } from './user.service';
+
+import { HexColorGenerator } from './../models/hexColorGenerator';
 
 const ENDPOINT: string = "/chat";
 
 @Injectable()
 export class ChatService{
-
+    
+    private colorGenerator: HexColorGenerator;
+    private messages: ChatMessage[];
+    private participants: any[]; 
 
     private wsUrl: string;
-    private noticeBoard: INoticeBoard;
-    private address: string;
     private stompClient: any;
-    private subscription: string = "/ovt/chat/noticeBoard"; 
-    private destiny: string = "/ovt/chat/mailBox"; 
+    private subscription: string = "/ovt/chat/noticeBoard/"; 
+    private destiny: string = "/ovt/chat/mailBox/"; 
 
 
-    constructor(private connection: Connection){
+    constructor(private connection: ConnectionService, private me: UserService) {
         console.log("");
         console.log("% new ChatService");
-        this.wsUrl = connection.url;
-        /*
-        stompClient = Stomp.client(ws.url + "/chat");
-        console.log("The stompClient is going to be connected");
-        stompClient.connect({}, function(frame) {
-            setConnected(true);
-            console.log('Connected: ' + frame);
-            stompClient.subscribe(SUBSCRIPTION, function(greeting) {
-                console.log("Msg received:");
-                console.log(greeting);
-                showGreeting(JSON.parse(greeting.body).content);
-            });
-        });
-        */
+        this.wsUrl = this.connection.url;
+        this.colorGenerator = new HexColorGenerator();
+        this.messages = [];
+        this.participants = []; 
     }
 
-    public signIn(address: string, noticeBoard: INoticeBoard): void{
-        console.log("* ChatService.signIn");
-        this.noticeBoard = noticeBoard;
+    init(address: string): void{
         this.destiny = this.destiny + address;
         this.subscription = this.subscription + address;
         this.connect();
+    }
+
+    getMessages(): ChatMessage[] {
+        return this.messages;
     }
 
     private connect(){
@@ -62,21 +57,40 @@ export class ChatService{
 
     }
 
-    private publish(message: ChatMessage){
-        this.noticeBoard.publish(message);
+    public publish(message: ChatMessage): void {
+        this.addColor(message);
+        this.messages.push(message);
     }
 
-    public sendMessage(message: ChatMessage) {
-        this.stompClient.send(this.destiny, {}, JSON.stringify(message));
+    private addColor(message: ChatMessage): void {
+        if (!this.participants[message.sender]) {
+            this.participants[message.sender] = this.colorGenerator.getAColor();
+        }
+        message.color = this.participants[message.sender];
+    }
+
+   public sendMessage(message: string) {
+       let myUserName = this.me.myUserName;
+       let msg: ChatMessage = {
+            sender: myUserName,
+            message: message,
+            date: new Date().toLocaleTimeString(),
+            color: undefined
+        };
+        this.stompClient.send(this.destiny, {}, JSON.stringify(msg));
 
     }
 
-    public disconnect(){
+    private disconnect(): void{
 
         if (this.stompClient !== null){
             this.stompClient.disconnect();
         }
     }
 
+    destroy(): void{
+        this.disconnect();
+        this.messages.length = 0;
+    }
 
 }

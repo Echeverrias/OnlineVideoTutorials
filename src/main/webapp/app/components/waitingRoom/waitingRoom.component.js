@@ -14,63 +14,25 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
-var connection_1 = require('../../services/connection');
-var myService_1 = require('../../services/myService');
+var waitingRoom_service_1 = require('../../services/waitingRoom.service');
+var user_service_1 = require('../../services/user.service');
 var waitingRoom_html_1 = require('./waitingRoom.html');
 var WaitingRoomComponent = (function () {
-    function WaitingRoomComponent(router, connection, appService) {
+    function WaitingRoomComponent(waitingRoom, router, me) {
+        this.waitingRoom = waitingRoom;
         this.router = router;
-        this.connection = connection;
-        this.appService = appService;
+        this.me = me;
         console.log("");
         console.log("% WaitingRoom constructor " + new Date().toLocaleTimeString());
         console.log("/ WaitingRoom constructor " + new Date().toLocaleTimeString());
         console.log("");
     }
     WaitingRoomComponent.prototype.ngOnInit = function () {
-        this.onAvaibleRoomsSubscription = this.connection.subscriptions.subscribeToAllAvaibleRooms(this, this.onSetAvaibleRooms);
-        this.onNewAvaibleRoomSubscription = this.connection.subscriptions.subscribeToNewAvaibleRoom(this, this.onAddAvaibleRoom);
-        this.onAvaibleRoomLessSubscription = this.connection.subscriptions.subscribeToAvaibleRoomLess(this, this.onRemoveAvaibleRoom);
-        this.lookingForRooms();
+        var _this = this;
+        this.waitingRoom.init();
+        this.waitingRoom.getAvailableRooms().subscribe(function (availableRooms) { return _this.availableRoomsNames = availableRooms; });
     };
-    WaitingRoomComponent.prototype.lookingForRooms = function () {
-        console.log("");
-        console.log("* <- WaitingRoom.lookingForRooms " + new Date().toLocaleTimeString());
-        var jsonMessage = {
-            id: "waitingRoom"
-        };
-        this.connection.sendMessage(jsonMessage);
-        console.log("/ WaitingRoom.lookingForRooms " + new Date().toLocaleTimeString());
-        console.log("");
-    };
-    WaitingRoomComponent.prototype.onSetAvaibleRooms = function (avaibleRoomsNames) {
-        console.log("");
-        console.log("* WaitingRoom.avaibleRoomsNames " + new Date().toLocaleTimeString());
-        console.log(avaibleRoomsNames);
-        this.allAvaibleRoomsNames = avaibleRoomsNames;
-        console.log("/ WaitingRoom.avaibleRoomsNames " + new Date().toLocaleTimeString());
-        console.log("");
-    };
-    WaitingRoomComponent.prototype.onAddAvaibleRoom = function (roomName) {
-        console.log("");
-        console.log("* <- WaitingRoom.onAddAvaibleRoom: " + roomName + " to " + this.allAvaibleRoomsNames + " " + new Date().toLocaleTimeString());
-        this.allAvaibleRoomsNames.push(roomName);
-        console.log("this.avaibleRooms: " + this.allAvaibleRoomsNames + " ");
-        console.log("/WaitingRoom.onAddAvaibleRoom " + new Date().toLocaleTimeString());
-        console.log("");
-    };
-    ;
-    WaitingRoomComponent.prototype.onRemoveAvaibleRoom = function (roomName) {
-        console.log("");
-        console.log("* <- WaitingRoom.onRemoveAvaibleRoom : " + roomName + " " + new Date().toLocaleTimeString());
-        var i = this.allAvaibleRoomsNames.indexOf(roomName);
-        this.allAvaibleRoomsNames.splice(i, 1);
-        console.log("this.avaibleRooms: " + this.allAvaibleRoomsNames);
-        console.log("/ WaitingRoom.onRemoveAvaibleRoom : " + roomName + " " + new Date().toLocaleTimeString());
-        console.log("");
-    };
-    ;
-    WaitingRoomComponent.prototype.joinRoom = function (roomName) {
+    WaitingRoomComponent.prototype.onJoinRoom = function (roomName) {
         console.log("");
         console.log("* WaitingRoom.joinRoom: " + roomName + " " + new Date().toLocaleTimeString());
         this.router.navigate(['/room', roomName]);
@@ -80,21 +42,12 @@ var WaitingRoomComponent = (function () {
     WaitingRoomComponent.prototype.onLogOut = function () {
         console.log("");
         console.log("* <- WaitingRoom.onLogOut " + new Date().toLocaleTimeString());
-        var jsonMessage = {
-            id: "logout",
-            userName: this.appService.myUserName,
-        };
-        this.connection.sendMessage(jsonMessage);
         this.router.navigate(['/login']);
-        console.log("/ WaitingRoom.onLogOut " + new Date().toLocaleTimeString());
-        console.log("");
     };
     WaitingRoomComponent.prototype.ngOnDestroy = function () {
         console.log("");
         console.log("* <- WaitingRoom.ngOnDestroy " + new Date().toLocaleTimeString());
-        this.onAvaibleRoomsSubscription.unsubscribe();
-        this.onNewAvaibleRoomSubscription.unsubscribe();
-        this.onAvaibleRoomLessSubscription.unsubscribe();
+        this.waitingRoom.destroy();
         console.log("/ WaitingRoom.ngOnDestroy " + new Date().toLocaleTimeString());
         console.log("");
     };
@@ -102,10 +55,11 @@ var WaitingRoomComponent = (function () {
         core_1.Component({
             moduleId: module.id,
             selector: 'ovt-waitingRoom',
-            styleUrls: ["../../../assets/styles/main.css", "waitingRoom.css"],
-            template: waitingRoom_html_1.waitingRoomTemplate
+            styleUrls: ["waitingRoom.css"],
+            template: waitingRoom_html_1.waitingRoomTemplate,
+            providers: [waitingRoom_service_1.WaitingRoomService]
         }), 
-        __metadata('design:paramtypes', [router_1.Router, connection_1.Connection, myService_1.MyService])
+        __metadata('design:paramtypes', [waitingRoom_service_1.WaitingRoomService, router_1.Router, user_service_1.UserService])
     ], WaitingRoomComponent);
     return WaitingRoomComponent;
 }());
