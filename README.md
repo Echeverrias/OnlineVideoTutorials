@@ -9,5 +9,8 @@ You need to install:
 - [NPM](https://docs.npmjs.com/getting-started/installing-node)
 - [Bower](https://bower.io/#install-bower)
 
-### Installing
-Clone the project or download it (the 1.\*.\* branch), open the terminal, go to the root of the project folder and execute **`mvn spring-boot run`** the first time, then you can run the proyect executing **`mvn exec:java`**
+
+### Run the project
+1. Download the [OnlineVideoTutorialsApp](https://github.com/Echeverrias/OnlineVideoTutorials/tree/1.0.x). You can download it as a zip or clone it.
+2. Open the terminal, go to the root of the project folder and execute **mvn spring-boot run** to run the app the first time, then you can execute **mvn exec:java**
+
