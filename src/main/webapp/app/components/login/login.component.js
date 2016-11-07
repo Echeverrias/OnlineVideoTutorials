@@ -23,7 +23,7 @@ var LoginComponent = (function () {
         this.login = login;
         this.me = me;
         console.log("% Login constructor ");
-        this.user = { userName: "", password: "ZZZ" };
+        this.user = { userName: "", password: "" };
         console.log("/ Login constructor " + new Date().toLocaleTimeString());
     }
     LoginComponent.prototype.ngOnInit = function () {
