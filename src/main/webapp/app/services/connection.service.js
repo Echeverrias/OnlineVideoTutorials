@@ -25,7 +25,6 @@ var ConnectionService = (function () {
         console.log("% Connection");
         this._ws = new WebSocket('ws://localhost:8080/ovt');
         this._ws.onmessage = function (message) { _this.handler.handle(message); };
-        { }
         console.log(this._ws);
         console.log(this._ws.onmessage);
     }

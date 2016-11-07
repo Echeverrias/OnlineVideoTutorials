@@ -29,7 +29,7 @@ public class UniversityBBDD {
         User user = null;
         
         /*This is a provisional implementation
-        * Here should be a query at the data base 
+        * Here should be a query at the data base
         */
         String userType = null;
         
