@@ -10,4 +10,4 @@ You need to install:
 - [Bower](https://bower.io/#install-bower)
 
 ### Installing
-Clone the project or download it, open the terminal, go to the root of the project folder and execute **mvn spring-boot run** the first time, then you can run the proyect executing **mvn exec:java**
+Clone the project or download it (the 1.*.* branch), open the terminal, go to the root of the project folder and execute **mvn spring-boot run** the first time, then you can run the proyect executing **mvn exec:java**
