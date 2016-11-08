@@ -4,7 +4,7 @@
 
     <groupId>org.jaea</groupId>
     <artifactId>OnlineVideoTutorials</artifactId>
-    <version>1.0.0.RELEASE</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
     <name>OnlineVideoTutorials</name>
