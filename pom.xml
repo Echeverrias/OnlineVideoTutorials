@@ -15,6 +15,12 @@
         <!-- Main class -->
 	<start-class>org.jaea.onlinevideotutorials.OnlineVideoTutorialsApp</start-class>
     </properties>
+
+    <scm>
+        <connection>scm:git:https://github.com/Echeverrias/OnlineVideoTutorials.git</connection>
+        <url>https://github.com/Echeverrias/OnlineVideoTutorials</url>
+        <developerConnection>scm:git:https://github.com/Echeverrias/OnlineVideoTutorials.git</developerConnection>
+    </scm>
     
     <dependencies>
         
