@@ -12,7 +12,7 @@ You need to install:
 
 ### Run the project
 1. Download the [OnlineVideoTutorialsApp](https://github.com/Echeverrias/OnlineVideoTutorials/tree/1.0.x). You can download it as a zip or clone it.
-2. Open the terminal, go to the root of the project folder and execute **mvn spring-boot run** to run the app the first time, then you can execute **mvn exec:java**
+2. Open the terminal, go to the root of the project folder and execute **`mvn spring-boot run`** to run the app the first time, then you can execute the app with **`mvn exec:java`**
 3. The application starts in the url [http://localhost:8080/](http://localhost:8080/)
 
 
