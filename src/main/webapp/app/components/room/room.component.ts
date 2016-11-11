@@ -8,6 +8,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 
 import { UserService } from '../../services/user.service';
 import { RoomService } from '../../services/room.service';
+import { ParticipantsService } from '../../services/participants.service';
 
 import { ParticipantComponent } from '../participant/participant.component';
 
@@ -20,7 +21,7 @@ import { roomTemplate } from './room.html'
     selector: 'ovt-room',
     styleUrls: ["room.css"],
     template: roomTemplate,
-    providers: [RoomService]
+    providers: [RoomService, ParticipantsService]
 })
 
 export class RoomComponent implements OnInit, OnDestroy{
@@ -33,13 +34,14 @@ export class RoomComponent implements OnInit, OnDestroy{
     private mainUser: User = new User();
     private users: User[];
     
-    constructor(private room: RoomService, private router: Router, private me: UserService, private route: ActivatedRoute) {
+    constructor(private room: RoomService, private _participants: ParticipantsService, private router: Router, private me: UserService, private route: ActivatedRoute) {
       
       console.log("");
       console.log(`% Room constructor ${new Date().toLocaleTimeString()}`);
       console.log(this.users);
       console.log(`/ Room constructor ${new Date().toLocaleTimeString()}`);
       console.log("");
+
     }
     
     ngOnInit(){
@@ -72,7 +74,7 @@ export class RoomComponent implements OnInit, OnDestroy{
 
     ngOnDestroy(){
       console.log(`* Room.OnDestroy ${new Date().toLocaleTimeString()}`);
-        
+      this._participants.destroy();  
       this.room.destroy();
     }
    

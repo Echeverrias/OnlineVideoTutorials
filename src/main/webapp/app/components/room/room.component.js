@@ -16,12 +16,14 @@ var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var user_service_1 = require('../../services/user.service');
 var room_service_1 = require('../../services/room.service');
+var participants_service_1 = require('../../services/participants.service');
 var participant_component_1 = require('../participant/participant.component');
 var user_1 = require('../../models/user');
 var room_html_1 = require('./room.html');
 var RoomComponent = (function () {
-    function RoomComponent(room, router, me, route) {
+    function RoomComponent(room, _participants, router, me, route) {
         this.room = room;
+        this._participants = _participants;
         this.router = router;
         this.me = me;
         this.route = route;
@@ -57,6 +59,7 @@ var RoomComponent = (function () {
     };
     RoomComponent.prototype.ngOnDestroy = function () {
         console.log("* Room.OnDestroy " + new Date().toLocaleTimeString());
+        this._participants.destroy();
         this.room.destroy();
     };
     __decorate([
@@ -73,9 +76,9 @@ var RoomComponent = (function () {
             selector: 'ovt-room',
             styleUrls: ["room.css"],
             template: room_html_1.roomTemplate,
-            providers: [room_service_1.RoomService]
+            providers: [room_service_1.RoomService, participants_service_1.ParticipantsService]
         }), 
-        __metadata('design:paramtypes', [room_service_1.RoomService, router_1.Router, user_service_1.UserService, router_1.ActivatedRoute])
+        __metadata('design:paramtypes', [room_service_1.RoomService, participants_service_1.ParticipantsService, router_1.Router, user_service_1.UserService, router_1.ActivatedRoute])
     ], RoomComponent);
     return RoomComponent;
 }());
