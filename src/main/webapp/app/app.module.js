@@ -17,6 +17,7 @@ var login_component_1 = require('./components/login/login.component');
 var waitingRoom_component_1 = require('./components/waitingRoom/waitingRoom.component');
 var room_component_1 = require('./components/room/room.component');
 var participant_component_1 = require('./components/participant/participant.component');
+var loading_component_1 = require('./components/loading/loading.component');
 var chat_component_1 = require('./components/chat/chat.component');
 var chatMessage_component_1 = require('./components/chatMessage/chatMessage.component');
 var connection_service_1 = require('./services/connection.service');
@@ -39,6 +40,7 @@ var AppModule = (function () {
                 waitingRoom_component_1.WaitingRoomComponent,
                 room_component_1.RoomComponent,
                 participant_component_1.ParticipantComponent,
+                loading_component_1.LoadingComponent,
                 chat_component_1.ChatComponent,
                 chatMessage_component_1.ChatMessageComponent
             ],

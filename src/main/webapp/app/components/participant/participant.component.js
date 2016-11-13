@@ -28,7 +28,6 @@ var ParticipantComponent = (function () {
             audio: true,
             video: {
                 mandatory: {
-                    maxWidth: 500,
                     maxFrameRate: 15,
                     minFrameRate: 15
                 }
@@ -96,12 +95,14 @@ var ParticipantComponent = (function () {
         var _this = this;
         console.log("");
         console.log("*** ParticipantComponent.getProcessAnswer " + this.me.myUserName + " " + new Date().toLocaleTimeString());
+        this.loading = false;
         return (function (sdpAnswer) {
             console.log("*** ParticipantComponent.processAnswer " + new Date().toLocaleTimeString());
             _this._rtcPeer.processAnswer(sdpAnswer, function (error) {
                 if (error) {
                     console.error("!! ERROR:Participant.receiveVideoResponse");
                     console.error(error);
+                    return;
                 }
             });
         });

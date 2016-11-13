@@ -5,6 +5,8 @@
 
 import { Component, ViewChild, ElementRef, Input, OnInit } from '@angular/core';
 
+import { LoadingComponent } from '../loading/loading.component';
+
 import { ParticipantsService } from '../../services/participants.service';
 import { UserService } from '../../services/user.service';
 
@@ -28,7 +30,8 @@ export class ParticipantComponent implements OnInit{
     @Input() name : string;
     @Input() userType : string;
     @Input() roomName : string;
-  
+    
+    private loading: boolean;
     private participantUserName: string;
     private important: boolean;
 
@@ -43,13 +46,13 @@ export class ParticipantComponent implements OnInit{
         console.log("");
         console.log(`% Participant constructor ${new Date().toLocaleTimeString()}`);
         
-        this.important = false;
+       this.important = false;
         this.options = { mediaConstraints: null, onicecandidate: null, localVideo: null, remoteVideo: null };
         this.constraints = {
             audio: true,
             video: {
                 mandatory: {
-                    maxWidth: 500,
+                    
                     maxFrameRate: 15,
                     minFrameRate: 15
                 }
@@ -142,18 +145,18 @@ export class ParticipantComponent implements OnInit{
     processAnswer(): (sdpAnswer: any) => any {
         console.log("");
         console.log(`*** ParticipantComponent.getProcessAnswer ${this.me.myUserName} ${new Date().toLocaleTimeString()}`);
-       
-        return (
+        
+       this.loading = false; 
+       return (
             (sdpAnswer: any):any => {
                 console.log(`*** ParticipantComponent.processAnswer ${new Date().toLocaleTimeString()}`);
                 this._rtcPeer.processAnswer(sdpAnswer, function(error) {
                     if (error) {
                         console.error(`!! ERROR:Participant.receiveVideoResponse`);
                         console.error(error);
-
+                        return;
                     }
-                }
-        )        
+            });        
         });
         
     }
@@ -171,8 +174,7 @@ export class ParticipantComponent implements OnInit{
                         console.error(error);
                         return;
                     }
-            }    
-        );    
+             });    
         });
     }
 

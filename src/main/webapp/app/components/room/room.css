@@ -63,7 +63,7 @@ ovt-chat{
 ovt-participant.mainParticipant {
    
     width: 57%;
-    height: auto;
+    height: 98%;
     margin:auto;
 }
 
@@ -72,7 +72,7 @@ ovt-participant.mainParticipant {
 
 .secundary ovt-participant {
     width: 95%;
-    height: auto;
+    height: 32%;
     margin: 0.5em;
     font-size: 0.8em;
 }

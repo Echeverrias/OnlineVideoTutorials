@@ -8,6 +8,7 @@ import { LoginComponent } from './components/login/login.component';
 import { WaitingRoomComponent } from './components/waitingRoom/waitingRoom.component';
 import { RoomComponent } from './components/room/room.component';
 import { ParticipantComponent } from './components/participant/participant.component';
+import { LoadingComponent } from './components/loading/loading.component';
 import { ChatComponent } from './components/chat/chat.component';
 import { ChatMessageComponent } from './components/chatMessage/chatMessage.component';
 
@@ -31,6 +32,7 @@ import { AuthGuard } from './guards/auth.guard';
     WaitingRoomComponent,
     RoomComponent,
     ParticipantComponent,
+    LoadingComponent,
     ChatComponent,
     ChatMessageComponent
   ],
