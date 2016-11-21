@@ -2,7 +2,7 @@
 This is an app to do online video tutorials with a chat. You can enter in the app as a 'tutor' or as a 'student'.
 
 ![alt tag](https://github.com/Echeverrias/OnlineVideoTutorials/blob/1.0.x/src/main/resources/img/OVT%20-%20login.png)
-*Figura 1*  
+*Figura 1*  <br /><br />
 
 
 
