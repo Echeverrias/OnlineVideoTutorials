@@ -8,7 +8,7 @@ export const loginTemplate = ` <div id="ovt-login" class="animate container">
             <div class="form-group">
                 <label for="username">User name</label>
                 <input id="userName" class="form-control" name="userName" type="text" [(ngModel)]="user.userName" #userName="ngModel" 
-                    placeholder="tutor* or student*" required>
+                    placeholder="Your user name" required>
                 <div *ngIf="!userName.valid" class="alert-danger alert">Name is required</div>
                 <br>
             </div>
