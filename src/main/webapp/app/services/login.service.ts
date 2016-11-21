@@ -1,5 +1,9 @@
-import { Injectable, EventEmitter } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
+import { Injectable  } from '@angular/core';
+import {Http, Headers, Response, RequestOptions} from '@angular/http';
+import { Observable } from 'rxjs/Rx';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
+
 
 import { ConnectionService } from './connection.service';
 import { HandlerService } from './handler.service';
@@ -7,27 +11,18 @@ import { UserService } from './user.service';
 
 import { User } from '../models/user';
 import { UserFactory } from '../models/userFactory';
-import { Message } from '../models/types';
 import { IdMessage } from '../models/types';
 
-type ValiditingUserMessage = { validUser: boolean, userName: string, userType: string, name: string } & IdMessage;
-type LoginMessage = { userName: string, password: string } & IdMessage;
+type UserMessage = { userName: string, userType: string, name: string };
+type LoginMessage = UserMessage & IdMessage;
+type LogoutMessage = { userName: string } & IdMessage;
 
 
 @Injectable()
 export class LoginService {
 
-    private eeLogin: EventEmitter<Message>;
-    private userValidationObserver: Subject<boolean>;
-
-    constructor(private connection: ConnectionService, private handler: HandlerService, private me: UserService){
-          console.log("*LoginService constructor");
-
-        this.userValidationObserver = new Subject<boolean>();
-       
-        this.eeLogin = new EventEmitter<Message>();
-        this.eeLogin.subscribe((data: ValiditingUserMessage): void => { this.onLogin(data) });
-        this.handler.attach('login', this.eeLogin);
+    constructor(private http: Http, private connection: ConnectionService, private handler: HandlerService, private me: UserService){
+        console.log("*LoginService constructor")
         
         this.logOut();
     }
@@ -38,40 +33,46 @@ export class LoginService {
         //this.destroyMe();
     }
 
-    doLogin(userName: string, password: string): Subject<boolean> {
+    validateUser(userName: string, password: string): Observable<User> { 
+
+         let headers = new Headers();
+         headers.append("Content-Type", "application/json");
+         let options = new RequestOptions({headers: headers});
+         let body = JSON.stringify({userName, password});
+         return this.http.post(`/validateUser`, body, options)
+            .map((res: Response) => {
+                console.log(res);
+                if (res.status == 200){
+                    this.createUser(res.json());
+                }
+                return res.json();
+            })
+            .catch((error: any) => Observable.throw(error))
+    }
+
+    createUser(msg: UserMessage): void {
         console.log("");
-        console.log(`* LogiService.doLogin ${new Date().toLocaleTimeString()}`);
-        
+        console.log(`* LogiService.createUse ${new Date().toLocaleTimeString()}`);
+        console.log(msg);
+
+        let user: User = UserFactory.createAnUser(msg);
+        localStorage.setItem('ovtUser', JSON.stringify(user));
+        localStorage.setItem('ovtLastUserName', msg.userName);
+        this.me.registerMe(user);
+
         let jsonMessage: LoginMessage = {
             id: "login",
-            userName: userName,
-            password: password,
+            userName: this.me.myUserName,
+            name: this.me.myName,
+            userType: this.me.myUserType
         };
-               
-       this.connection.sendMessage(jsonMessage);
+
+        this.connection.sendMessage(jsonMessage);
+
+        console.log(`/ LogiService.createUser ${new Date().toLocaleTimeString()}`);
+        console.log("");
+    }    
        
-       console.log(`/ LogiService.doLogin ${new Date().toLocaleTimeString()}`);
-       console.log("");
-       return this.userValidationObserver;         
-    }
-
-    onLogin (msg: ValiditingUserMessage): void{
-        console.log("");
-        console.log(`* <- LogiService.onLogin ${new Date().toLocaleTimeString()}`);
-        console.log(`/ LogiService.onLogin ${new Date().toLocaleTimeString()}`);
-        console.log("");
-
-        console.log(`is a valid user?: ${msg.validUser}`);
-        if (msg.validUser) {
-            let user: User = UserFactory.createAnUser(msg);
-            localStorage.setItem('ovtUser', JSON.stringify(user));
-            localStorage.setItem('ovtLastUserName', msg.userName);
-            this.me.registerMe(user);
-        }    
-        this.userValidationObserver.next(msg.validUser);
-    }
-
-
     getLastUserName(): string {
         return localStorage.getItem('ovtLastUserName');
     }
@@ -82,7 +83,7 @@ export class LoginService {
         
         if (this.me.amLogged()) {
             console.log(`* I'm going to logout me`);
-            let jsonMessage = {
+            let jsonMessage: LogoutMessage = {
                 id: "logout",
                 userName: this.me.myUserName,
             };
@@ -102,8 +103,6 @@ export class LoginService {
 
     destroy(): void{
         console.log("*LoginService.destroy");
-        this.eeLogin.unsubscribe();
-        this.handler.detach('login');  
     }
     
 }

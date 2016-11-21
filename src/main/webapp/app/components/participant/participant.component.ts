@@ -46,7 +46,7 @@ export class ParticipantComponent implements OnInit{
         console.log("");
         console.log(`% Participant constructor ${new Date().toLocaleTimeString()}`);
         
-       this.important = false;
+        this.important = false;
         this.options = { mediaConstraints: null, onicecandidate: null, localVideo: null, remoteVideo: null };
         this.constraints = {
             audio: true,
@@ -190,6 +190,10 @@ export class ParticipantComponent implements OnInit{
 
     get userName():string{
         return this.participantUserName;
+    }
+
+    private getFirstName():string{
+        return this.name.split(" ")[0];
     }
 
     setClasses(){

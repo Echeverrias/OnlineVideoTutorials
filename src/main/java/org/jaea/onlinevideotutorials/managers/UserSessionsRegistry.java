@@ -48,7 +48,7 @@ public class UserSessionsRegistry {
         log.info("{} UserRegistry.addUser: {}, {}", Info.START_SYMBOL, user.getUserName(), Hour.getTime());
         
         this.usersByUserName.put(user.getUserName(), user);
-        log.info(" add to usersByName");
+        log.info(" add to usersByUserName");
         this.usersBySessionId.put(user.getSession().getId(), user);
         log.info(" add to usersBySessionId");
        

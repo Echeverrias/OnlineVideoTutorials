@@ -9,22 +9,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var Subject_1 = require('rxjs/Subject');
+var http_1 = require('@angular/http');
+var Rx_1 = require('rxjs/Rx');
+require('rxjs/add/operator/map');
+require('rxjs/add/operator/catch');
 var connection_service_1 = require('./connection.service');
 var handler_service_1 = require('./handler.service');
 var user_service_1 = require('./user.service');
 var userFactory_1 = require('../models/userFactory');
 var LoginService = (function () {
-    function LoginService(connection, handler, me) {
-        var _this = this;
+    function LoginService(http, connection, handler, me) {
+        this.http = http;
         this.connection = connection;
         this.handler = handler;
         this.me = me;
         console.log("*LoginService constructor");
-        this.userValidationObserver = new Subject_1.Subject();
-        this.eeLogin = new core_1.EventEmitter();
-        this.eeLogin.subscribe(function (data) { _this.onLogin(data); });
-        this.handler.attach('login', this.eeLogin);
         this.logOut();
     }
     LoginService.prototype.init = function () {
@@ -32,32 +31,39 @@ var LoginService = (function () {
         // Reset login status
         //this.destroyMe();
     };
-    LoginService.prototype.doLogin = function (userName, password) {
+    LoginService.prototype.validateUser = function (userName, password) {
+        var _this = this;
+        var headers = new http_1.Headers();
+        headers.append("Content-Type", "application/json");
+        var options = new http_1.RequestOptions({ headers: headers });
+        var body = JSON.stringify({ userName: userName, password: password });
+        return this.http.post("/validateUser", body, options)
+            .map(function (res) {
+            console.log(res);
+            if (res.status == 200) {
+                _this.createUser(res.json());
+            }
+            return res.json();
+        })
+            .catch(function (error) { return Rx_1.Observable.throw(error); });
+    };
+    LoginService.prototype.createUser = function (msg) {
         console.log("");
-        console.log("* LogiService.doLogin " + new Date().toLocaleTimeString());
+        console.log("* LogiService.createUse " + new Date().toLocaleTimeString());
+        console.log(msg);
+        var user = userFactory_1.UserFactory.createAnUser(msg);
+        localStorage.setItem('ovtUser', JSON.stringify(user));
+        localStorage.setItem('ovtLastUserName', msg.userName);
+        this.me.registerMe(user);
         var jsonMessage = {
             id: "login",
-            userName: userName,
-            password: password,
+            userName: this.me.myUserName,
+            name: this.me.myName,
+            userType: this.me.myUserType
         };
         this.connection.sendMessage(jsonMessage);
-        console.log("/ LogiService.doLogin " + new Date().toLocaleTimeString());
+        console.log("/ LogiService.createUser " + new Date().toLocaleTimeString());
         console.log("");
-        return this.userValidationObserver;
-    };
-    LoginService.prototype.onLogin = function (msg) {
-        console.log("");
-        console.log("* <- LogiService.onLogin " + new Date().toLocaleTimeString());
-        console.log("/ LogiService.onLogin " + new Date().toLocaleTimeString());
-        console.log("");
-        console.log("is a valid user?: " + msg.validUser);
-        if (msg.validUser) {
-            var user = userFactory_1.UserFactory.createAnUser(msg);
-            localStorage.setItem('ovtUser', JSON.stringify(user));
-            localStorage.setItem('ovtLastUserName', msg.userName);
-            this.me.registerMe(user);
-        }
-        this.userValidationObserver.next(msg.validUser);
     };
     LoginService.prototype.getLastUserName = function () {
         return localStorage.getItem('ovtLastUserName');
@@ -83,12 +89,10 @@ var LoginService = (function () {
     };
     LoginService.prototype.destroy = function () {
         console.log("*LoginService.destroy");
-        this.eeLogin.unsubscribe();
-        this.handler.detach('login');
     };
     LoginService = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [connection_service_1.ConnectionService, handler_service_1.HandlerService, user_service_1.UserService])
+        __metadata('design:paramtypes', [http_1.Http, connection_service_1.ConnectionService, handler_service_1.HandlerService, user_service_1.UserService])
     ], LoginService);
     return LoginService;
 }());

@@ -34,24 +34,21 @@ var LoginComponent = (function () {
         var _this = this;
         console.log("");
         console.log("* Login.doLogin " + new Date().toLocaleTimeString());
-        this.login.doLogin(this.user.userName, this.user.password).subscribe(function (validUser) {
-            if (validUser) {
-                if (_this.me.amATutor()) {
-                    console.log("You are a tutor");
-                    _this.router.navigate(['/room', _this.me.myUserName]);
-                    console.log("# go to room");
-                }
-                else {
-                    console.log("You are an student");
-                    _this.router.navigate(['/rooms']);
-                    console.log("# go to waitingRoom");
-                }
+        this.login.validateUser(this.user.userName, this.user.password).subscribe(function (validUser) {
+            if (validUser.isATutor) {
+                console.log("You are a tutor");
+                _this.router.navigate(['/room', validUser.userName]);
+                console.log("# go to room");
             }
             else {
-                alert("Invalid user name or password");
-                console.error("Invalid user");
+                console.log("You are an student");
+                _this.router.navigate(['/rooms']);
+                console.log("# go to waitingRoom");
             }
-        });
+        }, function (error) {
+            alert("Invalid user name or password");
+            console.error("Invalid user");
+        }, function () { });
         console.log("/ Login.doLogin " + new Date().toLocaleTimeString());
         console.log("");
     };

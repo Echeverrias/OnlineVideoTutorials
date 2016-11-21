@@ -136,6 +136,9 @@ var ParticipantComponent = (function () {
         enumerable: true,
         configurable: true
     });
+    ParticipantComponent.prototype.getFirstName = function () {
+        return this.name.split(" ")[0];
+    };
     ParticipantComponent.prototype.setClasses = function () {
         var classes = {
             'important': this.important,

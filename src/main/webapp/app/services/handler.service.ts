@@ -5,14 +5,14 @@ import { Message } from '../models/types';
 @Injectable()
 export class HandlerService{
 
-    private handlers: Map<string, EventEmitter<Object>>;
+    private handlers: Map<string, EventEmitter<Message>>;
 
     constructor(){
         console.log("*HandlerService constructor");
-        this.handlers = new Map<string, EventEmitter<Object>>();
+        this.handlers = new Map<string, EventEmitter<Message>>();
     }
 
-    attach(id: string, ee: EventEmitter<Object>):void{
+    attach(id: string, ee: EventEmitter<Message>):void{
         console.log(`HandlerService.attach ${id}`);
         this.handlers.set(id, ee);
     }

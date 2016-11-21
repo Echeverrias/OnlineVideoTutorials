@@ -4,7 +4,7 @@
  */
 
 export type IdMessage = { id: string };
-export type Message = Object & IdMessage;
+export type Message = IdMessage & Object;
 
 export type ChatMessage = { sender: string, message: string, date: string, color: string };
 

@@ -95,9 +95,8 @@ public class RoomsManager {
     /* If the incoming participant is a tutor and there is no room it will be created */    
     public void addParticipant (UserSession user, String roomName){
         log.info("{} RoomManager.addParticipant: {} to {} {}",Info.START_SYMBOL,  user.getUserName(), roomName, Hour.getTime());
-        
+          
         ParticipantSession participant = (ParticipantSession) user;
-        
         Room room = this.roomsByName.get(roomName);
         if (room == null && participant.isATutor()){
             log.info("The user is a tutor named {}", participant.getUserName());

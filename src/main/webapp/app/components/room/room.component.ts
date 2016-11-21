@@ -51,8 +51,8 @@ export class RoomComponent implements OnInit, OnDestroy{
       this.address = this.name;
 
       this.room.init(this.name);
-      this.room.getParticipants().subscribe(users => this.users = users);
-      this.room.getMainParticipant().subscribe(mainUser => this.mainUser = mainUser);
+      this.room.getParticipants().subscribe((users: User[]): void => { this.users = users } );
+      this.room.getMainParticipant().subscribe((mainUser: User): void  => { this.mainUser = mainUser });
     }
     
     onExitOfRoom(): void {

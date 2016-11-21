@@ -86,7 +86,8 @@ export class RoomService {
         }
 
         let user: User = UserFactory.createAnUser(msg);;
-
+        console.log(user);
+        
         // My video will be the last 
         if (user.userName === this.me.myUserName) {
             this.participants.push(user);

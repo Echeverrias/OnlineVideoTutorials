@@ -103,69 +103,20 @@ public class LoginHandler extends TextMessageWebSocketHandler {
     }
     
     /**
-    * A client is authenticating himself
-    * If the user is a tutor, a room is created and the tutor joins into it and
-    * ..if it's a student he goes to the 'waiting room'.
-    */
+    * A n user is going into the app
+   */
     private synchronized void login(final WebSocketSession session, JsonObject jsonMessage){
         log.info("<- login - id: {}, message: {}", session.getId(), jsonMessage.toString());
         
         String userName = jsonMessage.get("userName").getAsString();
-        String password = jsonMessage.get("password").getAsString();
-        JsonObject jsonAnswer = new JsonObject();
-        jsonAnswer.addProperty("id","login");
-        
-        if (usersRegistry.isThereAlreadyThisUser(userName)) {
-             jsonAnswer.addProperty("validUser", false);
-        }
-
-        else {
+        String name = jsonMessage.get("name").getAsString();
+        String userType = jsonMessage.get("userType").getAsString();
             
-            UserSession newUser = this.validateUser(userName, password, session);
+        UserSession newUser = new ParticipantSession(session, userName, userType, name);
 
-            jsonAnswer.addProperty("validUser", newUser != null);
-            
-            if (newUser == null ) {
-
-                log.info("Is not a valid user");
-
-            }   
-
-            else { // A valid user
-                
-                jsonAnswer.addProperty("name",newUser.getName());
-                jsonAnswer.addProperty("userName",newUser.getUserName());
-                jsonAnswer.addProperty("userType",newUser.getUserType());
-            
-                this.usersRegistry.addUser(newUser);
-                /*
-                if (newUser.isAStudent()){
-                    this.usersRegistry.addIncomingParticipant(newUser);
-                }
-                */
-            }     
+        this.usersRegistry.addUser(newUser);
         
-        }
-        
-        SendMessage.toClient(jsonAnswer, session);
-        
-        SendMessage.toClient("->login", session);
-        log.info("/login - the message has been sent");
-    }
-    
-    private ParticipantSession validateUser(String userName, String password, WebSocketSession session ){
-        log.info("* LoginHandler.validateUser");
-        
-        ParticipantSession userSession = null;
-        User user = this.universityBBDD.getAnUser(userName, password);
-        
-        if (user != null){
-            log.info(user.toString());
-            userSession = new ParticipantSession(session, user);
-        }
-        
-         log.info("/ LoginHandler.validateUser");
-        return userSession;
+        log.info("/LoginHandler.login");
     }
     
     /**

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.jaea.onlinevideotutorials.controller;
+package org.jaea.onlinevideotutorials.controllers;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer;

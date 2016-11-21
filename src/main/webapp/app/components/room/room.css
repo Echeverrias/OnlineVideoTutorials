@@ -43,26 +43,28 @@ and open the template in the editor.
 
 .dashboard{
     width:100%;
-    flex: 1 9 79%;
+    flex: 0 4 83%;
     order: 1;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
     margin: auto;
+   
     padding: 1em 0;
 }
 
 ovt-chat{
     width:98%;
-    flex: 9 1 9%;
+    flex: 4 0 9%;
     order: 2;
+    margin-bottom: 0.5em;
 }
 
 
 ovt-participant.mainParticipant {
    
-    width: 57%;
+    width: 63%;
     height: 98%;
     margin:auto;
 }
@@ -82,5 +84,5 @@ button[name=exitRoom] {
     position:absolute;
     bottom:0.3em;
     right:1em;
-    z-index: 1;
+    z-index: 4;
 }    

@@ -41,8 +41,8 @@ var RoomComponent = (function () {
         });
         this.address = this.name;
         this.room.init(this.name);
-        this.room.getParticipants().subscribe(function (users) { return _this.users = users; });
-        this.room.getMainParticipant().subscribe(function (mainUser) { return _this.mainUser = mainUser; });
+        this.room.getParticipants().subscribe(function (users) { _this.users = users; });
+        this.room.getMainParticipant().subscribe(function (mainUser) { _this.mainUser = mainUser; });
     };
     RoomComponent.prototype.onExitOfRoom = function () {
         console.log("");
