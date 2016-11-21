@@ -7,7 +7,7 @@ If you enter as a tutor, you'll create a room and get into it.
 ![alt tag](https://github.com/Echeverrias/OnlineVideoTutorials/blob/1.0.x/src/main/resources/img/OVT%20-%20room.png)
 *Figura 2*
 
-If you enter as a student, you'll go to the 'waiting room' and you could enter in the room of the tutor you choose.
+If you enter as a student, you'll go to the 'waiting room' and you could enter in any tutor room you choose.
 ![alt tag](https://github.com/Echeverrias/OnlineVideoTutorials/blob/1.0.x/src/main/resources/img/OVT%20-%20waiting%20room.png)
 *Figura 3*
 
