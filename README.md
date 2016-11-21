@@ -27,10 +27,9 @@ You need to install:
 
 ### Run the project
 1. Download the [OnlineVideoTutorialsApp](https://github.com/Echeverrias/OnlineVideoTutorials/tree/1.0.x) project. You can download it as a zip or clone it.
-2. You have to provide an implementation for the method '*getAnUser*' from the */src/main/java/org/jaea/onlinevideotutorials/services/UniversityBBDD.java* class, to get from a database the user that the client wants to validate. Maybe you will also need to add some class.
-3. Open the terminal, go to the root of the project folder and execute **`mvn spring-boot:run`** to run the app the first time, then you can run it with **`mvn exec:java`**
-4. The application starts in the url [http://localhost:8080/](http://localhost:8080/)
-5. The app has an embedded H2 database with some users creted by default. You have to introduce one of the following user names: maria.gil, marta.gil, monica.gil; if you want login as a tutor. And if you want login as student you have to introduce one of these names: sandra.ruiz, raquel.ruiz,elena.ruiz, laura.ruiz,vanesa.ruiz, ines.ruiz, carmen.ruiz, amanda.ruiz, lorena.ruiz. For both user types the password is 'zzz', without the quotes.
+2. Open the terminal, go to the root of the project folder and execute **`mvn spring-boot:run`** to run the app the first time, then you can run it with **`mvn exec:java`**
+3. The application starts in the url [http://localhost:8080/](http://localhost:8080/)
+4. The app has an embedded H2 database with some users creted by default. You have to introduce one of the following user names: *maria.gil*, *marta.gil*, *monica.gil*; if you want login as a **tutor**. And if you want login as **student** you have to introduce one of these names: *sandra.ruiz*, *raquel.ruiz*, *elena.ruiz*, *laura.ruiz*, *vanesa.ruiz*, *ines.ruiz*, *carmen.ruiz*, *amanda.ruiz*, *lorena.ruiz*. For both user types the password is *'zzz'*, without the quotes.
 
 
 ## Development
@@ -39,7 +38,8 @@ The app is being developed in [TypeScript](https://www.typescriptlang.org/) and 
 The app has an embedded H2 database by default with an ['import.sql'](https://github.com/Echeverrias/OnlineVideoTutorials/blob/1.0.x/src/main/resources/import.sql) file located into /src/main/resources/ that initializes a table with some users when the app starts, so to add your own database, whith your users, you have to modify the ['application.properties'](https://github.com/Echeverrias/OnlineVideoTutorials/blob/1.0.x/src/main/resources/application.properties) and change the configuration. You have information about that at the official Spring documentation:
 - [Connection to a production database](http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-connect-to-production-database)
 - [Creating and dropping JPA databases](http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-spring-data-jpa-repositories)
-The users must have the following attributes, an user name, a password, a complete name and an user type ('tutor' or 'student'). By default the names of the columns would be called 'user_name', 'password', 'name' and 'user_type', without the quotes, and the table would be named 'users'. Making changes in the annotations of the [User.class](https://github.com/Echeverrias/OnlineVideoTutorials/blob/1.0.x/src/main/java/org/jaea/onlinevideotutorials/domain/User.java) attributes you could change the default columns names.  
+
+The users of the data base must have the following attributes, an user name, a password, a complete name and an user type ('tutor' or 'student'). By default the names of the columns would be called 'user_name', 'password', 'name' and 'user_type', without the quotes, and the table would be named 'users'. Making changes in the annotations of the [User.class](https://github.com/Echeverrias/OnlineVideoTutorials/blob/1.0.x/src/main/java/org/jaea/onlinevideotutorials/domain/User.java) attributes you could change the default columns names.  
 
 
 
