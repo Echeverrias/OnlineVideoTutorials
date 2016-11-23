@@ -7,6 +7,7 @@ import { UserService } from './user.service';
 
 import { HexColorGenerator } from './../models/hexColorGenerator';
 
+
 const ENDPOINT: string = "/chat";
 
 @Injectable()

@@ -10,7 +10,6 @@ import org.jaea.onlinevideotutorials.Info;
 import org.jaea.onlinevideotutorials.Hour;
 
 import org.jaea.onlinevideotutorials.domain.ParticipantSession;
-import org.jaea.onlinevideotutorials.domain.User;
 import org.jaea.onlinevideotutorials.domain.UserSession;
 import org.jaea.onlinevideotutorials.managers.UserSessionsRegistry;
 import org.jaea.onlinevideotutorials.managers.RoomsManager;

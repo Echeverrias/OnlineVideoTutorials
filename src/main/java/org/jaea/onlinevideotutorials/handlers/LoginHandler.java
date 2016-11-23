@@ -5,13 +5,9 @@
  */
 package org.jaea.onlinevideotutorials.handlers;
 
-import org.jaea.onlinevideotutorials.SendMessage;
-import org.jaea.onlinevideotutorials.services.UniversityBBDD;
 import org.jaea.onlinevideotutorials.domain.ParticipantSession;
-import org.jaea.onlinevideotutorials.domain.User;
 import org.jaea.onlinevideotutorials.domain.UserSession;
 import org.jaea.onlinevideotutorials.managers.UserSessionsRegistry;
-import org.jaea.onlinevideotutorials.managers.RoomsManager;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -54,12 +50,6 @@ public class LoginHandler extends TextMessageWebSocketHandler {
     
     private Gson gson = new GsonBuilder().create();
     
-    @Autowired
-    private UniversityBBDD universityBBDD;
-    
-    @Autowired
-    private RoomsManager roomsManager;
-
     @Autowired
     private UserSessionsRegistry usersRegistry;
 
@@ -126,7 +116,6 @@ public class LoginHandler extends TextMessageWebSocketHandler {
         log.info("<- logout - id: {}, message: {}", session.getId(), jsonMessage.toString());
         
        String userName = jsonMessage.get("userName").getAsString();
-       //this.usersRegistry.removeIncomingParticipant(userName);
        this.usersRegistry.removeUser(userName);
        
        log.info("/logout");

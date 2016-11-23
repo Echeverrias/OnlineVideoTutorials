@@ -33,8 +33,9 @@ In the room you could chat with the rest of users.
 You need to install:
 
 - [Maven](http://maven.apache.org/install.html)
-- [NPM](https://docs.npmjs.com/getting-started/installing-node)
 - [Bower](https://bower.io/#install-bower)
+- [NPM](https://docs.npmjs.com/getting-started/installing-node)
+- [TypeScript](https://www.typescriptlang.org/index.html#download-links) 
 
 
 ### Run the project
@@ -46,6 +47,8 @@ You need to install:
 
 ## Development
 The app is being developed in [TypeScript](https://www.typescriptlang.org/) and [Angular 2](https://angular.io/) on the client side and [Spring](https://spring.io/) on the server side.
+
+If you modify some TypeScript file you will have to compile them to create the JavaScript files. To do it, you'll have to open the terminal, go to the OnlineVideoTutorials/src/main/webapp folder and execute **`tsc`**
 
 The app has an embedded H2 database by default with an ['import.sql'](https://github.com/Echeverrias/OnlineVideoTutorials/blob/1.0.x/src/main/resources/import.sql) file located into /src/main/resources/ that initializes a table with some users when the app starts, so to add your own database, whith your users, you have to modify the ['application.properties'](https://github.com/Echeverrias/OnlineVideoTutorials/blob/1.0.x/src/main/resources/application.properties) and change the configuration. You have information about that at the official Spring documentation:
 - [Connection to a production database](http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-connect-to-production-database)
