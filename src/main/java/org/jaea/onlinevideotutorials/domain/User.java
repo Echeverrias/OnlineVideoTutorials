@@ -95,7 +95,6 @@ public  class User implements Comparable<User>{
     
      @Override
     public int compareTo(User user) {
-      Integer i;
       if ((user == null) || !(user instanceof User)) {
             return 1;
     }
