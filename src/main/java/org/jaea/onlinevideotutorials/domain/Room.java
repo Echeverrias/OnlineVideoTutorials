@@ -78,7 +78,7 @@ public class Room implements Closeable {
     }
 
     public boolean isTheTutor(ParticipantSession user){
-        log.info("* Room.isTheTutor?: {}", user.userName);
+        log.info("* Room.isTheTutor?");
         return user.equals(this.tutor);
        
     }

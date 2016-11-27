@@ -27,6 +27,14 @@ public class RequestUser{
         return this.password;
     }
 
+     public void setUserName(String userName){
+        this.userName = userName;
+    }
+
+    public void setPassword(String password){
+        this.password = password;
+    }
+
      public String toString(){
         return "{userName: " + this.userName + ",password: " + this.password + "}";
     }

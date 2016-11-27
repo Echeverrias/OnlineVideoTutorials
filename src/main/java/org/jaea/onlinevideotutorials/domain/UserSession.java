@@ -63,15 +63,5 @@ public class UserSession extends User{
         return result;
     }
     
-    /*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-    */
-    @Override
-    public int hashCode() {
-        int result = 1;
-        result = 31 * result + this.userName.hashCode();
-        return result;
-    }
+    
 }
