@@ -172,7 +172,7 @@ public class RoomsManager {
     }
     
     public void removeRoom(Room room) {
-        log.info("{} Room.removeRoom {} {}",Info.START_SYMBOL, room.getName(), Hour.getTime());
+        log.info("{} Room.removeRoom");
         
         if (room != null){
             String roomName = room.getName();

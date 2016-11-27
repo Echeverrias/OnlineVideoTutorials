@@ -22,7 +22,7 @@ import javax.persistence.Transient;
 
 @Entity
 @Table(name="users")
-public  class User {
+public  class User implements Comparable<User>{
     
     
     public static final String TUTOR_TYPE = "tutor";
@@ -93,19 +93,36 @@ public  class User {
         return this.password.equals(password);
     }
     
+     @Override
+    public int compareTo(User user) {
+      if ((user == null) || !(user instanceof User)) {
+            return 1;
+    }
+       return this.userName.compareTo(user.getUserName());
+    }
+    
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.userName == null) ? 0 : this.userName.hashCode());
+        return result;
+    }
+    
+    
     @Override
     public boolean equals(Object obj) {
         
         if (this == obj) {
             return true;
-	}
-	if ((obj == null) || !(obj instanceof User)) {
+    }
+    if ((obj == null) || !(obj instanceof User)) {
             return false;
-	}
-	User other = (User) obj;
-	boolean eq = this.userName.equals(other.getUserName());
+    }
+    User other = (User) obj;
+    boolean eq = this.userName.equals(other.getUserName());
 
-	return eq;
+    return eq;
     }
 
     public String toString(){
