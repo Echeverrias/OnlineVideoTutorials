@@ -1,17 +1,11 @@
-/*
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
-*/
 /* 
     Created on : 06-dic-2015, 10:54:14
-    Author     : juanan
+    Author     : Juan Antonio echeverrías Aranda
 */
 
 
 #ovt-chat{
-  height:100%;
-  font.size: 0.8em;
+  font-size: 0.8em;
 }
 
 .messages{
@@ -28,6 +22,9 @@ and open the template in the editor.
   box-shadow: -2px 2px 2px #299D29;
 }
 
+.mailbox {
+    height:5%;
+}
 
 .mailbox input {
   display: inline;
@@ -41,7 +38,6 @@ and open the template in the editor.
   border-radius: 0.5em;
   border: 0.15em solid grey;
   line-height: 1.3em;
-  height: 20%;
   vertical-align: middle;
   padding: 0 0.7em;
   font-size: 0.9em;
@@ -54,6 +50,3 @@ and open the template in the editor.
   vertical-align: middle;
 }
 
-ovt-chatmessage{
-  
-}
