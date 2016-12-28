@@ -22,8 +22,10 @@ var ConnectionService = (function () {
     function ConnectionService(handler) {
         var _this = this;
         this.handler = handler;
+        this._endpoint = "ws";
         console.log("% Connection");
-        this._ws = new WebSocket('ws://localhost:8080/ovt');
+        this._rootServer = document.location.host + document.location.pathname;
+        this._ws = new WebSocket("ws://" + this._rootServer + this._endpoint);
         this._ws.onmessage = function (message) { _this.handler.handle(message); };
         console.log(this._ws);
         console.log(this._ws.onmessage);
@@ -31,6 +33,27 @@ var ConnectionService = (function () {
     Object.defineProperty(ConnectionService.prototype, "url", {
         get: function () {
             return this._ws.url;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ConnectionService.prototype, "rootServer", {
+        get: function () {
+            return this._rootServer;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ConnectionService.prototype, "urlServer", {
+        get: function () {
+            return document.location.protocol + "//" + this._rootServer;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ConnectionService.prototype, "endpoint", {
+        get: function () {
+            return "/" + this._endpoint;
         },
         enumerable: true,
         configurable: true

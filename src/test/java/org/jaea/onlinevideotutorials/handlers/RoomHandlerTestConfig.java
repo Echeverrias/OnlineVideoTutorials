@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  *
- * @author Juan Antonio echeverrías Aranda
+ * @author Juan Antonio Echeverrías Aranda
  */
 
 @Configuration

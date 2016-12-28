@@ -42,7 +42,7 @@ import org.jaea.onlinevideotutorials.utilities.ParticipantSessionDispenser;
 
 import org.springframework.test.context.ContextConfiguration;
 
-import org.jaea.onlinevideotutorials.services.KurentoConfig;
+import org.jaea.onlinevideotutorials.services.KurentoTestConfig;
 import org.junit.After;
 import static org.junit.Assert.assertThat;
 import org.kurento.client.MediaPipeline;
@@ -52,7 +52,7 @@ import org.kurento.client.WebRtcEndpoint;
 */
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {KurentoConfig.class, ManagersConfig.class})
+@ContextConfiguration(classes = {KurentoTestConfig.class, ManagersConfig.class})
 public class RoomsManagerTest {
     
     

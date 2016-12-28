@@ -5,6 +5,7 @@
  */
 package org.jaea.onlinevideotutorials.controllers;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
@@ -16,23 +17,28 @@ import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 
 /**
  *
- * @author juanan
+ * @author Juan Antonio Echeverrías Aranda
  */
 
 @Configuration
 @EnableWebSocketMessageBroker
 public class ChatConfig extends AbstractWebSocketMessageBrokerConfigurer{
     
+    @Value("${ws.endpoint}")
+    private String wsEndpoint;
+    
+    @Value("${chat.endpoint}")
+    private String chatEndpoint;
     
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config){
-        config.enableSimpleBroker("/ovt/chat");
-        config.setApplicationDestinationPrefixes("/ovt/chat");
+        config.enableSimpleBroker("/noticeBoard");
+        config.setApplicationDestinationPrefixes("/mailBox");
     }
     
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry){
-        registry.addEndpoint("/ovt/chat");
+        registry.addEndpoint(wsEndpoint + chatEndpoint);
     }
     
 }

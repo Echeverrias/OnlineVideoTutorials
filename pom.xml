@@ -4,7 +4,7 @@
 
     <groupId>org.jaea</groupId>
     <artifactId>OnlineVideoTutorials</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0.RELEASE</version>
     <packaging>war</packaging>
 
     <name>OnlineVideoTutorials</name>
@@ -30,11 +30,18 @@
             <version>7.0</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>1.4.1.RELEASE</version>
 	</dependency>
+    <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <version>1.4.2.RELEASE</version>
+            <scope>provided</scope>
+        </dependency>
     <dependency>
      <groupId>org.springframework</groupId>
         <artifactId>spring-aspects</artifactId>
@@ -96,6 +103,7 @@
     </dependencies>
 
     <build>
+        <finalName>ovt</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -109,6 +117,7 @@
                     </compilerArguments>
                 </configuration>
             </plugin>
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
@@ -117,6 +126,7 @@
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -155,6 +165,9 @@
 						<goals>
 							<goal>repackage</goal>
 						</goals>
+                            <configuration>
+                            <classifier>exec</classifier>
+                        </configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -172,8 +185,7 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
- 
-                            <executable>bower</executable>
+                        <executable>bower</executable>
                             <arguments>
                                 <argument>install</argument>
                             </arguments>

@@ -12,13 +12,13 @@ var core_1 = require('@angular/core');
 var connection_service_1 = require('./connection.service');
 var user_service_1 = require('./user.service');
 var hexColorGenerator_1 = require('./../models/hexColorGenerator');
-var ENDPOINT = "/chat";
 var ChatService = (function () {
     function ChatService(connection, me) {
         this.connection = connection;
         this.me = me;
-        this.subscription = "/ovt/chat/noticeBoard/";
-        this.destiny = "/ovt/chat/mailBox/";
+        this.endpoint = "/chat";
+        this.subscription = "/noticeBoard/";
+        this.destiny = "/mailBox/";
         console.log("");
         console.log("% new ChatService");
         this.wsUrl = this.connection.url;
@@ -38,7 +38,7 @@ var ChatService = (function () {
         var _this = this;
         console.log("* ChatService.connect");
         console.log("The stompClient is going to be connected");
-        this.stompClient = Stomp.client(this.wsUrl + ENDPOINT);
+        this.stompClient = Stomp.client(this.wsUrl + this.endpoint);
         console.log(this.stompClient);
         console.log("The stompClient has been created");
         this.stompClient.connect({}, function (frame) {

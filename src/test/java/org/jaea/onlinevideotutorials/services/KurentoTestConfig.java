@@ -14,13 +14,11 @@
  */
 package org.jaea.onlinevideotutorials.services;
 
-import org.jaea.onlinevideotutorials.services.KurentoConfig.KurentoProperties;
 import org.kurento.client.KurentoClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.PropertySource;
 
 
 /**
@@ -29,30 +27,15 @@ import org.springframework.stereotype.Component;
  */
 
 @Configuration
-public class KurentoConfig {
+@PropertySource("application.properties")
+public class KurentoTestConfig {
     
-    @Autowired
-    private KurentoProperties config;
-    
-    @Component
-    @ConfigurationProperties("kms.ws")
-    public static class KurentoProperties {
-        
-        private String uri;
-        
-        public String getUri(){
-            return this.uri;
-        }
-        
-        public void setUri(String uri){
-            this.uri = uri;
-        }
-        
-    }
+    @Value("${test.kms.ws.uri}")
+    private String uri;
     
     @Bean
     public KurentoClient kurentoClient() {
-        return KurentoClient.create(System.getProperty("kms.ws.uri", config.getUri()));
+        return KurentoClient.create(System.getProperty("kms.ws.uri", this.uri));
     }
     
 }

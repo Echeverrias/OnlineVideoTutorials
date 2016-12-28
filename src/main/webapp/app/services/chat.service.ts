@@ -8,10 +8,10 @@ import { UserService } from './user.service';
 import { HexColorGenerator } from './../models/hexColorGenerator';
 
 
-const ENDPOINT: string = "/chat";
-
 @Injectable()
 export class ChatService{
+    
+    private endpoint: string = `/chat`;
     
     private colorGenerator: HexColorGenerator;
     private messages: ChatMessage[];
@@ -19,8 +19,8 @@ export class ChatService{
 
     private wsUrl: string;
     private stompClient: any;
-    private subscription: string = "/ovt/chat/noticeBoard/"; 
-    private destiny: string = "/ovt/chat/mailBox/"; 
+    private subscription: string = `/noticeBoard/`; 
+    private destiny: string = `/mailBox/`; 
 
 
     constructor(private connection: ConnectionService, private me: UserService) {
@@ -45,7 +45,7 @@ export class ChatService{
     private connect(){
         console.log("* ChatService.connect");
         console.log("The stompClient is going to be connected");
-        this.stompClient = Stomp.client(this.wsUrl + ENDPOINT);
+        this.stompClient = Stomp.client(this.wsUrl + this.endpoint);
         console.log(this.stompClient);
         console.log("The stompClient has been created");
         this.stompClient.connect({}, (frame) => {
