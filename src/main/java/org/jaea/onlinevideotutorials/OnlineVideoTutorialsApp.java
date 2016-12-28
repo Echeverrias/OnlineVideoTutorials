@@ -11,23 +11,27 @@ import org.jaea.onlinevideotutorials.domain.User;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.support.SpringBootServletInitializer;
 
 /**
  * Online Video Tutorials App main class.
  * 
  * @author Juan Antonio Echeverrías Aranda (juanan.echeve@gmail.com)
  */
-//@Configuration
-//@EnableWebSocket
-//@EnableAutoConfiguration
 @SpringBootApplication
-public class OnlineVideoTutorialsApp {
+public class OnlineVideoTutorialsApp extends SpringBootServletInitializer{
 
     
     private final Logger log = LoggerFactory.getLogger(OnlineVideoTutorialsApp.class);
-
+              
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(OnlineVideoTutorialsApp.class);
+    }
+    
     public static void main(String[] args) throws Exception {
-        new SpringApplication(OnlineVideoTutorialsApp.class).run(args);
+        SpringApplication.run(OnlineVideoTutorialsApp.class, args);
     }
 
     

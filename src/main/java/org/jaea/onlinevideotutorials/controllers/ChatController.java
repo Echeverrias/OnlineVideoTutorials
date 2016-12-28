@@ -12,6 +12,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 /**
  *
  * @author juanan
@@ -20,9 +21,9 @@ import org.slf4j.LoggerFactory;
 public class ChatController {
 
     private final Logger log = LoggerFactory.getLogger(ChatController.class);
-
-    @MessageMapping("/mailBox/{room}")
-    @SendTo("/ovt/chat/noticeBoard/{room}")
+    
+    @MessageMapping("/{room}")
+    @SendTo("/noticeBoard/{room}")
     public ChatMessage deliver(ChatMessage message) throws Exception{
         log.info("* Deliver the chat Message");
         return message;

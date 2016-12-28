@@ -9,7 +9,7 @@ import org.jaea.onlinevideotutorials.managers.RoomsManagerTestConfig;
 import org.jaea.onlinevideotutorials.managers.UserSessionsRegistry;
 import org.jaea.onlinevideotutorials.managers.UserSessionsRegistryTestConfig;
 import org.jaea.onlinevideotutorials.mocks.WebSocketSessionMock;
-import org.jaea.onlinevideotutorials.services.KurentoConfig;
+import org.jaea.onlinevideotutorials.services.KurentoTestConfig;
 import org.jaea.onlinevideotutorials.utilities.ParticipantSessionDispenser;
 
 
@@ -30,7 +30,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @author Juan Antonio echeverrías Aranda
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes={KurentoConfig.class, RoomsManagerTestConfig.class, 
+@ContextConfiguration(classes={KurentoTestConfig.class, RoomsManagerTestConfig.class, 
     UserSessionsRegistryTestConfig.class, WaitingRoomHandlerTestConfig.class})
 public class WaitingRoomHandlerTest {
     

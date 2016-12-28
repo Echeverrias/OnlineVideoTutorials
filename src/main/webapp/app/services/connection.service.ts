@@ -17,13 +17,15 @@ console.log("Module Connection");
 @Injectable()
 export class ConnectionService {
     
-    
+    private _endpoint: string = "ws";
+    private _rootServer: string;
     private _ws: WebSocket;
     
     constructor(private handler: HandlerService){
         console.log(`% Connection`);
         
-        this._ws = new WebSocket('ws://localhost:8080/ovt');
+        this._rootServer = document.location.host + document.location.pathname;
+        this._ws = new WebSocket(`ws://${this._rootServer}${this._endpoint}`);
         
         this._ws.onmessage = (message: any): void => { this.handler.handle(message) };
        
@@ -33,6 +35,18 @@ export class ConnectionService {
     
     get url():string{
         return this._ws.url; 
+    }
+    
+    get rootServer(): string{
+        return this._rootServer;
+    }
+
+    get urlServer(): string{
+        return `${document.location.protocol}//${this._rootServer}`;
+    }
+    
+    get endpoint(): string{
+        return `/${this._endpoint}`;
     }
     
     sendMessage(jsonMessage: Message){
