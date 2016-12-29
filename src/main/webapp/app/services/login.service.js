@@ -37,7 +37,7 @@ var LoginService = (function () {
         headers.append("Content-Type", "application/json");
         var options = new http_1.RequestOptions({ headers: headers });
         var body = JSON.stringify({ userName: userName, password: password });
-        return this.http.post("/validateUser", body, options)
+        return this.http.post(this.connection.urlServer + "validateUser", body, options)
             .map(function (res) {
             console.log(res);
             if (res.status == 200) {

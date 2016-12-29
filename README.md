@@ -34,6 +34,7 @@ In the room you could chat with the rest of users.
 ### Prerequisites
 You need to install:
 
+- [Kurento](http://doc-kurento.readthedocs.io/en/stable/installation_guide.html)
 - [Maven](http://maven.apache.org/install.html)
 - [Bower](https://bower.io/#install-bower)
 - [NPM](https://docs.npmjs.com/getting-started/installing-node)
@@ -42,9 +43,10 @@ You need to install:
 
 ### Run the project
 1. Download the [OnlineVideoTutorialsApp](https://github.com/Echeverrias/OnlineVideoTutorials/tree/1.0.x) project. You can download it as a zip or clone it.
-2. Open the terminal, go to the root of the project folder and execute **`mvn spring-boot:run`** to run the app the first time, then you can run it with **`mvn exec:java`**
-3. The application starts in the url [http://localhost:8080/](http://localhost:8080/)
-4. The app has an embedded H2 database with some users creted by default. You have to introduce one of the following user names: *maria.gil*, *marta.gil*, *monica.gil*; if you want login as a **tutor**. And if you want login as **student** you have to introduce one of these names: *sandra.ruiz*, *raquel.ruiz*, *elena.ruiz*, *laura.ruiz*, *vanesa.ruiz*, *ines.ruiz*, *carmen.ruiz*, *amanda.ruiz*, *lorena.ruiz*. For both user types the password is *'zzz'*, without the quotes.
+2. Open the terminal and start kurento media server: **`sudo service kurento-media-server-6.0 start`** 
+3. Go to the root of the project folder and execute **`mvn spring-boot:run`** to run the app.
+4. The application starts in the url [http://localhost:8080/](http://localhost:8080/)
+5. The app has an embedded H2 database with some users creted by default. You have to introduce one of the following user names: *maria.gil*, *marta.gil*, *monica.gil*; if you want login as a **tutor**. And if you want login as **student** you have to introduce one of these names: *sandra.ruiz*, *raquel.ruiz*, *elena.ruiz*, *laura.ruiz*, *vanesa.ruiz*, *ines.ruiz*, *carmen.ruiz*, *amanda.ruiz*, *lorena.ruiz*. For both user types the password is *'zzz'*, without the quotes.
 
 
 ## Development

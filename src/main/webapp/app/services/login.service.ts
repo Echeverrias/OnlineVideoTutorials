@@ -39,7 +39,7 @@ export class LoginService {
          headers.append("Content-Type", "application/json");
          let options = new RequestOptions({headers: headers});
          let body = JSON.stringify({userName, password});
-         return this.http.post(`/validateUser`, body, options)
+         return this.http.post(`${this.connection.urlServer}validateUser`, body, options)
             .map((res: Response) => {
                 console.log(res);
                 if (res.status == 200){
