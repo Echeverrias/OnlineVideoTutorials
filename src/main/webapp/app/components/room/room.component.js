@@ -57,6 +57,9 @@ var RoomComponent = (function () {
         console.log("/ Room.onExitOfRoom " + new Date().toLocaleTimeString());
         console.log("");
     };
+    RoomComponent.prototype.showGadget = function (isSomeGadgetActive) {
+        this.activeGadget = isSomeGadgetActive;
+    };
     RoomComponent.prototype.ngOnDestroy = function () {
         console.log("* Room.OnDestroy " + new Date().toLocaleTimeString());
         this._participants.destroy();

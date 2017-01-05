@@ -13,6 +13,7 @@ var platform_browser_1 = require('@angular/platform-browser');
 var forms_1 = require('@angular/forms');
 var http_1 = require('@angular/http');
 var app_routing_1 = require('./app.routing');
+var gadgetsContainer_module_1 = require('./components/gadgetsContainer/gadgetsContainer.module');
 var app_component_1 = require('./app.component');
 var login_component_1 = require('./components/login/login.component');
 var waitingRoom_component_1 = require('./components/waitingRoom/waitingRoom.component');
@@ -34,7 +35,8 @@ var AppModule = (function () {
                 platform_browser_1.BrowserModule,
                 forms_1.FormsModule,
                 http_1.HttpModule,
-                app_routing_1.routing
+                app_routing_1.routing,
+                gadgetsContainer_module_1.GadgetsContainerModule
             ],
             declarations: [
                 app_component_1.AppComponent,

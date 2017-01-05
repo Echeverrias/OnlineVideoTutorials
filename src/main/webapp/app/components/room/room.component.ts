@@ -33,6 +33,7 @@ export class RoomComponent implements OnInit, OnDestroy{
     private address: string;
     private mainUser: User = new User();
     private users: User[];
+    private activeGadget: boolean;  
     
     constructor(private room: RoomService, private _participants: ParticipantsService, private router: Router, private me: UserService, private route: ActivatedRoute) {
       
@@ -70,6 +71,10 @@ export class RoomComponent implements OnInit, OnDestroy{
       
         console.log(`/ Room.onExitOfRoom ${new Date().toLocaleTimeString()}`);
         console.log("");
+    }
+
+    showGadget(isSomeGadgetActive: boolean) {
+        this.activeGadget = isSomeGadgetActive;
     }
 
     ngOnDestroy(){

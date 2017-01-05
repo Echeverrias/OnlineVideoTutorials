@@ -1,5 +1,6 @@
 
 export const roomTemplate = `<div id="ovt-room">
+<ovt-gadgetsContainer [class.showed]="activeGadget" (ovt-activeOption)="showGadget($event)"></ovt-gadgetsContainer>
 <div class="main">
     <div class="dashboard">
         <ovt-participant *ngIf="mainUser.userName" [id]="mainUser.userName" [ngClass]="{'mainParticipant':mainUser}" [name]="mainUser.name" [userType]="mainUser.userType" [roomName]="name"></ovt-participant>

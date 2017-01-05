@@ -109,4 +109,22 @@ button[name=exitRoom] {
     bottom:0.3em;
     right:1em;
     z-index: 4;
-}    
+}  
+
+
+ovt-gadgetsContainer{
+  height:100%;
+  width:28%;
+  position: fixed;
+  float: right;
+  display:block;
+ right: -25%;
+  -moz-transition: all 1s;
+  -webkit-transition: all 1s;
+  -o-transition: all 1s;
+    z-index:999;
+}
+
+.showed{
+  right: 0%;
+}
