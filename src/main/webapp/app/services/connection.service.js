@@ -32,7 +32,7 @@ var ConnectionService = (function () {
         this._stompClient.connect({}, function (frame) {
             console.log("Connected succesfully: " + frame);
         });
-        console.log(this.stompClient);
+        console.log(this._stompClient);
         console.log(this._ws);
         console.log(this._ws.onmessage);
     }
