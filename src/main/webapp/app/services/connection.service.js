@@ -22,17 +22,37 @@ var ConnectionService = (function () {
     function ConnectionService(handler) {
         var _this = this;
         this.handler = handler;
-        this._endpoint = "ws";
+        this._wsEndPoint = "ws";
+        this._stompEndPoint = "/stomp";
         console.log("% Connection");
         this._rootServer = document.location.host + document.location.pathname;
-        this._ws = new WebSocket("ws://" + this._rootServer + this._endpoint);
+        this._ws = new WebSocket("ws://" + this._rootServer + this._wsEndPoint);
         this._ws.onmessage = function (message) { _this.handler.handle(message); };
+        this._stompClient = Stomp.client(this.stompOverWsUrl);
+        this._stompClient.connect({}, function (frame) {
+            console.log("Connected succesfully: " + frame);
+        });
+        console.log(this.stompClient);
         console.log(this._ws);
         console.log(this._ws.onmessage);
     }
-    Object.defineProperty(ConnectionService.prototype, "url", {
+    Object.defineProperty(ConnectionService.prototype, "stompOverWsClient", {
+        get: function () {
+            return this._stompClient;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ConnectionService.prototype, "wsUrl", {
         get: function () {
             return this._ws.url;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ConnectionService.prototype, "stompOverWsUrl", {
+        get: function () {
+            return this._ws.url + this._stompEndPoint;
         },
         enumerable: true,
         configurable: true
@@ -51,9 +71,16 @@ var ConnectionService = (function () {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(ConnectionService.prototype, "endpoint", {
+    Object.defineProperty(ConnectionService.prototype, "wsEndPoint", {
         get: function () {
-            return "/" + this._endpoint;
+            return "/" + this._wsEndPoint;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ConnectionService.prototype, "stompOverWsEndPoint", {
+        get: function () {
+            return "/" + this._wsEndPoint + this._stompEndPoint;
         },
         enumerable: true,
         configurable: true

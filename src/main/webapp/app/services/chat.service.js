@@ -16,38 +16,36 @@ var ChatService = (function () {
     function ChatService(connection, me) {
         this.connection = connection;
         this.me = me;
-        this.endpoint = "/chat";
-        this.subscription = "/noticeBoard/";
-        this.destiny = "/mailBox/";
+        this.chatEndPoint = "/chat";
+        this.subscription = this.chatEndPoint + "/noticeBoard";
+        this.destiny = this.chatEndPoint + "/mailBox";
         console.log("");
         console.log("% new ChatService");
-        this.wsUrl = this.connection.url;
         this.colorGenerator = new hexColorGenerator_1.HexColorGenerator();
         this.messages = [];
         this.participants = [];
     }
     ChatService.prototype.init = function (address) {
-        this.destiny = this.destiny + address;
-        this.subscription = this.subscription + address;
+        this.destiny = this.destiny + "/" + address;
+        this.subscription = this.subscription + "/" + address;
         this.connect();
     };
     ChatService.prototype.getMessages = function () {
         return this.messages;
     };
     ChatService.prototype.connect = function () {
-        var _this = this;
         console.log("* ChatService.connect");
-        console.log("The stompClient is going to be connected");
-        this.stompClient = Stomp.client(this.wsUrl + this.endpoint);
+        this.stompClient = this.connection.stompOverWsClient;
+        this.stompClient.subscribe(this.subscription, this.getOnMessage());
         console.log(this.stompClient);
-        console.log("The stompClient has been created");
-        this.stompClient.connect({}, function (frame) {
-            console.log("Connected: " + frame);
-            _this.stompClient.subscribe(_this.subscription, function (message) {
-                console.log("Msg received: " + message);
-                _this.publish(JSON.parse(message.body));
-            });
-        });
+    };
+    ChatService.prototype.getOnMessage = function () {
+        var _this = this;
+        var onMessage = function (message) {
+            console.log("Msg received: " + message);
+            _this.publish(JSON.parse(message.body));
+        };
+        return onMessage;
     };
     ChatService.prototype.publish = function (message) {
         this.addColor(message);

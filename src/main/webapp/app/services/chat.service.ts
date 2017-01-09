@@ -11,30 +11,28 @@ import { HexColorGenerator } from './../models/hexColorGenerator';
 @Injectable()
 export class ChatService{
     
-    private endpoint: string = `/chat`;
+    private chatEndPoint: string = `/chat`;
     
     private colorGenerator: HexColorGenerator;
     private messages: ChatMessage[];
     private participants: any[]; 
 
-    private wsUrl: string;
     private stompClient: any;
-    private subscription: string = `/noticeBoard/`; 
-    private destiny: string = `/mailBox/`; 
+    private subscription: string = `${this.chatEndPoint}/noticeBoard`; 
+    private destiny: string = `${this.chatEndPoint}/mailBox`; 
 
 
     constructor(private connection: ConnectionService, private me: UserService) {
         console.log("");
         console.log("% new ChatService");
-        this.wsUrl = this.connection.url;
         this.colorGenerator = new HexColorGenerator();
         this.messages = [];
         this.participants = []; 
     }
 
     init(address: string): void{
-        this.destiny = this.destiny + address;
-        this.subscription = this.subscription + address;
+        this.destiny = `${this.destiny}/${address}`;
+        this.subscription = `${this.subscription}/${address}`;
         this.connect();
     }
 
@@ -44,19 +42,22 @@ export class ChatService{
 
     private connect(){
         console.log("* ChatService.connect");
-        console.log("The stompClient is going to be connected");
-        this.stompClient = Stomp.client(this.wsUrl + this.endpoint);
-        console.log(this.stompClient);
-        console.log("The stompClient has been created");
-        this.stompClient.connect({}, (frame) => {
-            console.log(`Connected: ${frame}`);
-            this.stompClient.subscribe(this.subscription, (message) => {
-                console.log(`Msg received: ${message}`);
-                this.publish(JSON.parse(message.body));
-            });
-        });
 
+        this.stompClient = this.connection.stompOverWsClient;
+        this.stompClient.subscribe(this.subscription, this.getOnMessage());
+        
+        console.log(this.stompClient);
     }
+
+    private getOnMessage(): any{
+        let onMessage = (message) => {
+            console.log(`Msg received: ${message}`);
+            this.publish(JSON.parse(message.body));
+        }
+
+        return onMessage;
+    }
+
 
     public publish(message: ChatMessage): void {
         this.addColor(message);
