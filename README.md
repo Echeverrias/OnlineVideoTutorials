@@ -49,7 +49,7 @@ You need to install:
 5. The app has an embedded H2 database with some users creted by default. You have to introduce one of the following user names: *maria.gil*, *marta.gil*, *monica.gil*; if you want login as a **tutor**. And if you want login as **student** you have to introduce one of these names: *sandra.ruiz*, *raquel.ruiz*, *elena.ruiz*, *laura.ruiz*, *vanesa.ruiz*, *ines.ruiz*, *carmen.ruiz*, *amanda.ruiz*, *lorena.ruiz*. For both user types the password is *'zzz'*, without the quotes.
 
 #### Run the app on docker
-You'ĺl need to install [docker](https://docs.docker.com/engine/installation/) and [docker-compose](https://docs.docker.com/compose/install/). Then create a file called **`docker-compose.yml`** with the following content:
+You'll need to install [docker](https://docs.docker.com/engine/installation/) and [docker-compose](https://docs.docker.com/compose/install/). Then create a file called **'docker-compose.yml'** with the following content:
 ```
 version: '2'
 services:
