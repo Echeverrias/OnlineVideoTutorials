@@ -1,6 +1,11 @@
 *.class
 *.[oa]
 *~
+Dockerfile
+dockerfile
+docker-compose.yml
+settings.xml
+tomcat-users.xml
 bower_components/
 node_modules/
 nm/
