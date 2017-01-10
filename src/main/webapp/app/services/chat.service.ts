@@ -18,8 +18,9 @@ export class ChatService{
     private participants: any[]; 
 
     private stompClient: any;
-    private subscription: string = `${this.chatEndPoint}/noticeBoard`; 
-    private destiny: string = `${this.chatEndPoint}/mailBox`; 
+    private subscription: any; 
+    private shippingAddress: string = `${this.chatEndPoint}/noticeBoard`; 
+    private destinyAddress: string = `${this.chatEndPoint}/mailBox`; 
 
 
     constructor(private connection: ConnectionService, private me: UserService) {
@@ -30,23 +31,15 @@ export class ChatService{
         this.participants = []; 
     }
 
-    init(address: string): void{
-        this.destiny = `${this.destiny}/${address}`;
-        this.subscription = `${this.subscription}/${address}`;
-        this.connect();
+    init(address: string): void {
+        this.destinyAddress = `${this.destinyAddress}/${address}`;
+        this.shippingAddress = `${this.shippingAddress}/${address}`;
+        this.stompClient = this.connection.stompOverWsClient;
+        this.subscription = this.stompClient.subscribe(this.shippingAddress, this.getOnMessage());
     }
 
     getMessages(): ChatMessage[] {
         return this.messages;
-    }
-
-    private connect(){
-        console.log("* ChatService.connect");
-
-        this.stompClient = this.connection.stompOverWsClient;
-        this.stompClient.subscribe(this.subscription, this.getOnMessage());
-        
-        console.log(this.stompClient);
     }
 
     private getOnMessage(): any{
@@ -79,19 +72,12 @@ export class ChatService{
             date: new Date().toLocaleTimeString(),
             color: undefined
         };
-        this.stompClient.send(this.destiny, {}, JSON.stringify(msg));
+        this.stompClient.send(this.destinyAddress, {}, JSON.stringify(msg));
 
     }
 
-    private disconnect(): void{
-
-        if (this.stompClient !== null){
-            this.stompClient.disconnect();
-        }
-    }
-
-    destroy(): void{
-        this.disconnect();
+   destroy(): void{
+        this.subscription.unsubscribe();
         this.messages.length = 0;
     }
 

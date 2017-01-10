@@ -17,8 +17,8 @@ var ChatService = (function () {
         this.connection = connection;
         this.me = me;
         this.chatEndPoint = "/chat";
-        this.subscription = this.chatEndPoint + "/noticeBoard";
-        this.destiny = this.chatEndPoint + "/mailBox";
+        this.shippingAddress = this.chatEndPoint + "/noticeBoard";
+        this.destinyAddress = this.chatEndPoint + "/mailBox";
         console.log("");
         console.log("% new ChatService");
         this.colorGenerator = new hexColorGenerator_1.HexColorGenerator();
@@ -26,18 +26,13 @@ var ChatService = (function () {
         this.participants = [];
     }
     ChatService.prototype.init = function (address) {
-        this.destiny = this.destiny + "/" + address;
-        this.subscription = this.subscription + "/" + address;
-        this.connect();
+        this.destinyAddress = this.destinyAddress + "/" + address;
+        this.shippingAddress = this.shippingAddress + "/" + address;
+        this.stompClient = this.connection.stompOverWsClient;
+        this.subscription = this.stompClient.subscribe(this.shippingAddress, this.getOnMessage());
     };
     ChatService.prototype.getMessages = function () {
         return this.messages;
-    };
-    ChatService.prototype.connect = function () {
-        console.log("* ChatService.connect");
-        this.stompClient = this.connection.stompOverWsClient;
-        this.stompClient.subscribe(this.subscription, this.getOnMessage());
-        console.log(this.stompClient);
     };
     ChatService.prototype.getOnMessage = function () {
         var _this = this;
@@ -65,15 +60,10 @@ var ChatService = (function () {
             date: new Date().toLocaleTimeString(),
             color: undefined
         };
-        this.stompClient.send(this.destiny, {}, JSON.stringify(msg));
-    };
-    ChatService.prototype.disconnect = function () {
-        if (this.stompClient !== null) {
-            this.stompClient.disconnect();
-        }
+        this.stompClient.send(this.destinyAddress, {}, JSON.stringify(msg));
     };
     ChatService.prototype.destroy = function () {
-        this.disconnect();
+        this.subscription.unsubscribe();
         this.messages.length = 0;
     };
     ChatService = __decorate([

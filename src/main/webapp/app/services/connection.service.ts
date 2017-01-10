@@ -79,6 +79,10 @@ export class ConnectionService {
             console.log( `----------> The message ${jsonMessage.id} has been send`);
         }
     }
+
+    destroy(): void {
+        this._stompClient.disconnect();
+    }
     
    
     

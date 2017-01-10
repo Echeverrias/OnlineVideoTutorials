@@ -94,6 +94,9 @@ var ConnectionService = (function () {
             console.log("----------> The message " + jsonMessage.id + " has been send");
         }
     };
+    ConnectionService.prototype.destroy = function () {
+        this._stompClient.disconnect();
+    };
     ConnectionService = __decorate([
         core_1.Injectable(), 
         __metadata('design:paramtypes', [handler_service_1.HandlerService])
