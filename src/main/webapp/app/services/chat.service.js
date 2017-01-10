@@ -16,38 +16,31 @@ var ChatService = (function () {
     function ChatService(connection, me) {
         this.connection = connection;
         this.me = me;
-        this.endpoint = "/chat";
-        this.subscription = "/noticeBoard/";
-        this.destiny = "/mailBox/";
+        this.chatEndPoint = "/chat";
+        this.shippingAddress = this.chatEndPoint + "/noticeBoard";
+        this.destinyAddress = this.chatEndPoint + "/mailBox";
         console.log("");
         console.log("% new ChatService");
-        this.wsUrl = this.connection.url;
         this.colorGenerator = new hexColorGenerator_1.HexColorGenerator();
         this.messages = [];
         this.participants = [];
     }
     ChatService.prototype.init = function (address) {
-        this.destiny = this.destiny + address;
-        this.subscription = this.subscription + address;
-        this.connect();
+        this.destinyAddress = this.destinyAddress + "/" + address;
+        this.shippingAddress = this.shippingAddress + "/" + address;
+        this.stompClient = this.connection.stompOverWsClient;
+        this.subscription = this.stompClient.subscribe(this.shippingAddress, this.getOnMessage());
     };
     ChatService.prototype.getMessages = function () {
         return this.messages;
     };
-    ChatService.prototype.connect = function () {
+    ChatService.prototype.getOnMessage = function () {
         var _this = this;
-        console.log("* ChatService.connect");
-        console.log("The stompClient is going to be connected");
-        this.stompClient = Stomp.client(this.wsUrl + this.endpoint);
-        console.log(this.stompClient);
-        console.log("The stompClient has been created");
-        this.stompClient.connect({}, function (frame) {
-            console.log("Connected: " + frame);
-            _this.stompClient.subscribe(_this.subscription, function (message) {
-                console.log("Msg received: " + message);
-                _this.publish(JSON.parse(message.body));
-            });
-        });
+        var onMessage = function (message) {
+            console.log("Msg received: " + message);
+            _this.publish(JSON.parse(message.body));
+        };
+        return onMessage;
     };
     ChatService.prototype.publish = function (message) {
         this.addColor(message);
@@ -67,15 +60,10 @@ var ChatService = (function () {
             date: new Date().toLocaleTimeString(),
             color: undefined
         };
-        this.stompClient.send(this.destiny, {}, JSON.stringify(msg));
-    };
-    ChatService.prototype.disconnect = function () {
-        if (this.stompClient !== null) {
-            this.stompClient.disconnect();
-        }
+        this.stompClient.send(this.destinyAddress, {}, JSON.stringify(msg));
     };
     ChatService.prototype.destroy = function () {
-        this.disconnect();
+        this.subscription.unsubscribe();
         this.messages.length = 0;
     };
     ChatService = __decorate([

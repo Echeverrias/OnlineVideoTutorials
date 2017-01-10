@@ -4,7 +4,7 @@
 
     <groupId>org.jaea</groupId>
     <artifactId>OnlineVideoTutorials</artifactId>
-    <version>1.0.0.RELEASE</version>
+    <version>1.0.1.RELEASE</version>
     <packaging>war</packaging>
 
     <name>OnlineVideoTutorials</name>
@@ -210,7 +210,7 @@
 
                 </executions>                   
                         
-            </plugin>
+          </plugin>
 			<plugin>
                                 <groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
