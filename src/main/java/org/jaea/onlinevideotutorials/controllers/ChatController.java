@@ -15,17 +15,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 /**
  *
- * @author juanan
+ * @author Juan Antonio Echeverrías Aranda
  */
+
 @Controller
 public class ChatController {
 
     private final Logger log = LoggerFactory.getLogger(ChatController.class);
     
-    @MessageMapping("/{room}")
-    @SendTo("/noticeBoard/{room}")
+    @MessageMapping("mailBox/{room}")
+    @SendTo("/chat/noticeBoard/{room}")
     public ChatMessage deliver(ChatMessage message) throws Exception{
-        log.info("* Deliver the chat Message");
+        log.info("* Deliver the chat Message " + message.getMessage());
         return message;
     }
 }

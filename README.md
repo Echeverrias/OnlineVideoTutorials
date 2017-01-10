@@ -63,9 +63,8 @@ services:
     image: fiware/stream-oriented-kurento:latest
     ports:
       - "8888:8888"
-```   
+```
 And finally open the terminal, go to the created file path and execute the command: **`docker-compose up -d`**. You'll need to execute **`docker-compose stop`** to stop the app.
-
 
 
 ## Development
