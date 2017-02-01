@@ -104,6 +104,7 @@ div.ovt-file {
     flex: 0 3 619px;
     order: 2;
     max-height: 90%;
+    height: 80%;
     width:619px;
     position: relative;
     margin:0em;
@@ -112,7 +113,7 @@ div.ovt-file {
 div.ovt-file img.btn {
     position: absolute;
     top: 0.8em;
-    margin-left:89%;
+    margin-left: -8%;
     z-index:4;
 }
 
@@ -120,6 +121,7 @@ div.ovt-file object{
     height: 100%;
     width: 100%;
     border: 0.4em solid #1C1C1C;
+    background: #414141;
 }
 
 

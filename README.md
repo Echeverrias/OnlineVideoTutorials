@@ -1,31 +1,45 @@
 # Online Video Tutorials App
-This is an app to do online video tutorials with a chat. 
+This is an app to do online video tutorials. It allows you chat with the others participants, shares files and view pdf files. 
 
 You can enter in the app as a 'tutor' or as a 'student'.
 
-![alt tag](https://github.com/Echeverrias/OnlineVideoTutorials/blob/1.0.x/src/main/resources/img/OVT%20-%20login.png)
+![alt tag](https://github.com/Echeverrias/OnlineVideoTutorials/blob/2.0.0/src/main/resources/img/OVT%20-%20login.png)
 *Figure 1*  <br /><br />
 
 
 
 If you enter as a tutor, you'll create a room and get into it.
 
-![alt tag](https://github.com/Echeverrias/OnlineVideoTutorials/blob/1.0.x/src/main/resources/img/OVT%20-%20room.png)
+![alt tag](https://github.com/Echeverrias/OnlineVideoTutorials/blob/2.0.0/src/main/resources/img/OVT%20-%20room.png)
 *Figure 2*  <br /><br />
 
 
 
 If you enter as a student, you'll go to the 'waiting room' and you could enter in any tutor room you choose.
 
-![alt tag](https://github.com/Echeverrias/OnlineVideoTutorials/blob/1.0.x/src/main/resources/img/OVT%20-%20waiting%20room.png)
+![alt tag](https://github.com/Echeverrias/OnlineVideoTutorials/blob/2.0.0/src/main/resources/img/OVT%20-%20waiting%20room.png)
         *Figure 3*  <br /><br />
 
 
 
 In the room you could chat with the rest of users.
 
-![alt tag](https://github.com/Echeverrias/OnlineVideoTutorials/blob/1.0.x/src/main/resources/img/OVT%20-%20room%20chat.png)
+![alt tag](https://github.com/Echeverrias/OnlineVideoTutorials/blob/2.0.0/src/main/resources/img/OVT%20-%20room%20chat.png)
        *Figure 4*  <br /><br />
+
+
+
+You could share files with the other participants.
+
+![alt tag](https://github.com/Echeverrias/OnlineVideoTutorials/blob/2.0.0/src/main/resources/img/OVT%20-%20sharing%20files.png)
+       *Figure 5*  <br /><br />
+
+
+
+You could visualize pdf files.
+
+![alt tag](https://github.com/Echeverrias/OnlineVideoTutorials/blob/2.0.0/src/main/resources/img/OVT%20-%20visualizing%20pdfs.png)
+       *Figure 6*  <br /><br />       
 
 
 
@@ -47,24 +61,6 @@ You need to install:
 3. Go to the root of the project folder and execute **`mvn spring-boot:run`** to run the app.
 4. The application starts in the url [http://localhost:8080/](http://localhost:8080/)
 5. The app has an embedded H2 database with some users creted by default. You have to introduce one of the following user names: *maria.gil*, *marta.gil*, *monica.gil*; if you want login as a **tutor**. And if you want login as **student** you have to introduce one of these names: *sandra.ruiz*, *raquel.ruiz*, *elena.ruiz*, *laura.ruiz*, *vanesa.ruiz*, *ines.ruiz*, *carmen.ruiz*, *amanda.ruiz*, *lorena.ruiz*. For both user types the password is *'zzz'*, without the quotes.
-
-#### Run the app on docker
-You'll need to install [docker](https://docs.docker.com/engine/installation/) and [docker-compose](https://docs.docker.com/compose/install/). Then create a file called **'docker-compose.yml'** with the following content:
-```
-version: '2'
-services:
-  ovt:
-    image: echeverrias/ovt:1.0.0
-    ports:
-      - "8080:8080"
-    links:
-      - kurento:kms
-  kurento:
-    image: fiware/stream-oriented-kurento:latest
-    ports:
-      - "8888:8888"
-```
-And finally open the terminal, go to the created file path and execute the command: **`docker-compose up -d`**. You'll need to execute **`docker-compose stop`** to stop the app.
 
 
 ## Development
