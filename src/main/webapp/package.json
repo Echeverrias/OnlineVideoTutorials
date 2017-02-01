@@ -9,44 +9,39 @@
     "tsc:w": "tsc -w",
     "typings": "typings"
   },
-  "licenses": [
+    "licenses": [
     {
       "type": "MIT",
       "url": "https://github.com/angular/angular.io/blob/master/LICENSE"
     },
-    {
+{
       "type": "Apache License 2.0",
       "url": "https://github.com/jmesnil/stomp-websocket/blob/master/LICENSE.txt"
-    },
-    {
-      "type": "MIT",
-      "url": "https://github.com/jkuri/ngx-uploader/blob/master/README.md#licence"
-    }
+    }	
   ],
   "dependencies": {
-    "@angular/common": "^2.4.3",
-    "@angular/compiler": "^2.4.3",
-    "@angular/core": "^2.4.3",
-    "@angular/forms": "^2.4.3",
-    "@angular/http": "^2.4.3",
-    "@angular/platform-browser": "^2.4.3",
-    "@angular/platform-browser-dynamic": "^2.4.3",
-    "@angular/router": "^3.4.3",
-    "@angular/upgrade": "^2.4.3",
-    "angular-in-memory-web-api": "~0.2.4",
+    "@angular/common": "2.0.1",
+    "@angular/compiler": "2.0.1",
+    "@angular/core": "2.0.1",
+    "@angular/forms": "2.0.1",
+    "@angular/http": "2.0.1",
+    "@angular/platform-browser": "2.0.1",
+    "@angular/platform-browser-dynamic": "2.0.1",
+    "@angular/router": "3.0.2",
+    "@angular/upgrade": "2.0.1",
+    "angular-in-memory-web-api": "~0.1.5",
     "bootstrap": "^3.3.7",
     "core-js": "^2.4.1",
-    "ngx-uploader": "^2.0.22",
     "reflect-metadata": "^0.1.8",
-    "rxjs": "5.0.3",
-    "stompjs": "^2.3.3",
-    "systemjs": "0.19.42",
-    "zone.js": "^0.7.5"
+    "rxjs": "5.0.0-beta.12",
+    "systemjs": "0.19.39",
+    "zone.js": "^0.6.25",
+    "stompjs": "^2.3.3"
   },
   "devDependencies": {
     "concurrently": "^3.0.0",
     "lite-server": "^2.2.2",
     "typescript": "^2.0.3",
-    "typings": "^2.1.0"
+    "typings": "^1.4.0"
   }
 }
