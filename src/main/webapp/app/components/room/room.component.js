@@ -14,6 +14,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
+var platform_browser_1 = require('@angular/platform-browser');
 var user_service_1 = require('../../services/user.service');
 var room_service_1 = require('../../services/room.service');
 var participants_service_1 = require('../../services/participants.service');
@@ -21,12 +22,13 @@ var participant_component_1 = require('../participant/participant.component');
 var user_1 = require('../../models/user');
 var room_html_1 = require('./room.html');
 var RoomComponent = (function () {
-    function RoomComponent(room, _participants, router, me, route) {
+    function RoomComponent(room, _participants, router, me, route, sanitizer) {
         this.room = room;
         this._participants = _participants;
         this.router = router;
         this.me = me;
         this.route = route;
+        this.sanitizer = sanitizer;
         this.mainUser = new user_1.User();
         console.log("");
         console.log("% Room constructor " + new Date().toLocaleTimeString());
@@ -60,6 +62,20 @@ var RoomComponent = (function () {
     RoomComponent.prototype.showGadget = function (isSomeGadgetActive) {
         this.activeGadget = isSomeGadgetActive;
     };
+    RoomComponent.prototype.onLoadFile = function (fileUrl) {
+        console.log("RoomComponent.onLoadFile(" + fileUrl + ")");
+        this.showCloseButton = false;
+        console.log(this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl));
+        this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
+    };
+    RoomComponent.prototype.onMouseOverFile = function () {
+        console.log("onMouseOverFile");
+        this.showCloseButton = true;
+    };
+    RoomComponent.prototype.onCloseFile = function () {
+        this.fileUrl = undefined;
+        this.showCloseButton = false;
+    };
     RoomComponent.prototype.ngOnDestroy = function () {
         console.log("* Room.OnDestroy " + new Date().toLocaleTimeString());
         this._participants.destroy();
@@ -81,7 +97,7 @@ var RoomComponent = (function () {
             template: room_html_1.roomTemplate,
             providers: [room_service_1.RoomService, participants_service_1.ParticipantsService]
         }), 
-        __metadata('design:paramtypes', [room_service_1.RoomService, participants_service_1.ParticipantsService, router_1.Router, user_service_1.UserService, router_1.ActivatedRoute])
+        __metadata('design:paramtypes', [room_service_1.RoomService, participants_service_1.ParticipantsService, router_1.Router, user_service_1.UserService, router_1.ActivatedRoute, platform_browser_1.DomSanitizer])
     ], RoomComponent);
     return RoomComponent;
 }());

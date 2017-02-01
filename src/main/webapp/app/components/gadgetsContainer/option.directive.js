@@ -34,16 +34,56 @@ var OptionDirective = (function () {
             this.renderer.setElementStyle(this.element, 'background', "url(\"" + (this.imagePath + this.imageOff) + "\") no-repeat");
         }
     };
+    // Actives the gadget, makes the component visible
     OptionDirective.prototype.onClick = function () {
-        var image = this.getImage();
-        console.log(image);
+        this.stopAlert();
+        var image;
+        this.isOn = !this.isOn;
+        this.isOn ? image = this.imageOff.replace('-off', '-on') : image = this.imageOff;
         //this.renderer.setElementProperty(this.element, 'src', imagePath);
         this.renderer.setElementStyle(this.element, 'background', "url(\"" + (this.imagePath + image) + "\") no-repeat");
-        this.isOn = !this.isOn;
         this.isOn ? this.activate.emit(this.option) : this.activate.emit(undefined);
     };
-    OptionDirective.prototype.getImage = function () {
-        return this.isOn ? this.imageOff : this.imageOff.replace('off', 'on');
+    OptionDirective.prototype.onMouseOver = function () {
+        console.log("mouseover");
+        this.renderer.setElementStyle(this.element, 'background', "url(\"" + (this.imagePath + this.imageOff.replace('off', 'on')) + "\") no-repeat");
+    };
+    OptionDirective.prototype.onMouseLeave = function () {
+        if (this.activeOption !== this.option) {
+            console.log("mouseleave");
+            this.renderer.setElementStyle(this.element, 'background', "url(\"" + (this.imagePath + this.imageOff.replace('on', 'off')) + "\") no-repeat");
+        }
+    };
+    OptionDirective.prototype.displayAlert = function (options) {
+        console.log("OptionDirective.displayAlert");
+        if (options.option === this.option) {
+            this.intervalAlert = setInterval(this.changeIcon(), 1000);
+        }
+    };
+    OptionDirective.prototype.stopAlert = function () {
+        console.log("OptionDirective.stopAlert");
+        clearInterval(this.intervalAlert);
+        var image;
+        this.isOn ? image = this.imageOff.replace('-off', '-on') : image = this.imageOff;
+        //this.renderer.setElementProperty(this.element, 'src', imagePath);
+        this.renderer.setElementStyle(this.element, 'background', "url(\"" + (this.imagePath + image) + "\") no-repeat");
+    };
+    OptionDirective.prototype.changeIcon = function () {
+        var _this = this;
+        console.log('OptionDirective.changeIcon()');
+        var changeImage = function () {
+            console.log('Changing the image');
+            var backgroundStyle = _this.element.style.background;
+            var image;
+            if (backgroundStyle.includes(_this.imageOff)) {
+                image = _this.imageOff.replace("-off", "-on");
+            }
+            else {
+                image = _this.imageOff;
+            }
+            _this.renderer.setElementStyle(_this.element, 'background', "url(\"" + (_this.imagePath + image) + "\") no-repeat");
+        };
+        return changeImage;
     };
     __decorate([
         core_1.Input('ovt-option'), 
@@ -71,6 +111,18 @@ var OptionDirective = (function () {
         __metadata('design:paramtypes', []), 
         __metadata('design:returntype', void 0)
     ], OptionDirective.prototype, "onClick", null);
+    __decorate([
+        core_1.HostListener('mouseover'), 
+        __metadata('design:type', Function), 
+        __metadata('design:paramtypes', []), 
+        __metadata('design:returntype', void 0)
+    ], OptionDirective.prototype, "onMouseOver", null);
+    __decorate([
+        core_1.HostListener('mouseleave'), 
+        __metadata('design:type', Function), 
+        __metadata('design:paramtypes', []), 
+        __metadata('design:returntype', void 0)
+    ], OptionDirective.prototype, "onMouseLeave", null);
     OptionDirective = __decorate([
         core_1.Directive({
             selector: '[ovt-option]'

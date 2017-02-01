@@ -5,6 +5,8 @@
  
 import { Component, OnInit, ViewChild, ViewChildren, OnDestroy, QueryList , EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+
 
 import { UserService } from '../../services/user.service';
 import { RoomService } from '../../services/room.service';
@@ -34,8 +36,10 @@ export class RoomComponent implements OnInit, OnDestroy{
     private mainUser: User = new User();
     private users: User[];
     private activeGadget: boolean;  
+    private fileUrl: SafeResourceUrl;
+    private showCloseButton: boolean;
     
-    constructor(private room: RoomService, private _participants: ParticipantsService, private router: Router, private me: UserService, private route: ActivatedRoute) {
+    constructor(private room: RoomService, private _participants: ParticipantsService, private router: Router, private me: UserService, private route: ActivatedRoute, private sanitizer: DomSanitizer) {
       
       console.log("");
       console.log(`% Room constructor ${new Date().toLocaleTimeString()}`);
@@ -77,10 +81,29 @@ export class RoomComponent implements OnInit, OnDestroy{
         this.activeGadget = isSomeGadgetActive;
     }
 
+    onLoadFile(fileUrl: string){
+      console.log(`RoomComponent.onLoadFile(${fileUrl})`); 
+      this.showCloseButton = false;
+      console.log(this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl));
+      this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl); 
+    }
+
+    onMouseOverFile(){
+        console.log("onMouseOverFile");
+        this.showCloseButton = true;
+    }
+    
+    onCloseFile(){
+      this.fileUrl = undefined;
+      this.showCloseButton = false;
+    }
+
     ngOnDestroy(){
       console.log(`* Room.OnDestroy ${new Date().toLocaleTimeString()}`);
       this._participants.destroy();  
       this.room.destroy();
     }
+
+   
    
 }

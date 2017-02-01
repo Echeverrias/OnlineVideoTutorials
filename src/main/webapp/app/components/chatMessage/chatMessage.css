@@ -36,5 +36,9 @@ and open the template in the editor.
    
 }
 
+.sendMessage{
+  z-index: 100;
+}
+
 
 

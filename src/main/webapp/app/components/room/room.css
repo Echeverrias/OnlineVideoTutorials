@@ -64,16 +64,66 @@ and open the template in the editor.
     flex: 0 4 84%;
     order: 1;
     display: -webkit-flex;
-    -webkit-flex-direction: column;
+    -webkit-flex-direction: row;
+    -webkit-flex-wrap: wrap;
     -webkit-justify-content: space-around;
     -webkit-align-items: center;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
     justify-content: space-around;
     align-items: center;
     margin: auto;
     padding: 1em 0;
 }
+
+
+
+ovt-participant.mainParticipant {
+   
+    width: 71%;
+    height: 80%;
+    margin:auto;
+
+}
+
+
+ovt-participant.minimized{
+
+    -webkit-flex: 1 1 27%;
+    -webkit-order: 1;
+    flex: 0 1 27%;
+    order: 1;
+    height: 30.5%;
+}
+
+
+div.ovt-file {
+    -webkit-flex: 0 3 619px;
+    -webkit-order: 2;
+    flex: 0 3 619px;
+    order: 2;
+    max-height: 90%;
+    width:619px;
+    position: relative;
+    margin:0em;
+}
+
+div.ovt-file img.btn {
+    position: absolute;
+    top: 0.8em;
+    margin-left:89%;
+    z-index:4;
+}
+
+div.ovt-file object{
+    height: 100%;
+    width: 100%;
+    border: 0.4em solid #1C1C1C;
+}
+
+
+
 
 ovt-chat{
     width:98%;
@@ -83,14 +133,7 @@ ovt-chat{
     order: 2;
     margin-top: 0.5em;
     margin-bottom: 0.5em;
-}
-
-
-ovt-participant.mainParticipant {
-   
-    width: 71%;
-    height: 81%;
-    margin:auto;
+     z-index:100;
 }
 
 
@@ -106,9 +149,10 @@ ovt-participant.mainParticipant {
 
 button[name=exitRoom] {
     position:absolute;
-    bottom:0.3em;
-    right:1em;
-    z-index: 4;
+    bottom:1em;
+    right:2em;
+    box-shadow: -2px 2px 2px #299D29
+    z-index:98;
 }  
 
 
@@ -122,9 +166,13 @@ ovt-gadgetsContainer{
   -moz-transition: all 1s;
   -webkit-transition: all 1s;
   -o-transition: all 1s;
-    z-index:999;
+    z-index:99;
 }
 
 .showed{
   right: 0%;
 }
+
+
+
+

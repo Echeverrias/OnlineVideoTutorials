@@ -10,6 +10,7 @@ import { UserFactory } from '../models/userFactory';
 import { Message } from '../models/types';
 import { IdMessage } from '../models/types';
 
+
 type UserMessage = { userName: string, userType: string, name: string } & IdMessage;
 type UserNameMessage = { userName: string, user } & IdMessage;
 type ParticipantMessage = { roomName: string, userName: string, userType: string, name: string } & IdMessage;;
@@ -27,7 +28,7 @@ export class RoomService {
     
     private mainParticipantObserver: Subject<User>;
     private participantsObserver: Subject<User[]>;
- 
+
     constructor(private handler: HandlerService, private connection: ConnectionService, private me: UserService){
         
         this.mainParticipantObserver = new Subject<User>();
@@ -187,8 +188,10 @@ export class RoomService {
 
     destroy(){
         this.eeThereIsANewParticipant.unsubscribe();
-        this.eeAParticipantHasLefTheRoom .unsubscribe();
+        this.eeAParticipantHasLefTheRoom.unsubscribe();
         this.removeAllParticipants();
     }
+
+    
     
 }

@@ -13,3 +13,5 @@ export interface IMessage {
     message: string;
     date: string;
 }
+
+export type File = { name: string, loadUrl: string, downloadUrl }
