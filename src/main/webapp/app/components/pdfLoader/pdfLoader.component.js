@@ -37,8 +37,14 @@ var PdfLoaderComponent = (function () {
                 if (_this.uploadFile !== fileName) {
                     _this.alertOfANewFile(fileName);
                 }
-            }, 1500); // The function handleUp has to be executed before
+            }, 1500); // Wait for the execution of the handleUpload function
         });
+    };
+    PdfLoaderComponent.prototype.beforeUpload = function (uploadingFile) {
+        if (uploadingFile.size > this.sizeLimit) {
+            uploadingFile.setAbort();
+            alert('El archivo no puede pesar más de 2 MB');
+        }
     };
     PdfLoaderComponent.prototype.handleUpload = function (data) {
         console.log("handleUpload");
@@ -48,12 +54,6 @@ var PdfLoaderComponent = (function () {
         if (data && data.status === 200) {
             this.uploadFile = data.originalName;
             console.log("uploaded file: " + this.uploadFile);
-        }
-    };
-    PdfLoaderComponent.prototype.beforeUpload = function (uploadingFile) {
-        if (uploadingFile.size > this.sizeLimit) {
-            uploadingFile.setAbort();
-            alert('File is too large');
         }
     };
     PdfLoaderComponent.prototype.onSelectedFile = function (file) {

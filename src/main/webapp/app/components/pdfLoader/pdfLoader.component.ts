@@ -49,10 +49,16 @@ export class PdfLoaderComponent implements OnInit, OnDestroy{
         if (this.uploadFile !== fileName) {
           this.alertOfANewFile(fileName);
         }
-      }, 1500); // The function handleUp has to be executed before
+      }, 1500); // Wait for the execution of the handleUpload function
     });
   }
-  
+
+  beforeUpload(uploadingFile): void {
+    if (uploadingFile.size > this.sizeLimit) {
+      uploadingFile.setAbort();
+      alert('El archivo no puede pesar más de 2 MB');
+    }
+  }
   
   handleUpload(data): void {
       console.log("handleUpload");
@@ -64,13 +70,6 @@ export class PdfLoaderComponent implements OnInit, OnDestroy{
           console.log(`uploaded file: ${this.uploadFile}`);
         }
     }
-
-  beforeUpload(uploadingFile): void {
-    if (uploadingFile.size > this.sizeLimit) {
-      uploadingFile.setAbort();
-      alert('File is too large');
-    }
-  }
 
   onSelectedFile(file: string){
     console.log("selected file");
