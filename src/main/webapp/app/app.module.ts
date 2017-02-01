@@ -22,6 +22,7 @@ import { LoginService } from './services/login.service';
 import { AuthGuard } from './guards/auth.guard';
 
 
+
 @NgModule({
   imports: [
     BrowserModule,
@@ -38,7 +39,7 @@ import { AuthGuard } from './guards/auth.guard';
     ParticipantComponent,
     LoadingComponent,
     ChatComponent,
-    ChatMessageComponent
+    ChatMessageComponent,
   ],
   providers: [
       HandlerService,

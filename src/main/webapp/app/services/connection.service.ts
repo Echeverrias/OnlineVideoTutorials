@@ -20,15 +20,17 @@ export class ConnectionService {
     private _wsEndPoint: string = "ws";
     private _stompEndPoint: string = "/stomp";
     private _rootServer: string;
+    private _pathName: string;
     private _ws: WebSocket;
     private _stompClient: any;
     
     constructor(private handler: HandlerService){
         console.log(`% Connection`);
-        
-        this._rootServer = document.location.host + document.location.pathname;
+        this._pathName = document.location.pathname; 
+        this._rootServer = document.location.host + this._pathName;
         this._ws = new WebSocket(`ws://${this._rootServer}${this._wsEndPoint}`);
         this._ws.onmessage = (message: any): void => { this.handler.handle(message) };
+        this._ws.onclose = (): void => { console.log(`!!!!${this._ws.readyState}`); this._ws = new WebSocket(`ws://${this._rootServer}${this._wsEndPoint}`); };
         this._stompClient = Stomp.client(this.stompOverWsUrl);
         this._stompClient.connect({}, (frame) => {
             console.log(`Connected succesfully: ${frame}`);
@@ -51,6 +53,10 @@ export class ConnectionService {
     get stompOverWsUrl(): string {
         return this._ws.url + this._stompEndPoint;
     }
+
+    get pathName(): string {
+        return this._pathName;
+    }
     
     get rootServer(): string{
         return this._rootServer;
@@ -67,6 +73,7 @@ export class ConnectionService {
     get stompOverWsEndPoint(): string{
         return `/${this._wsEndPoint}${this._stompEndPoint}`;
     }
+  
     
     sendMessage(jsonMessage: Message){
         //console.log(`---------->  ${jsonMessage.id} ${new Date().toLocaleTimeString()}`);
@@ -82,6 +89,7 @@ export class ConnectionService {
 
     destroy(): void {
         this._stompClient.disconnect();
+        this._ws.close();
     }
     
    

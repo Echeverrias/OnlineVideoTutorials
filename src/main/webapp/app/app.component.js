@@ -19,15 +19,20 @@ var AppComponent = (function () {
         console.log("/ AppComponent constructor");
     }
     AppComponent.prototype.beforeunloadHandler = function (event) {
-        console.log(this.me);
-        console.log(this.me.myUserName);
-        var jsonMessage = {
-            id: "closeTab",
-            userName: this.me.myUserName,
-            roomName: this.me.myRoomName
-        };
-        console.log(jsonMessage);
-        this.connection.sendMessage(jsonMessage);
+        console.log(event);
+        if (!sessionStorage.getItem("downloadEvent")) {
+            console.log(this.me);
+            console.log(this.me.myUserName);
+            var jsonMessage = {
+                id: "closeTab",
+                userName: this.me.myUserName,
+                roomName: this.me.myRoomName
+            };
+            console.log(jsonMessage);
+            this.connection.sendMessage(jsonMessage);
+            this.connection.destroy();
+        }
+        sessionStorage.removeItem("downloadEvent");
     };
     ;
     __decorate([

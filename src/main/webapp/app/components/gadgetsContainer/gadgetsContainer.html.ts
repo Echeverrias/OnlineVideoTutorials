@@ -1,13 +1,13 @@
 export const gadgetsContainerTemplate = `<div class="ovt-gadgetsContainer">  
  
-  <div class='ovt-options hidden-phone hidden-tablet'>
+  <div class='ovt-options'>
      <ul> 
-        <li> <a  title="pdfLoader" [ovt-option]="'pdfLoader'" [ovt-deactivate]="option" [ovt-imagePath]="imagePath" [ovt-image]="'pdf-off.png'" (ovt-activate)="activateOption($event)"></a></li>
+        <li> <a  [ovt-option]="'pdfLoader'" [ovt-deactivate]="option" [ovt-imagePath]="imagePath" [ovt-image]="'pdf-off.png'" (ovt-activate)="activateOption($event)"></a></li>
       </ul>
   </div> 
  
  <div class="ovt-option">
-  <ovt-pdf-loader *ngIf="option==='pdfLoader'"></ovt-pdf-loader>
-  </div>
+     <ovt-pdfLoader [ovt-address]="address" (ovt-file)="onSelectedFile($event)" (ovt-new-file)="displayNewFileAlert($event)"></ovt-pdfLoader>
+ </div>
 
 </div>`

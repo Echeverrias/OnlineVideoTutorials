@@ -25,9 +25,11 @@ var ConnectionService = (function () {
         this._wsEndPoint = "ws";
         this._stompEndPoint = "/stomp";
         console.log("% Connection");
-        this._rootServer = document.location.host + document.location.pathname;
+        this._pathName = document.location.pathname;
+        this._rootServer = document.location.host + this._pathName;
         this._ws = new WebSocket("ws://" + this._rootServer + this._wsEndPoint);
         this._ws.onmessage = function (message) { _this.handler.handle(message); };
+        this._ws.onclose = function () { console.log("!!!!" + _this._ws.readyState); _this._ws = new WebSocket("ws://" + _this._rootServer + _this._wsEndPoint); };
         this._stompClient = Stomp.client(this.stompOverWsUrl);
         this._stompClient.connect({}, function (frame) {
             console.log("Connected succesfully: " + frame);
@@ -53,6 +55,13 @@ var ConnectionService = (function () {
     Object.defineProperty(ConnectionService.prototype, "stompOverWsUrl", {
         get: function () {
             return this._ws.url + this._stompEndPoint;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ConnectionService.prototype, "pathName", {
+        get: function () {
+            return this._pathName;
         },
         enumerable: true,
         configurable: true
@@ -96,6 +105,7 @@ var ConnectionService = (function () {
     };
     ConnectionService.prototype.destroy = function () {
         this._stompClient.disconnect();
+        this._ws.close();
     };
     ConnectionService = __decorate([
         core_1.Injectable(), 

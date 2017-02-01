@@ -46,7 +46,7 @@ var AppModule = (function () {
                 participant_component_1.ParticipantComponent,
                 loading_component_1.LoadingComponent,
                 chat_component_1.ChatComponent,
-                chatMessage_component_1.ChatMessageComponent
+                chatMessage_component_1.ChatMessageComponent,
             ],
             providers: [
                 handler_service_1.HandlerService,

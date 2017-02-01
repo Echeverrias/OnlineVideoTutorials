@@ -23,7 +23,7 @@ public class ChatController {
 
     private final Logger log = LoggerFactory.getLogger(ChatController.class);
     
-    @MessageMapping("mailBox/{room}")
+    @MessageMapping("/mailBox/{room}")
     @SendTo("/chat/noticeBoard/{room}")
     public ChatMessage deliver(ChatMessage message) throws Exception{
         log.info("* Deliver the chat Message " + message.getMessage());

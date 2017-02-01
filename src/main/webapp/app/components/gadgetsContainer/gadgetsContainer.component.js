@@ -10,21 +10,50 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var gadgetsContainer_html_1 = require('./gadgetsContainer.html');
+var option_directive_1 = require('./option.directive');
 var GadgetsContainerComponent = (function () {
     function GadgetsContainerComponent() {
-        this.activeOption = new core_1.EventEmitter();
         this.imagePath = "app/components/gadgetsContainer/img/";
+        this.activeOption = new core_1.EventEmitter();
+        this.sharedFile = new core_1.EventEmitter();
     }
     GadgetsContainerComponent.prototype.ngAfterViewInit = function () {
     };
     GadgetsContainerComponent.prototype.activateOption = function (option) {
+        console.log(option);
         this.option = option;
         this.option ? this.activeOption.emit(true) : this.activeOption.emit(false);
     };
+    GadgetsContainerComponent.prototype.onSelectedFile = function (file) {
+        console.log("GadgetsContainerComponent.onSelectedFile(" + file + ")");
+        this.sharedFile.emit(file);
+        this.od.stopAlert();
+    };
+    GadgetsContainerComponent.prototype.displayNewFileAlert = function (fileName) {
+        console.log("displayNewFile: " + fileName);
+        var state = (this.option === 'pdfLoader') ? 'on' : 'off';
+        this.od.displayAlert({
+            option: 'pdfLoader',
+            initialState: state,
+            data: fileName
+        });
+    };
+    __decorate([
+        core_1.ViewChild(option_directive_1.OptionDirective), 
+        __metadata('design:type', option_directive_1.OptionDirective)
+    ], GadgetsContainerComponent.prototype, "od", void 0);
+    __decorate([
+        core_1.Input("ovt-address"), 
+        __metadata('design:type', String)
+    ], GadgetsContainerComponent.prototype, "address", void 0);
     __decorate([
         core_1.Output('ovt-activeOption'), 
-        __metadata('design:type', Object)
+        __metadata('design:type', core_1.EventEmitter)
     ], GadgetsContainerComponent.prototype, "activeOption", void 0);
+    __decorate([
+        core_1.Output('ovt-file'), 
+        __metadata('design:type', core_1.EventEmitter)
+    ], GadgetsContainerComponent.prototype, "sharedFile", void 0);
     GadgetsContainerComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

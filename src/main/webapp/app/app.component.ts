@@ -17,15 +17,21 @@ export class AppComponent {
         
        @HostListener('window:beforeunload', ['$event'])
        beforeunloadHandler(event) {
-           console.log(this.me);
-           console.log(this.me.myUserName);
-           let jsonMessage = {
-               id: "closeTab",
-               userName: this.me.myUserName,
-               roomName: this.me.myRoomName
-           };
-           console.log(jsonMessage);
-           this.connection.sendMessage(jsonMessage);
+           console.log(event);
+           if (! sessionStorage.getItem("downloadEvent")){
+               console.log(this.me);
+               console.log(this.me.myUserName);
+               let jsonMessage = {
+                   id: "closeTab",
+                   userName: this.me.myUserName,
+                   roomName: this.me.myRoomName
+               };
+               console.log(jsonMessage);
+               this.connection.sendMessage(jsonMessage);
+               this.connection.destroy();
+           }   
+
+           sessionStorage.removeItem("downloadEvent");
        }
        
        constructor(private connection: ConnectionService, private me: UserService) {
