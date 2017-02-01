@@ -103,7 +103,7 @@ div.ovt-file {
     -webkit-order: 2;
     flex: 0 3 619px;
     order: 2;
-    max-height: 90%;
+    max-height: 80%;
     height: 80%;
     width:619px;
     position: relative;
