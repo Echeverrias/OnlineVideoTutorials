@@ -156,7 +156,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
                                 <version>1.4.1.RELEASE</version>
-                <!--                <configuration>
+                                <configuration>
 					<mainClass>${start-class}</mainClass>
 					<layout>ZIP</layout>
 				</configuration>
@@ -170,7 +170,7 @@
                         </configuration>
 					</execution>
 				</executions>
-		-->	</plugin>
+			</plugin>
 			<plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -179,7 +179,7 @@
                  </configuration>
               
              <executions>
-             <!--          <execution>
+                       <execution>
                         <id>exec-bower-install</id>
                         <phase>generate-sources</phase>
                         <goals>
@@ -209,7 +209,7 @@
                         </configuration>
                         </execution>
 
-                -->
+                
                 <execution>
                         <id>exec-tsc</id>
                         <phase>generate-sources</phase>
@@ -229,7 +229,7 @@
                                 <groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
                                 <version>3.0.0</version>
-                <!--                
+                                
 			 	<configuration>
 					<filesets>
 						<fileset>
@@ -241,7 +241,7 @@
 					</filesets>
                                         
 				</configuration> 
-            -->
+            
 			</plugin>
         </plugins>
         <resources>
