@@ -35,6 +35,11 @@ public  class User implements Comparable<User>{
     private Long id;
      
     protected String name;
+
+    protected String surname;
+
+    protected String email;
+
     @Column(unique = true, nullable = false)
     protected String userName;
     protected String userType;
@@ -55,16 +60,32 @@ public  class User implements Comparable<User>{
         this.name = name;
         this.password = password;
     }
+
+
+     public User(String userName, String userType, String name, String surname, String email, String password){
+        this.userName = userName;
+        this.userType = userType;
+        this.name = name;
+        this.surname = surname;
+        this.password = password;
+        this.email = email;
+    }
     
     public User(User user){
         this.userName = user.getUserName();
         this.userType = user.getUserType();
         this.name = user.getName();
-        this.password = password;
+        this.surname = user.getSurname();
+        this.email = user.getEmail();
+        this.password = user.password;
     }
     
     public String getName() {
         return this.name;
+    }
+
+    public String getSurname(){
+        return this.surname;
     }
     
     public String getUserName() {
@@ -75,8 +96,16 @@ public  class User implements Comparable<User>{
         return this.userType;
     }
 
+    public String getEmail(){
+        return this.email;
+    }
+
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @JsonProperty("isATutor")
@@ -91,6 +120,10 @@ public  class User implements Comparable<User>{
 
     public boolean comparePassword(String password){
         return this.password.equals(password);
+    }
+
+    public boolean comparePassword(User user){
+        return this.password.equals(user.password);
     }
     
      @Override
@@ -126,7 +159,7 @@ public  class User implements Comparable<User>{
     }
 
     public String toString(){
-        return "{userName: " + this.userName + ",userType: " + this.userType + ",name: " + this.name + "}";
+        return "{userName: " + this.userName + ",userType: " + this.userType + ",name: " + this.name + ",surname: " + this.surname +  ",email: " + this.email + "}";
     }
 
     public Long getId() {

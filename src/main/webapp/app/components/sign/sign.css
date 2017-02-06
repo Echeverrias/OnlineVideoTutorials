@@ -1,0 +1,212 @@
+/* 
+    Created on : 27-ene-2016, 16:18:42
+    Author     : Juan Antonio Echeverrías Aranda
+*/
+
+
+#ovt-sign{
+  position:relative;
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  top:2.5em;
+  display: block;
+}
+
+div.ovt-sign{
+   margin: auto;
+    background-color: #EEFACA;
+    border-radius: 3px;
+    -webkit-box-shadow: 0 0 200px rgba(255, 255, 255, 0.5), 0 1px 2px
+        rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 200px rgba(255, 255, 255, 0.5), 0 1px 2px
+        rgba(0, 0, 0, 0.3);
+    
+    -webkit-transition: all 0.3s linear;
+    -moz-transition: all 0.3s linear;
+    -o-transition: all 0.3s linear;
+    transition: all 0.3s linear;
+    height:auto; 
+}
+
+.ovt-sign::before {
+    content: '';
+    background: rgba(0, 0, 0, 0.08);
+    border-radius: 4px;
+}
+
+
+.ovt-signIn {
+    width: 30%;
+   
+}
+
+
+.ovt-signUp {
+    width: 80%;
+    height: 80%;
+}
+
+
+.ovt-sign div.ovt-header{
+  height: auto;
+}
+
+.ovt-sign div.ovt-container{
+  padding: 1em 1em;
+  height: 35em;
+}
+
+
+
+div.ovt-container form {
+     margin:auto;
+    box-sizing: border-box;
+    height: 80%;
+    padding: 1em;
+    padding-bottom: 0em;
+    margin-bottom: 1em;
+}
+
+form label{
+  display:block;
+}
+
+form div.ovt-fields{
+  max-height: 80%;
+  height: 80%;
+  margin-bottom: 2em;
+}
+
+div.ovt-signIn form div.ovt-fields div.form-group{
+  height: 50%;
+  max-height: 50%;
+}
+
+.ng-valid[required] {
+  border-left: 5px solid #42A948; /* green */
+}
+
+.ng-invalid {
+  border-left: 5px solid #a94442; /* red */
+}
+
+div.ovt-container form input.btn{
+  width:65%;
+  margin:auto;
+}
+
+div.ovt-container button{
+  width:60%;
+  margin:auto;
+}
+
+hr{
+  border-color: grey;
+}
+
+form input{
+  margin-left: 0em;
+}
+
+form div.ovt-field{
+  margin-left:0.5em;
+}
+
+/* .ovt-signUp */
+
+div.ovt-signUp form div.form-group{
+  height:16.6%;
+  max-height: :16.6%;
+  margin: 0;
+}
+
+div.ovt-signUp form label{
+  display: inline-block;
+  margin: 0 0.5em;
+}
+
+div.ovt-signUp form input{
+  width:45%;
+  display: inline-block;
+  margin: 0em;
+}
+
+div.ovt-signUp form div.alert{
+  padding: 0.5em;
+  display: inline-block;
+}
+
+
+div.ovt-signUp div.ovt-container{
+  padding: 0.5em 0.5em;
+  height: 40em;
+}
+
+div.ovt-signUp form {
+  max-height: 100%;
+  height: 100%;
+  margin-bottom: 1em;
+}
+
+div.ovt-signUp form div.ovt-fields{
+  max-height: 90%;
+  height: 90%;
+  margin-bottom: 1em;
+}
+
+
+
+div.ovt-signUp form input.ovt-radio{
+  display: inline-block;
+  width: auto;
+  margin:0;
+  vertical-align: middle;
+}
+
+form div.ovt-fields div.form-group div.ovt-field span{
+
+  margin: 0em 0.5em;
+ }
+
+div.ovt-signUp form input.btn{
+  width: 20%;
+}
+
+div.ovt-signUp form div.ovt-submit {
+  margin-left: 0.5em;
+}
+
+
+@media screen and (max-width:900px) {
+  
+  
+  .ovt-signIn {
+    width: 45%;
+  }
+}
+
+@media screen and (max-width:800px) {
+  
+  
+  .ovt-signIn {
+    width: 55%;
+  }
+}
+
+
+@media screen and (max-width:600px) {
+  
+  
+  .ovt-signIn  {
+    width: 75%;
+  }
+}
+
+@media screen and (max-width:400px) {
+  
+  
+  .ovt-signIn  {
+    width: 95%;
+  }
+}

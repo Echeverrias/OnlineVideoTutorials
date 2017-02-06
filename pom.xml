@@ -4,7 +4,7 @@
 
     <groupId>org.jaea</groupId>
     <artifactId>OnlineVideoTutorials</artifactId>
-    <version>2.0.0.RELEASE</version>
+    <version>2.0.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
     <name>OnlineVideoTutorials</name>
@@ -178,8 +178,8 @@
                     <mainClass>${start-class}</mainClass>   
                  </configuration>
               
-             <executions>
-                       <execution>
+            <executions>
+                        <execution>
                         <id>exec-bower-install</id>
                         <phase>generate-sources</phase>
                         <goals>
@@ -210,7 +210,7 @@
                         </execution>
 
                 
-                <execution>
+                 <execution>
                         <id>exec-tsc</id>
                         <phase>generate-sources</phase>
                         <goals>
@@ -220,11 +220,11 @@
                             <executable>tsc</executable>
                             <basedir>src/main/webapp</basedir>
                         </configuration>
-                        </execution>
+             </execution>
 
                 </executions>                                     
                         
-          </plugin>
+        </plugin>
 			<plugin>
                                 <groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
@@ -242,7 +242,7 @@
                                         
 				</configuration> 
             
-			</plugin>
+		</plugin>
         </plugins>
         <resources>
 			<resource>

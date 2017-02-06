@@ -53,7 +53,7 @@ import{ waitingRoomTemplate } from './waitingRoom.html'
         console.log("");
         console.log(`* <- WaitingRoom.onLogOut ${new Date().toLocaleTimeString()}`);
        
-        this.router.navigate(['/login']);
+        this.router.navigate(['/sign']);
      }
     
     ngOnDestroy(){

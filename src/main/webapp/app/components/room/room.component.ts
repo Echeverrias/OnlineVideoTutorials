@@ -70,7 +70,7 @@ export class RoomComponent implements OnInit, OnDestroy{
             this.router.navigate(['/rooms']);
         }
         else {
-           this.router.navigate(['/login']);
+           this.router.navigate(['/sign']);
         }
       
         console.log(`/ Room.onExitOfRoom ${new Date().toLocaleTimeString()}`);

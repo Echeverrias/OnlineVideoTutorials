@@ -16,46 +16,72 @@ require('rxjs/add/operator/catch');
 var connection_service_1 = require('./connection.service');
 var handler_service_1 = require('./handler.service');
 var user_service_1 = require('./user.service');
-var userFactory_1 = require('../models/userFactory');
-var LoginService = (function () {
-    function LoginService(http, connection, handler, me) {
+var SignService = (function () {
+    function SignService(http, connection, handler, me) {
         this.http = http;
         this.connection = connection;
         this.handler = handler;
         this.me = me;
-        console.log("*LoginService constructor");
+        this.validateUserEndPoint = "validateUser";
+        this.registerEndPoint = "register";
+        console.log("*SignService constructor");
         this.logOut();
     }
-    LoginService.prototype.init = function () {
-        console.log("*LoginService.init");
+    SignService.prototype.init = function () {
+        console.log("*SignService.init");
         // Reset login status
         //this.destroyMe();
     };
-    LoginService.prototype.validateUser = function (userName, password) {
+    SignService.prototype.validateUser = function (userName, password) {
         var _this = this;
         var headers = new http_1.Headers();
         headers.append("Content-Type", "application/json");
         var options = new http_1.RequestOptions({ headers: headers });
         var body = JSON.stringify({ userName: userName, password: password });
         console.log(this.http); //%%
-        return this.http.post(this.connection.urlServer + "validateUser", body, options)
+        return this.http.post("" + this.connection.urlServer + this.validateUserEndPoint, body, options)
             .map(function (res) {
-            console.log(res);
             if (res.status == 200) {
+                console.log("res.json(): " + res.json());
                 _this.createUser(res.json());
+            }
+            else {
+                console.log("res.status: " + res.status);
             }
             return res.json();
         })
             .catch(function (error) { return Rx_1.Observable.throw(error); });
     };
-    LoginService.prototype.createUser = function (msg) {
+    SignService.prototype.registerNewUser = function (user) {
+        var _this = this;
+        console.log(user);
+        console.log(JSON.stringify(user));
+        var headers = new http_1.Headers();
+        headers.append("Content-Type", "application/json");
+        var options = new http_1.RequestOptions({ headers: headers });
+        var body = JSON.stringify(user);
+        return this.http.post("" + this.connection.urlServer + this.registerEndPoint, body, options)
+            .map(function (res) {
+            var exit;
+            if (res.status == 200) {
+                _this.createUser(user);
+                exit = true;
+            }
+            else {
+                exit = false;
+            }
+            return exit;
+        })
+            .catch(function (error) { return Rx_1.Observable.throw(error); });
+    };
+    SignService.prototype.createUser = function (user) {
         console.log("");
-        console.log("* LogiService.createUse " + new Date().toLocaleTimeString());
-        console.log(msg);
-        var user = userFactory_1.UserFactory.createAnUser(msg);
+        console.log("* SignService.createUser " + new Date().toLocaleTimeString());
+        console.log(user);
         localStorage.setItem('ovtUser', JSON.stringify(user));
-        localStorage.setItem('ovtLastUserName', msg.userName);
+        localStorage.setItem('ovtLastUserName', user.userName);
         this.me.registerMe(user);
+        console.log(this.me.getMe());
         var jsonMessage = {
             id: "login",
             userName: this.me.myUserName,
@@ -63,15 +89,15 @@ var LoginService = (function () {
             userType: this.me.myUserType
         };
         this.connection.sendMessage(jsonMessage);
-        console.log("/ LogiService.createUser " + new Date().toLocaleTimeString());
+        console.log("/ SignService.createUser " + new Date().toLocaleTimeString());
         console.log("");
     };
-    LoginService.prototype.getLastUserName = function () {
+    SignService.prototype.getLastUserName = function () {
         return localStorage.getItem('ovtLastUserName');
     };
-    LoginService.prototype.logOut = function () {
+    SignService.prototype.logOut = function () {
         console.log("");
-        console.log("* <- LoginService.logOut " + new Date().toLocaleTimeString());
+        console.log("* <- SignService.logOut " + new Date().toLocaleTimeString());
         if (this.me.amLogged()) {
             console.log("* I'm going to logout me");
             var jsonMessage = {
@@ -81,21 +107,21 @@ var LoginService = (function () {
             this.connection.sendMessage(jsonMessage);
             this.me.deleteMe();
         }
-        console.log("/ LoginService.logOut " + new Date().toLocaleTimeString());
+        console.log("/ SignService.logOut " + new Date().toLocaleTimeString());
         console.log("");
     };
-    LoginService.prototype.destroyMe = function () {
-        console.log("*LoginService.destroyMe");
+    SignService.prototype.destroyMe = function () {
+        console.log("*SignService.destroyMe");
         //localStorage.removeItem('ovtUser');
     };
-    LoginService.prototype.destroy = function () {
-        console.log("*LoginService.destroy");
+    SignService.prototype.destroy = function () {
+        console.log("*SignService.destroy");
     };
-    LoginService = __decorate([
+    SignService = __decorate([
         core_1.Injectable(), 
         __metadata('design:paramtypes', [http_1.Http, connection_service_1.ConnectionService, handler_service_1.HandlerService, user_service_1.UserService])
-    ], LoginService);
-    return LoginService;
+    ], SignService);
+    return SignService;
 }());
-exports.LoginService = LoginService;
-//# sourceMappingURL=login.service.js.map
+exports.SignService = SignService;
+//# sourceMappingURL=sign.service.js.map

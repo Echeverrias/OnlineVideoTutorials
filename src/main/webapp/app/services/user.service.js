@@ -27,7 +27,11 @@ var UserService = (function () {
         return this._me;
     };
     UserService.prototype.registerMe = function (user) {
-        this._me.set(user);
+        this._me.userName = user.userName;
+        this._me.userType = user.userType;
+        this._me.name = user.name;
+        this._me.surname = user.surname;
+        this._me.email = user.email;
         this.logged = true;
         console.log("* MyService.me: " + this._me + " ");
     };
@@ -48,6 +52,20 @@ var UserService = (function () {
     Object.defineProperty(UserService.prototype, "myName", {
         get: function () {
             return this._me.name;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UserService.prototype, "mySurname", {
+        get: function () {
+            return this._me.surname;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UserService.prototype, "myEmail", {
+        get: function () {
+            return this._me.email;
         },
         enumerable: true,
         configurable: true

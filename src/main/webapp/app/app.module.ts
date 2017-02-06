@@ -6,7 +6,7 @@ import { routing } from './app.routing';
 import { GadgetsContainerModule } from './components/gadgetsContainer/gadgetsContainer.module';
 
 import { AppComponent }  from './app.component';
-import { LoginComponent } from './components/login/login.component';
+import { SignComponent } from './components/sign/sign.component';
 import { WaitingRoomComponent } from './components/waitingRoom/waitingRoom.component';
 import { RoomComponent } from './components/room/room.component';
 import { ParticipantComponent } from './components/participant/participant.component';
@@ -17,7 +17,6 @@ import { ChatMessageComponent } from './components/chatMessage/chatMessage.compo
 import { ConnectionService } from './services/connection.service';
 import { UserService } from './services/user.service';
 import { HandlerService } from './services/handler.service';
-import { LoginService } from './services/login.service';
 
 import { AuthGuard } from './guards/auth.guard';
 
@@ -33,7 +32,7 @@ import { AuthGuard } from './guards/auth.guard';
   ],
   declarations: [
     AppComponent,
-    LoginComponent,
+    SignComponent,
     WaitingRoomComponent,
     RoomComponent,
     ParticipantComponent,

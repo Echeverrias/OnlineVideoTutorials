@@ -10,11 +10,14 @@ export class User {
     
     private _userName: string = "";
     private _name: string = "";
+    private _surname: string = "";
+    private _email: string = "";
     private _userType: string = ""; // 'tutor' or 'student'
     
     constructor();
     constructor(userName: string, userType: string, name: string);
-    constructor(userName?: string, userType?: string, name?: string) {
+    constructor(userName: string, userType: string, name: string, surname: string, email: string)
+    constructor(userName?: string, userType?: string, name?: string, surname?: string, email?:string ) {
         console.log("");
         console.log(`% User ${new Date().toLocaleTimeString()}`);
         if (arguments.length == 3) {
@@ -22,6 +25,16 @@ export class User {
             this._userName = userName;
             this._userType = userType;
             this._name = name;
+            this._surname = ""; 
+            this._email = "";
+        }
+        else if (arguments.length == 5) {
+            console.log(`username: ${userName}, userType: ${userType}, name: ${name}`);
+            this._userName = userName;
+            this._userType = userType;
+            this._name = name;
+            this._surname = surname;
+            this._email = email;
         }
         console.log(`/ User ${new Date().toLocaleTimeString()}`);
         console.log("");
@@ -43,20 +56,52 @@ export class User {
         return this._name;
     }
 
+    get surname(): string{
+        return this._surname; 
+    }
+
     get userType(): string {
         return this._userType;
     }
 
-    set (user: User){
+    get email(): string {
+        return this._email;
+    }
+
+    set userName(userName: string){
+        this._userName = userName;
+    }
+
+    set userType(userType: string) {
+        this._userType = userType;
+    }
+
+    set name(name: string) {
+        this._name = name;
+    }
+
+    set surname(surname: string){
+        this._surname = surname;
+    }
+
+    set email(email: string){
+        this._email = email;
+        }
+
+    set(user: User){
         this._userName = user.userName;
         this._userType = user.userType;
         this._name = user.name;
-    }
+        this._surname = user.surname;
+        this._email = user.email;
+    }    
 
     setToUndefined (): void{
         this._userName = "";
         this._userType = "";
         this._name = "";
+        this._surname = "";
+        this._email = "";
     }
     
     isATutor(): boolean {

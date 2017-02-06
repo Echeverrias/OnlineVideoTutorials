@@ -13,6 +13,8 @@ var UserFactory = (function () {
         console.log("% UserFactory");
     }
     UserFactory.createAnUser = function (msg) {
+        console.log("UserFactory.createAnUser");
+        console.log(msg);
         return new user_1.User(msg.userName, msg.userType, msg.name);
     };
     return UserFactory;

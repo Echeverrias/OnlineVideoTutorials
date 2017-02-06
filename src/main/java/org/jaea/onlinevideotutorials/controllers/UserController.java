@@ -1,7 +1,7 @@
 package org.jaea.onlinevideotutorials.controllers;
 
 import org.jaea.onlinevideotutorials.domain.User;
-import org.jaea.onlinevideotutorials.domain.RequestUser;
+import org.jaea.onlinevideotutorials.domain.ResponseMessage;
 import org.jaea.onlinevideotutorials.repositories.UserRepository;
 import org.jaea.onlinevideotutorials.managers.UserSessionsRegistry;
 
@@ -41,7 +41,7 @@ public class UserController {
     private UserRepository userRepository;
 
     @RequestMapping(value ="/validateUser", method = RequestMethod.POST)
-    public ResponseEntity<User> getUserByUserName(@RequestBody RequestUser requestUser){
+    public ResponseEntity<User> getUserByUserName(@RequestBody User requestUser){
 
         log.info("Usercontroller.getUserByUserName");
         log.info(requestUser.toString());
@@ -61,7 +61,7 @@ public class UserController {
             }
             else{
                 log.info(user.toString());
-                if (user.comparePassword(requestUser.getPassword())){
+                if (user.comparePassword(requestUser)){
                     response = new ResponseEntity(user, HttpStatus.OK);
                 }
                 else {
@@ -72,6 +72,46 @@ public class UserController {
         }    
         return response;
     }
+
+
+    @RequestMapping(value ="/register", method = RequestMethod.POST)
+    public ResponseEntity<ResponseMessage> registerNewUser(@RequestBody User requestUser){
+
+        log.info("Usercontroller.registerNewUser");
+        log.info(requestUser.toString());
+        log.info(requestUser.getUserName());
+        log.info(requestUser.getEmail());
+        log.info(requestUser.getName());
+        log.info(requestUser.getSurname());
+        log.info(requestUser.getUserType());
+        ResponseEntity <ResponseMessage> response = null;
+
+        User user = this.userRepository.findByUserName(requestUser.getUserName());
+        if (user == null){
+            log.info("Not find userName");
+            user = this.userRepository.findByEmail(requestUser.getEmail());
+            if (user == null){
+                 log.info("Not find email");
+                  log.info("The user is going to be registered");
+                this.userRepository.save(requestUser);
+                log.info("The user has been registered");
+
+                response = new ResponseEntity(new ResponseMessage(true, ""), HttpStatus.OK);
+            }
+            else{
+                log.info("Ya existe un usario registardo con ese correo");
+                 response = new ResponseEntity(new ResponseMessage(false, "Ya existe un usuario registrado con ese correo"), HttpStatus.UNAUTHORIZED);
+
+            }
+        }
+        else{
+            log.info("El nombre de usuario ya existe");
+            response = new ResponseEntity(new ResponseMessage(false, "El nombre de usuario ya existe"), HttpStatus.UNAUTHORIZED);
+    
+        }    
+        return response;
+    }
+
 
    
     

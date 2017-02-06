@@ -54,7 +54,7 @@ var RoomComponent = (function () {
             this.router.navigate(['/rooms']);
         }
         else {
-            this.router.navigate(['/login']);
+            this.router.navigate(['/sign']);
         }
         console.log("/ Room.onExitOfRoom " + new Date().toLocaleTimeString());
         console.log("");

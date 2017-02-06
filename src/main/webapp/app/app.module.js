@@ -15,7 +15,7 @@ var http_1 = require('@angular/http');
 var app_routing_1 = require('./app.routing');
 var gadgetsContainer_module_1 = require('./components/gadgetsContainer/gadgetsContainer.module');
 var app_component_1 = require('./app.component');
-var login_component_1 = require('./components/login/login.component');
+var sign_component_1 = require('./components/sign/sign.component');
 var waitingRoom_component_1 = require('./components/waitingRoom/waitingRoom.component');
 var room_component_1 = require('./components/room/room.component');
 var participant_component_1 = require('./components/participant/participant.component');
@@ -40,7 +40,7 @@ var AppModule = (function () {
             ],
             declarations: [
                 app_component_1.AppComponent,
-                login_component_1.LoginComponent,
+                sign_component_1.SignComponent,
                 waitingRoom_component_1.WaitingRoomComponent,
                 room_component_1.RoomComponent,
                 participant_component_1.ParticipantComponent,

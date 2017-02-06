@@ -15,7 +15,8 @@ export class UserFactory {
         console.log(`% UserFactory`);
     }
      static createAnUser (msg: UserMessage): User{
-         
+         console.log("UserFactory.createAnUser");
+         console.log(msg);
          return new User(msg.userName, msg.userType, msg.name);
        
     }

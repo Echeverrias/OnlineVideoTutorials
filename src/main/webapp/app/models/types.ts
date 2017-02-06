@@ -12,6 +12,8 @@ export interface IMessage {
     sender: string;
     message: string;
     date: string;
-}
+};
 
-export type File = { name: string, loadUrl: string, downloadUrl }
+export type File = { name: string, loadUrl: string, downloadUrl };
+
+export type FormUser = { userName: string, password: string, userType: string, name: string, surname: string,  email: string};

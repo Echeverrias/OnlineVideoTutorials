@@ -130,7 +130,7 @@ footer p {
 	transition: all 0.3s linear;
 }
 
-.join:before {
+.join::before {
 	content: '';
 	position: absolute;
 	top: -8px;

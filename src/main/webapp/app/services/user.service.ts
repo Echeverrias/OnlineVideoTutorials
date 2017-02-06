@@ -4,6 +4,7 @@
  */
 import { Injectable } from '@angular/core';
 import { User } from '../models/user';
+import { FormUser } from '../models/types';
 
 
 /**
@@ -25,8 +26,12 @@ export class UserService{
         return this._me;
     }
 
-    registerMe (user: User): void {
-        this._me.set(user);
+    registerMe (user: FormUser): void {
+        this._me.userName = user.userName;
+        this._me.userType = user.userType;
+        this._me.name = user.name;
+        this._me.surname = user.surname;
+        this._me.email = user.email;
         this.logged = true;
         console.log(`* MyService.me: ${this._me} `);
     }
@@ -41,6 +46,14 @@ export class UserService{
 
     get myName(): string { 
         return this._me.name;
+    }
+
+    get mySurname(): string { 
+        return this._me.surname;
+    }
+
+    get myEmail(): string { 
+        return this._me.email;
     }
 
     get myRoomName(): string {
