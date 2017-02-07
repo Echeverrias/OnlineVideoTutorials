@@ -115,6 +115,13 @@ form div.ovt-field{
 
 /* .ovt-signUp */
 
+
+div.ovt-signUp div.ovt-container{
+  padding: 0.5em 0.5em;
+  height: 40em;
+  position: relative;
+}
+
 div.ovt-signUp form div.form-group{
   height:16.6%;
   max-height: :16.6%;
@@ -138,10 +145,6 @@ div.ovt-signUp form div.alert{
 }
 
 
-div.ovt-signUp div.ovt-container{
-  padding: 0.5em 0.5em;
-  height: 40em;
-}
 
 div.ovt-signUp form {
   max-height: 100%;
@@ -175,6 +178,14 @@ div.ovt-signUp form input.btn{
 
 div.ovt-signUp form div.ovt-submit {
   margin-left: 0.5em;
+  display: inline;
+}
+
+div.ovt-signUp  div.ovt-container button{
+  width:auto;
+  bottom: 0.5em;
+  right: 1.5em;
+  position: absolute;
 }
 
 

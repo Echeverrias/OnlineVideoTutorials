@@ -27,7 +27,8 @@ import { signTemplate } from './sign.html';
 
 export class SignComponent implements OnInit {
     
-    private email_regexp: any = /^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i; 
+    private email_regexp2: any = /^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i; 
+    private email_regexp: any = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/; 
     private user: FormUser;
     private signIn: boolean;
     private checkField: boolean;
@@ -40,6 +41,8 @@ export class SignComponent implements OnInit {
     }
     
     ngOnInit(){
+
+      
         this.sign.init();
         this.user.userName = this.sign.getLastUserName();
     }
@@ -124,6 +127,12 @@ export class SignComponent implements OnInit {
         console.log(`/ sign.doSignIn ${new Date().toLocaleTimeString()}`);
         console.log("");
                 
+    }
+
+    onReturnToSignIn(){
+        this.signIn = true; 
+        this.checkField = false;
+        this.user = { userName: "", password: "", name: "", surname: "", email: "", userType: "" };
     }
 
 
