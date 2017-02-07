@@ -179,7 +179,7 @@
                  </configuration>
               
             <executions>
-                        <execution>
+                       <execution>
                         <id>exec-bower-install</id>
                         <phase>generate-sources</phase>
                         <goals>
@@ -241,7 +241,7 @@
 					</filesets>
                                         
 				</configuration> 
-            
+           
 		</plugin>
         </plugins>
         <resources>

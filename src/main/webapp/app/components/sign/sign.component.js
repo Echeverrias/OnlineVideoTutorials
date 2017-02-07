@@ -22,7 +22,8 @@ var SignComponent = (function () {
         this.router = router;
         this.sign = sign;
         this.me = me;
-        this.email_regexp = /^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i;
+        this.email_regexp2 = /^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i;
+        this.email_regexp = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
         console.log("% Sign constructor ");
         this.user = { userName: "", password: "", name: "", surname: "", email: "", userType: "" };
         this.signIn = true;
@@ -89,6 +90,11 @@ var SignComponent = (function () {
         }, function () { });
         console.log("/ sign.doSignIn " + new Date().toLocaleTimeString());
         console.log("");
+    };
+    SignComponent.prototype.onReturnToSignIn = function () {
+        this.signIn = true;
+        this.checkField = false;
+        this.user = { userName: "", password: "", name: "", surname: "", email: "", userType: "" };
     };
     SignComponent = __decorate([
         core_1.Component({

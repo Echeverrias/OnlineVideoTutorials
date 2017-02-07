@@ -68,7 +68,7 @@ export const signTemplate = ` <div id="ovt-sign" class="animate container">
                             <label for="email">Correo</label>
                             <div class="ovt-field">
                                 <input id="email" class="form-control" name="email" type="email" [(ngModel)]="user.email" #email="ngModel" 
-                                    placeholder="Tu dirección de correo electrónico" required>
+                                    placeholder="Tu dirección de correo electrónico" required pattern="[a-z0-9!#$%&'*+/=?^_{|}~-]+(?:\.[a - z0 - 9!#$ %&'*+/=?^_{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?">
                                 <div *ngIf="!email.valid && checkField" class="alert-danger alert">La dirección de correo electrónico es requerida</div>
                             </div>
                         </div>
@@ -97,6 +97,7 @@ export const signTemplate = ` <div id="ovt-sign" class="animate container">
                         <input type="submit" name="commit" value="Registrarse" [disabled]="!signUpForm.form.valid" class="btn btn-block btn-info" ><br>
                      </div>
                 </form>
+                <button class="btn btn-block btn-info" (click)="onReturnToSignIn()">Volver</button>
             </div>    
      <div>  
     
