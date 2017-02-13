@@ -18,5 +18,5 @@ export const roomTemplate = `<div id="ovt-room">
     <div class="secundary">
         <ovt-participant [id]="user.userName" [ngClass]="{'tutor':user.isATutor(), 'student':user.isAStudent()}" [name]="user.name" [userType]="user.userType" [roomName]="name" *ngFor="let user of users"></ovt-participant>
     </div>
-    <button name="exitRoom" (click)="onExitOfRoom()">Exit</button>
+    <button name="exitRoom" (click)="onExitOfRoom()">Salir</button>
 </div>`

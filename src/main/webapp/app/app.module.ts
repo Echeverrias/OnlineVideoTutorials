@@ -1,6 +1,6 @@
 import { NgModule }      from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule }   from '@angular/forms';
+import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
 import { HttpModule }    from '@angular/http';
 import { routing } from './app.routing';
 import { GadgetsContainerModule } from './components/gadgetsContainer/gadgetsContainer.module';
@@ -26,6 +26,7 @@ import { AuthGuard } from './guards/auth.guard';
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpModule,
     routing, 
     GadgetsContainerModule

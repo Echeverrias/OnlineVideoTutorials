@@ -16,6 +16,7 @@ require('rxjs/add/operator/catch');
 var connection_service_1 = require('./connection.service');
 var handler_service_1 = require('./handler.service');
 var user_service_1 = require('./user.service');
+var userFactory_1 = require('../models/userFactory');
 var SignService = (function () {
     function SignService(http, connection, handler, me) {
         this.http = http;
@@ -23,6 +24,7 @@ var SignService = (function () {
         this.handler = handler;
         this.me = me;
         this.validateUserEndPoint = "validateUser";
+        this.validateEndPoint = "validate";
         this.registerEndPoint = "register";
         console.log("*SignService constructor");
         this.logOut();
@@ -32,26 +34,53 @@ var SignService = (function () {
         // Reset login status
         //this.destroyMe();
     };
-    SignService.prototype.validateUser = function (userName, password) {
+    SignService.prototype.validateUser = function (user) {
         var _this = this;
         var headers = new http_1.Headers();
         headers.append("Content-Type", "application/json");
         var options = new http_1.RequestOptions({ headers: headers });
-        var body = JSON.stringify({ userName: userName, password: password });
+        var body = JSON.stringify(user);
         console.log(this.http); //%%
         return this.http.post("" + this.connection.urlServer + this.validateUserEndPoint, body, options)
             .map(function (res) {
-            if (res.status == 200) {
+            console.log(res);
+            console.log(res.toString());
+            if (res.status = 200) {
                 console.log("res.json(): " + res.json());
                 _this.createUser(res.json());
             }
             else {
                 console.log("res.status: " + res.status);
             }
-            return res.json();
+            return userFactory_1.UserFactory.createAnUser(res.json());
         })
             .catch(function (error) { return Rx_1.Observable.throw(error); });
     };
+    SignService.prototype.validateField = function (value, field) {
+        console.log("Validate " + field + ": " + value);
+        var body = value || "";
+        var headers = new http_1.Headers();
+        headers.append("Content-Type", "text/plain");
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this.http.post("" + this.connection.urlServer + this.validateEndPoint + "/" + field, body, options);
+        /*
+        .map((res: Response) => {
+            console.log(res);
+            let success: boolean;
+            if (res.json().ok) {
+                console.log(`valid ${field}: true`);
+                success = true;
+            }
+            else {
+                console.log(`valid ${field}: false`);
+                success = false
+            }
+            return success;
+        })
+        .catch((error: any) => Observable.throw(error))
+        */
+    };
+    ;
     SignService.prototype.registerNewUser = function (user) {
         var _this = this;
         console.log(user);
@@ -62,15 +91,17 @@ var SignService = (function () {
         var body = JSON.stringify(user);
         return this.http.post("" + this.connection.urlServer + this.registerEndPoint, body, options)
             .map(function (res) {
-            var exit;
+            console.log(res);
+            console.log(res.toString());
+            var success;
             if (res.status == 200) {
                 _this.createUser(user);
-                exit = true;
+                success = true;
             }
             else {
-                exit = false;
+                success = false;
             }
-            return exit;
+            return success;
         })
             .catch(function (error) { return Rx_1.Observable.throw(error); });
     };
