@@ -107,13 +107,13 @@ public  class User implements Comparable<User>{
     public void setEmail(String email) {
         this.email = email;
     }
-
-    @JsonProperty("isATutor")
+    
+    @JsonIgnore
     public boolean isATutor(){
         return this.userType.equals(TUTOR_TYPE);
     }
-    
-    @JsonProperty("isAStudent")
+
+    @JsonIgnore
     public boolean isAStudent(){
         return this.userType.equals(STUDENT_TYPE);
     }

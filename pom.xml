@@ -59,6 +59,11 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.38</version>
+        </dependency>    
+        <dependency>
             <groupId>org.springframework</groupId>
                 <artifactId>spring-orm</artifactId>
                 <version>4.3.4.RELEASE</version>
@@ -230,7 +235,7 @@
 				<artifactId>maven-clean-plugin</artifactId>
                                 <version>3.0.0</version>
                                 
-			 	<configuration>
+		 	<configuration>
 					<filesets>
 						<fileset>
 							<directory>src/main/webapp/bower_components</directory>

@@ -1,5 +1,6 @@
 import { Injectable  } from '@angular/core';
 import { Http, Headers, Response, RequestOptions } from '@angular/http';
+import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -23,6 +24,7 @@ type LogoutMessage = { userName: string } & IdMessage;
 export class SignService {
 
     private validateUserEndPoint: string = "validateUser";
+    private validateEndPoint: string = "validate";
     private registerEndPoint: string = "register";
 
 
@@ -38,26 +40,58 @@ export class SignService {
         //this.destroyMe();
     }
 
-    validateUser(userName: string, password: string): Observable<User> { 
+    validateUser(user: any): Observable<User> { 
 
          let headers = new Headers();
          headers.append("Content-Type", "application/json");
          let options = new RequestOptions({headers: headers});
-         let body = JSON.stringify({userName, password});
+         let body = JSON.stringify(user);
          console.log(this.http); //%%
          return this.http.post(`${this.connection.urlServer}${this.validateUserEndPoint}`, body, options)
             .map((res: Response) => {
-                if (res.status == 200){
+                console.log(res);
+                console.log(res.toString());
+                if (res.status = 200){
                     console.log(`res.json(): ${res.json()}`);
                     this.createUser(res.json());
                 }
                 else{
                      console.log(`res.status: ${res.status}`);
                 }
-                return res.json();
+                
+                return UserFactory.createAnUser(res.json());
             })
             .catch((error: any) => Observable.throw(error))
     }
+
+    validateField (value: string, field: string){
+    console.log(`Validate ${field}: ${value}`);
+    let body = value || "";
+    let headers = new Headers();
+    headers.append("Content-Type", "text/plain");
+    let options = new RequestOptions({ headers: headers });
+
+    return this.http.post(`${this.connection.urlServer}${this.validateEndPoint}/${field}`, body, options)
+        /*
+        .map((res: Response) => {
+            console.log(res);
+            let success: boolean;
+            if (res.json().ok) {
+                console.log(`valid ${field}: true`);
+                success = true;
+            }
+            else {
+                console.log(`valid ${field}: false`);
+                success = false
+            }
+            return success;
+        })
+        .catch((error: any) => Observable.throw(error))
+        */
+};
+
+
+    
 
     registerNewUser(user: FormUser){
         console.log(user); 
@@ -68,15 +102,17 @@ export class SignService {
         let body = JSON.stringify(user);
         return this.http.post(`${this.connection.urlServer}${this.registerEndPoint}`, body, options)
         .map((res: Response) => {
-           let exit: boolean;
+           console.log(res);
+           console.log(res.toString()); 
+           let success: boolean;
             if (res.status == 200){
                 this.createUser(user);
-                exit = true;
+                success = true;
             }
             else{
-                exit = false;
+                success = false;
             }
-            return exit; 
+            return success; 
         })
         .catch((error: any) => Observable.throw(error))
 
