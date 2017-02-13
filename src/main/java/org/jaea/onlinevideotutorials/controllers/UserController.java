@@ -5,29 +5,20 @@ import org.jaea.onlinevideotutorials.domain.ResponseMessage;
 import org.jaea.onlinevideotutorials.repositories.UserRepository;
 import org.jaea.onlinevideotutorials.managers.UserSessionsRegistry;
 
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.stereotype.Controller;
-
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.RequestEntity;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.ResponseBody;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.google.common.collect.Lists;
-
-
 
 
 @RestController
@@ -103,30 +94,7 @@ public class UserController {
           
         return response;
     }
-/*
-    @RequestMapping(value ="/validate/Email", method = RequestMethod.POST)
-    public synchronized ResponseEntity<ResponseMessage> validateEmail(@RequestBody String  requestEmail){
 
-        log.info("Usercontroller.validateEmail");
-        log.info(requestEmail);
-        log.info(";");
-        ResponseEntity <ResponseMessage> response = null;
-        User user = this.userRepository.findByEmail(requestEmail);
-           if (user == null){
-                log.info("valid email");
-                 response = new ResponseEntity(new ResponseMessage(true), HttpStatus.OK);
-            }
-            else{
-               log.info("invalid email");
-
-               response = new ResponseEntity(new ResponseMessage(false), HttpStatus.UNAUTHORIZED);
-            }
-            
-          
-        return response;
-    }
-
-*/
     @RequestMapping(value ="/register", method = RequestMethod.POST)
     public synchronized ResponseEntity<ResponseMessage> registerNewUser(@RequestBody User requestUser){
 

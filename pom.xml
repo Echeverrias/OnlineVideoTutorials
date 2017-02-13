@@ -184,7 +184,7 @@
                  </configuration>
               
             <executions>
-              <!--         <execution>
+                       <execution>
                         <id>exec-bower-install</id>
                         <phase>generate-sources</phase>
                         <goals>
@@ -215,7 +215,7 @@
                         </execution>
 
                 
-              -->   <execution>
+                 <execution>
                         <id>exec-tsc</id>
                         <phase>generate-sources</phase>
                         <goals>
@@ -235,7 +235,7 @@
 				<artifactId>maven-clean-plugin</artifactId>
                                 <version>3.0.0</version>
                                 
-		<!-- 	<configuration>
+		 	<configuration>
 					<filesets>
 						<fileset>
 							<directory>src/main/webapp/bower_components</directory>
@@ -246,7 +246,7 @@
 					</filesets>
                                         
 				</configuration> 
-          --> 
+           
 		</plugin>
         </plugins>
         <resources>
