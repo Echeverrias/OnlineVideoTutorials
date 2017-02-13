@@ -89,6 +89,8 @@ export class User {
         }
 
     set(user: User){
+        console.log('User.set');
+        console.log(user); 
         this._userName = user.userName;
         this._userType = user.userType;
         this._name = user.name;
@@ -107,12 +109,13 @@ export class User {
     isATutor(): boolean {
         return this._userType === User.tutorType;
     }
-    
+
     isAStudent(): boolean {
         return this._userType === User.studentType;
     } 
 
     exist(): boolean{
+        console.log("exist"); 
         if (this._userName){
             return true;
         }

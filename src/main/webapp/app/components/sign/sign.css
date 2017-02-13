@@ -60,12 +60,13 @@ div.ovt-sign{
 
 
 div.ovt-container form {
-     margin:auto;
+    margin:auto;
     box-sizing: border-box;
     height: 80%;
     padding: 1em;
     padding-bottom: 0em;
     margin-bottom: 1em;
+    border-left: 0em;
 }
 
 form label{
@@ -118,13 +119,13 @@ form div.ovt-field{
 
 div.ovt-signUp div.ovt-container{
   padding: 0.5em 0.5em;
-  height: 40em;
+  height: 45em;
   position: relative;
 }
 
 div.ovt-signUp form div.form-group{
-  height:16.6%;
-  max-height: :16.6%;
+  height:14.6%;
+  max-height: :14.6%;
   margin: 0;
 }
 
@@ -139,8 +140,15 @@ div.ovt-signUp form input{
   margin: 0em;
 }
 
-div.ovt-signUp form div.alert{
-  padding: 0.5em;
+div.ovt-signUp form div.ovt-display-alert{
+  display: inline-block;
+  margin: 0em;
+  padding: 0em;
+}
+
+div.ovt-signUp form  div.ovt-display-alert div.alert{
+  margin: 0em;
+  padding: 0.45em;
   display: inline-block;
 }
 

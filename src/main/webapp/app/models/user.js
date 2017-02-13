@@ -98,6 +98,8 @@ var User = (function () {
         configurable: true
     });
     User.prototype.set = function (user) {
+        console.log('User.set');
+        console.log(user);
         this._userName = user.userName;
         this._userType = user.userType;
         this._name = user.name;
@@ -118,6 +120,7 @@ var User = (function () {
         return this._userType === User.studentType;
     };
     User.prototype.exist = function () {
+        console.log("exist");
         if (this._userName) {
             return true;
         }
