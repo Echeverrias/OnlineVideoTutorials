@@ -10,22 +10,26 @@ import { File } from '../models/types';
 export class FileService{
     
     private uploadedFileEndPoint: string = `uploadedFile/shared`; // stomp
-    private uploadFilePath: string = "upload";
+    private uploadFilePath: string = 'upload';
     private downloadFilePath: string = `download`;
+    private userImagePath: string = 'userImage';
     
     private stompClient: any;
     private subscription: any; 
     private uploadFileAddress: string; 
+    private uploadUserImageAddress: string; 
     private shippingAddress: string; 
     private files: File[];
     private filesObserver: Subject<File[]>;
     private newFileAlert: EventEmitter<string>;
 
+    private _sizeLimit: number = 1000000;
 
     constructor(private http: Http, private connection: ConnectionService) {
         console.log("");
         console.log("*** new FileService");
         this.uploadFileAddress = `${this.connection.urlServer}${this.uploadFilePath}`;
+        this.uploadUserImageAddress = `${this.connection.urlServer}${this.uploadFilePath}/${this.userImagePath}`;
         this.shippingAddress = `/${this.uploadedFileEndPoint}`; 
         this.filesObserver = new Subject<File[]>();
         this.files = [];
@@ -39,9 +43,17 @@ export class FileService{
         this.stompClient = this.connection.stompOverWsClient;
         this.subscription = this.stompClient.subscribe(this.shippingAddress, this.getOnMessage());
     }
+
+    public get sizeLimit(): number{
+      return this._sizeLimit; 
+    }
   
-    public get uploadFileUrl(){
+    public get uploadFileUrl(): string{
       return this.uploadFileAddress;
+    }
+
+    public getUploadUserImageUrl(userName: string): string {
+        return `${this.uploadUserImageAddress}/${userName}`;
     }
 
     public getFiles(): Subject<File[]>{
@@ -67,21 +79,20 @@ export class FileService{
        return file;
    }     
 
-/*
-   downloadFile(filePath: string){
 
-       let name = filePath.split('\\').pop().split('/').pop();
-       let folder = filePath.replace(name, "");
-       folder = folder.slice(1,-1).split('\\').pop().split('/').pop();
-       console.log(`http.get(${this.connection.urlServer}${this.downloadFilePath}/${folder}/${name})`);
-       this.http.get(`/${this.downloadFilePath}/${folder}/${name}`).subscribe();
-      // .map((res: Response) => {console.log(res)})
-      // .subscribe();
-   }
-
-*/
    destroy(): void{
         this.subscription.unsubscribe();
     }
+
+    ///////////////////////////////////////////////////////////////////
+    prueba(): string{
+        return `${this.connection.urlServer}prueba`
+    }
+
+    prueba2(): string{
+        return `${this.connection.urlServer}prueba2`
+    }
+
+    //////////////////////////////////////////////////////////////////
 
 }

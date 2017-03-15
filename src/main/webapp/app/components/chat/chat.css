@@ -5,7 +5,15 @@
 
 
 #ovt-chat{
+  box-sizing: border-box;
   font-size: 0.8em;
+  padding: 0.5em;
+  display: flex;
+  display: -moz-flex;
+  display: -webkit-flex;
+  flex-direction: column;
+  -moz-flex-direction: column;
+  -webkit-flex-direction: column;
 }
 
 .messages{
@@ -15,20 +23,22 @@
   padding: 0.1em 0.7em;
   border: 0.2em solid grey;
   border-radius: 0.5em;
-  max-height: 4.2em;
-  min-height:4.2em;
   overflow:auto;
   overflow-x: hidden;
   box-shadow: -2px 2px 2px #299D29;
+  flex: 4 4 63em;
+  -moz-flex: 4 4 6em;
+  -webkit-flex: 4 4 6em;
 }
 
 .mailbox {
-    height:5%;
+  flex: 1 1 3em;
+  -moz-flex: 1 1 3em;
+  -webkit-flex: 1 1 3em;
 }
 
-.mailbox input {
-  display: inline;
-}
+
+/* div.mailbox */
 
 #myMessage{
   resize:none;
@@ -46,7 +56,14 @@
 #sendMessage{
   width:auto;
   padding: 0.1em 0.2em;
-  font-size: 0.9em;
+  font-size: 1.2em;
   vertical-align: middle;
+  position:relative;
+  margin-left: 0.5em;
+  box-shadow: -2px 2px 1px #299D29;
+}
+
+.mailbox input {
+  display: inline;
 }
 

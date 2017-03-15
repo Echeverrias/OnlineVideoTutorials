@@ -40,6 +40,10 @@ export class ConnectionService {
     
         console.log(this._ws);
         console.log(this._ws.onmessage);
+        console.log(`WS STATE`);
+        console.log(this._ws.readyState);
+        console.log(this._ws.CONNECTING);
+        console.log(this._ws.OPEN);
     }
 
     get stompOverWsClient(): any{
@@ -80,10 +84,24 @@ export class ConnectionService {
         //console.log(`-> message: ${JSON.stringify(jsonMessage)}`);
             
         let stringifyMessage = JSON.stringify(jsonMessage);
-        this._ws.send(stringifyMessage);
-        
+        // while(this._ws.readyState === this._ws.CONNECTING) {}
+        this.waitForConnection(() => this._ws.send(stringifyMessage));
+        console.log
         if (!jsonMessage.id.includes('receiveAddress')){
             console.log( `----------> The message ${jsonMessage.id} has been send`);
+        }
+    }
+
+    private waitForConnection(callback: any){
+        if (this._ws.readyState === this._ws.OPEN){
+            console.log(typeof callback);
+            if (typeof callback !== 'undefined'){
+                callback();
+            }
+        }
+        else{
+            var this2 = this;
+            setTimeout( () => this2.waitForConnection(callback.bind(this2)), 1000)
         }
     }
 

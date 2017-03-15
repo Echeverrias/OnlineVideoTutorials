@@ -23,6 +23,7 @@ var ParticipantComponent = (function () {
         console.log("");
         console.log("% Participant constructor " + new Date().toLocaleTimeString());
         this.important = false;
+        this.loading = true;
         this.options = { mediaConstraints: null, onicecandidate: null, localVideo: null, remoteVideo: null };
         this.constraints = {
             audio: true,
@@ -41,6 +42,10 @@ var ParticipantComponent = (function () {
         this.participantUserName = this.id;
         this.createRtcPeer();
         this.participants.attachParticipant(this.participantUserName, this.processAnswer(), this.addIceCandidate());
+    };
+    ParticipantComponent.prototype.ngAfterViewInit = function () {
+        var _this = this;
+        this.video.nativeElement.addEventListener("playing", function () { return _this.loading = false; });
     };
     ParticipantComponent.prototype.createRtcPeer = function () {
         var _participant = this;
@@ -95,7 +100,7 @@ var ParticipantComponent = (function () {
         var _this = this;
         console.log("");
         console.log("*** ParticipantComponent.getProcessAnswer " + this.me.myUserName + " " + new Date().toLocaleTimeString());
-        this.loading = false;
+        //setTimeout(()=>this.loading = false,1000); //%
         console.log('video:', this.video);
         return (function (sdpAnswer) {
             console.log("*** ParticipantComponent.processAnswer " + new Date().toLocaleTimeString());
@@ -143,8 +148,14 @@ var ParticipantComponent = (function () {
     ParticipantComponent.prototype.setClasses = function () {
         var classes = {
             'important': this.important,
+            'large': this.size === 'large',
+            'small': this.size === 'small'
         };
         return classes;
+    };
+    ParticipantComponent.prototype.playing = function () {
+        console.log("The video is playing");
+        this.loading = false;
     };
     ParticipantComponent.prototype.ngOnDestroy = function () {
         console.log("* Participant(" + this.participantUserName + ").onDestroy " + new Date().toLocaleTimeString());
@@ -175,6 +186,10 @@ var ParticipantComponent = (function () {
         core_1.Input(), 
         __metadata('design:type', String)
     ], ParticipantComponent.prototype, "roomName", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], ParticipantComponent.prototype, "size", void 0);
     ParticipantComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

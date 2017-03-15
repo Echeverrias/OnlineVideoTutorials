@@ -37,6 +37,10 @@ var ConnectionService = (function () {
         console.log(this._stompClient);
         console.log(this._ws);
         console.log(this._ws.onmessage);
+        console.log("WS STATE");
+        console.log(this._ws.readyState);
+        console.log(this._ws.CONNECTING);
+        console.log(this._ws.OPEN);
     }
     Object.defineProperty(ConnectionService.prototype, "stompOverWsClient", {
         get: function () {
@@ -97,10 +101,25 @@ var ConnectionService = (function () {
     ConnectionService.prototype.sendMessage = function (jsonMessage) {
         //console.log(`---------->  ${jsonMessage.id} ${new Date().toLocaleTimeString()}`);
         //console.log(`-> message: ${JSON.stringify(jsonMessage)}`);
+        var _this = this;
         var stringifyMessage = JSON.stringify(jsonMessage);
-        this._ws.send(stringifyMessage);
+        // while(this._ws.readyState === this._ws.CONNECTING) {}
+        this.waitForConnection(function () { return _this._ws.send(stringifyMessage); });
+        console.log;
         if (!jsonMessage.id.includes('receiveAddress')) {
             console.log("----------> The message " + jsonMessage.id + " has been send");
+        }
+    };
+    ConnectionService.prototype.waitForConnection = function (callback) {
+        if (this._ws.readyState === this._ws.OPEN) {
+            console.log(typeof callback);
+            if (typeof callback !== 'undefined') {
+                callback();
+            }
+        }
+        else {
+            var this2 = this;
+            setTimeout(function () { return this2.waitForConnection(callback.bind(this2)); }, 1000);
         }
     };
     ConnectionService.prototype.destroy = function () {

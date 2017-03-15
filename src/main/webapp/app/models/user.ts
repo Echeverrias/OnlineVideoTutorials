@@ -3,6 +3,8 @@
  * 
  */
 
+import { UserFile } from './types';
+
 const TUTOR: string = "tutor";
 const STUDENT: string = "student";
 
@@ -13,6 +15,7 @@ export class User {
     private _surname: string = "";
     private _email: string = "";
     private _userType: string = ""; // 'tutor' or 'student'
+    private _userImage: UserFile;
     
     constructor();
     constructor(userName: string, userType: string, name: string);
@@ -86,7 +89,15 @@ export class User {
 
     set email(email: string){
         this._email = email;
-        }
+    }
+
+    get userImage(){
+        return this._userImage;
+    }
+
+    set userImage(userImage: UserFile ){
+        this._userImage = userImage; 
+    }
 
     set(user: User){
         console.log('User.set');
@@ -96,6 +107,7 @@ export class User {
         this._name = user.name;
         this._surname = user.surname;
         this._email = user.email;
+        this._userImage = user.userImage; 
     }    
 
     setToUndefined (): void{
@@ -104,6 +116,7 @@ export class User {
         this._name = "";
         this._surname = "";
         this._email = "";
+        this._userImage = null;
     }
     
     isATutor(): boolean {
@@ -112,7 +125,7 @@ export class User {
 
     isAStudent(): boolean {
         return this._userType === User.studentType;
-    } 
+    }
 
     exist(): boolean{
         console.log("exist"); 

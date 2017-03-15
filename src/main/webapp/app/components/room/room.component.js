@@ -50,12 +50,15 @@ var RoomComponent = (function () {
         console.log("");
         console.log("<- Room.onExitOfRoom: " + this.name + " " + new Date().toLocaleTimeString());
         this.room.onExit();
+        /*
         if (this.me.amAStudent()) {
             this.router.navigate(['/rooms']);
         }
         else {
-            this.router.navigate(['/sign']);
+           this.router.navigate(['/sign']);
         }
+        */
+        this.router.navigate(['/rooms']);
         console.log("/ Room.onExitOfRoom " + new Date().toLocaleTimeString());
         console.log("");
     };
