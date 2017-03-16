@@ -12,10 +12,9 @@ and open the template in the editor.
 	 
     height: 100%;
     width:100%;
-    font: 13px/20px "Lucida Grande", Tahoma, Verdana, sans-serif;
-    color: #404040;
+    margin: 0px;
+    padding: 0px;
     background:#F7D31D;
-    height:100%;
     background: #002400;
     background: -webkit-linear-gradient(#002400 0%, #005700 0%, #008a00 0%, #83c783 100%, #b4ddb4 100%);
     background: -o-linear-gradient(#002400 0%, #005700 0%, #008a00 0%, #83c783 100%, #b4ddb4 100%);
@@ -23,6 +22,11 @@ and open the template in the editor.
     
     
 }
+
+header, footer, figure {
+  display: block;
+}
+
 
 .wrapper{
    
@@ -92,7 +96,7 @@ footer p {
 
 .ovt-header {
 	width:100%;
-        font-size: large;
+  font-size: large;
 	line-height: 3em;
 	font-weight: bold;
 	color: #555;
@@ -109,6 +113,29 @@ footer p {
 	box-shadow: 0 1px whitesmoke;
   
   
+}
+
+.ovt-subheader {
+  font-size: medium; ;
+}
+
+.ovt-clear {
+    clear:both;
+}
+
+.ovt-inline {
+  display: inline-block;
+  width: auto;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.ovt-separator{
+  border-color: grey;
+}
+
+.ovt-full-name{
+  text-transform: capitalize;
 }
 
 

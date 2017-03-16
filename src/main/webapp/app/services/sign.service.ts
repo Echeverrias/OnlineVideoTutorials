@@ -11,7 +11,9 @@ import { HandlerService } from './handler.service';
 import { UserService } from './user.service';
 
 import { User } from '../models/user';
+import { UserFile } from '../models/types';
 import { FormUser } from '../models/types';
+import { FieldValidationRequest } from '../models/types';
 import { UserFactory } from '../models/userFactory';
 import { IdMessage } from '../models/types';
 
@@ -24,18 +26,20 @@ type LogoutMessage = { userName: string } & IdMessage;
 export class SignService {
 
     private validateUserEndPoint: string = "validateUser";
-    private validateEndPoint: string = "validate";
+    private validateEndPoint: string = "validateField";
     private registerEndPoint: string = "register";
-
+    private editPerfilEndPoint: string = "editPerfil";
+    
 
     constructor(private http: Http, private connection: ConnectionService, private handler: HandlerService, private me: UserService){
         console.log("*SignService constructor")
         
-        this.logOut();
     }
 
     init(){
         console.log("*SignService.init");
+        this.signOut();
+   
         // Reset login status
         //this.destroyMe();
     }
@@ -49,6 +53,7 @@ export class SignService {
          console.log(this.http); //%%
          return this.http.post(`${this.connection.urlServer}${this.validateUserEndPoint}`, body, options)
             .map((res: Response) => {
+                console.log("VALIDATE USER");
                 console.log(res);
                 console.log(res.toString());
                 if (res.status = 200){
@@ -64,36 +69,18 @@ export class SignService {
             .catch((error: any) => Observable.throw(error))
     }
 
-    validateField (value: string, field: string){
-    console.log(`Validate ${field}: ${value}`);
-    let body = value || "";
-    let headers = new Headers();
-    headers.append("Content-Type", "text/plain");
-    let options = new RequestOptions({ headers: headers });
+    validateField (fieldToValidate: FieldValidationRequest){
+        console.log(`Validate:  ${fieldToValidate}`);
+        let body = JSON.stringify(fieldToValidate);
+        let headers = new Headers();
+        headers.append("Content-Type", "application/json");
+        let options = new RequestOptions({ headers: headers });
 
-    return this.http.post(`${this.connection.urlServer}${this.validateEndPoint}/${field}`, body, options)
-        /*
-        .map((res: Response) => {
-            console.log(res);
-            let success: boolean;
-            if (res.json().ok) {
-                console.log(`valid ${field}: true`);
-                success = true;
-            }
-            else {
-                console.log(`valid ${field}: false`);
-                success = false
-            }
-            return success;
-        })
-        .catch((error: any) => Observable.throw(error))
-        */
-};
+        return this.http.post(`${this.connection.urlServer}${this.validateEndPoint}`, body, options)
+      
+    };
 
-
-    
-
-    registerNewUser(user: FormUser){
+    registerNewUser(user: User){
         console.log(user); 
         console.log(JSON.stringify(user));
         let headers = new Headers();
@@ -102,11 +89,12 @@ export class SignService {
         let body = JSON.stringify(user);
         return this.http.post(`${this.connection.urlServer}${this.registerEndPoint}`, body, options)
         .map((res: Response) => {
+           console.log("REGISTER USER"); 
            console.log(res);
            console.log(res.toString()); 
            let success: boolean;
             if (res.status == 200){
-                this.createUser(user);
+                this.createUser(res.json());
                 success = true;
             }
             else{
@@ -118,13 +106,10 @@ export class SignService {
 
     }
 
-    createUser(user: FormUser): void {
+    createUser(user: User): void {
         console.log("");
         console.log(`* SignService.createUser ${new Date().toLocaleTimeString()}`);
         console.log(user);
-
-        localStorage.setItem('ovtUser', JSON.stringify(user));
-        localStorage.setItem('ovtLastUserName', user.userName);
 
         this.me.registerMe(user);
 
@@ -141,13 +126,65 @@ export class SignService {
 
         console.log(`/ SignService.createUser ${new Date().toLocaleTimeString()}`);
         console.log("");
+    }
+
+    modifyPerfilUser(user: any) {
+        console.log(user);
+        Object.assign(user, {userName: this.me.myUserName});
+        console.log(JSON.stringify(user));
+        let headers = new Headers();
+        headers.append("Content-Type", "application/json");
+        let options = new RequestOptions({ headers: headers });
+        let body = JSON.stringify(user);
+        return this.http.post(`${this.connection.urlServer}${this.editPerfilEndPoint}`, body, options)
+            .map((res: Response) => {
+                console.log("REDIT PERFIL");
+                console.log(res);
+                console.log(res.toString());
+                let success: boolean;
+                if (res.status == 200) {
+                    this.modifyUser(res.json());
+                    success = true;
+                }
+                else {
+                    success = false;
+                }
+                return success;
+            })
+            .catch((error: any) => Observable.throw(error))
+
     }    
-       
+
+    modifyUser(user: User): void {
+        console.log("");
+        console.log(`* SignService.modifyUser ${new Date().toLocaleTimeString()}`);
+        console.log(user);
+
+        this.me.registerMe(user);
+
+        console.log(this.me.getMe());
+        /*
+        let jsonMessage: LoginMessage = {
+            id: "modify",
+            userName: this.me.myUserName,
+            name: this.me.myName,
+            userType: this.me.myUserType
+        };
+
+        this.connection.sendMessage(jsonMessage);
+        */
+        console.log(`/ SignService.modifyUser ${new Date().toLocaleTimeString()}`);
+        console.log("");
+    }
+
+    /*   
     getLastUserName(): string {
         return localStorage.getItem('ovtLastUserName');
     }
+   */
+   
 
-    private logOut(): void{
+    private signOut(): void{
         console.log("");
         console.log(`* <- SignService.logOut ${new Date().toLocaleTimeString()}`);
         
@@ -174,5 +211,5 @@ export class SignService {
     destroy(): void{
         console.log("*SignService.destroy");
     }
-    
+
 }

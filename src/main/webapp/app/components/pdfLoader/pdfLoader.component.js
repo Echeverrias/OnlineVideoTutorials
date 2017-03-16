@@ -15,7 +15,7 @@ var PdfLoaderComponent = (function () {
     function PdfLoaderComponent(file) {
         this.file = file;
         console.log("*** new PdfLoaderComponent");
-        this.sizeLimit = 2000000;
+        this.sizeLimit = this.file.sizeLimit;
         this.sharedFile = new core_1.EventEmitter();
         this.newFile = new core_1.EventEmitter();
     }
@@ -93,10 +93,9 @@ var PdfLoaderComponent = (function () {
     PdfLoaderComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
-            selector: 'ovt-pdfLoader',
+            selector: 'ovt-pdf-loader',
             template: pdfLoader_html_1.pdfLoaderTemplate,
             styleUrls: ['pdfLoader.css'],
-            providers: [file_service_1.FileService],
         }), 
         __metadata('design:paramtypes', [file_service_1.FileService])
     ], PdfLoaderComponent);

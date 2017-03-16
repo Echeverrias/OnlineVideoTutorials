@@ -4,7 +4,7 @@ import { OptionDirective } from './option.directive';
 
 @Component({
     moduleId: module.id,
-    selector: 'ovt-gadgetsContainer',
+    selector: 'ovt-gadgets-container',
     template: gadgetsContainerTemplate,
     styleUrls: ['gadgetsContainer.css'],
 })

@@ -19,6 +19,7 @@ var UserFactory = (function () {
         var user;
         if (propertiesNumber >= 5) {
             user = new user_1.User(msg.userName, msg.userType, msg.name, msg.surname, msg.email);
+            user.userImage = msg.userImage;
         }
         else if (propertiesNumber >= 3) {
             user = new user_1.User(msg.userName, msg.userType, msg.name);

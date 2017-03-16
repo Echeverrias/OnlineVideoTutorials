@@ -37,10 +37,13 @@ var WaitingRoomService = (function () {
     WaitingRoomService.prototype.enter = function () {
         console.log("");
         console.log("* <- WaitingRoomService.lookingForRooms " + new Date().toLocaleTimeString());
-        var jsonMessage = {
-            id: "enterWaitingRoom",
-            userName: this.me.myUserName
+        /*
+        let jsonMessage: UserNameMessage = {
+            id:"enterWaitingRoom",
+            userName: this.me.myUserName,
         };
+        */
+        var jsonMessage = Object.assign(this.me.getMyInfo(), { id: "enterWaitingRoom" });
         this.connection.sendMessage(jsonMessage);
         console.log("/ WaitingRoomService.lookingForRooms " + new Date().toLocaleTimeString());
         console.log("");
@@ -86,10 +89,7 @@ var WaitingRoomService = (function () {
     WaitingRoomService.prototype.exit = function () {
         console.log("");
         console.log("* <- WaitingRoomService.exit " + new Date().toLocaleTimeString());
-        var jsonMessage = {
-            id: "exitWaitingRoom",
-            userName: this.me.myUserName
-        };
+        var jsonMessage = Object.assign(this.me.getMyInfo(), { id: "exitWaitingRoom" });
         this.connection.sendMessage(jsonMessage);
         console.log("/ WaitingRoomService.exit " + new Date().toLocaleTimeString());
         console.log("");

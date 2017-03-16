@@ -17,11 +17,14 @@ var FileService = (function () {
         this.http = http;
         this.connection = connection;
         this.uploadedFileEndPoint = "uploadedFile/shared"; // stomp
-        this.uploadFilePath = "upload";
+        this.uploadFilePath = 'upload';
         this.downloadFilePath = "download";
+        this.userImagePath = 'userImage';
+        this._sizeLimit = 1000000;
         console.log("");
         console.log("*** new FileService");
         this.uploadFileAddress = "" + this.connection.urlServer + this.uploadFilePath;
+        this.uploadUserImageAddress = "" + this.connection.urlServer + this.uploadFilePath + "/" + this.userImagePath;
         this.shippingAddress = "/" + this.uploadedFileEndPoint;
         this.filesObserver = new Subject_1.Subject();
         this.files = [];
@@ -34,6 +37,13 @@ var FileService = (function () {
         this.stompClient = this.connection.stompOverWsClient;
         this.subscription = this.stompClient.subscribe(this.shippingAddress, this.getOnMessage());
     };
+    Object.defineProperty(FileService.prototype, "sizeLimit", {
+        get: function () {
+            return this._sizeLimit;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(FileService.prototype, "uploadFileUrl", {
         get: function () {
             return this.uploadFileAddress;
@@ -41,6 +51,9 @@ var FileService = (function () {
         enumerable: true,
         configurable: true
     });
+    FileService.prototype.getUploadUserImageUrl = function (userName) {
+        return this.uploadUserImageAddress + "/" + userName;
+    };
     FileService.prototype.getFiles = function () {
         return this.filesObserver;
     };
@@ -61,21 +74,15 @@ var FileService = (function () {
     FileService.prototype.getFileName = function (file) {
         return file;
     };
-    /*
-       downloadFile(filePath: string){
-    
-           let name = filePath.split('\\').pop().split('/').pop();
-           let folder = filePath.replace(name, "");
-           folder = folder.slice(1,-1).split('\\').pop().split('/').pop();
-           console.log(`http.get(${this.connection.urlServer}${this.downloadFilePath}/${folder}/${name})`);
-           this.http.get(`/${this.downloadFilePath}/${folder}/${name}`).subscribe();
-          // .map((res: Response) => {console.log(res)})
-          // .subscribe();
-       }
-    
-    */
     FileService.prototype.destroy = function () {
         this.subscription.unsubscribe();
+    };
+    ///////////////////////////////////////////////////////////////////
+    FileService.prototype.prueba = function () {
+        return this.connection.urlServer + "prueba";
+    };
+    FileService.prototype.prueba2 = function () {
+        return this.connection.urlServer + "prueba2";
     };
     FileService = __decorate([
         core_1.Injectable(), 

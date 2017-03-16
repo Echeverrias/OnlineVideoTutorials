@@ -37,7 +37,8 @@ import org.jaea.onlinevideotutorials.Info;
 public class Room implements Closeable {
     private final Logger log = LoggerFactory.getLogger(Room.class);
     
-    private ParticipantSession tutor = null;
+    //private ParticipantSession tutor = null;
+    private String tutor = "";
     
     // The tutor is included in the participants
     private final ConcurrentHashMap<String, ParticipantSession> participantsByUserName = new ConcurrentHashMap<>();
@@ -76,28 +77,36 @@ public class Room implements Closeable {
     public ParticipantSession getParticipant(String userName) {
         return this.participantsByUserName.get(userName);
     }
-
+/*
     public boolean isTheTutor(ParticipantSession user){
         log.info("* Room.isTheTutor?");
         return user.equals(this.tutor);
        
     }
-    
+  
     public boolean isTheTutor(String userName){
         log.info("* Room.isTheTutor?: {}", userName);
-        
+        log.info("Tutor: " + this.tutor.getUserName());
         String tutorUserName = null;
         boolean answer = false;
         if (this.tutor == null){
+            log.info("The tutor is null");
             answer = false;
         }
         else {
             tutorUserName = this.tutor.getUserName();
             answer = tutorUserName.equals(userName);
+
         }
         
         log.info("/ Room.isTheTutor? The tutor is {}", tutorUserName);
         return answer;
+    }
+    */  
+    public boolean isTheTutor(String userName){
+        log.info("* Room.isTheTutor?: {}", userName);
+        log.info("Tutor: " + this.tutor);
+        return this.tutor.equals(userName);
     }
 
     public void addParticipant(ParticipantSession user) {
@@ -109,8 +118,8 @@ public class Room implements Closeable {
         Info.logInfoFinish2("assignRoomMedia");
         
         participantsByUserName.put(user.getUserName(), user);
-        if (user.isATutor()) {
-            this.tutor = user;
+        if (this.tutor.equals("") && user.isATutor() ) {
+            this.tutor = user.getUserName();
         }
         
         this.printTheRoomParticipants(); //*
@@ -132,11 +141,12 @@ public class Room implements Closeable {
             log.info("-----------------------------------------------");//*
             log.info("-----------------------------------------------");//*
             log.info("THEY'RE GOING TO CLOSE ME");//*
-
-            if (this.isTheTutor(participant)){
-                this.tutor = null;
-            }
             
+            /*
+            if (this.isTheTutor(participant.getUserName())){
+                this.tutor = "";
+            }
+            */
         }  
         
         this.printTheRoomParticipants();//*

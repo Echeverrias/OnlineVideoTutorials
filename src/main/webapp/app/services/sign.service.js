@@ -24,13 +24,14 @@ var SignService = (function () {
         this.handler = handler;
         this.me = me;
         this.validateUserEndPoint = "validateUser";
-        this.validateEndPoint = "validate";
+        this.validateEndPoint = "validateField";
         this.registerEndPoint = "register";
+        this.editPerfilEndPoint = "editPerfil";
         console.log("*SignService constructor");
-        this.logOut();
     }
     SignService.prototype.init = function () {
         console.log("*SignService.init");
+        this.signOut();
         // Reset login status
         //this.destroyMe();
     };
@@ -43,6 +44,7 @@ var SignService = (function () {
         console.log(this.http); //%%
         return this.http.post("" + this.connection.urlServer + this.validateUserEndPoint, body, options)
             .map(function (res) {
+            console.log("VALIDATE USER");
             console.log(res);
             console.log(res.toString());
             if (res.status = 200) {
@@ -56,29 +58,13 @@ var SignService = (function () {
         })
             .catch(function (error) { return Rx_1.Observable.throw(error); });
     };
-    SignService.prototype.validateField = function (value, field) {
-        console.log("Validate " + field + ": " + value);
-        var body = value || "";
+    SignService.prototype.validateField = function (fieldToValidate) {
+        console.log("Validate:  " + fieldToValidate);
+        var body = JSON.stringify(fieldToValidate);
         var headers = new http_1.Headers();
-        headers.append("Content-Type", "text/plain");
+        headers.append("Content-Type", "application/json");
         var options = new http_1.RequestOptions({ headers: headers });
-        return this.http.post("" + this.connection.urlServer + this.validateEndPoint + "/" + field, body, options);
-        /*
-        .map((res: Response) => {
-            console.log(res);
-            let success: boolean;
-            if (res.json().ok) {
-                console.log(`valid ${field}: true`);
-                success = true;
-            }
-            else {
-                console.log(`valid ${field}: false`);
-                success = false
-            }
-            return success;
-        })
-        .catch((error: any) => Observable.throw(error))
-        */
+        return this.http.post("" + this.connection.urlServer + this.validateEndPoint, body, options);
     };
     ;
     SignService.prototype.registerNewUser = function (user) {
@@ -91,11 +77,12 @@ var SignService = (function () {
         var body = JSON.stringify(user);
         return this.http.post("" + this.connection.urlServer + this.registerEndPoint, body, options)
             .map(function (res) {
+            console.log("REGISTER USER");
             console.log(res);
             console.log(res.toString());
             var success;
             if (res.status == 200) {
-                _this.createUser(user);
+                _this.createUser(res.json());
                 success = true;
             }
             else {
@@ -109,8 +96,6 @@ var SignService = (function () {
         console.log("");
         console.log("* SignService.createUser " + new Date().toLocaleTimeString());
         console.log(user);
-        localStorage.setItem('ovtUser', JSON.stringify(user));
-        localStorage.setItem('ovtLastUserName', user.userName);
         this.me.registerMe(user);
         console.log(this.me.getMe());
         var jsonMessage = {
@@ -123,10 +108,57 @@ var SignService = (function () {
         console.log("/ SignService.createUser " + new Date().toLocaleTimeString());
         console.log("");
     };
-    SignService.prototype.getLastUserName = function () {
-        return localStorage.getItem('ovtLastUserName');
+    SignService.prototype.modifyPerfilUser = function (user) {
+        var _this = this;
+        console.log(user);
+        Object.assign(user, { userName: this.me.myUserName });
+        console.log(JSON.stringify(user));
+        var headers = new http_1.Headers();
+        headers.append("Content-Type", "application/json");
+        var options = new http_1.RequestOptions({ headers: headers });
+        var body = JSON.stringify(user);
+        return this.http.post("" + this.connection.urlServer + this.editPerfilEndPoint, body, options)
+            .map(function (res) {
+            console.log("REDIT PERFIL");
+            console.log(res);
+            console.log(res.toString());
+            var success;
+            if (res.status == 200) {
+                _this.modifyUser(res.json());
+                success = true;
+            }
+            else {
+                success = false;
+            }
+            return success;
+        })
+            .catch(function (error) { return Rx_1.Observable.throw(error); });
     };
-    SignService.prototype.logOut = function () {
+    SignService.prototype.modifyUser = function (user) {
+        console.log("");
+        console.log("* SignService.modifyUser " + new Date().toLocaleTimeString());
+        console.log(user);
+        this.me.registerMe(user);
+        console.log(this.me.getMe());
+        /*
+        let jsonMessage: LoginMessage = {
+            id: "modify",
+            userName: this.me.myUserName,
+            name: this.me.myName,
+            userType: this.me.myUserType
+        };
+
+        this.connection.sendMessage(jsonMessage);
+        */
+        console.log("/ SignService.modifyUser " + new Date().toLocaleTimeString());
+        console.log("");
+    };
+    /*
+    getLastUserName(): string {
+        return localStorage.getItem('ovtLastUserName');
+    }
+   */
+    SignService.prototype.signOut = function () {
         console.log("");
         console.log("* <- SignService.logOut " + new Date().toLocaleTimeString());
         if (this.me.amLogged()) {

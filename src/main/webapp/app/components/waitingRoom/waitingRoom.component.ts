@@ -22,6 +22,7 @@ import{ waitingRoomTemplate } from './waitingRoom.html'
  export class WaitingRoomComponent implements OnInit, OnDestroy{
      
     private availableRoomsNames : string[];
+    private roomName: string;
     
     private onavailableRoomsSubscription : Object; 
     private onNewavailableRoomSubscription: Object;
@@ -30,13 +31,29 @@ import{ waitingRoomTemplate } from './waitingRoom.html'
     constructor(private waitingRoom: WaitingRoomService, private router: Router, private me: UserService){
         console.log("");
         console.log(`% WaitingRoom constructor ${new Date().toLocaleTimeString()}`); 
+        this.roomName = this.me.myUserName;
         console.log(`/ WaitingRoom constructor ${new Date().toLocaleTimeString()}`);
         console.log("");
     }
     
     ngOnInit(){
+        console.log("WaitingRoomComponent.onInit");
         this.waitingRoom.init();
         this.waitingRoom.getAvailableRooms().subscribe(availableRooms => this.availableRoomsNames = availableRooms);
+    }
+
+    onCreateRoom(){
+        this.roomName = this.createRoomName(this.roomName);
+        this.router.navigate(['/room' ,this.roomName]);
+    }
+
+    private createRoomName(roomName : string): string{
+        let name = roomName;
+        if (name !== ""){ 
+            name = name.replace(this.me.myUserName, ""); 
+            name = name.replace(" ", "_");
+        }     
+        return name === "" ? `${this.me.myUserName}` : `${this.me.myUserName }_${name }`;
     }
 
     onJoinRoom (roomName: string){
@@ -49,7 +66,7 @@ import{ waitingRoomTemplate } from './waitingRoom.html'
         console.log("");
     }
     
-    onLogOut(){
+    onSignOut(){
         console.log("");
         console.log(`* <- WaitingRoom.onLogOut ${new Date().toLocaleTimeString()}`);
        

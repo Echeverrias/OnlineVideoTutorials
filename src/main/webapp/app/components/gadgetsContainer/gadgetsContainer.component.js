@@ -57,7 +57,7 @@ var GadgetsContainerComponent = (function () {
     GadgetsContainerComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
-            selector: 'ovt-gadgetsContainer',
+            selector: 'ovt-gadgets-container',
             template: gadgetsContainer_html_1.gadgetsContainerTemplate,
             styleUrls: ['gadgetsContainer.css'],
         }), 

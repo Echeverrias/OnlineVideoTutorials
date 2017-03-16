@@ -5,13 +5,11 @@ import { ConnectionService } from './connection.service';
 import { HandlerService } from './handler.service';
 import { UserService } from './user.service';
 
-import { Message } from '../models/types';
-import { IdMessage } from '../models/types';
-
+import { UserInfoMessage, IdMessage, Message } from '../models/types';
 
 type RoomMessage = { roomName: string } & IdMessage;
 type AvailableRoomsMessage = { availableRoomsNames: string[] } & IdMessage;
-type UserNameMessage = { userName: string } & IdMessage;
+
 
 @Injectable()
 export class WaitingRoomService {
@@ -49,12 +47,15 @@ export class WaitingRoomService {
         console.log("");
         console.log(`* <- WaitingRoomService.lookingForRooms ${new Date().toLocaleTimeString()}`);
 
+        /*
         let jsonMessage: UserNameMessage = {
             id:"enterWaitingRoom",
-            userName: this.me.myUserName
+            userName: this.me.myUserName,
         };
-        
+        */
 
+        let jsonMessage: UserInfoMessage = Object.assign(this.me.getMyInfo(), { id: "enterWaitingRoom" });
+       
         this.connection.sendMessage(jsonMessage);
         console.log(`/ WaitingRoomService.lookingForRooms ${new Date().toLocaleTimeString()}`);
         console.log("");
@@ -113,10 +114,7 @@ export class WaitingRoomService {
         console.log("");
         console.log(`* <- WaitingRoomService.exit ${new Date().toLocaleTimeString()}`);
 
-        let jsonMessage: UserNameMessage = {
-            id: "exitWaitingRoom",
-            userName: this.me.myUserName
-        };
+        let jsonMessage: UserInfoMessage = Object.assign(this.me.getMyInfo(), {id: "exitWaitingRoom"});
 
         this.connection.sendMessage(jsonMessage);
         console.log(`/ WaitingRoomService.exit ${new Date().toLocaleTimeString()}`);

@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
+
 import org.jaea.onlinevideotutorials.Hour;
 import org.jaea.onlinevideotutorials.Info;
 import org.jaea.onlinevideotutorials.domain.ParticipantSession;
@@ -88,6 +90,23 @@ public class RoomsManager {
         
         log.info("Avaible Rooms Names: {}", avaibleRoomsNames);
         Info.logInfoFinish("RoomManager.getAvaibleRoomsNames");
+        //return Collections.list(roomsByName.keys());
+        return avaibleRoomsNames;
+    }
+
+    public List<String> getTutorAvailableRoomsNames(String userName){
+        log.info("{} RoomManager.getTutorAvailableRoomsNames: {}",Info.START_SYMBOL, Hour.getTime());
+        
+        for (Room room: roomsByName.values()){
+            log.info(String.valueOf(room.isTheTutor(userName)));
+        }
+        List<String> avaibleRoomsNames = roomsByName.values().stream() 
+        		.filter(room -> room.isTheTutor(userName))
+        		.map(room -> room.getName())
+        		.collect(Collectors.toList());
+        	
+        log.info("Available Tutor Rooms Names: {}", avaibleRoomsNames);
+        Info.logInfoFinish("RoomManager.getTutorAvailableRoomsNames");
         return avaibleRoomsNames;
     }
     
