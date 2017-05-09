@@ -1,3 +1,4 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.loadingTemplate = "<div class=\"ovt-loading\">\n<div class='uil-default-css spinning'>\n    <div id=\"ovt-load-stick1\"></div> \n    <div id=\"ovt-load-stick2\"> </div>\n    <div id=\"ovt-load-stick3\"></div> \n    <div id=\"ovt-load-stick4\"> </div>\n    <div id=\"ovt-load-stick5\"></div> \n    <div id=\"ovt-load-stick6\"> </div>\n    <div id=\"ovt-load-stick7\"></div> \n    <div id=\"ovt-load-stick8\"> </div>\n    <div id=\"ovt-load-stick9\"></div> \n    <div id=\"ovt-load-stick10\"> </div>\n    <div id=\"ovt-load-stick11\"></div> \n    <div id=\"ovt-load-stick12\"> </div>\n</div>\n</div>";
 //# sourceMappingURL=loading.html.js.map

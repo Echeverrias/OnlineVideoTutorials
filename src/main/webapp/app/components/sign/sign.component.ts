@@ -4,8 +4,7 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { Response } from '@angular/http';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'; 
+import { FormBuilder, FormGroup, AbstractControl, FormControl, Validators } from '@angular/forms'; 
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { NgUploaderOptions, UploadedFile } from 'ngx-uploader';
 import { Observable, Subject } from 'rxjs/Rx';
@@ -29,7 +28,10 @@ export enum SignStates { SignIn, SignUp, EditPerfil };
     selector: 'ovt-sign',
     styleUrls: ["sign.css"],
     template: signTemplate,
-    providers: [SignService]
+    providers: [SignService],
+    host: {
+        class: 'ovt-sign-selector'
+    }
 
 })
 
@@ -47,12 +49,14 @@ export class SignComponent implements OnInit {
     private uploadImageUserOptions: NgUploaderOptions;
     private userImage$: Subject <UserFile>;
     private rememberPassword: boolean;
+    readonly minPasswordLength: number = 8;
+    readonly minLength: number = 3;
+
 
 
     constructor(private router: Router, private route: ActivatedRoute, private sanitizer: DomSanitizer, private formBuilder: FormBuilder, private sign: SignService, private me: UserService, private file: FileService) {
         console.log(`% Sign constructor `);
         this.userImage$ = new Subject<UserFile>();
-        //this.user = { userName: "", password: "", name: "", surname: "", email: "", userType: "" };
         this.sizeLimit = this.file.sizeLimit;
         console.log('ROUTE:');
         console.log(route); 
@@ -83,36 +87,42 @@ export class SignComponent implements OnInit {
         if (this.state === SignStates.SignIn){
 
             this.sign.init();
+            this.initStorage();
             
-            this.rememberPassword = localStorage.getItem('rememberPassword') === 'true';
-            this.signInForm = this.formBuilder.group({
+                this.signInForm = this.formBuilder.group({
                 userName: [ localStorage.getItem('ovtLastUserName'), Validators.required],
                 password: [localStorage.getItem(localStorage.getItem('ovtLastUserName')), Validators.required],
                 rememberPassword: [false]
             });
-
-            this.signUpForm = this.formBuilder.group({
-                userName: ["", [Validators.required, Validators.minLength(3)], this.validateUserName.bind(this)],
-                password: ["", [Validators.required, Validators.minLength(8)]],
-                confirmPassword: ["", [Validators.required, this.confirmPassword.bind(this)]],
-                name: ["", [Validators.required, Validators.minLength(3)]],
-                surname: ["", [Validators.required, Validators.minLength(3)]],
-                email: ["", [Validators.required, this.validateEmailPattern], this.validateEmail.bind(this)],
-                userType: ["", Validators.required]
-            });
-
             
+            this.signUpForm = this.formBuilder.group({
+                userName: ["", [Validators.required, Validators.minLength(this.minLength)], this.validateUserName.bind(this)],
+                password: ["", [Validators.required, Validators.minLength(this.minPasswordLength)]],
+                confirmationPassword: ["", [Validators.required, Validators.minLength(this.minPasswordLength), this.confirmPassword.bind(this)]],
+                name: ["", [Validators.required, Validators.minLength(this.minLength)]],
+                surname: ["", [Validators.required, Validators.minLength(this.minLength)]],
+                email: ["", [Validators.required, this.validateEmailPattern], this.validateEmail.bind(this)],
+                userType: ["", Validators.required],
+            }, { validator: this.checkPassword });
+
+            this.signUpForm.controls['password'].valueChanges.subscribe(
+                (value) => { setTimeout(() => this.signUpForm.controls['confirmationPassword'].updateValueAndValidity(), 200)}
+            );
         }
         else if (this.state === SignStates.EditPerfil){
 
             this.editPerfilForm = this.formBuilder.group({
-                password: ["", [Validators.required, this.validateNewPassword.bind(this)]],
-                confirmPassword: ["", [Validators.required, this.confirmNewPassword.bind(this)]],
-                name: [this.me.myName, [Validators.required, Validators.minLength(3)]],
-                surname: [this.me.mySurname, [Validators.required, Validators.minLength(3)]],
+                password: [sessionStorage.getItem(this.me.myUserName), [Validators.minLength(this.minPasswordLength)]],
+                confirmationPassword: [sessionStorage.getItem(this.me.myUserName), [Validators.minLength(this.minPasswordLength), this.confirmPassword.bind(this)]],
+                name: [this.me.myName, [Validators.required, Validators.minLength(this.minLength)]],
+                surname: [this.me.mySurname, [Validators.required, Validators.minLength(this.minLength)]],
                 email: [this.me.myEmail, [Validators.required, this.validateEmailPattern], this.validateEmail.bind(this)],
                 userType: [this.me.myUserType, Validators.required]
-            });
+            }, {validator: this.checkPassword});
+
+            this.editPerfilForm.controls['password'].valueChanges.subscribe(
+                (value) => { setTimeout( () => this.editPerfilForm.controls['confirmationPassword'].updateValueAndValidity() ,200) }
+            );
 
             this.uploadImageUserOptions = {
                 url: this.file.getUploadUserImageUrl(this.me.myUserName)
@@ -124,97 +134,101 @@ export class SignComponent implements OnInit {
                     () => console.log('complete')    
                 )
         }    
-        
 
-        console.log(this.uploadImageUserOptions); //%
-        console.log(this.me);  //%
+   }
 
-    }
+   private initStorage(){
+       sessionStorage.setItem(localStorage.getItem('ovtLastUserName'), undefined),
+       this.rememberPassword = localStorage.getItem('rememberPassword') === 'true';
+   }
+    
+    // SignUpForm and EditPerfilForm's validators
 
-    validateEmailPattern(control: FormControl): Object{
-        let emailRegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,4}$/
-        emailRegExp.test(control.value)? console.log("valid email"): console.log("invalid email");
-        return  emailRegExp.test(control.value)? null: {
-            validEmail: true
-        }
-    }
-
-    validateUserName(control: FormControl): Observable<{ [key: string]: any }>{
-        console.log("validateUserName");
-        return this.checkField(control.value, "userName").debounceTime(400).distinctUntilChanged() /*.first()*/;
-    }
-
-    validateEmail(control: FormControl): Observable<{ [key: string]: any }>{
-        console.log("validateEmail");
-        return this.checkField(control.value, "email").debounceTime(400).distinctUntilChanged() /*.first()*/;
-    }
-
-    confirmPassword(control: FormControl): Object{
-
-        return this.signUpForm && control.value === this.signUpForm.value['password']? null : {
+    private confirmPassword(control: FormControl): Object {
+        return control.root && control.value === control.root.value['password'] ? null : {
             confirmPassword: true
         }
     }
 
-    validateNewPassword(control: FormControl): Object{
-
-
-        return (this.editPerfilForm && ((control.value === "") || (control.value.length >= 8) ))? null : {
-            validateNewPassword: true
+    private checkPassword(control: AbstractControl): Object {
+        const password = control.get('password');
+        const confirmationPassword = control.get('confirmationPassword');
+        if (!password || !confirmationPassword) return null;
+        return password.value === confirmationPassword.value? null: {
+            checkPassword: true
         }
     }
 
-    confirmNewPassword(control: FormControl): Object{
-
-        return this.editPerfilForm && control.value === this.editPerfilForm.value['password']? null : {
-            confirmNewPassword: true
-        }
+    private validateUserName(control: FormControl): Observable<{ [key: string]: any }> {
+        return this.checkField(control.value, "userName").debounceTime(400).distinctUntilChanged() /*.first()*/;
     }
 
-    // It checks, when a new user is going to register, that the user name and the email don't exists in the data base. 
-    checkField(value: string, field: string) :Observable<{ [key: string]: any }>{
-           console.log(`check${field}: ${value}`);
-       return  new Observable((obs: any) => {
-               console.log(" new Observable");
-               let infoField: FieldValidationRequest = {
-                   field: field,
-                   value: value,
-                   userName: this.me.myUserName
-               };
-               this.sign.validateField(infoField)
-                    .subscribe(
-                        data => {
-                            obs.next(null); 
-                            obs.complete(); 
-                        },
-                        error => { 
-                            let key: string;
-                            let message: string = error.json().message;
-                            if (message === `userName taken`){
-                                key = 'validUserName';
-                            }
-                            else if (message === `email taken`){
-                                key = 'validEmail';
-                            }
-                            obs.next({ [key]: true }); 
-                            obs.complete();
-                        }
-                   )
+    private validateEmail(control: FormControl): Observable<{ [key: string]: any }> {
+        return this.checkField(control.value, "email").debounceTime(400).distinctUntilChanged() /*.first()*/;
+    }
+
+    /**
+    * It checks, when a new user is going to register, that the user name and the email don't exists in the data base. 
+    */     private checkField(value: string, field: string): Observable<{ [key: string]: any }> {
+        console.log(`check${field}: ${value}`);
+        return new Observable((obs: any) => {
+            console.log(" new Observable");
+            let infoField: FieldValidationRequest = {
+                field: field,
+                value: value,
+                userName: this.me.myUserName
+            };
+            this.sign.validateField(infoField)
+                .subscribe(
+                response => {
+                    obs.next(null);
+                    obs.complete();
+                },
+                error => {
+                    let key: string;
+                    let message: string = error.json().message;
+                    if (message === `userName taken`) {
+                        key = 'userNameTaken';
+                    }
+                    else if (message === `email taken`) {
+                        key = 'emailTaken';
+                    }
+                    obs.next({ [key]: true });
+                    obs.complete();
+                }
+                )
 
         });
-        
+
     } 
+
+    // EditPerfilForm validator
+    private validateNewPasswordLength(control: FormControl): Object{
+        return (control.root && ((control.value.length == 0) || (control.value.length >= 8) ))? null : {
+            validateNewPasswordLength: { actualLength: control.value.length, requiredLength: 8}
+        }
+    }
+
+    private validateEmailPattern(control: FormControl): Object{
+        let emailRegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,4}$/
+        return  emailRegExp.test(control.value)? null: {
+            emailPattern: true
+        }
+    }
 
     onChangeToSignUp(){
         console.log("onChangeToSignUp()");
+        console.log(this.signUpForm); //%
         this.state = SignStates.SignUp;
         this.checkFields = false;
     }
     
-    // If some field form is incorrect a message will show 
-    onGoingToClick(){
-        console.log("onGoingToClick");
-        console.log(this.user);
+    /** 
+     * If some field form is incorrect a message will show.
+     */   
+    onGoingToProcess(){
+        if (this.signUpForm){console.log(this.signUpForm)}
+        if (this.editPerfilForm){console.log(this.editPerfilForm)}    
         this.checkFields = true;
         console.log(`checkFields: ${this.checkFields}`);
     }
@@ -308,6 +322,7 @@ export class SignComponent implements OnInit {
              localStorage.setItem(user.userName, "");
              localStorage.setItem('rememberPassword', undefined);
         }
+        sessionStorage.setItem(user.userName, user.password);
     }
 
     beforeUpload(uploadingFile): void {

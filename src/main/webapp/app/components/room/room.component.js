@@ -12,15 +12,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
-var router_1 = require('@angular/router');
-var platform_browser_1 = require('@angular/platform-browser');
-var user_service_1 = require('../../services/user.service');
-var room_service_1 = require('../../services/room.service');
-var participants_service_1 = require('../../services/participants.service');
-var participant_component_1 = require('../participant/participant.component');
-var user_1 = require('../../models/user');
-var room_html_1 = require('./room.html');
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = require("@angular/core");
+var router_1 = require("@angular/router");
+var platform_browser_1 = require("@angular/platform-browser");
+var user_service_1 = require("../../services/user.service");
+var room_service_1 = require("../../services/room.service");
+var participants_service_1 = require("../../services/participants.service");
+var participant_component_1 = require("../participant/participant.component");
+var user_1 = require("../../models/user");
+var room_html_1 = require("./room.html");
 var RoomComponent = (function () {
     function RoomComponent(room, _participants, router, me, route, sanitizer) {
         this.room = room;
@@ -50,14 +51,6 @@ var RoomComponent = (function () {
         console.log("");
         console.log("<- Room.onExitOfRoom: " + this.name + " " + new Date().toLocaleTimeString());
         this.room.onExit();
-        /*
-        if (this.me.amAStudent()) {
-            this.router.navigate(['/rooms']);
-        }
-        else {
-           this.router.navigate(['/sign']);
-        }
-        */
         this.router.navigate(['/rooms']);
         console.log("/ Room.onExitOfRoom " + new Date().toLocaleTimeString());
         console.log("");
@@ -84,25 +77,25 @@ var RoomComponent = (function () {
         this._participants.destroy();
         this.room.destroy();
     };
-    __decorate([
-        core_1.ViewChild(participant_component_1.ParticipantComponent), 
-        __metadata('design:type', participant_component_1.ParticipantComponent)
-    ], RoomComponent.prototype, "mainParticipant", void 0);
-    __decorate([
-        core_1.ViewChildren(participant_component_1.ParticipantComponent), 
-        __metadata('design:type', core_1.QueryList)
-    ], RoomComponent.prototype, "participants", void 0);
-    RoomComponent = __decorate([
-        core_1.Component({
-            moduleId: module.id,
-            selector: 'ovt-room',
-            styleUrls: ["room.css"],
-            template: room_html_1.roomTemplate,
-            providers: [room_service_1.RoomService, participants_service_1.ParticipantsService]
-        }), 
-        __metadata('design:paramtypes', [room_service_1.RoomService, participants_service_1.ParticipantsService, router_1.Router, user_service_1.UserService, router_1.ActivatedRoute, platform_browser_1.DomSanitizer])
-    ], RoomComponent);
     return RoomComponent;
 }());
+__decorate([
+    core_1.ViewChild(participant_component_1.ParticipantComponent),
+    __metadata("design:type", participant_component_1.ParticipantComponent)
+], RoomComponent.prototype, "mainParticipant", void 0);
+__decorate([
+    core_1.ViewChildren(participant_component_1.ParticipantComponent),
+    __metadata("design:type", core_1.QueryList)
+], RoomComponent.prototype, "participants", void 0);
+RoomComponent = __decorate([
+    core_1.Component({
+        moduleId: module.id,
+        selector: 'ovt-room',
+        styleUrls: ["room.css"],
+        template: room_html_1.roomTemplate,
+        providers: [room_service_1.RoomService, participants_service_1.ParticipantsService]
+    }),
+    __metadata("design:paramtypes", [room_service_1.RoomService, participants_service_1.ParticipantsService, router_1.Router, user_service_1.UserService, router_1.ActivatedRoute, platform_browser_1.DomSanitizer])
+], RoomComponent);
 exports.RoomComponent = RoomComponent;
 //# sourceMappingURL=room.component.js.map

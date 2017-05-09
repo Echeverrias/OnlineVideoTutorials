@@ -8,25 +8,26 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * @author Juan Antonio Echeverrías Aranda (juanan.echeve@gmail.com)
  *
  */
-var core_1 = require('@angular/core');
-var router_1 = require('@angular/router');
-var forms_1 = require('@angular/forms');
-var platform_browser_1 = require('@angular/platform-browser');
-var Rx_1 = require('rxjs/Rx');
-var sign_service_1 = require('../../services/sign.service');
-var user_service_1 = require('../../services/user.service');
-var file_service_1 = require('../../services/file.service');
-var sign_html_1 = require('./sign.html');
+var core_1 = require("@angular/core");
+var router_1 = require("@angular/router");
+var forms_1 = require("@angular/forms");
+var platform_browser_1 = require("@angular/platform-browser");
+var Rx_1 = require("rxjs/Rx");
+var sign_service_1 = require("../../services/sign.service");
+var user_service_1 = require("../../services/user.service");
+var file_service_1 = require("../../services/file.service");
+var sign_html_1 = require("./sign.html");
+var SignStates;
 (function (SignStates) {
     SignStates[SignStates["SignIn"] = 0] = "SignIn";
     SignStates[SignStates["SignUp"] = 1] = "SignUp";
     SignStates[SignStates["EditPerfil"] = 2] = "EditPerfil";
-})(exports.SignStates || (exports.SignStates = {}));
-var SignStates = exports.SignStates;
+})(SignStates = exports.SignStates || (exports.SignStates = {}));
 ;
 var SignComponent = (function () {
     function SignComponent(router, route, sanitizer, formBuilder, sign, me, file) {
@@ -38,9 +39,10 @@ var SignComponent = (function () {
         this.sign = sign;
         this.me = me;
         this.file = file;
+        this.minPasswordLength = 8;
+        this.minLength = 3;
         console.log("% Sign constructor ");
         this.userImage$ = new Rx_1.Subject();
-        //this.user = { userName: "", password: "", name: "", surname: "", email: "", userType: "" };
         this.sizeLimit = this.file.sizeLimit;
         console.log('ROUTE:');
         console.log(route);
@@ -66,71 +68,67 @@ var SignComponent = (function () {
         console.log(this.me.getMe());
         if (this.state === SignStates.SignIn) {
             this.sign.init();
-            this.rememberPassword = localStorage.getItem('rememberPassword') === 'true';
+            this.initStorage();
             this.signInForm = this.formBuilder.group({
                 userName: [localStorage.getItem('ovtLastUserName'), forms_1.Validators.required],
                 password: [localStorage.getItem(localStorage.getItem('ovtLastUserName')), forms_1.Validators.required],
                 rememberPassword: [false]
             });
             this.signUpForm = this.formBuilder.group({
-                userName: ["", [forms_1.Validators.required, forms_1.Validators.minLength(3)], this.validateUserName.bind(this)],
-                password: ["", [forms_1.Validators.required, forms_1.Validators.minLength(8)]],
-                confirmPassword: ["", [forms_1.Validators.required, this.confirmPassword.bind(this)]],
-                name: ["", [forms_1.Validators.required, forms_1.Validators.minLength(3)]],
-                surname: ["", [forms_1.Validators.required, forms_1.Validators.minLength(3)]],
+                userName: ["", [forms_1.Validators.required, forms_1.Validators.minLength(this.minLength)], this.validateUserName.bind(this)],
+                password: ["", [forms_1.Validators.required, forms_1.Validators.minLength(this.minPasswordLength)]],
+                confirmationPassword: ["", [forms_1.Validators.required, forms_1.Validators.minLength(this.minPasswordLength), this.confirmPassword.bind(this)]],
+                name: ["", [forms_1.Validators.required, forms_1.Validators.minLength(this.minLength)]],
+                surname: ["", [forms_1.Validators.required, forms_1.Validators.minLength(this.minLength)]],
                 email: ["", [forms_1.Validators.required, this.validateEmailPattern], this.validateEmail.bind(this)],
-                userType: ["", forms_1.Validators.required]
-            });
+                userType: ["", forms_1.Validators.required],
+            }, { validator: this.checkPassword });
+            this.signUpForm.controls['password'].valueChanges.subscribe(function (value) { setTimeout(function () { return _this.signUpForm.controls['confirmationPassword'].updateValueAndValidity(); }, 200); });
         }
         else if (this.state === SignStates.EditPerfil) {
             this.editPerfilForm = this.formBuilder.group({
-                password: ["", [forms_1.Validators.required, this.validateNewPassword.bind(this)]],
-                confirmPassword: ["", [forms_1.Validators.required, this.confirmNewPassword.bind(this)]],
-                name: [this.me.myName, [forms_1.Validators.required, forms_1.Validators.minLength(3)]],
-                surname: [this.me.mySurname, [forms_1.Validators.required, forms_1.Validators.minLength(3)]],
+                password: [sessionStorage.getItem(this.me.myUserName), [forms_1.Validators.minLength(this.minPasswordLength)]],
+                confirmationPassword: [sessionStorage.getItem(this.me.myUserName), [forms_1.Validators.minLength(this.minPasswordLength), this.confirmPassword.bind(this)]],
+                name: [this.me.myName, [forms_1.Validators.required, forms_1.Validators.minLength(this.minLength)]],
+                surname: [this.me.mySurname, [forms_1.Validators.required, forms_1.Validators.minLength(this.minLength)]],
                 email: [this.me.myEmail, [forms_1.Validators.required, this.validateEmailPattern], this.validateEmail.bind(this)],
                 userType: [this.me.myUserType, forms_1.Validators.required]
-            });
+            }, { validator: this.checkPassword });
+            this.editPerfilForm.controls['password'].valueChanges.subscribe(function (value) { setTimeout(function () { return _this.editPerfilForm.controls['confirmationPassword'].updateValueAndValidity(); }, 200); });
             this.uploadImageUserOptions = {
                 url: this.file.getUploadUserImageUrl(this.me.myUserName)
             };
             this.userImage$.subscribe(function (userImage) { _this.setMeUserImage(userImage), console.log(userImage); }, function (error) { return console.log(error); }, function () { return console.log('complete'); });
         }
-        console.log(this.uploadImageUserOptions); //%
-        console.log(this.me); //%
     };
-    SignComponent.prototype.validateEmailPattern = function (control) {
-        var emailRegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,4}$/;
-        emailRegExp.test(control.value) ? console.log("valid email") : console.log("invalid email");
-        return emailRegExp.test(control.value) ? null : {
-            validEmail: true
-        };
+    SignComponent.prototype.initStorage = function () {
+        sessionStorage.setItem(localStorage.getItem('ovtLastUserName'), undefined),
+            this.rememberPassword = localStorage.getItem('rememberPassword') === 'true';
     };
-    SignComponent.prototype.validateUserName = function (control) {
-        console.log("validateUserName");
-        return this.checkField(control.value, "userName").debounceTime(400).distinctUntilChanged() /*.first()*/;
-    };
-    SignComponent.prototype.validateEmail = function (control) {
-        console.log("validateEmail");
-        return this.checkField(control.value, "email").debounceTime(400).distinctUntilChanged() /*.first()*/;
-    };
+    // SignUpForm and EditPerfilForm's validators
     SignComponent.prototype.confirmPassword = function (control) {
-        return this.signUpForm && control.value === this.signUpForm.value['password'] ? null : {
+        return control.root && control.value === control.root.value['password'] ? null : {
             confirmPassword: true
         };
     };
-    SignComponent.prototype.validateNewPassword = function (control) {
-        return (this.editPerfilForm && ((control.value === "") || (control.value.length >= 8))) ? null : {
-            validateNewPassword: true
+    SignComponent.prototype.checkPassword = function (control) {
+        var password = control.get('password');
+        var confirmationPassword = control.get('confirmationPassword');
+        if (!password || !confirmationPassword)
+            return null;
+        return password.value === confirmationPassword.value ? null : {
+            checkPassword: true
         };
     };
-    SignComponent.prototype.confirmNewPassword = function (control) {
-        return this.editPerfilForm && control.value === this.editPerfilForm.value['password'] ? null : {
-            confirmNewPassword: true
-        };
+    SignComponent.prototype.validateUserName = function (control) {
+        return this.checkField(control.value, "userName").debounceTime(400).distinctUntilChanged() /*.first()*/;
     };
-    // It checks, when a new user is going to register, that the user name and the email don't exists in the data base. 
-    SignComponent.prototype.checkField = function (value, field) {
+    SignComponent.prototype.validateEmail = function (control) {
+        return this.checkField(control.value, "email").debounceTime(400).distinctUntilChanged() /*.first()*/;
+    };
+    /**
+    * It checks, when a new user is going to register, that the user name and the email don't exists in the data base.
+    */ SignComponent.prototype.checkField = function (value, field) {
         var _this = this;
         console.log("check" + field + ": " + value);
         return new Rx_1.Observable(function (obs) {
@@ -141,17 +139,17 @@ var SignComponent = (function () {
                 userName: _this.me.myUserName
             };
             _this.sign.validateField(infoField)
-                .subscribe(function (data) {
+                .subscribe(function (response) {
                 obs.next(null);
                 obs.complete();
             }, function (error) {
                 var key;
                 var message = error.json().message;
                 if (message === "userName taken") {
-                    key = 'validUserName';
+                    key = 'userNameTaken';
                 }
                 else if (message === "email taken") {
-                    key = 'validEmail';
+                    key = 'emailTaken';
                 }
                 obs.next((_a = {}, _a[key] = true, _a));
                 obs.complete();
@@ -159,15 +157,34 @@ var SignComponent = (function () {
             });
         });
     };
+    // EditPerfilForm validator
+    SignComponent.prototype.validateNewPasswordLength = function (control) {
+        return (control.root && ((control.value.length == 0) || (control.value.length >= 8))) ? null : {
+            validateNewPasswordLength: { actualLength: control.value.length, requiredLength: 8 }
+        };
+    };
+    SignComponent.prototype.validateEmailPattern = function (control) {
+        var emailRegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,4}$/;
+        return emailRegExp.test(control.value) ? null : {
+            emailPattern: true
+        };
+    };
     SignComponent.prototype.onChangeToSignUp = function () {
         console.log("onChangeToSignUp()");
+        console.log(this.signUpForm); //%
         this.state = SignStates.SignUp;
         this.checkFields = false;
     };
-    // If some field form is incorrect a message will show 
-    SignComponent.prototype.onGoingToClick = function () {
-        console.log("onGoingToClick");
-        console.log(this.user);
+    /**
+     * If some field form is incorrect a message will show.
+     */
+    SignComponent.prototype.onGoingToProcess = function () {
+        if (this.signUpForm) {
+            console.log(this.signUpForm);
+        }
+        if (this.editPerfilForm) {
+            console.log(this.editPerfilForm);
+        }
         this.checkFields = true;
         console.log("checkFields: " + this.checkFields);
     };
@@ -236,6 +253,7 @@ var SignComponent = (function () {
             localStorage.setItem(user.userName, "");
             localStorage.setItem('rememberPassword', undefined);
         }
+        sessionStorage.setItem(user.userName, user.password);
     };
     SignComponent.prototype.beforeUpload = function (uploadingFile) {
         console.log(uploadingFile);
@@ -278,17 +296,20 @@ var SignComponent = (function () {
     SignComponent.prototype.onExitEditPerfil = function () {
         this.router.navigate(['/rooms']);
     };
-    SignComponent = __decorate([
-        core_1.Component({
-            moduleId: module.id,
-            selector: 'ovt-sign',
-            styleUrls: ["sign.css"],
-            template: sign_html_1.signTemplate,
-            providers: [sign_service_1.SignService]
-        }), 
-        __metadata('design:paramtypes', [router_1.Router, router_1.ActivatedRoute, platform_browser_1.DomSanitizer, forms_1.FormBuilder, sign_service_1.SignService, user_service_1.UserService, file_service_1.FileService])
-    ], SignComponent);
     return SignComponent;
 }());
+SignComponent = __decorate([
+    core_1.Component({
+        moduleId: module.id,
+        selector: 'ovt-sign',
+        styleUrls: ["sign.css"],
+        template: sign_html_1.signTemplate,
+        providers: [sign_service_1.SignService],
+        host: {
+            class: 'ovt-sign-selector'
+        }
+    }),
+    __metadata("design:paramtypes", [router_1.Router, router_1.ActivatedRoute, platform_browser_1.DomSanitizer, forms_1.FormBuilder, sign_service_1.SignService, user_service_1.UserService, file_service_1.FileService])
+], SignComponent);
 exports.SignComponent = SignComponent;
 //# sourceMappingURL=sign.component.js.map

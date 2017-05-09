@@ -8,10 +8,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
-var http_1 = require('@angular/http');
-var Subject_1 = require('rxjs/Subject');
-var connection_service_1 = require('./connection.service');
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = require("@angular/core");
+var http_1 = require("@angular/http");
+var Subject_1 = require("rxjs/Subject");
+var connection_service_1 = require("./connection.service");
 var FileService = (function () {
     function FileService(http, connection) {
         this.http = http;
@@ -77,18 +78,11 @@ var FileService = (function () {
     FileService.prototype.destroy = function () {
         this.subscription.unsubscribe();
     };
-    ///////////////////////////////////////////////////////////////////
-    FileService.prototype.prueba = function () {
-        return this.connection.urlServer + "prueba";
-    };
-    FileService.prototype.prueba2 = function () {
-        return this.connection.urlServer + "prueba2";
-    };
-    FileService = __decorate([
-        core_1.Injectable(), 
-        __metadata('design:paramtypes', [http_1.Http, connection_service_1.ConnectionService])
-    ], FileService);
     return FileService;
 }());
+FileService = __decorate([
+    core_1.Injectable(),
+    __metadata("design:paramtypes", [http_1.Http, connection_service_1.ConnectionService])
+], FileService);
 exports.FileService = FileService;
 //# sourceMappingURL=file.service.js.map

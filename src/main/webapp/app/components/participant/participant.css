@@ -1,8 +1,4 @@
-/*
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
-*/
+
 /* 
     Created on : 06-dic-2015, 10:54:14
     Author     : Juan Antonio Echeverrías Aranda
@@ -11,21 +7,78 @@ and open the template in the editor.
 .ovt-participant {
 
     text-align:center;
+    width:100%;
 }
+
+
 
 .video{
     position: relative;
     width: 100%;
 }
 
+
+
+video {
+  width:100% !importat;
+  height: auto !importat;
+  
+}
+
+video.loading{
+  
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+
+}
+
+
+
+
 video.small {
-   height:auto; 
+ 
+   /* 
    min-height: 211px;
+   */
 
 }
 video.large{
-    height:auto; 
+    
+
+    /*
     min-height: 538px;
+    */
+}
+
+div.video-footer{
+    border: 2px solid #000000;
+    font-weight: bold;
+    background-color: azure;
+    position: absolute;
+    width: 100%;
+    display: none;
+    overflow:hidden;
+ }
+
+video.small + div.video-footer{
+    border-bottom-left-radius: 2em;
+    border-bottom-right-radius: 2em;
+    bottom: -0.2em;
+    display: block;
+    
+    
+}
+
+video.large + div.video-footer{
+    border-bottom-left-radius: 20em;
+    border-bottom-right-radius: 20em;
+    bottom: -0.2em;
+    display: block;
+    
+    
 }
 
 ovt-loading{
@@ -33,25 +86,19 @@ ovt-loading{
   width:100%;
   border-radius: 2em;
   display: block;
-  position: absolute;
-  bottom: 0.0px;
   z-index: 97;
   background: black;
-  width: 283px;
-  height: 211px;
 
-   
+ }
+
+ovt-loading:after{
+  content: "";
+  display: block;
+  padding-top: 76%;
+  padding-top: calc(75% + 2em);
 }
 
-ovt-loading.large{
-    width: 716px;
-    height: 538px;
-}
 
-ovt-loading.small{
-    width: 283px;
-  height: 211px;
-}
 
 video {
     border: 2px solid #000000;
@@ -64,22 +111,12 @@ video {
 
 }
 
-div.video-footer{
-    border: 2px solid #000000;
-    font-weight: bold;
-    border-bottom-left-radius: 20em;
-    border-bottom-right-radius: 20em;
-    background-color: azure;
-    position: absolute;
-    bottom: 0.0em;
-    width: 100%;
+video:after{
+  content: "";
+  padding-top: 75%;
+  display: block;
 }
 
-video.small + div.video-footer{
-    border-bottom-left-radius: 17em;
-    border-bottom-right-radius: 17em;
-    
-}
 
 .important{
     border: 2px solid #000000;

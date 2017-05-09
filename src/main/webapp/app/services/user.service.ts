@@ -10,8 +10,8 @@ import { UserFile } from '../models/types';
 
 
 /**
- * It allows to share information through all the components
- */
+ * It allows to share information through all the components.
+ */ 
 @Injectable()
 export class UserService{
     
@@ -44,6 +44,7 @@ export class UserService{
         
     registerMe (user: any): void {
         console.log('+++++ USER.REGISTERME ++++++++++++');  //%
+        console.log(user);
         this._me.userName = user.userName;
         this._me.userType = user.userType;
         this._me.name = user.name;
@@ -75,11 +76,11 @@ export class UserService{
     }
 
     get myUserImageMimeType(): any{
-        return this._me.userImage.mimeType;
+        return this._me.userImage && this._me.userImage.mimeType;
     }
 
     get myUserImageContent(): any{
-        return this._me.userImage.content;
+        return this._me.userImage && this._me.userImage.content;
     }
 
     get myRoomName(): string {

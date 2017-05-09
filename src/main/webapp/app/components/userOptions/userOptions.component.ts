@@ -23,14 +23,14 @@ export class UserOptionsComponent{
     }
 
     onEditAccount(){
-        this.onDisplayMenu();
+        this.displayOrHideMenu();
         this.router.navigate(['/sign', { state: SignStates.EditPerfil }]);
     }
 
     onSignOut(){
         console.log("");
         console.log(`* <- UserOptions.onSignOut ${new Date().toLocaleTimeString()}`);
-        this.onDisplayMenu();
+        this.displayOrHideMenu();
         this.router.navigate(['/sign']);
      }
 
@@ -38,7 +38,16 @@ export class UserOptionsComponent{
        return this.sanitizer.bypassSecurityTrustResourceUrl(`data:${this.me.myUserImageMimeType}; base64,${this.me.myUserImageContent}`);
     }
 
-    onDisplayMenu(){
+    onDisplayMenu(event:Event){
+        this.displayOrHideMenu();
+        event.stopPropagation();
+    }
+
+    onHideMenu() {
+        this.menuDisplayed = false;
+    }
+
+    private displayOrHideMenu(){
         this.menuDisplayed = !this.menuDisplayed;
     }
 }

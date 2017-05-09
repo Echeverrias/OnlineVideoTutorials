@@ -8,7 +8,7 @@
              <div *ngIf="me.amATutor()" class="ovt-container-col ovt-create-room">
                 <div>
                     <div class="ovt-inline">
-                        Escribe el nombre de la sala a crear: <input type="text" [(ngModel)]="roomName">
+                        <p>Escribe el nombre de la sala a crear: </p><input type="text" [(ngModel)]="roomName">
                     </div>
                     <div>
                         <button class="btn ovt-btn ovt-inline"(click)="onCreateRoom()">Crear</button>

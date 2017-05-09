@@ -39,7 +39,7 @@ export class SignService {
     init(){
         console.log("*SignService.init");
         this.signOut();
-   
+        
         // Reset login status
         //this.destroyMe();
     }
@@ -69,7 +69,7 @@ export class SignService {
             .catch((error: any) => Observable.throw(error))
     }
 
-    validateField (fieldToValidate: FieldValidationRequest){
+    validateField (fieldToValidate: FieldValidationRequest): Observable<Response>{
         console.log(`Validate:  ${fieldToValidate}`);
         let body = JSON.stringify(fieldToValidate);
         let headers = new Headers();
@@ -163,7 +163,7 @@ export class SignService {
         this.me.registerMe(user);
 
         console.log(this.me.getMe());
-        /*
+        /**
         let jsonMessage: LoginMessage = {
             id: "modify",
             userName: this.me.myUserName,
@@ -176,13 +176,6 @@ export class SignService {
         console.log(`/ SignService.modifyUser ${new Date().toLocaleTimeString()}`);
         console.log("");
     }
-
-    /*   
-    getLastUserName(): string {
-        return localStorage.getItem('ovtLastUserName');
-    }
-   */
-   
 
     private signOut(): void{
         console.log("");

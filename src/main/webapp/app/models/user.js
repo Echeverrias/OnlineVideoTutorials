@@ -3,6 +3,7 @@
  *
  */
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var TUTOR = "tutor";
 var STUDENT = "student";
 var User = (function () {

@@ -1,3 +1,4 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.gadgetsContainerTemplate = "<div class=\"ovt-gadgetsContainer\">  \n \n  <div class='ovt-options'>\n     <ul> \n        <li> <a  [ovt-option]=\"'pdfLoader'\" [ovt-deactivate]=\"option\" [ovt-imagePath]=\"imagePath\" [ovt-image]=\"'pdf-off.png'\" (ovt-activate)=\"activateOption($event)\"></a></li>\n      </ul>\n  </div> \n \n <div class=\"ovt-option\">\n     <ovt-pdf-loader [ovt-address]=\"address\" (ovt-file)=\"onSelectedFile($event)\" (ovt-new-file)=\"displayNewFileAlert($event)\"></ovt-pdf-loader>\n </div>\n\n</div>";
 //# sourceMappingURL=gadgetsContainer.html.js.map

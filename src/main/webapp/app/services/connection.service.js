@@ -8,12 +8,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * @author Juan Antonio Echeverrías Aranda (juanan.echeve@gmail.com)
  *
  */
-var core_1 = require('@angular/core');
-var handler_service_1 = require('./handler.service');
+var core_1 = require("@angular/core");
+var handler_service_1 = require("./handler.service");
 console.log("Module Connection");
 /**
 * It allows the communication between the server and the components
@@ -126,11 +127,11 @@ var ConnectionService = (function () {
         this._stompClient.disconnect();
         this._ws.close();
     };
-    ConnectionService = __decorate([
-        core_1.Injectable(), 
-        __metadata('design:paramtypes', [handler_service_1.HandlerService])
-    ], ConnectionService);
     return ConnectionService;
 }());
+ConnectionService = __decorate([
+    core_1.Injectable(),
+    __metadata("design:paramtypes", [handler_service_1.HandlerService])
+], ConnectionService);
 exports.ConnectionService = ConnectionService;
 //# sourceMappingURL=connection.service.js.map

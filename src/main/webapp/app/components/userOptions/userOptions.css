@@ -1,12 +1,35 @@
+#ovt-user-options {
+  position: absolute;
+  top: 1.2em;
+  right: 1em;
+  width: 25%;
+  z-index:90;
+}
+/*
 #ovt-user-options{
     height:100%;
     width: 100%;
 }
+*/
 
+/*
 #ovt-user-options button.ovt-btn{
     height:100%;
     width: 100%;
     width: auto;
+}
+
+*/
+div.ovt-container form input.btn{
+  display: inline-block;
+  width:auto;
+  padding: 0.5em 2em;
+}
+
+div.ovt-container button{
+  margin:auto;
+  width: auto;
+  padding: 0.5em 2em;
 }
 
 
@@ -44,7 +67,6 @@ div.ovt-user-icon.small img{
 div.ovt-user-menu {
     padding: 0.3em;
     width: 100%;
-    
 }
 
 div.ovt-user-menu div.ovt-container {
@@ -58,6 +80,7 @@ div.ovt-user-menu div.ovt-container {
     justify-content: center;
     width: 100%;
     border-radius: 5px 5px 0px 0px;
+    padding: 20px;
 }
 
 div.ovt-user-menu div.ovt-image{
@@ -167,6 +190,14 @@ div.ovt-user-menu div.ovt-footer{
 
 }
 
+
+@media screen and(max-width: 1100px){
+
+    #ovt-user-options {
+        width: 20%;
+    }
+}
+
 @media screen and (max-width:900px) {
   /*
   div.ovt-image div.ovt-user-icon.big img{
@@ -178,28 +209,96 @@ div.ovt-user-menu div.ovt-footer{
 }
 
 
-@media screen and (max-width:800px) {
+@media screen and (max-width:768px) {
   
-  
+   #ovt-user-options {
+        transition: right 0.2s ease 0.2s;
+        right: 6.55em;
+    }
+
+  div.ovt-user-menu {
+    margin-left: 6em;
+    
+    }
 
 }
 
+/*
+@media screen and(max-width: 768px){
+
+    #ovt-user-options {
+        transition: right 0s ease 0.5s;
+        right: 4.5em;
+    }
+}
+*/
 
 @media screen and (max-width:600px) {
   
-  div.ovt-image div.ovt-user-icon.big img{
-    height: 90px;
-    width: 90px;
-  
-}
+    div.ovt-image div.ovt-user-icon.big img{
+        height: 90px;
+        width: 90px;
+    }
 
 }
 
+@media screen and (max-width:568px) {
 
+    #ovt-user-options button.ovt-btn{
+        padding: 0.3em;
+        font-size: 1em;
+    }
 
+     #ovt-user-options {
+        transition: right 0.2s ease 0.2s;
+        right: 4.5em;
+    }
 
-@media screen and (max-width:400px) {
-  
-  
+    div.ovt-user-menu {
+    margin-left: 4em;
+    
+    }
+
 
 }
+
+@media screen and (max-width:480px) {
+
+     
+
+    #ovt-user-options button.ovt-btn{
+        padding: 0.1em;
+        font-size: 0.9em;
+    }
+}
+
+@media screen and (max-width:425px) {
+  
+    div.ovt-image div.ovt-user-icon.big img{
+        height: 70px;
+        width: 70px;
+    }
+
+    div.ovt-full-name{
+        font-size: 12;
+    }
+
+     #ovt-user-options {
+        transition: right 0.2s ease 0.2s;
+        right: 1.5em;
+    }
+
+    div.ovt-user-menu {
+        margin-left: 1em;
+    
+    }
+
+    
+
+   
+
+}
+
+
+
+
