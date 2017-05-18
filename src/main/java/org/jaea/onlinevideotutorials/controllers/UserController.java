@@ -48,14 +48,14 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
     
-    ///////////////////////////////////////////////////////////////////////////////////////////
+    /* 
     @Autowired
     private UserFileRepository userFileRepository;
-    ///////////////////////////////////////////////////////////////////////////////////////////
+   */
 
     @RequestMapping(value ="/validateUser", method = RequestMethod.POST)
     public synchronized ResponseEntity<User> validateUser(@RequestBody User userRequest){
-
+       
         log.info("Usercontroller.validateUser");
         log.info(userRequest.toString());
         ResponseEntity <User> response = null;
