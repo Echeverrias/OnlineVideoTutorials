@@ -116,8 +116,6 @@ button[name=exitRoom] {
 
     height: 80%;
     min-height: 36em;
-
-    background: orange;
 }
 
 
@@ -125,11 +123,9 @@ ovt-chat{
     display:block;
     box-sizing: border-box;
     width:100%;
-
     height: 20%;
     min-height: 9em;
 
-    background: purple;
 }
 
 

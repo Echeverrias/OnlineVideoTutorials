@@ -1,0 +1,14 @@
+{
+  "name": "system",
+  "_cacheHeaders": {
+    "ETag": "\"566a5abb-cb46\"",
+    "Last-Modified": "Fri, 11 Dec 2015 05:10:19 GMT",
+    "Content-Length": "52038",
+    "Content-Type": "application/x-javascript"
+  },
+  "_release": "e-tag:566a5abb-",
+  "main": "index.js",
+  "_source": "https://code.angularjs.org/tools/system.js",
+  "_target": "*",
+  "_originalSource": "https://code.angularjs.org/tools/system.js"
+}

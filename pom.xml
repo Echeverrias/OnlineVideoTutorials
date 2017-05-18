@@ -87,6 +87,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <version>1.4.2.RELEASE</version>
+            <scope>test</scope>
         </dependency>
    
         <!-- Kurento -->

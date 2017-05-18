@@ -111,7 +111,7 @@ var ParticipantComponent = (function () {
             console.log("*** ParticipantComponent.processAnswer " + new Date().toLocaleTimeString());
             _this._rtcPeer.processAnswer(sdpAnswer, function (error) {
                 if (error) {
-                    console.error("!! ERROR:Participant.receiveVideoResponse");
+                    console.error("!! ERROR:Participant.processAnswer");
                     console.error(error);
                     return;
                 }
