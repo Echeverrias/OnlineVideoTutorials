@@ -87,6 +87,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <version>1.4.2.RELEASE</version>
+            <scope>test</scope>
         </dependency>
    
         <!-- Kurento -->
@@ -184,7 +185,9 @@
                  </configuration>
               
             <executions>
-               <!--        <execution>
+             
+                      <execution>
+
                         <id>exec-bower-install</id>
                         <phase>generate-sources</phase>
                         <goals>
@@ -214,8 +217,9 @@
                         </configuration>
                         </execution>
 
-                
-           -->      <execution>
+
+                 <execution>
+
                         <id>exec-tsc</id>
                         <phase>generate-sources</phase>
                         <goals>
@@ -234,8 +238,10 @@
                                 <groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
                                 <version>3.0.0</version>
-                                
-	<!--	 	<configuration>
+
+                         
+		 	<configuration>
+
 					<filesets>
 						<fileset>
 							<directory>src/main/webapp/bower_components</directory>
@@ -246,7 +252,7 @@
 					</filesets>
                                         
 				</configuration> 
-        -->   
+
 		</plugin>
         </plugins>
         <resources>
