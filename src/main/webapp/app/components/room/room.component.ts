@@ -66,15 +66,6 @@ export class RoomComponent implements OnInit, OnDestroy{
          
         this.room.onExit();
         
-        /*
-        if (this.me.amAStudent()) {
-            this.router.navigate(['/rooms']);
-        }
-        else {
-           this.router.navigate(['/sign']);
-        }
-        */
-
         this.router.navigate(['/rooms']);
       
         console.log(`/ Room.onExitOfRoom ${new Date().toLocaleTimeString()}`);

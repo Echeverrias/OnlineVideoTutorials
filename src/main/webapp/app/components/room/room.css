@@ -1,9 +1,3 @@
-/*
-To 
- this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
-*/
 /* 
     Created on : 06-dic-2015, 10:54:14
     Author     : Juan Antonio Echeverrías Aranda
@@ -13,7 +7,7 @@ and open the template in the editor.
     height: auto;
     min-height: 100%;
     width: auto;
-    min-width: 1286px;
+    min-width: 1024px;
     display:-webkit-flex;
     -webkit-flex-direction: row;
     display:flex;
@@ -31,8 +25,8 @@ and open the template in the editor.
 /* GadgetContainerComponent  */
 ovt-gadgets-container{
   height:100%;
-  width: 25em;
-  right: -25em;
+  width: 28.45vw;
+  right: -28.45vw;
   position: fixed;
   display:block;
   -moz-transition: all 1s;
@@ -48,27 +42,24 @@ ovt-gadgets-container{
 
 
 .main{
-    -webkit-flex: 3 0 76em;
+
+   
     -webkit-order: 1;
-    flex: 3 0 76em;
     order: 1;
-    display: -webkit-flex;
-    -webkit-flex-direction: column;
-    -webkit-justify-content: space-around;
-    -webkit-align-items: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-}
+
+    flex: 5 0 57em;
+    -webkit-flex: 5 0 57em;
+    min-width: 57em;
+
+
+  }
 
 .secundary{
-    width: 100%;
-    min-height:51em;
-    -webkit-flex: 1 0 22em;
-    -webkit-order: 2;
-    flex: 1 0 22em;
+    
+   -webkit-order: 2;
     order: 2;
+   
+    
     display: -webkit-flex;
     -webkit-flex-wrap: wrap;
     -webkit-flex-direction: row;
@@ -79,14 +70,22 @@ ovt-gadgets-container{
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
+    
+
+     flex: 2 0 22em;
+     -webkit-flex: 2 0 22em;
+     min-width: 22em;
+     height:100%;
+     min-height: 45em;
+     overflow-x: hidden;
+     overflow-y: auto;
+
+ }
 
 
 button[name=exitRoom] {
     position:absolute;
-    bottom:1em;
+    bottom:0.5em;
     right:1em;
     box-shadow: -2px 2px 2px #299D29;
     z-index:95;
@@ -97,10 +96,12 @@ button[name=exitRoom] {
 
 .dashboard{
     width:100%;
-    -webkit-flex: 4 0 42em;
-    -webkit-order: 1;
-    flex: 4 0 42em;
-    order: 1;
+    margin: auto;
+    box-sizing: border-box;
+    padding: 0.5em 0 0.5em 0;
+
+    position:relative;
+    
     display: -webkit-flex;
     -webkit-flex-direction: row;
     -webkit-flex-wrap: wrap;
@@ -111,35 +112,50 @@ button[name=exitRoom] {
     flex-wrap: wrap;
     justify-content: space-around;
     align-items: center;
-    margin: auto;
-    padding: 1em 0;
+    
+
+    height: 80%;
+    min-height: 36em;
 }
 
 
 ovt-chat{
     display:block;
-    width:98%;
-    -webkit-flex: 1 0 9em;
-    -webkit-order: 2;
-    flex: 1 0 9em;
-    max-height: 11em;
-    order: 2;
-    padding: 0.5em;
-    overflow: hidden;
+    box-sizing: border-box;
+    width:100%;
+    height: 20%;
+    min-height: 9em;
+
 }
+
+
+ovt-participant {
+    display: block;
+    width: 100%;
+}
+
+
 
 
 /* div.main div.dashoard */
 
+div.main ovt-participant{
+    max-height: 99%;
+}
+
+div.secundary ovt-participant{
+    max-width: 99%;
+}
+
 ovt-participant.main-participant {
-    min-height: 538px;
-    width: 71%;
- }
+    width: 95%;
+    max-width: 97vh;
+}
 
 
 ovt-participant.minimized{
 
-    -webkit-flex: 1 1 27%;
+    -webkit-flex: 0 1 28%;
     -webkit-order: 1;
     flex: 0 1 28%;
     order: 1;
@@ -152,9 +168,8 @@ div.ovt-file {
     -webkit-order: 2;
     flex: 0 3 619px;
     order: 2;
-    max-height: 80%;
-    height: 80%;
-    width:619px;
+    max-height: 99%;
+    height: 99%;
     position: relative;
     margin:0em;
 }
@@ -183,7 +198,55 @@ div.ovt-file object{
     font-size: 0.8em;
 }
 
+@media screen and (max-width: 1210px){
 
+    ovt-participant.minimized{
+
+        -webkit-flex: 0 1 0%;
+        -webkit-order: 1;
+        flex: 0 1 0%;
+        order: 2;
+        height: auto;
+        position: absolute;
+        width: 20vw;
+        bottom: 0.5em;
+        left: 0.5em;
+        z-index:1;
+    }
+}
+
+@media screen and (max-width: 1024px){
+
+    ovt-gadgets-container{
+ 
+  width: 22em;
+  right: -22em;
+  
+    }
+
+    ovt-participant.minimized{
+
+        -webkit-flex: 0 1 0%;
+        -webkit-order: 1;
+        flex: 0 1 0%;
+        order: 2;
+        height: auto;
+        position: absolute;
+        width: 20vw;
+        bottom: 0.5em;
+        left: 0.5em;
+        z-index:1;
+    }
+}
+
+@media screen and (max-height: 590px){
+
+    ovt-participant.main-participant {
+        width: 95%;
+        max-width: 43em;
+    }
+
+}    
 
 
 

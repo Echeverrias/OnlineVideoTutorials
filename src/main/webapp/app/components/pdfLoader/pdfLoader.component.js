@@ -8,9 +8,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
-var file_service_1 = require('../../services/file.service');
-var pdfLoader_html_1 = require('./pdfLoader.html');
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = require("@angular/core");
+var file_service_1 = require("../../services/file.service");
+var pdfLoader_html_1 = require("./pdfLoader.html");
 var PdfLoaderComponent = (function () {
     function PdfLoaderComponent(file) {
         this.file = file;
@@ -78,28 +79,28 @@ var PdfLoaderComponent = (function () {
     PdfLoaderComponent.prototype.ngOnDestroy = function () {
         this.file.destroy();
     };
-    __decorate([
-        core_1.Input("ovt-address"), 
-        __metadata('design:type', String)
-    ], PdfLoaderComponent.prototype, "address", void 0);
-    __decorate([
-        core_1.Output("ovt-file"), 
-        __metadata('design:type', core_1.EventEmitter)
-    ], PdfLoaderComponent.prototype, "sharedFile", void 0);
-    __decorate([
-        core_1.Output("ovt-new-file"), 
-        __metadata('design:type', core_1.EventEmitter)
-    ], PdfLoaderComponent.prototype, "newFile", void 0);
-    PdfLoaderComponent = __decorate([
-        core_1.Component({
-            moduleId: module.id,
-            selector: 'ovt-pdf-loader',
-            template: pdfLoader_html_1.pdfLoaderTemplate,
-            styleUrls: ['pdfLoader.css'],
-        }), 
-        __metadata('design:paramtypes', [file_service_1.FileService])
-    ], PdfLoaderComponent);
     return PdfLoaderComponent;
 }());
+__decorate([
+    core_1.Input("ovt-address"),
+    __metadata("design:type", String)
+], PdfLoaderComponent.prototype, "address", void 0);
+__decorate([
+    core_1.Output("ovt-file"),
+    __metadata("design:type", core_1.EventEmitter)
+], PdfLoaderComponent.prototype, "sharedFile", void 0);
+__decorate([
+    core_1.Output("ovt-new-file"),
+    __metadata("design:type", core_1.EventEmitter)
+], PdfLoaderComponent.prototype, "newFile", void 0);
+PdfLoaderComponent = __decorate([
+    core_1.Component({
+        moduleId: module.id,
+        selector: 'ovt-pdf-loader',
+        template: pdfLoader_html_1.pdfLoaderTemplate,
+        styleUrls: ['pdfLoader.css'],
+    }),
+    __metadata("design:paramtypes", [file_service_1.FileService])
+], PdfLoaderComponent);
 exports.PdfLoaderComponent = PdfLoaderComponent;
 //# sourceMappingURL=pdfLoader.component.js.map

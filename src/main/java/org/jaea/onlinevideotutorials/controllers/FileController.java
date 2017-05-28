@@ -172,22 +172,7 @@ public class FileController {
     	
     }
     
-    /////////////////////////////////////////////////////////////////
-    @PostMapping("/prueba")
-    public ResponseEntity<UserFile> prueba(@RequestParam("file") MultipartFile requestFile){
-        log.info("FileController.prueba");
-        UserFile userImage = new UserFile(requestFile);
-        return new ResponseEntity(userImage, HttpStatus.OK);
-        
-    }
-    
-    @PostMapping("/prueba2")
-    public ResponseEntity<UserFile> prueba2(@RequestParam("file") MultipartFile requestFile){
-        log.info("FileController.prueba2");
-        UserFile userImage = new UserFile(requestFile);
-        return new ResponseEntity(userImage, HttpStatus.NOT_FOUND);
-        
-    }
+   
 
  }
 

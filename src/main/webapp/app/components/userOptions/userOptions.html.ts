@@ -1,6 +1,6 @@
 export var userOptionsTemplate: string = `<div id="ovt-user-options">
     <div class="ovt-user-display">
-        <div class="ovt-user-icon small" (click)="onDisplayMenu()">
+        <div class="ovt-user-icon small" (click)="onDisplayMenu($event)">
             <a title="Cuenta de {{me.myName}}">
                 <img [src]="getUserImageUrl()" />
             </a>    

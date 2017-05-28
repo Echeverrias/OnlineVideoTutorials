@@ -12,6 +12,10 @@
   margin-bottom: 2em;
 }
 
+div.alert {
+  padding: 5px 15px;
+}
+
 div.ovt-sign{
    margin: auto;
     background-color: #EEFACA;
@@ -39,70 +43,45 @@ div.ovt-sign{
 }
 
 .ovt-signIn {
-    width: 30%;
+    width: 40%;
    
 }
 
 
-.ovt-signUp {
-    width: 80%;
-    height: 80%;
-}
-
-
 .ovt-signIn div.ovt-container{
-  padding: 1em 1em;
-  height: 40em;
+  padding: 1em;
 }
-/*
-form  {
-
-    padding: 0% 2%;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-}
-
-form div {
-    margin:auto;
-}
-*/
-
-
-
 
 div.ovt-container form {
     margin:auto;
     box-sizing: border-box;
-    height: 80%;
-    padding: 1em;
-    padding-bottom: 0em;
-    margin-bottom: 1em;
     border-left: 0em;
+    margin-bottom: 1em;
+    
 }
+
+.ovt-signIn div.ovt-container form {
+  width: 70%;
+}  
 
 form label{
   display:block;
 }
 
 form div.ovt-fields{
-  max-height: 80%;
-  height: 80%;
   margin-bottom: 2em;
 }
 
 div.ovt-signIn form div.ovt-fields{
-  max-height: 70%;
-  height: 70%;
 }
 
 div.ovt-signIn form div.ovt-fields div.form-group{
-  height: 50%;
-  max-height: 50%;
-}
+ }
 
 div.ovt-signIn form div.ovt-submit {
   margin-top: 2em;
+  display: block;
+  text-align:center;
 }
 
 .ng-valid[required] {
@@ -114,13 +93,19 @@ div.ovt-signIn form div.ovt-submit {
 }
 
 div.ovt-container form input.btn{
-  width:65%;
-  margin:auto;
+  display: inline-block;
+  width:auto;
+  padding: 0.5em 2em;
 }
 
 div.ovt-container button{
-  width:60%;
   margin:auto;
+  width: auto;
+  padding: 0.5em 2em;
+}
+
+div.ovt-signIn div.ovt-container button{
+  margin-bottom: 1em;
 }
 
 
@@ -132,19 +117,21 @@ form div.ovt-field{
   margin-left:0.5em;
 }
 
-/* .ovt-signUp */
 
+/* SIGN UP */
+
+div.ovt-signUp {
+    width: 85%;
+}
 
 div.ovt-signUp div.ovt-container{
-  padding: 0.5em 0.5em;
-  height: 45em;
+  padding: 1em 1em 0em 1em;
   position: relative;
 }
 
 div.ovt-signUp form div.form-group{
-  height:14.6%;
-  max-height: :14.6%;
   margin: 0;
+  margin-bottom: 1em;
 }
 
 div.ovt-signUp form label{
@@ -158,9 +145,15 @@ div.ovt-signUp form input{
   margin: 0em;
 }
 
+div.ovt-signUp form div.ovt-fields div.form-group div.ovt-field input.ovt-radio[type="radio"]{
+    width:auto;
+    display: inline-block;
+    margin-left: 0.3em;
+}
+
 div.ovt-signUp form div.ovt-display-alert{
   display: inline-block;
-  margin: 0em;
+  margin-left: 1em;
   padding: 0em;
 }
 
@@ -173,15 +166,11 @@ div.ovt-signUp form  div.ovt-display-alert div.alert{
 
 
 div.ovt-signUp form {
-  max-height: 100%;
-  height: 100%;
-  margin-bottom: 1em;
+  padding: 1em;
 }
 
 div.ovt-signUp form div.ovt-fields{
-  max-height: 90%;
-  height: 90%;
-  margin-bottom: 1em;
+  margin-bottom: 2em;
 }
 
 
@@ -198,9 +187,6 @@ form div.ovt-fields div.form-group div.ovt-field span{
   margin: 0em 0.5em;
  }
 
-div.ovt-signUp form input.btn{
-  width: 20%;
-}
 
 div.ovt-signUp form div.ovt-submit {
   margin-left: 0.5em;
@@ -208,8 +194,7 @@ div.ovt-signUp form div.ovt-submit {
 }
 
 div.ovt-signUp  div.ovt-container button{
-  width:auto;
-  bottom: 0.5em;
+  bottom: 0.9em;
   right: 1.5em;
   position: absolute;
 }
@@ -243,29 +228,23 @@ div.ovt-image div.ovt-user-icon.big img{
 }
 
 
-/*
-div.ovt-user-menu div.ovt-options div.ovt-text{
-    width: 100%;
-    text-align: center;
-    margin-bottom: 2em;
-}
 
-div.ovt-user-menu div.ovt-options div button{
-    margin: auto;
-    display: block;
-}
-*/
-/* edit perfil */
+
+/* EDIT PERFIL */
 
 div.ovt-edit-perfil{
-  width: 55%;
+  width: 65%;
 }
 
-div.ovt-edit-perfil div.ovt-container{
+div.ovt-edit-perfil div.ovt-header + div.ovt-container{
   position: relative;
+  padding: 1.5em 1em 0em 1.5em;
 }
+
 
 div.ovt-edit-perfil div.ovt-container div.ovt-container{
+  position: relative;
+  padding: 1.5em 1em 1em 1.5em;
   display: -webkit-flex;
   display: flex;
   -webkit-flex-direction: row;
@@ -273,6 +252,10 @@ div.ovt-edit-perfil div.ovt-container div.ovt-container{
   align-items: center;
   justify-content: space-around;
   width: 100%
+}
+
+div.ovt-edit-perfil div.ovt-container form{
+  padding-top: 0.5em;
 }
 
 div.ovt-image{
@@ -369,14 +352,15 @@ div.ovt-edit-perfil form div.form-group input.ovt-radio{
 
 div.ovt-edit-perfil div.ovt-container form div.ovt-submit input.btn{
   margin: 0;
-  width: 35%;
+  width: auto;
+  margin-bottom: 1em;
 }
 
 div.ovt-edit-perfil div.ovt-container button{
   position: absolute;
   margin: 0;
-  width: 35%;
-  bottom:2.25em;
+  width: auto;
+  bottom: 0.9em;
   right: 1.7em;
 }
 
@@ -384,36 +368,93 @@ div.ovt.edit.perfil div.ovt-submit{
   margin-top: 1em;
 }
 
-@media screen and (max-width:100px){
-
-  div.ovt-edit-perfil{
-    width: 70%;
+div.ovt-edit-perfil form div.ovt-fields div.form-group div.ovt-field input.ovt-radio[type="radio"]{
+    width:auto;
+    display: inline-block;
+    margin-left: 0.3em;
 }
 
+@media screen and (max-width:1040px) {
+  
+  
+  div.ovt-signUp  {
+  width: 85%;
+  }
+
+  div.ovt-signUp form {
+  padding: 0.5em 0.5em 1em 0.5em;
+}
+
+div.ovt-signUp form div.ovt-display-alert{
+  margin-left: 0.5em;
+  
+}
 
 }
 
-
-
-@media screen and (max-width:900px) {
+@media screen and (max-width:980px) {
   
   
   .ovt-signIn {
-    width: 45%;
+    width: 50%;
   }
 
+  div form div.ovt-display-alert{
+    display: block;
+    text-align: center;
+  }
+
+  div.ovt-signUp form div.ovt-display-alert{
+    display: block;
+  }
+
+
+  div.ovt-signUp {
+    width: 60%;
+  }
+
+  div.ovt-signUp form div.ovt-fields{
+    margin-bottom: 2em;
+    margin: auto;
+    max-width: 80%;
+  }
+
+  div.ovt-signUp form  div.ovt-display-alert div.alert{
+    display: block;
+  }
+
+  div.ovt-signUp  form div.ovt-fields div.form-group div.ovt-field input{
+    width:100%;
+ }
+
+
   div.ovt-edit-perfil{
-  width: 75%;
-}
+    width: 75%;
+  }
+
+  div.ovt-edit-perfil form div.ovt-fields{
+    margin-bottom: 2em;
+    margin: auto;
+    max-width: 80%;
+  }
+
+  div.ovt-edit-perfil form  div.ovt-display-alert{
+    display: block;
+    width:100%;
+  }
+
+  div.ovt-edit-perfil  form div.ovt-fields div.form-group div.ovt-field input{
+    width:100%;
+ }
+
 
 }
+
+
 
 @media screen and (max-width:800px) {
   
   
-  .ovt-signIn {
-    width: 55%;
-  }
 
   div.ovt-image div.ovt-user-icon.big img{
     height: 125px;
@@ -421,12 +462,25 @@ div.ovt.edit.perfil div.ovt-submit{
     }
 }
 
-@media screen and (max-width:700px) {
+@media screen and (max-width:768px) {
   
   
   .ovt-signIn {
-    width: 55%;
+    width: 65%;
   }
+  
+
+  div.ovt-edit-perfil {
+    width: 80%;
+  }
+
+
+}
+
+
+@media screen and (max-width:700px) {
+  
+
 
   div.ovt-edit-perfil div.ovt-container div.ovt-container{
     display: block;
@@ -436,52 +490,111 @@ div.ovt.edit.perfil div.ovt-submit{
     height: auto;
 }
 
-div.ovt-edit-perfil form div.form-group input{
-  width: 57%;
-  display: inline-block;
-}
-
-div.ovt-signUp form  div.ovt-display-alert div.alert{
-  width: 57%;
-  display: block;
-
-}
-
-div.ovt-edit-perfil div.ovt-container form div.ovt-fields div.form-group{
-  height: auto;
-
-}
-
-div.ovt-options div.ovt-text{
-  margin-top: 2em;
-}  
 
 
-div.ovt-edit-perfil form  div.ovt-display-alert div.alert{
-  margin: 0em;
-  padding: 0.45em;
-  display: block;
-}
 
-div.ovt-image div.ovt-user-icon.big img{
-    height: 150px;
-    width: 150px;
-    }
-}
+  div.ovt-edit-perfil div.ovt-container div.ovt-options{
+    text-align: center;
 
-}
-
-@media screen and (max-width:600px) {
-  
-  .ovt-signIn  {
-    width: 75%;
   }
-}
 
-@media screen and (max-width:400px) {
+  div.ovt-edit-perfil div.ovt-container div.ovt-options div:nth-child(2){
+    margin-bottom: 0.5em;
+
+  }
+
+  div.ovt-edit-perfil div.ovt-container div.ovt-options input{
+    margin: auto;
+
+  }
+
+  div.ovt-options div.ovt-text{
+    margin-top: 2em;
+  }  
+
+
+  div.ovt-edit-perfil form  div.ovt-display-alert div.alert{
+    margin: 0em;
+    padding: 0.45em;
+    display: block;
+  }
+
+  div.ovt-image div.ovt-user-icon.big img{
+      height: 150px;
+      width: 150px;
+      }
+  }
+
+
+
+@media screen and (max-width:568px) {
   
   
   .ovt-signIn  {
+    width: 90%;
+  }
+
+  div.ovt-signUp {
+    width: 90%;
+  }
+
+  div.ovt-edit-perfil {
+    width: 85%;
+  }
+
+}
+
+
+
+@media screen and (max-width:480px) {
+  
+  .ovt-signIn div.ovt-container form {
     width: 95%;
+  }  
+
+  div.ovt-signUp form div.ovt-fields{
+    max-width: 90%;
   }
+
+  div.ovt-edit-perfil form div.ovt-fields{
+    max-width: 90%;
+  }
+
+}
+
+@media screen and (max-width:425px) {
+  
+  
+  .ovt-signIn  {
+    width: 99%;
+  }
+
+  div.ovt-signUp {
+    width: 99%;
+  }
+  
+  
+  div.ovt-signUp form div.ovt-fields{
+    max-width: 95%;
+  }
+
+  div.ovt-edit-perfil {
+    width: 99%;
+  }
+
+  div.ovt-edit-perfil form div.ovt-fields{
+    max-width: 95%;
+  }
+
+
+}
+
+
+@media screen and (max-width:100px){
+
+  div.ovt-edit-perfil{
+    width: 70%;
+}
+
+
 }

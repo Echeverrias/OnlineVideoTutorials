@@ -8,15 +8,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
-var http_1 = require('@angular/http');
-var Rx_1 = require('rxjs/Rx');
-require('rxjs/add/operator/map');
-require('rxjs/add/operator/catch');
-var connection_service_1 = require('./connection.service');
-var handler_service_1 = require('./handler.service');
-var user_service_1 = require('./user.service');
-var userFactory_1 = require('../models/userFactory');
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = require("@angular/core");
+var http_1 = require("@angular/http");
+var Rx_1 = require("rxjs/Rx");
+require("rxjs/add/operator/map");
+require("rxjs/add/operator/catch");
+var connection_service_1 = require("./connection.service");
+var handler_service_1 = require("./handler.service");
+var user_service_1 = require("./user.service");
+var userFactory_1 = require("../models/userFactory");
 var SignService = (function () {
     function SignService(http, connection, handler, me) {
         this.http = http;
@@ -140,7 +141,7 @@ var SignService = (function () {
         console.log(user);
         this.me.registerMe(user);
         console.log(this.me.getMe());
-        /*
+        /**
         let jsonMessage: LoginMessage = {
             id: "modify",
             userName: this.me.myUserName,
@@ -153,11 +154,6 @@ var SignService = (function () {
         console.log("/ SignService.modifyUser " + new Date().toLocaleTimeString());
         console.log("");
     };
-    /*
-    getLastUserName(): string {
-        return localStorage.getItem('ovtLastUserName');
-    }
-   */
     SignService.prototype.signOut = function () {
         console.log("");
         console.log("* <- SignService.logOut " + new Date().toLocaleTimeString());
@@ -180,11 +176,11 @@ var SignService = (function () {
     SignService.prototype.destroy = function () {
         console.log("*SignService.destroy");
     };
-    SignService = __decorate([
-        core_1.Injectable(), 
-        __metadata('design:paramtypes', [http_1.Http, connection_service_1.ConnectionService, handler_service_1.HandlerService, user_service_1.UserService])
-    ], SignService);
     return SignService;
 }());
+SignService = __decorate([
+    core_1.Injectable(),
+    __metadata("design:paramtypes", [http_1.Http, connection_service_1.ConnectionService, handler_service_1.HandlerService, user_service_1.UserService])
+], SignService);
 exports.SignService = SignService;
 //# sourceMappingURL=sign.service.js.map

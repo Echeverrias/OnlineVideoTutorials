@@ -27,7 +27,7 @@ import org.springframework.context.annotation.PropertySource;
  */
 
 @Configuration
-@PropertySource("application.properties")
+@PropertySource("application-test.properties")
 public class KurentoTestConfig {
     
     @Value("${test.kms.ws.uri}")

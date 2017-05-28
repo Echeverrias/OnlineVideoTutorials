@@ -160,7 +160,7 @@ export class ParticipantComponent implements OnInit{
                 console.log(`*** ParticipantComponent.processAnswer ${new Date().toLocaleTimeString()}`);
                 this._rtcPeer.processAnswer(sdpAnswer, function(error) {
                     if (error) {
-                        console.error(`!! ERROR:Participant.receiveVideoResponse`);
+                        console.error(`!! ERROR:Participant.processAnswer`);
                         console.error(error);
                         return;
                     }
@@ -208,7 +208,8 @@ export class ParticipantComponent implements OnInit{
         let classes = {
             'important': this.important,
             'large': this.size === 'large',
-            'small': this.size === 'small'
+            'small': this.size === 'small',
+            'loading': this.loading == true,
         };
         
         return classes;

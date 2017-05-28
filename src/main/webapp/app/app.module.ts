@@ -36,9 +36,9 @@ import { AuthGuard } from './guards/auth.guard';
     GadgetsContainerModule
   ],
   declarations: [
+    UserOptionsComponent,
     AppComponent,
     SignComponent,
-    UserOptionsComponent,
     WaitingRoomComponent,
     RoomComponent,
     ParticipantComponent,

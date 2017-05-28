@@ -1,9 +1,10 @@
 "use strict";
-var router_1 = require('@angular/router');
-var sign_component_1 = require('./components/sign/sign.component');
-var waitingRoom_component_1 = require('./components/waitingRoom/waitingRoom.component');
-var room_component_1 = require('./components/room/room.component');
-var auth_guard_1 = require('./guards/auth.guard');
+Object.defineProperty(exports, "__esModule", { value: true });
+var router_1 = require("@angular/router");
+var sign_component_1 = require("./components/sign/sign.component");
+var waitingRoom_component_1 = require("./components/waitingRoom/waitingRoom.component");
+var room_component_1 = require("./components/room/room.component");
+var auth_guard_1 = require("./guards/auth.guard");
 var appRoutes = [
     { path: '', redirectTo: '/sign', pathMatch: 'full' },
     { path: 'sign', component: sign_component_1.SignComponent },

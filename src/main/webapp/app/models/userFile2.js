@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var UserFile2 = (function () {
     function UserFile2(name) {
         if (arguments.length == 1) {

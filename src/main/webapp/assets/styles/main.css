@@ -76,7 +76,7 @@ footer p {
 
 .ovt-btn{
     color: #fff;  
-    width: 55%;
+    width: auto;
     font-weight: bold;
     background-color: #0174DF;
     margin: 0.5em auto 0.5em auto; 

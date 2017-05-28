@@ -48,14 +48,14 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
     
-    ///////////////////////////////////////////////////////////////////////////////////////////
+    /* 
     @Autowired
     private UserFileRepository userFileRepository;
-    ///////////////////////////////////////////////////////////////////////////////////////////
+   */
 
     @RequestMapping(value ="/validateUser", method = RequestMethod.POST)
     public synchronized ResponseEntity<User> validateUser(@RequestBody User userRequest){
-
+       
         log.info("Usercontroller.validateUser");
         log.info(userRequest.toString());
         ResponseEntity <User> response = null;
@@ -178,56 +178,5 @@ public class UserController {
        
         return response;
     }
-
-/*
-    @RequestMapping("/prueba")
-    public ResponseEntity<UserFile> prueba(@RequestParam("userName") String userName){
-        log.info("FileController.prueba");
-        
-        
-
-        ResponseEntity response= null;
-        
-        User user = userRepository.findByUserName(userName);
-        UserFile userImage = null;
-        UserFile uf = null;
-        UserFile uuff = null;
-        if (user == null){
-            log.info("user not found");
-            response = new ResponseEntity(null, HttpStatus.NOT_FOUND);
-        }
-        else{
-            log.info("user found");
-            userImage = user.getUserImage();
-            log.info ("image id: " + userImage.getId());
-            
-            uf = userFileRepository.findOne(userImage.getId());
-            uuff = uf;
-            uuff.setName("userZ_");
-            //uuff.setUser(user);
-           // user.setUserImage(null);
-            //userRepository.save(user);
-            //userFileRepository.delete(userImage.getId());
-            //userFileRepository.save(uuff);
-
-            // We delete the previous user image to save the new one with the same name
-            user.setUserImage(null);
-            userRepository.save(user);
-            user.setUserImage(uuff);
-            log.info(user.getUserImage().getName());
-            userRepository.save(user);
-            
-            response = new ResponseEntity(userImage, HttpStatus.NOT_FOUND);
-        }
-        
-          
-        
-      
-        return response;
-    }
-
-*/
-   
-    
 
 }

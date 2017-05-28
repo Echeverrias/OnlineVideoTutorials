@@ -84,15 +84,5 @@ export class FileService{
         this.subscription.unsubscribe();
     }
 
-    ///////////////////////////////////////////////////////////////////
-    prueba(): string{
-        return `${this.connection.urlServer}prueba`
-    }
-
-    prueba2(): string{
-        return `${this.connection.urlServer}prueba2`
-    }
-
-    //////////////////////////////////////////////////////////////////
 
 }

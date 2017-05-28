@@ -42,7 +42,7 @@
             defaultExtension: 'js'
           },
           'ngx-uploader': {
-              main: './ngx-uploader.js',
+              main: './bundle/ngx-uploader.umd.js',
               defaultExtension: 'js'
             }
           

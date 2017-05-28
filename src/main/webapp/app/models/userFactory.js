@@ -3,7 +3,8 @@
  *
  */
 "use strict";
-var user_1 = require('./user');
+Object.defineProperty(exports, "__esModule", { value: true });
+var user_1 = require("./user");
 /**
  * It allows to instantiate an object of the class User whith a message that
  * the server send to the client when he identifies himself.

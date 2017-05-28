@@ -4,7 +4,7 @@
 */
 #ovt-waitingRoom {
     position:relative;
-    top:5em;
+    top: 1em;
     width: 52%;
     display: block;
     margin: auto;
@@ -87,9 +87,16 @@ button.ovt-inline{
   display: inline-block;
 }
 
+div.ovt-inline p{
+  display: inline;
+  margin-right: 0.5em;
+}
+
 div.ovt-create-room div div input{
   padding-left: 0.5em;
   padding-right: 0.5em;
+  border: 0.5px solid;
+  border-radius: 5px;
 }
 
 div.ovt-create-room div div{
@@ -109,34 +116,24 @@ div.ovt-out button{
   margin: 2em auto 0em auto;
 }
 
-
+@media screen and (max-width: 1140px){
+  
+  #ovt-waitingRoom{
+      width: 65%;
+  }
+}
 
 @media screen and (max-width:900px) {
   
   
   #ovt-waitingRoom {
-    width: 60%;
-  }
-}
-
-@media screen and (max-width:800px) {
-  
-  
-  #ovt-waitingRoom {
-    width: 70%;
+    width: 78%;
   }
 }
 
 
-@media screen and (max-width:700px) {
-  
-  
-  #ovt-waitingRoom {
-    width: 85%;
-  }
-}
 
-@media screen and (max-width:400px) {
+@media screen and (max-width:425px) {
   
   
   #ovt-waitingRoom {
