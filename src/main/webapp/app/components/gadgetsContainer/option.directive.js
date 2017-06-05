@@ -8,7 +8,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = require("@angular/core");
 var OptionDirective = (function () {
     function OptionDirective(el, renderer) {
         this.el = el;
@@ -85,51 +86,51 @@ var OptionDirective = (function () {
         };
         return changeImage;
     };
-    __decorate([
-        core_1.Input('ovt-option'), 
-        __metadata('design:type', String)
-    ], OptionDirective.prototype, "option", void 0);
-    __decorate([
-        core_1.Input('ovt-imagePath'), 
-        __metadata('design:type', String)
-    ], OptionDirective.prototype, "imagePath", void 0);
-    __decorate([
-        core_1.Input('ovt-image'), 
-        __metadata('design:type', String)
-    ], OptionDirective.prototype, "imageOff", void 0);
-    __decorate([
-        core_1.Input('ovt-deactivate'), 
-        __metadata('design:type', String)
-    ], OptionDirective.prototype, "activeOption", void 0);
-    __decorate([
-        core_1.Output('ovt-activate'), 
-        __metadata('design:type', Object)
-    ], OptionDirective.prototype, "activate", void 0);
-    __decorate([
-        core_1.HostListener('click'), 
-        __metadata('design:type', Function), 
-        __metadata('design:paramtypes', []), 
-        __metadata('design:returntype', void 0)
-    ], OptionDirective.prototype, "onClick", null);
-    __decorate([
-        core_1.HostListener('mouseover'), 
-        __metadata('design:type', Function), 
-        __metadata('design:paramtypes', []), 
-        __metadata('design:returntype', void 0)
-    ], OptionDirective.prototype, "onMouseOver", null);
-    __decorate([
-        core_1.HostListener('mouseleave'), 
-        __metadata('design:type', Function), 
-        __metadata('design:paramtypes', []), 
-        __metadata('design:returntype', void 0)
-    ], OptionDirective.prototype, "onMouseLeave", null);
-    OptionDirective = __decorate([
-        core_1.Directive({
-            selector: '[ovt-option]'
-        }), 
-        __metadata('design:paramtypes', [core_1.ElementRef, core_1.Renderer])
-    ], OptionDirective);
     return OptionDirective;
 }());
+__decorate([
+    core_1.Input('ovt-option'),
+    __metadata("design:type", String)
+], OptionDirective.prototype, "option", void 0);
+__decorate([
+    core_1.Input('ovt-imagePath'),
+    __metadata("design:type", String)
+], OptionDirective.prototype, "imagePath", void 0);
+__decorate([
+    core_1.Input('ovt-image'),
+    __metadata("design:type", String)
+], OptionDirective.prototype, "imageOff", void 0);
+__decorate([
+    core_1.Input('ovt-deactivate'),
+    __metadata("design:type", String)
+], OptionDirective.prototype, "activeOption", void 0);
+__decorate([
+    core_1.Output('ovt-activate'),
+    __metadata("design:type", Object)
+], OptionDirective.prototype, "activate", void 0);
+__decorate([
+    core_1.HostListener('click'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], OptionDirective.prototype, "onClick", null);
+__decorate([
+    core_1.HostListener('mouseover'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], OptionDirective.prototype, "onMouseOver", null);
+__decorate([
+    core_1.HostListener('mouseleave'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], OptionDirective.prototype, "onMouseLeave", null);
+OptionDirective = __decorate([
+    core_1.Directive({
+        selector: '[ovt-option]'
+    }),
+    __metadata("design:paramtypes", [core_1.ElementRef, core_1.Renderer])
+], OptionDirective);
 exports.OptionDirective = OptionDirective;
 //# sourceMappingURL=option.directive.js.map

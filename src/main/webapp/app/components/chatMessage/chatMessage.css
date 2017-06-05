@@ -1,15 +1,10 @@
-/*
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
-*/
 /* 
     Created on : 06-dic-2015, 10:54:14
     Author     : juanan
 */
 
 
-.ovt-chatMessage{
+.ovt-chatmessage{
   padding:0.2em 0;
   width: 100%;
  
@@ -17,7 +12,7 @@ and open the template in the editor.
 
 
 .sender, .message{
-  font-size: 1em;
+  font-size: 1.3em;
   
  }
 

@@ -11,7 +11,7 @@ import { chatMessageTemplate } from './chatMessage.html'
 
 @Component({
     moduleId: module.id,
-    selector: 'ovt-chatMessage',
+    selector: 'ovt-chatmessage',
     styleUrls: ["chatMessage.css"],
     template: chatMessageTemplate
 })

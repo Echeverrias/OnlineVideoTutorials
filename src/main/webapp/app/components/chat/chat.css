@@ -5,34 +5,61 @@
 
 
 #ovt-chat{
+  box-sizing: border-box;
   font-size: 0.8em;
+  padding: 0.5em;
+  display: flex;
+  display: -moz-flex;
+  display: -webkit-flex;
+  flex-direction: column;
+  -moz-flex-direction: column;
+  -webkit-flex-direction: column;
+
+  height: 100%;
+  width: 100%;
 }
 
 .messages{
-  width: 94%;
+  
   background-color: #EEFACA;
-  margin-bottom: 0.9em;
-  padding: 0.1em 0.7em;
+  padding: 0.1em 0.7em 0.1em 0.7em;
   border: 0.2em solid grey;
   border-radius: 0.5em;
-  max-height: 4.2em;
-  min-height:4.2em;
   overflow:auto;
   overflow-x: hidden;
   box-shadow: -2px 2px 2px #299D29;
+  
+ 
+  flex: 5 0 3em;
+  -moz-flex: 5 0 3em;
+  -webkit-flex: 5 0 3em;
+
+   width: 100%;
+  margin: auto auto 0.9em auto;
+
+
 }
+
+
 
 .mailbox {
-    height:5%;
+  
+  width: 99%;
+  margin: auto;
+  flex: 0.2 0 1em;
+  -moz-flex: 0.2 0 1em;
+  -webkit-flex: 0.2 0 1em;
+  
+
+  position: relative;
+
 }
 
-.mailbox input {
-  display: inline;
-}
+
+/* div.mailbox */
 
 #myMessage{
   resize:none;
-  width:94%;
   box-shadow: -2px 2px 2px #299D29;
   background-color: #EEFACA;
   border-radius: 0.5em;
@@ -40,13 +67,35 @@
   line-height: 1.3em;
   vertical-align: middle;
   padding: 0 0.7em;
-  font-size: 0.9em;
+  font-size: 1.5em;
+
+
+  width:94.5%;
+  
 }
 
 #sendMessage{
   width:auto;
   padding: 0.1em 0.2em;
-  font-size: 0.9em;
+  font-size: 1.2em;
   vertical-align: middle;
+  position:relative;
+  margin-left: 0.5em;
+  box-shadow: -2px 2px 1px #299D29;
+
+  position: absolute;
+  left: 94.8%;
+  top: 50%;
+  transform: translate(0, -50%);
+
+}
+
+.mailbox input {
+  display: inline;
+
+}
+
+ovt-chatmessage{
+  display: block;
 }
 

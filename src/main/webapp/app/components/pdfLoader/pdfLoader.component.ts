@@ -1,17 +1,16 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { FileService } from '../../services/file.service';
 import { pdfLoaderTemplate } from './pdfLoader.html';
-import { NgUploaderOptions } from 'ngx-uploader';
+import { NgUploaderOptions, UploadedFile } from 'ngx-uploader';
 
 import { File } from '../../models/types';
 
 
 @Component({
   moduleId : module.id,
-  selector: 'ovt-pdfLoader',
+  selector: 'ovt-pdf-loader',
   template: pdfLoaderTemplate,
   styleUrls: ['pdfLoader.css'],
-  providers: [FileService],
 })
 
 export class PdfLoaderComponent implements OnInit, OnDestroy{
@@ -27,7 +26,7 @@ export class PdfLoaderComponent implements OnInit, OnDestroy{
 
   constructor (private file: FileService){
     console.log("*** new PdfLoaderComponent");
-     this.sizeLimit = 2000000;
+     this.sizeLimit = this.file.sizeLimit;
      this.sharedFile = new EventEmitter<string>();
      this.newFile = new EventEmitter<string>();
   }
@@ -60,7 +59,7 @@ export class PdfLoaderComponent implements OnInit, OnDestroy{
     }
   }
   
-  handleUpload(data): void {
+  handleUpload(data: UploadedFile): void {
       console.log("handleUpload");
       console.log("handleUpload - data:", data);
         console.log("handleUpload - data.status:", data.status);

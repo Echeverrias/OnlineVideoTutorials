@@ -1,12 +1,14 @@
 import { NgModule }      from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule }   from '@angular/forms';
+import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
 import { HttpModule }    from '@angular/http';
 import { routing } from './app.routing';
+import { NgUploaderModule } from 'ngx-uploader';
 import { GadgetsContainerModule } from './components/gadgetsContainer/gadgetsContainer.module';
 
 import { AppComponent }  from './app.component';
 import { SignComponent } from './components/sign/sign.component';
+import { UserOptionsComponent } from './components/userOptions/userOptions.component';
 import { WaitingRoomComponent } from './components/waitingRoom/waitingRoom.component';
 import { RoomComponent } from './components/room/room.component';
 import { ParticipantComponent } from './components/participant/participant.component';
@@ -17,6 +19,7 @@ import { ChatMessageComponent } from './components/chatMessage/chatMessage.compo
 import { ConnectionService } from './services/connection.service';
 import { UserService } from './services/user.service';
 import { HandlerService } from './services/handler.service';
+import { FileService } from './services/file.service';
 
 import { AuthGuard } from './guards/auth.guard';
 
@@ -26,11 +29,14 @@ import { AuthGuard } from './guards/auth.guard';
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpModule,
     routing, 
+    NgUploaderModule, 
     GadgetsContainerModule
   ],
   declarations: [
+    UserOptionsComponent,
     AppComponent,
     SignComponent,
     WaitingRoomComponent,
@@ -44,7 +50,8 @@ import { AuthGuard } from './guards/auth.guard';
       HandlerService,
       ConnectionService, 
       UserService,
-      AuthGuard
+      AuthGuard,
+      FileService
   ],
   bootstrap: [ AppComponent ]
 })

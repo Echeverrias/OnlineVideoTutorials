@@ -3,7 +3,7 @@
  * 
  */
 
-import { Component, ViewChild, ElementRef, Input, OnInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, Input, OnInit, AfterViewInit } from '@angular/core';
 
 import { LoadingComponent } from '../loading/loading.component';
 
@@ -30,6 +30,7 @@ export class ParticipantComponent implements OnInit{
     @Input() name : string;
     @Input() userType : string;
     @Input() roomName : string;
+    @Input() size: string; 
     
     private loading: boolean;
     private participantUserName: string;
@@ -47,6 +48,7 @@ export class ParticipantComponent implements OnInit{
         console.log(`% Participant constructor ${new Date().toLocaleTimeString()}`);
         
         this.important = false;
+        this.loading = true;
         this.options = { mediaConstraints: null, onicecandidate: null, localVideo: null, remoteVideo: null };
         this.constraints = {
             audio: true,
@@ -58,6 +60,7 @@ export class ParticipantComponent implements OnInit{
                 }
             }
         };
+
         
         console.log(`/ Participant constructor ${new Date().toLocaleTimeString()}`);
         console.log("");
@@ -68,6 +71,10 @@ export class ParticipantComponent implements OnInit{
         this.participantUserName = this.id;
         this.createRtcPeer();
         this.participants.attachParticipant(this.participantUserName, this.processAnswer(), this.addIceCandidate());
+    }
+
+    ngAfterViewInit() {
+        this.video.nativeElement.addEventListener("playing", () => this.loading = false);
     }
 
     private createRtcPeer(): void {
@@ -146,14 +153,14 @@ export class ParticipantComponent implements OnInit{
         console.log("");
         console.log(`*** ParticipantComponent.getProcessAnswer ${this.me.myUserName} ${new Date().toLocaleTimeString()}`);
         
-       this.loading = false; 
+       //setTimeout(()=>this.loading = false,1000); //%
        console.log('video:' , this.video);
        return (
             (sdpAnswer: any):any => {
                 console.log(`*** ParticipantComponent.processAnswer ${new Date().toLocaleTimeString()}`);
                 this._rtcPeer.processAnswer(sdpAnswer, function(error) {
                     if (error) {
-                        console.error(`!! ERROR:Participant.receiveVideoResponse`);
+                        console.error(`!! ERROR:Participant.processAnswer`);
                         console.error(error);
                         return;
                     }
@@ -200,8 +207,17 @@ export class ParticipantComponent implements OnInit{
     setClasses(){
         let classes = {
             'important': this.important,
+            'large': this.size === 'large',
+            'small': this.size === 'small',
+            'loading': this.loading == true,
         };
+        
         return classes;
+    }
+
+    private playing():void {
+        console.log("The video is playing");
+        this.loading = false;
     }
 
     ngOnDestroy() {

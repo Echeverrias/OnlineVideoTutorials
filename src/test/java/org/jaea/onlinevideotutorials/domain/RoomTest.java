@@ -38,7 +38,7 @@ public class RoomTest {
     @Test
     public void isATutorRightByParticipantTest() {
         this.room.addParticipant(tutorParticipant);
-        Assert.assertTrue((boolean)this.room.isTheTutor(tutorParticipant));
+        Assert.assertTrue((boolean)this.room.isTheTutor(tutorParticipant.getUserName()));
     }
 
     @Test
@@ -50,7 +50,7 @@ public class RoomTest {
     @Test
     public void isATutorWrongtByParticipantTest() {
         this.room.addParticipant(studentParticipant);
-        Assert.assertFalse((boolean)this.room.isTheTutor(studentParticipant));
+        Assert.assertFalse((boolean)this.room.isTheTutor(studentParticipant.getUserName()));
     }
 
     @Test

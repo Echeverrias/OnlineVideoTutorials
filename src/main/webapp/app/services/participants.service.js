@@ -8,10 +8,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
-var handler_service_1 = require('./handler.service');
-var connection_service_1 = require('./connection.service');
-var user_service_1 = require('./user.service');
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = require("@angular/core");
+var handler_service_1 = require("./handler.service");
+var connection_service_1 = require("./connection.service");
+var user_service_1 = require("./user.service");
 var ParticipantsService = (function () {
     function ParticipantsService(handler, connection, me) {
         this.handler = handler;
@@ -75,11 +76,11 @@ var ParticipantsService = (function () {
         this.eventEmitters.clear();
         console.log(this.eventEmitters);
     };
-    ParticipantsService = __decorate([
-        core_1.Injectable(), 
-        __metadata('design:paramtypes', [handler_service_1.HandlerService, connection_service_1.ConnectionService, user_service_1.UserService])
-    ], ParticipantsService);
     return ParticipantsService;
 }());
+ParticipantsService = __decorate([
+    core_1.Injectable(),
+    __metadata("design:paramtypes", [handler_service_1.HandlerService, connection_service_1.ConnectionService, user_service_1.UserService])
+], ParticipantsService);
 exports.ParticipantsService = ParticipantsService;
 //# sourceMappingURL=participants.service.js.map

@@ -3,80 +3,266 @@
  * 
  */
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Response } from '@angular/http';
+import { Router, ActivatedRoute, Params } from '@angular/router';
+import { FormBuilder, FormGroup, AbstractControl, FormControl, Validators } from '@angular/forms'; 
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { NgUploaderOptions, UploadedFile } from 'ngx-uploader';
+import { Observable, Subject } from 'rxjs/Rx';
+import { first } from 'rxjs/operator/first';
 
 import { SignService } from '../../services/sign.service';
 import { UserService } from '../../services/user.service';
+import { FileService } from '../../services/file.service';
 
 import { User } from '../../models/user';
+import { UserFile } from '../../models/types';
 import { FormUser } from '../../models/types';
+import { FieldValidationRequest } from '../../models/types';
 
 import { signTemplate } from './sign.html';
 
+export enum SignStates { SignIn, SignUp, EditPerfil };
 
 @Component({
     moduleId: module.id,
     selector: 'ovt-sign',
     styleUrls: ["sign.css"],
     template: signTemplate,
-    providers:[SignService]
-    
+    providers: [SignService],
+    host: {
+        class: 'ovt-sign-selector'
+    }
+
 })
 
 
-export class SignComponent implements OnInit {
-    
-    private email_regexp: any = /^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i; 
-    private user: FormUser;
-    private signIn: boolean;
-    private checkField: boolean;
 
-    constructor(private router: Router, private sign: SignService, private me: UserService) {
+export class SignComponent implements OnInit {
+   
+    private state: SignStates;
+    private user: FormUser;
+    private checkFields: boolean;
+    private signInForm: FormGroup;
+    private signUpForm: FormGroup;
+    private editPerfilForm: FormGroup;
+    private sizeLimit: number;
+    private uploadImageUserOptions: NgUploaderOptions;
+    private userImage$: Subject <UserFile>;
+    private rememberPassword: boolean;
+    readonly minPasswordLength: number = 8;
+    readonly minLength: number = 3;
+
+
+
+    constructor(private router: Router, private route: ActivatedRoute, private sanitizer: DomSanitizer, private formBuilder: FormBuilder, private sign: SignService, private me: UserService, private file: FileService) {
         console.log(`% Sign constructor `);
-        this.user = { userName: "", password: "", name: "", surname: "", email: "", userType: "" };
-        this.signIn = true;
-         console.log(`/ Sign constructor ${new Date().toLocaleTimeString()}`); 
+        this.userImage$ = new Subject<UserFile>();
+        this.sizeLimit = this.file.sizeLimit;
+        console.log('ROUTE:');
+        console.log(route); 
+        
+        this.route.params
+            .forEach((param: Params) => {
+                console.log('forEach');
+                console.log(param);
+                if (param['state']) {
+                    this.state = +param['state'];
+                }
+            })
+        //Only the url for edit the perfil has a parameter    
+        if (!this.state) {
+            this.state = SignStates.SignIn;
+        }    
+        console.log("STATE: ", this.state);
+        console.log(`/ Sign constructor ${new Date().toLocaleTimeString()}`);
     }
+
+    ngOnInit() {
+
+        console.log('ME');
+        console.log(this.me);
+        console.log(this.me.getMe());
+        
+        
+        if (this.state === SignStates.SignIn){
+
+            this.sign.init();
+            this.initStorage();
+            
+                this.signInForm = this.formBuilder.group({
+                userName: [ localStorage.getItem('ovtLastUserName'), Validators.required],
+                password: [localStorage.getItem(localStorage.getItem('ovtLastUserName')), Validators.required],
+                rememberPassword: [false]
+            });
+            
+            this.signUpForm = this.formBuilder.group({
+                userName: ["", [Validators.required, Validators.minLength(this.minLength)], this.validateUserName.bind(this)],
+                password: ["", [Validators.required, Validators.minLength(this.minPasswordLength)]],
+                confirmationPassword: ["", [Validators.required, Validators.minLength(this.minPasswordLength), this.confirmPassword.bind(this)]],
+                name: ["", [Validators.required, Validators.minLength(this.minLength)]],
+                surname: ["", [Validators.required, Validators.minLength(this.minLength)]],
+                email: ["", [Validators.required, this.validateEmailPattern], this.validateEmail.bind(this)],
+                userType: ["", Validators.required],
+            }, { validator: this.checkPassword });
+
+            this.signUpForm.controls['password'].valueChanges.subscribe(
+                (value) => { setTimeout(() => this.signUpForm.controls['confirmationPassword'].updateValueAndValidity(), 200)}
+            );
+        }
+        else if (this.state === SignStates.EditPerfil){
+
+            this.editPerfilForm = this.formBuilder.group({
+                password: [sessionStorage.getItem(this.me.myUserName), [Validators.minLength(this.minPasswordLength)]],
+                confirmationPassword: [sessionStorage.getItem(this.me.myUserName), [Validators.minLength(this.minPasswordLength), this.confirmPassword.bind(this)]],
+                name: [this.me.myName, [Validators.required, Validators.minLength(this.minLength)]],
+                surname: [this.me.mySurname, [Validators.required, Validators.minLength(this.minLength)]],
+                email: [this.me.myEmail, [Validators.required, this.validateEmailPattern], this.validateEmail.bind(this)],
+                userType: [this.me.myUserType, Validators.required]
+            }, {validator: this.checkPassword});
+
+            this.editPerfilForm.controls['password'].valueChanges.subscribe(
+                (value) => { setTimeout( () => this.editPerfilForm.controls['confirmationPassword'].updateValueAndValidity() ,200) }
+            );
+
+            this.uploadImageUserOptions = {
+                url: this.file.getUploadUserImageUrl(this.me.myUserName)
+            }
+
+            this.userImage$.subscribe(
+                (userImage) => { this.setMeUserImage(userImage), console.log(userImage) },
+                    (error) => console.log(error),
+                    () => console.log('complete')    
+                )
+        }    
+
+   }
+
+   private initStorage(){
+       sessionStorage.setItem(localStorage.getItem('ovtLastUserName'), undefined),
+       this.rememberPassword = localStorage.getItem('rememberPassword') === 'true';
+   }
     
-    ngOnInit(){
-        this.sign.init();
-        this.user.userName = this.sign.getLastUserName();
+    // SignUpForm and EditPerfilForm's validators
+
+    private confirmPassword(control: FormControl): Object {
+        return control.root && control.value === control.root.value['password'] ? null : {
+            confirmPassword: true
+        }
+    }
+
+    private checkPassword(control: AbstractControl): Object {
+        const password = control.get('password');
+        const confirmationPassword = control.get('confirmationPassword');
+        if (!password || !confirmationPassword) return null;
+        return password.value === confirmationPassword.value? null: {
+            checkPassword: true
+        }
+    }
+
+    private validateUserName(control: FormControl): Observable<{ [key: string]: any }> {
+        return this.checkField(control.value, "userName").debounceTime(400).distinctUntilChanged() /*.first()*/;
+    }
+
+    private validateEmail(control: FormControl): Observable<{ [key: string]: any }> {
+        return this.checkField(control.value, "email").debounceTime(400).distinctUntilChanged() /*.first()*/;
+    }
+
+    /**
+    * It checks, when a new user is going to register, that the user name and the email don't exists in the data base. 
+    */     private checkField(value: string, field: string): Observable<{ [key: string]: any }> {
+        console.log(`check${field}: ${value}`);
+        return new Observable((obs: any) => {
+            console.log(" new Observable");
+            let infoField: FieldValidationRequest = {
+                field: field,
+                value: value,
+                userName: this.me.myUserName
+            };
+            this.sign.validateField(infoField)
+                .subscribe(
+                response => {
+                    obs.next(null);
+                    obs.complete();
+                },
+                error => {
+                    let key: string;
+                    let message: string = error.json().message;
+                    if (message === `userName taken`) {
+                        key = 'userNameTaken';
+                    }
+                    else if (message === `email taken`) {
+                        key = 'emailTaken';
+                    }
+                    obs.next({ [key]: true });
+                    obs.complete();
+                }
+                )
+
+        });
+
+    } 
+
+    // EditPerfilForm validator
+    private validateNewPasswordLength(control: FormControl): Object{
+        return (control.root && ((control.value.length == 0) || (control.value.length >= 8) ))? null : {
+            validateNewPasswordLength: { actualLength: control.value.length, requiredLength: 8}
+        }
+    }
+
+    private validateEmailPattern(control: FormControl): Object{
+        let emailRegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,4}$/
+        return  emailRegExp.test(control.value)? null: {
+            emailPattern: true
+        }
     }
 
     onChangeToSignUp(){
-        console.log("onChangeToSignUp()")
-        this.user = { userName: "", password: "", name: "", surname: "", email: "" , userType: ""};
-        this.signIn = false; 
-        this.checkField = false;
+        console.log("onChangeToSignUp()");
+        console.log(this.signUpForm); //%
+        this.state = SignStates.SignUp;
+        this.checkFields = false;
     }
     
-    onGoingToClick(){
-        console.log("onGoingToClick");
-        console.log(this.user);
-        this.checkField = true;
-        console.log(`checkField: ${this.checkField}`);
+    /** 
+     * If some field form is incorrect a message will show.
+     */   
+    onGoingToProcess(){
+        if (this.signUpForm){console.log(this.signUpForm)}
+        if (this.editPerfilForm){console.log(this.editPerfilForm)}    
+        this.checkFields = true;
+        console.log(`checkFields: ${this.checkFields}`);
     }
 
     doSignUp() {
-        this.sign.registerNewUser(this.user).subscribe(
+        
+        console.log(this.signUpForm);
+        console.log(this.signUpForm.controls);
+
+        this.sign.registerNewUser(this.signUpForm.value).subscribe(
             (success: boolean): void => {
                 if (success) {
-                    if (this.me.amATutor()) {
-                        console.log("You are a tutor");
+                    this.authorizeUser(this.signUpForm.value);
+                    this.router.navigate(['/rooms']);
+                }
+            }, error => {
+                console.log("ERROR");
+                alert(error.json().message);
+                console.error(error.json().message);
+            },
+            () => { }
+        );
 
-                        this.router.navigate(['/room', this.me.myUserName]);
+    }
 
-                        console.log("# go to room");
-                    }
-                    else {
-                        console.log("You are an student");
+    doModifyPerfil() {
 
-                        this.router.navigate(['/rooms']);
+        console.log(this.editPerfilForm);
+        console.log(this.editPerfilForm.controls);
 
-                        console.log("# go to waitingRoom");
-                    }
-
+        this.sign.modifyPerfilUser(this.editPerfilForm.value).subscribe(
+            (success: boolean): void => {
+                if (success) {
+                    this.router.navigate(['/rooms']);
                 }
             }, error => {
                 console.log("ERROR");
@@ -92,23 +278,17 @@ export class SignComponent implements OnInit {
         console.log("");
         console.log(`* Sign.doSignIn ${new Date().toLocaleTimeString()}`);
         
-        this.sign.validateUser(this.user.userName, this.user.password).subscribe(
+        
+        this.sign.validateUser(this.signInForm.value).subscribe(
           (validUser: User): void => {
+        
+                console.log("VALID USER");
+                console.log(validUser);
+                console.log(this.signInForm);
+                console.log(this.signInForm.controls);
 
-                if (validUser.isATutor) {
-                    console.log("You are a tutor");
-
-                    this.router.navigate(['/room', validUser.userName]);
-
-                    console.log("# go to room");
-                }
-                else {
-                    console.log("You are an student");
-
-                    this.router.navigate(['/rooms']);
-
-                    console.log("# go to waitingRoom");
-                }
+               this.authorizeUser(this.signInForm.value);
+               this.router.navigate(['/rooms']);
 
             },
             error => {
@@ -126,7 +306,75 @@ export class SignComponent implements OnInit {
                 
     }
 
+    onReturnToSignIn(){
+        this.state = SignStates.SignIn; 
+        this.checkFields = false;
+     }
 
+    private authorizeUser(user: any){
+        localStorage.setItem('ovtUser', JSON.stringify(this.me.getMe()));
+        localStorage.setItem('ovtLastUserName', user.userName);
+        if (this.rememberPassword){
+            localStorage.setItem(user.userName, user.password);
+            localStorage.setItem('rememberPassword', "true");
+        }
+        else{
+             localStorage.setItem(user.userName, "");
+             localStorage.setItem('rememberPassword', undefined);
+        }
+        sessionStorage.setItem(user.userName, user.password);
+    }
 
+    beforeUpload(uploadingFile): void {
+        console.log(uploadingFile);
+        if (uploadingFile.size > this.sizeLimit) {
+            uploadingFile.setAbort();
+            alert('El archivo no puede pesar más de 2 MB');
+        }
+    }
+
+    handleUpload(data: UploadedFile): void {
+        console.log("HANDLE UPLOAD");
+        console.log("handleUpload - data:", data);
+        console.log("handleUpload - data.status:", data.status);
+        console.log("handleUpload - data.status === 200?:", data.status === 200);
+        if (data && data.status){
+            if (data.status === 200) {
+                console.log("Next");
+                this.userImage$.next(JSON.parse(data.response));
+            }
+            else {
+                console.log("Error");
+                this.userImage$.error("ERROR"); 
+            }   
+        }     
+    }
+
+    private setMeUserImage(userImage: UserFile): void {
+        this.me.myUserImage = userImage;   
+    }
+
+    getUserImageUrl() {
+        return this.sanitizer.bypassSecurityTrustResourceUrl(`data:${this.me.myUserImageMimeType}; base64,${this.me.myUserImageContent}`);
+    }
+
+    isSignInState(): boolean{
+        return this.state === SignStates.SignIn;
+    }
+
+    isSignUpState(): boolean{
+        return this.state === SignStates.SignUp;
+    }
+
+    isEditPerfilState(): boolean {
+        return this.state === SignStates.EditPerfil;
+    }
+
+    onExitEditPerfil(){
+
+        this.router.navigate(['/rooms']); 
+    }
+
+  
     
 }

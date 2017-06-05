@@ -1,14 +1,11 @@
 .ovt-loading{
   width:100%;
-  height: 100%;
+  background: black;
 }
 
-.spinning { 
+
  
-    width: 100%;
-    height: 100%;
-    position: relative;
-    bottom: 3%;
+.spinning { 
 }
 
 .spinning div{
@@ -20,6 +17,7 @@
     bottom: 43.5%;
     left: 46%;
 }
+
 @-webkit-keyframes uil-default-anim { 
     0% { opacity: 1} 100% {opacity: 0} 
 }

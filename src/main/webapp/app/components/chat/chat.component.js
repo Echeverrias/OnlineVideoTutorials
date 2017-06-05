@@ -12,9 +12,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
-var chat_service_1 = require('../../services/chat.service');
-var chat_html_1 = require('./chat.html');
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = require("@angular/core");
+var chat_service_1 = require("../../services/chat.service");
+var chat_html_1 = require("./chat.html");
 var ChatComponent = (function () {
     function ChatComponent(chat) {
         this.chat = chat;
@@ -37,21 +38,21 @@ var ChatComponent = (function () {
         console.log("* Chat.OnDestroy " + new Date().toLocaleTimeString());
         this.chat.destroy();
     };
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', String)
-    ], ChatComponent.prototype, "address", void 0);
-    ChatComponent = __decorate([
-        core_1.Component({
-            moduleId: module.id,
-            selector: 'ovt-chat',
-            styleUrls: ["chat.css"],
-            template: chat_html_1.chatTemplate,
-            providers: [chat_service_1.ChatService]
-        }), 
-        __metadata('design:paramtypes', [chat_service_1.ChatService])
-    ], ChatComponent);
     return ChatComponent;
 }());
+__decorate([
+    core_1.Input(),
+    __metadata("design:type", String)
+], ChatComponent.prototype, "address", void 0);
+ChatComponent = __decorate([
+    core_1.Component({
+        moduleId: module.id,
+        selector: 'ovt-chat',
+        styleUrls: ["chat.css"],
+        template: chat_html_1.chatTemplate,
+        providers: [chat_service_1.ChatService]
+    }),
+    __metadata("design:paramtypes", [chat_service_1.ChatService])
+], ChatComponent);
 exports.ChatComponent = ChatComponent;
 //# sourceMappingURL=chat.component.js.map

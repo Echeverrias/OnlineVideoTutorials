@@ -12,39 +12,40 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
-var chatMessage_html_1 = require('./chatMessage.html');
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = require("@angular/core");
+var chatMessage_html_1 = require("./chatMessage.html");
 var ChatMessageComponent = (function () {
     function ChatMessageComponent() {
         console.log("");
         console.log("% Message constructor " + new Date().toLocaleTimeString());
     }
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', String)
-    ], ChatMessageComponent.prototype, "sender", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', String)
-    ], ChatMessageComponent.prototype, "message", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', String)
-    ], ChatMessageComponent.prototype, "date", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', String)
-    ], ChatMessageComponent.prototype, "color", void 0);
-    ChatMessageComponent = __decorate([
-        core_1.Component({
-            moduleId: module.id,
-            selector: 'ovt-chatMessage',
-            styleUrls: ["chatMessage.css"],
-            template: chatMessage_html_1.chatMessageTemplate
-        }), 
-        __metadata('design:paramtypes', [])
-    ], ChatMessageComponent);
     return ChatMessageComponent;
 }());
+__decorate([
+    core_1.Input(),
+    __metadata("design:type", String)
+], ChatMessageComponent.prototype, "sender", void 0);
+__decorate([
+    core_1.Input(),
+    __metadata("design:type", String)
+], ChatMessageComponent.prototype, "message", void 0);
+__decorate([
+    core_1.Input(),
+    __metadata("design:type", String)
+], ChatMessageComponent.prototype, "date", void 0);
+__decorate([
+    core_1.Input(),
+    __metadata("design:type", String)
+], ChatMessageComponent.prototype, "color", void 0);
+ChatMessageComponent = __decorate([
+    core_1.Component({
+        moduleId: module.id,
+        selector: 'ovt-chatmessage',
+        styleUrls: ["chatMessage.css"],
+        template: chatMessage_html_1.chatMessageTemplate
+    }),
+    __metadata("design:paramtypes", [])
+], ChatMessageComponent);
 exports.ChatMessageComponent = ChatMessageComponent;
 //# sourceMappingURL=chatMessage.component.js.map

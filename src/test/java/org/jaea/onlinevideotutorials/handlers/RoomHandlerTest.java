@@ -94,12 +94,12 @@ public class RoomHandlerTest {
            assertTrue(roomsManager.existRoom(this.roomName));
            // The tutor is in the room
            Room room = roomsManager.getRoom(this.roomName);
-           assertTrue(room.isTheTutor(this.tutor));
+           assertTrue(room.isTheTutor(this.tutor.getUserName()));
         }
     }
     
     @Test
-    public void jonRoomStudentTest(){
+    public void joinRoomStudentTest(){
         TextMessage joinTutorMsg = TextMessageDispenser.getRoomParticipantTextMessage(RoomHandler.ID_JOIN_ROOM, this.roomName, this.tutor);
         TextMessage joinStudentMsg = TextMessageDispenser.getRoomParticipantTextMessage(RoomHandler.ID_JOIN_ROOM, this.roomName, this.student);
         WebSocketSessionMock tutorWS = new WebSocketSessionMock(this.tutor.getSessionId());
@@ -121,7 +121,7 @@ public class RoomHandlerTest {
            assertEquals(expectedParticipantsUserNameList, realParticipantsUserNameList);
            // The tutor is in room
            Room room = roomsManager.getRoom(this.roomName);
-           assertTrue(room.isTheTutor(this.tutor));
+           assertTrue(room.isTheTutor(this.tutor.getUserName()));
         }
     }
     
@@ -149,7 +149,7 @@ public class RoomHandlerTest {
            Collections.sort(realParticipantsUserNameList);
            assertEquals(expectedParticipantsUserNameList, realParticipantsUserNameList);
            Room room = roomsManager.getRoom(this.roomName);
-           assertFalse(room.isTheTutor(this.tutor));
+           assertTrue(room.isTheTutor(this.tutor.getUserName()));
            // The room still exists
            assertTrue(roomsManager.existRoom(this.roomName));
            // The tutor is still in the app

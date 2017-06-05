@@ -7,6 +7,7 @@ package org.jaea.onlinevideotutorials.handlers;
 
 import org.jaea.onlinevideotutorials.managers.RoomsManager;
 import org.jaea.onlinevideotutorials.managers.UserSessionsRegistry;
+import org.jaea.onlinevideotutorials.domain.User;
 import org.jaea.onlinevideotutorials.domain.UserSession;
 import org.jaea.onlinevideotutorials.SendMessage;
 
@@ -81,12 +82,13 @@ public class WaitingRoomHandler extends TextMessageWebSocketHandler {
         JsonObject jsonMessage = this.gson.fromJson(message.getPayload(), JsonObject.class);
         String id = jsonMessage.get(this.attributeNameOfTheMessageId).getAsString(); 
         String userName = jsonMessage.get("userName").getAsString(); 
+        String userType = jsonMessage.get("userType").getAsString();
         
         this.log.info("<- waitingRoom - id: {}, message: {}", session.getId(), jsonMessage.toString());
         
         switch (id){
             case ID_ENTER:
-                this.enter(session, userName);
+                this.enter(session, userName, userType);
                 break;
             case ID_EXIT : case ID_CLOSE_TAB  :
                 this.exit(session, userName);
@@ -99,13 +101,19 @@ public class WaitingRoomHandler extends TextMessageWebSocketHandler {
     /**
     * A student user has come into the waiting room.
     */
-    private synchronized void enter (final WebSocketSession session, String userName){
+    private synchronized void enter (final WebSocketSession session, String userName, String userType){
         this.log.info("* waitingRoom.enter");
         
         UserSession user = this.usersRegistry.getUserByUserName(userName);
         this.roomsManager.addIncomingParticipant(user);
-
-        JsonElement availableRoomsNames = gson.toJsonTree(this.roomsManager.getAvailableRoomsNames(), new TypeToken<List<String>>() {}.getType());
+        
+        JsonElement availableRoomsNames = null;
+        if (userType.equals(User.STUDENT_TYPE)){
+        	availableRoomsNames = gson.toJsonTree(this.roomsManager.getAvailableRoomsNames(), new TypeToken<List<String>>() {}.getType());
+        }
+        else{
+        	availableRoomsNames = gson.toJsonTree(this.roomsManager.getTutorAvailableRoomsNames(userName), new TypeToken<List<String>>() {}.getType());
+        }
         
         JsonObject jsonAnswer = new JsonObject();
         jsonAnswer.addProperty("id","availableRooms");

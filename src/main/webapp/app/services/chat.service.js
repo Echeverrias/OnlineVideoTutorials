@@ -8,10 +8,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
-var connection_service_1 = require('./connection.service');
-var user_service_1 = require('./user.service');
-var hexColorGenerator_1 = require('./../models/hexColorGenerator');
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = require("@angular/core");
+var connection_service_1 = require("./connection.service");
+var user_service_1 = require("./user.service");
+var hexColorGenerator_1 = require("./../models/hexColorGenerator");
 var ChatService = (function () {
     function ChatService(connection, me) {
         this.connection = connection;
@@ -66,11 +67,11 @@ var ChatService = (function () {
         this.subscription.unsubscribe();
         this.messages.length = 0;
     };
-    ChatService = __decorate([
-        core_1.Injectable(), 
-        __metadata('design:paramtypes', [connection_service_1.ConnectionService, user_service_1.UserService])
-    ], ChatService);
     return ChatService;
 }());
+ChatService = __decorate([
+    core_1.Injectable(),
+    __metadata("design:paramtypes", [connection_service_1.ConnectionService, user_service_1.UserService])
+], ChatService);
 exports.ChatService = ChatService;
 //# sourceMappingURL=chat.service.js.map

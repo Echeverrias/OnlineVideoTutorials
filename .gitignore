@@ -1,6 +1,8 @@
 *.class
 *.[oa]
 *~
+*.sh
+*.pdf
 Dockerfile
 dockerfile
 docker-compose.yml
@@ -12,4 +14,6 @@ nm/
 temp/
 /target/
 /files/
-
+/data/
+/prueba/
+/ovt-mysql/

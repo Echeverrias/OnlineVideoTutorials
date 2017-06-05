@@ -8,14 +8,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * @author Juan Antonio Echeverrías Aranda (juanan.echeve@gmail.com)
  *
  */
-var core_1 = require('@angular/core');
-var user_1 = require('../models/user');
+var core_1 = require("@angular/core");
+var user_1 = require("../models/user");
 /**
- * It allows to share information through all the components
+ * It allows to share information through all the components.
  */
 var UserService = (function () {
     function UserService() {
@@ -26,12 +27,26 @@ var UserService = (function () {
     UserService.prototype.getMe = function () {
         return this._me;
     };
+    UserService.prototype.getMyInfo = function () {
+        var myProperties = {
+            userName: this._me.userName,
+            userType: this._me.userType,
+            name: this._me.name,
+            surname: this._me.surname,
+            email: this._me.email,
+            roomName: this._myRoomName
+        };
+        return myProperties;
+    };
     UserService.prototype.registerMe = function (user) {
+        console.log('+++++ USER.REGISTERME ++++++++++++'); //%
+        console.log(user);
         this._me.userName = user.userName;
         this._me.userType = user.userType;
         this._me.name = user.name;
         this._me.surname = user.surname;
         this._me.email = user.email;
+        this._me.userImage = user.userImage;
         this.logged = true;
         console.log("* MyService.me: " + this._me + " ");
     };
@@ -70,12 +85,33 @@ var UserService = (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(UserService.prototype, "myUserImageMimeType", {
+        get: function () {
+            return this._me.userImage && this._me.userImage.mimeType;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UserService.prototype, "myUserImageContent", {
+        get: function () {
+            return this._me.userImage && this._me.userImage.content;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(UserService.prototype, "myRoomName", {
         get: function () {
             return this._myRoomName;
         },
         set: function (roomName) {
             this._myRoomName = roomName;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UserService.prototype, "myUserImage", {
+        set: function (userImage) {
+            this._me.userImage = userImage;
         },
         enumerable: true,
         configurable: true
@@ -93,15 +129,16 @@ var UserService = (function () {
         return this.logged;
     };
     UserService.prototype.deleteMe = function () {
+        console.log('+++++ USER.DELETE    ME ++++++++++++'); //%
         this._me.setToUndefined();
         this._myRoomName = "";
         this.logged = false;
     };
-    UserService = __decorate([
-        core_1.Injectable(), 
-        __metadata('design:paramtypes', [])
-    ], UserService);
     return UserService;
 }());
+UserService = __decorate([
+    core_1.Injectable(),
+    __metadata("design:paramtypes", [])
+], UserService);
 exports.UserService = UserService;
 //# sourceMappingURL=user.service.js.map

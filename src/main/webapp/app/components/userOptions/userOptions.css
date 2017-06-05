@@ -1,0 +1,304 @@
+#ovt-user-options {
+  position: absolute;
+  top: 1.2em;
+  right: 1em;
+  width: 25%;
+  z-index:90;
+}
+/*
+#ovt-user-options{
+    height:100%;
+    width: 100%;
+}
+*/
+
+/*
+#ovt-user-options button.ovt-btn{
+    height:100%;
+    width: 100%;
+    width: auto;
+}
+
+*/
+div.ovt-container form input.btn{
+  display: inline-block;
+  width:auto;
+  padding: 0.5em 2em;
+}
+
+div.ovt-container button{
+  margin:auto;
+  width: auto;
+  padding: 0.5em 2em;
+}
+
+
+div.ovt-user-display{
+   
+    margin-bottom: 0.5em;
+    margin-right: 0.5em;
+}
+
+div.ovt-user-display div.ovt-user-icon.small{
+    float: right;
+}
+
+div.ovt-user-display div.ovt-user-icon.small:hover{
+    cursor: pointer;
+}
+
+div.ovt-user-icon img{
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    display: block;
+    margin: 0em;
+    overflow: hidden;
+    z-index: 0;
+}
+
+div.ovt-user-icon.small img{
+   height: 50px;
+   width: 50px;
+    
+}
+
+
+
+div.ovt-user-menu {
+    padding: 0.3em;
+    width: 100%;
+}
+
+div.ovt-user-menu div.ovt-container {
+    
+    display: flex;
+    display: -webkit-flex;
+    flex-direction: row;
+    -webkit-flex-direction: row;
+    background: #E1E1E1;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    border-radius: 5px 5px 0px 0px;
+    padding: 20px;
+}
+
+div.ovt-user-menu div.ovt-image{
+    -webkit-flex: 1 2 30%;
+    -webkit-order: 1;
+    flex: 1 2 30%;
+    order: 1;
+    margin-right: 1em;
+
+}
+
+div.ovt-image div.ovt-user-icon.big img{
+    height: 110px;
+    width: 110px;
+    margin: auto;
+}
+
+div.ovt-user-menu div.ovt-options{
+    -webkit-flex: 2 1 70%;
+    -webkit-order: 2;
+    flex: 2 1 70%;
+    order: 2;
+}
+
+div.ovt-user-menu div.ovt-options p{
+    font-size:1.5em;
+}
+
+div.ovt-user-menu div.ovt-options div{
+    width: 100%;
+    text-align: center;
+}
+
+div.ovt-user-menu div.ovt-options div button{
+    margin: auto;
+    display: block;
+}
+
+div.ovt-footer{
+    background: #3C3C3C;
+}
+
+div.ovt-user-menu div.ovt-footer{
+    border-radius: 0px 0px 5px 5px;
+    padding: 3% 0;
+}
+
+div.ovt-footer {
+    padding: 0.5em 0em;
+    background: #3C3C3C;
+}
+
+div.ovt-footer button {
+    margin: auto;
+    display: block;
+}
+
+
+
+
+
+@media screen and (max-width:1100px) {
+
+div.ovt-user-menu{
+    padding: 0.3em;
+}  
+
+div.ovt-user-menu div.ovt-options p{
+    font-size:1.3em;
+}
+  
+
+div.ovt-user-menu div.ovt-container {
+    
+    display: flex;
+    display: -webkit-flex;
+    flex-direction: column;
+    -webkit-flex-direction: column;
+   
+    align-items: center;
+    justify-content: center;
+   
+}
+
+div.ovt-user-menu div.ovt-image{
+
+    margin-right: 0em;
+    margin-bottom: 1em;
+
+    -webkit-flex: 1 2 30%;
+    -webkit-order: 1;
+    flex: 1 2 30%;
+    order: 1;
+
+}
+
+div.ovt-user-menu div.ovt-options{
+    -webkit-flex: 2 1 70%;
+    -webkit-order: 2;
+    flex: 2 1 70%;
+    order: 2;
+}
+
+div.ovt-user-menu div.ovt-footer{
+    padding: 5% 0;
+}
+
+}
+
+
+@media screen and(max-width: 1100px){
+
+    #ovt-user-options {
+        width: 20%;
+    }
+}
+
+@media screen and (max-width:900px) {
+  /*
+  div.ovt-image div.ovt-user-icon.big img{
+    height: 90px;
+    width: 90px;
+    margin: auto;
+}
+*/
+}
+
+
+@media screen and (max-width:768px) {
+  
+   #ovt-user-options {
+        transition: right 0.2s ease 0.2s;
+        right: 6.55em;
+    }
+
+  div.ovt-user-menu {
+    margin-left: 6em;
+    
+    }
+
+}
+
+/*
+@media screen and(max-width: 768px){
+
+    #ovt-user-options {
+        transition: right 0s ease 0.5s;
+        right: 4.5em;
+    }
+}
+*/
+
+@media screen and (max-width:600px) {
+  
+    div.ovt-image div.ovt-user-icon.big img{
+        height: 90px;
+        width: 90px;
+    }
+
+}
+
+@media screen and (max-width:568px) {
+
+    #ovt-user-options button.ovt-btn{
+        padding: 0.3em;
+        font-size: 1em;
+    }
+
+     #ovt-user-options {
+        transition: right 0.2s ease 0.2s;
+        right: 4.5em;
+    }
+
+    div.ovt-user-menu {
+    margin-left: 4em;
+    
+    }
+
+
+}
+
+@media screen and (max-width:480px) {
+
+     
+
+    #ovt-user-options button.ovt-btn{
+        padding: 0.1em;
+        font-size: 0.9em;
+    }
+}
+
+@media screen and (max-width:425px) {
+  
+    div.ovt-image div.ovt-user-icon.big img{
+        height: 70px;
+        width: 70px;
+    }
+
+    div.ovt-full-name{
+        font-size: 12;
+    }
+
+     #ovt-user-options {
+        transition: right 0.2s ease 0.2s;
+        right: 1.5em;
+    }
+
+    div.ovt-user-menu {
+        margin-left: 1em;
+    
+    }
+
+    
+
+   
+
+}
+
+
+
+

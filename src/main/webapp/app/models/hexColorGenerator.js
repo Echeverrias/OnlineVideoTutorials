@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var HexColorGenerator = (function () {
     function HexColorGenerator() {
         this.colors = ['#00ced1', '#1e90ff', '#c393f6', '#ba3232', '#beed00', '#26857e', '#ffe700', '#f4200d', '#b51138'];

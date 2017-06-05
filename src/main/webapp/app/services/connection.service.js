@@ -8,12 +8,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * @author Juan Antonio Echeverrías Aranda (juanan.echeve@gmail.com)
  *
  */
-var core_1 = require('@angular/core');
-var handler_service_1 = require('./handler.service');
+var core_1 = require("@angular/core");
+var handler_service_1 = require("./handler.service");
 console.log("Module Connection");
 /**
 * It allows the communication between the server and the components
@@ -37,6 +38,10 @@ var ConnectionService = (function () {
         console.log(this._stompClient);
         console.log(this._ws);
         console.log(this._ws.onmessage);
+        console.log("WS STATE");
+        console.log(this._ws.readyState);
+        console.log(this._ws.CONNECTING);
+        console.log(this._ws.OPEN);
     }
     Object.defineProperty(ConnectionService.prototype, "stompOverWsClient", {
         get: function () {
@@ -97,21 +102,36 @@ var ConnectionService = (function () {
     ConnectionService.prototype.sendMessage = function (jsonMessage) {
         //console.log(`---------->  ${jsonMessage.id} ${new Date().toLocaleTimeString()}`);
         //console.log(`-> message: ${JSON.stringify(jsonMessage)}`);
+        var _this = this;
         var stringifyMessage = JSON.stringify(jsonMessage);
-        this._ws.send(stringifyMessage);
+        // while(this._ws.readyState === this._ws.CONNECTING) {}
+        this.waitForConnection(function () { return _this._ws.send(stringifyMessage); });
+        console.log;
         if (!jsonMessage.id.includes('receiveAddress')) {
             console.log("----------> The message " + jsonMessage.id + " has been send");
+        }
+    };
+    ConnectionService.prototype.waitForConnection = function (callback) {
+        if (this._ws.readyState === this._ws.OPEN) {
+            console.log(typeof callback);
+            if (typeof callback !== 'undefined') {
+                callback();
+            }
+        }
+        else {
+            var this2 = this;
+            setTimeout(function () { return this2.waitForConnection(callback.bind(this2)); }, 1000);
         }
     };
     ConnectionService.prototype.destroy = function () {
         this._stompClient.disconnect();
         this._ws.close();
     };
-    ConnectionService = __decorate([
-        core_1.Injectable(), 
-        __metadata('design:paramtypes', [handler_service_1.HandlerService])
-    ], ConnectionService);
     return ConnectionService;
 }());
+ConnectionService = __decorate([
+    core_1.Injectable(),
+    __metadata("design:paramtypes", [handler_service_1.HandlerService])
+], ConnectionService);
 exports.ConnectionService = ConnectionService;
 //# sourceMappingURL=connection.service.js.map

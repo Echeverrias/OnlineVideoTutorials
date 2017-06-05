@@ -3,6 +3,7 @@
  *
  */
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var TUTOR = "tutor";
 var STUDENT = "student";
 var User = (function () {
@@ -97,12 +98,25 @@ var User = (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(User.prototype, "userImage", {
+        get: function () {
+            return this._userImage;
+        },
+        set: function (userImage) {
+            this._userImage = userImage;
+        },
+        enumerable: true,
+        configurable: true
+    });
     User.prototype.set = function (user) {
+        console.log('User.set');
+        console.log(user);
         this._userName = user.userName;
         this._userType = user.userType;
         this._name = user.name;
         this._surname = user.surname;
         this._email = user.email;
+        this._userImage = user.userImage;
     };
     User.prototype.setToUndefined = function () {
         this._userName = "";
@@ -110,6 +124,7 @@ var User = (function () {
         this._name = "";
         this._surname = "";
         this._email = "";
+        this._userImage = null;
     };
     User.prototype.isATutor = function () {
         return this._userType === User.tutorType;
@@ -118,6 +133,7 @@ var User = (function () {
         return this._userType === User.studentType;
     };
     User.prototype.exist = function () {
+        console.log("exist");
         if (this._userName) {
             return true;
         }

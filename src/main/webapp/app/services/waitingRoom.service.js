@@ -8,11 +8,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
-var Subject_1 = require('rxjs/Subject');
-var connection_service_1 = require('./connection.service');
-var handler_service_1 = require('./handler.service');
-var user_service_1 = require('./user.service');
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = require("@angular/core");
+var Subject_1 = require("rxjs/Subject");
+var connection_service_1 = require("./connection.service");
+var handler_service_1 = require("./handler.service");
+var user_service_1 = require("./user.service");
 var WaitingRoomService = (function () {
     function WaitingRoomService(connection, handler, me) {
         var _this = this;
@@ -37,10 +38,13 @@ var WaitingRoomService = (function () {
     WaitingRoomService.prototype.enter = function () {
         console.log("");
         console.log("* <- WaitingRoomService.lookingForRooms " + new Date().toLocaleTimeString());
-        var jsonMessage = {
-            id: "enterWaitingRoom",
-            userName: this.me.myUserName
+        /*
+        let jsonMessage: UserNameMessage = {
+            id:"enterWaitingRoom",
+            userName: this.me.myUserName,
         };
+        */
+        var jsonMessage = Object.assign(this.me.getMyInfo(), { id: "enterWaitingRoom" });
         this.connection.sendMessage(jsonMessage);
         console.log("/ WaitingRoomService.lookingForRooms " + new Date().toLocaleTimeString());
         console.log("");
@@ -86,19 +90,16 @@ var WaitingRoomService = (function () {
     WaitingRoomService.prototype.exit = function () {
         console.log("");
         console.log("* <- WaitingRoomService.exit " + new Date().toLocaleTimeString());
-        var jsonMessage = {
-            id: "exitWaitingRoom",
-            userName: this.me.myUserName
-        };
+        var jsonMessage = Object.assign(this.me.getMyInfo(), { id: "exitWaitingRoom" });
         this.connection.sendMessage(jsonMessage);
         console.log("/ WaitingRoomService.exit " + new Date().toLocaleTimeString());
         console.log("");
     };
-    WaitingRoomService = __decorate([
-        core_1.Injectable(), 
-        __metadata('design:paramtypes', [connection_service_1.ConnectionService, handler_service_1.HandlerService, user_service_1.UserService])
-    ], WaitingRoomService);
     return WaitingRoomService;
 }());
+WaitingRoomService = __decorate([
+    core_1.Injectable(),
+    __metadata("design:paramtypes", [connection_service_1.ConnectionService, handler_service_1.HandlerService, user_service_1.UserService])
+], WaitingRoomService);
 exports.WaitingRoomService = WaitingRoomService;
 //# sourceMappingURL=waitingRoom.service.js.map

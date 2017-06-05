@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package org.jaea.onlinevideotutorials.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,12 +8,17 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.MapsId;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.FetchType;
+import javax.persistence.CascadeType;
 
 /**
  *
- * @author juanan
+ * @author Juan Antonio Echeverrías Aranda
  */
 
 @Entity
@@ -30,20 +31,30 @@ public  class User implements Comparable<User>{
     
     @JsonIgnore
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
-     
+    
+    @Column(nullable = false)
     protected String name;
-
+    
+    @Column(nullable = false)
     protected String surname;
-
+    
+     @Column(unique = true, nullable = false)
     protected String email;
 
     @Column(unique = true, nullable = false)
     protected String userName;
+    
+    @Column(nullable = false)
     protected String userType;
+    
+    @Column(nullable = false)
     private String password;
+    
+    @OneToOne(cascade=CascadeType.PERSIST, orphanRemoval=true, optional=true)
+    private UserFile userImage;
    
 
     private User(){}
@@ -62,7 +73,7 @@ public  class User implements Comparable<User>{
     }
 
 
-     public User(String userName, String userType, String name, String surname, String email, String password){
+    public User(String userName, String userType, String name, String surname, String email, String password){
         this.userName = userName;
         this.userType = userType;
         this.name = name;
@@ -80,6 +91,10 @@ public  class User implements Comparable<User>{
         this.password = user.password;
     }
     
+    public Long getId() {
+        return this.id;
+    }
+
     public String getName() {
         return this.name;
     }
@@ -99,6 +114,22 @@ public  class User implements Comparable<User>{
     public String getEmail(){
         return this.email;
     }
+    
+    public UserFile getUserImage(){
+    	return this.userImage;
+    }
+    
+    public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setSurname(String surname) {
+		this.surname = surname;
+	}
+
+	public void setUserImage(UserFile userImage){
+    	this.userImage = userImage;
+    }
 
     public void setPassword(String password) {
         this.password = password;
@@ -107,13 +138,19 @@ public  class User implements Comparable<User>{
     public void setEmail(String email) {
         this.email = email;
     }
-
-    @JsonProperty("isATutor")
+    
+    public void setPasswordFromOtherUser(User user){
+    	if (!user.password.equals("")){
+    		this.password = user.password;
+    	}
+    }
+    
+    @JsonIgnore
     public boolean isATutor(){
         return this.userType.equals(TUTOR_TYPE);
     }
-    
-    @JsonProperty("isAStudent")
+
+    @JsonIgnore
     public boolean isAStudent(){
         return this.userType.equals(STUDENT_TYPE);
     }
@@ -138,6 +175,7 @@ public  class User implements Comparable<User>{
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
         result = prime * result + ((this.userName == null) ? 0 : this.userName.hashCode());
         return result;
     }
@@ -162,12 +200,6 @@ public  class User implements Comparable<User>{
         return "{userName: " + this.userName + ",userType: " + this.userType + ",name: " + this.name + ",surname: " + this.surname +  ",email: " + this.email + "}";
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    
     
 }

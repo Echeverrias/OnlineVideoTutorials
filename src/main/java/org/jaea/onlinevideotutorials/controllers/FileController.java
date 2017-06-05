@@ -30,9 +30,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.JsonObject;
+import java.util.logging.Level;
+import org.jaea.onlinevideotutorials.domain.User;
+import org.jaea.onlinevideotutorials.domain.UserFile;
+import org.jaea.onlinevideotutorials.repositories.UserFileRepository;
+import org.jaea.onlinevideotutorials.repositories.UserRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 
 /**
  *
@@ -44,6 +50,12 @@ public class FileController {
 	
 	private SimpMessagingTemplate template;
 	private final String UPLOAD_PATH = "/files/";
+
+    @Autowired
+    private UserRepository userRepository;
+    
+    @Autowired
+    private UserFileRepository userFileRepository;
 	
 	@Autowired
     private HttpServletRequest request;
@@ -86,8 +98,69 @@ public class FileController {
         msg.addProperty("downloadUrl", "/download/" + roomFolder + "/" + fileName);
         this.template.convertAndSend("/uploadedFile/shared/" + room, msg.toString());
     }
-    
-    
+
+     @RequestMapping("/download/{folder:.+}/{file:.+}")
+    public void downloadFile(HttpServletResponse response, @PathVariable String folder, @PathVariable String file){
+        log.info("Download: " + folder + "/" + file);
+        
+        String filePath = UPLOAD_PATH + "/" + folder + "/" + file;
+        ServletContext context = request.getServletContext();
+        String absolutePath = context.getRealPath(filePath);
+        File f = new File(absolutePath);
+        
+        if (!f.exists()){
+            return;
+        }
+        log.info("FilaPath: " + absolutePath);
+        
+        String mimeType = URLConnection.guessContentTypeFromName(f.getName());
+        log.info("mimeType: " + mimeType);
+        response.setContentType(mimeType);
+        //response.setHeader("Content-Disposition","attachment; filename=\"" + f.getName() +"\"");
+        response.setHeader("Content-Disposition","attachment; filename=" + f.getName());
+        response.setContentLength((int)f.length());
+        InputStream is;
+        try {
+            is = new BufferedInputStream(new FileInputStream(f));
+            try {
+                FileCopyUtils.copy(is, response.getOutputStream());
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        
+    }
+
+    @PostMapping("/upload/userImage/{userName:.+}")
+    public ResponseEntity<UserFile> saveUserImage(@PathVariable String userName, @RequestParam("file") MultipartFile fileRequest){
+        log.info("FileController.saveUserImage: " + userName);
+        UserFile userImage = null;
+        userImage = new UserFile(fileRequest);
+        userImage.setName(userName);
+        User user = userRepository.findByUserName(userName);
+        HttpStatus httpStatus;
+        try{
+            // We delete the previous user image to save the new one with the same name
+            user.setUserImage(null);
+            userRepository.save(user);
+            user.setUserImage(userImage);
+            userRepository.save(user);
+            httpStatus = HttpStatus.OK;
+            log.info("the user image has been saved");
+        }
+        catch(Exception e){
+            log.info("error trying to save the user image");
+            httpStatus = HttpStatus.NOT_FOUND;
+        }
+        return new ResponseEntity(userImage, httpStatus);
+    }
+
+
     private String getFormatedDate(){
     	
     	Calendar date = new GregorianCalendar();
@@ -99,42 +172,7 @@ public class FileController {
     	
     }
     
-    @RequestMapping("/download/{folder:.+}/{file:.+}")
-    public void downloadFile(HttpServletResponse response, @PathVariable String folder, @PathVariable String file){
-    	log.info("Download: " + folder + "/" + file);
-    	
-    	String filePath = UPLOAD_PATH + "/" + folder + "/" + file;
-    	ServletContext context = request.getServletContext();
-    	String absolutePath = context.getRealPath(filePath);
-    	File f = new File(absolutePath);
-    	
-    	if (!f.exists()){
-    		return;
-    	}
-    	log.info("FilaPath: " + absolutePath);
-    	
-    	String mimeType = URLConnection.guessContentTypeFromName(f.getName());
-    	log.info("mimeType: " + mimeType);
-    	response.setContentType(mimeType);
-        //response.setHeader("Content-Disposition","attachment; filename=\"" + f.getName() +"\"");
-    	response.setHeader("Content-Disposition","attachment; filename=" + f.getName());
-    	response.setContentLength((int)f.length());
-    	InputStream is;
-		try {
-			is = new BufferedInputStream(new FileInputStream(f));
-			try {
-				FileCopyUtils.copy(is, response.getOutputStream());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	
-    	
-    }
+   
 
  }
 

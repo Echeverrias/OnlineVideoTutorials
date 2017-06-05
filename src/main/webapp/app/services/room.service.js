@@ -8,13 +8,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
-var Subject_1 = require('rxjs/Subject');
-var handler_service_1 = require('./handler.service');
-var user_service_1 = require('./user.service');
-var connection_service_1 = require('./connection.service');
-var user_1 = require('../models/user');
-var userFactory_1 = require('../models/userFactory');
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = require("@angular/core");
+var Subject_1 = require("rxjs/Subject");
+var handler_service_1 = require("./handler.service");
+var user_service_1 = require("./user.service");
+var connection_service_1 = require("./connection.service");
+var user_1 = require("../models/user");
+var userFactory_1 = require("../models/userFactory");
 ;
 var RoomService = (function () {
     function RoomService(handler, connection, me) {
@@ -152,11 +153,11 @@ var RoomService = (function () {
         this.eeAParticipantHasLefTheRoom.unsubscribe();
         this.removeAllParticipants();
     };
-    RoomService = __decorate([
-        core_1.Injectable(), 
-        __metadata('design:paramtypes', [handler_service_1.HandlerService, connection_service_1.ConnectionService, user_service_1.UserService])
-    ], RoomService);
     return RoomService;
 }());
+RoomService = __decorate([
+    core_1.Injectable(),
+    __metadata("design:paramtypes", [handler_service_1.HandlerService, connection_service_1.ConnectionService, user_service_1.UserService])
+], RoomService);
 exports.RoomService = RoomService;
 //# sourceMappingURL=room.service.js.map

@@ -4,8 +4,8 @@
 */
 #ovt-waitingRoom {
     position:relative;
-    top:5em;
-    width: 40%;
+    top: 1em;
+    width: 52%;
     display: block;
     margin: auto;
     background-color: #EEFACA;
@@ -35,57 +35,105 @@
    
 }
 
-.ovt-container-col .header {
+#ovt-waitingRoom .ovt-out {
   margin-bottom:1em;
+  
 }
 
-
-form  {
-    padding: 0% 2%;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
+div.ovt-container-col div.ovt-available-rooms > div.header {
+  margin-bottom:1em;
+  margin-top:1em;
 }
 
-form div {
-    margin:auto;
+div.ovt-available-rooms  div.header {
+  margin-bottom:1em;
+  
 }
 
-.ng-valid[required] {
-  border-left: 5px solid #42A948; /* green */
+#ovt-waitingRoom div.ovt-available-rooms{
+  padding: 0em;
 }
 
-.ng-invalid {
-  border-left: 5px solid #a94442; /* red */
+div.ovt-rooms{
+  width: 70%;
+  margin:auto;
 }
 
+div.ovt-rooms ul{
+  list-style: none; 
+  padding:0;  
+  margin:0; 
+  text-align: left;
+}
+
+div.ovt-rooms li.ovt-room-selector{
+  margin-bottom:0.5em;
+  padding-left: 1em; 
+  text-indent: -1em;
+}
+
+div.ovt-rooms li.ovt-room-selector::before{
+ content: '\2022';
+ padding-right:7px;
+}
+
+div.ovt-rooms li.ovt-room-selector span:hover{
+  cursor: pointer;
+  background: #FFEB3B;
+  font-weight: bold;
+}
+
+button.ovt-inline{
+  display: inline-block;
+}
+
+div.ovt-inline p{
+  display: inline;
+  margin-right: 0.5em;
+}
+
+div.ovt-create-room div div input{
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  border: 0.5px solid;
+  border-radius: 5px;
+}
+
+div.ovt-create-room div div{
+margin-bottom: 1em;
+}
+
+div.ovt-create-room div div{
+  display: inline-block;
+  margin-left: 0.5em;
+}
+
+div.ovt-create-room button{
+  padding-left: 1em;
+}
+
+div.ovt-out button{
+  margin: 2em auto 0em auto;
+}
+
+@media screen and (max-width: 1140px){
+  
+  #ovt-waitingRoom{
+      width: 65%;
+  }
+}
 
 @media screen and (max-width:900px) {
   
   
   #ovt-waitingRoom {
-    width: 55%;
-  }
-}
-
-@media screen and (max-width:800px) {
-  
-  
-  #ovt-waitingRoom {
-    width: 65%;
+    width: 78%;
   }
 }
 
 
-@media screen and (max-width:600px) {
-  
-  
-  #ovt-waitingRoom {
-    width: 85%;
-  }
-}
 
-@media screen and (max-width:400px) {
+@media screen and (max-width:425px) {
   
   
   #ovt-waitingRoom {
