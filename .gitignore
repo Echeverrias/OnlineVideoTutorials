@@ -1,7 +1,6 @@
 *.class
 *.[oa]
 *~
-*.sh
 *.pdf
 Dockerfile
 dockerfile
