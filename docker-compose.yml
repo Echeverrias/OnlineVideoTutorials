@@ -1,0 +1,30 @@
+version: '2'
+services:
+  ovt:
+    image: echeverrias/ovt:2.0.0
+    ports:
+      - "8080:8080"
+    links:
+      - kurento:kms
+      - mysql:mysql
+    environment:
+          SPRING_DATASOURCE_URL: jdbc:mysql://mysql/ovt?autoReconnect=true&useSSL=false
+ 
+  kurento:
+    image: fiware/stream-oriented-kurento:latest
+    ports:
+      - "8888:8888"
+    
+  mysql:
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: "ovt"
+      MYSQL_USER: "root"
+      MYSQL_PASSWORD: "root"
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    volumes:
+      - ./ovt-mysql/:/var/lib/mysql
+

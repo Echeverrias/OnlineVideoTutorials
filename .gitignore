@@ -4,7 +4,6 @@
 *.pdf
 Dockerfile
 dockerfile
-docker-compose.yml
 settings.xml
 tomcat-users.xml
 bower_components/
@@ -16,3 +15,5 @@ temp/
 /data/
 /prueba/
 /ovt-mysql/
+wait-for-it/
+start.sh
