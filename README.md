@@ -1,45 +1,56 @@
 # Online Video Tutorials App
-This is an app to do online video tutorials. It allows you chat with the others participants, shares files and view pdf files. 
+This is an app to do online video tutorials. It allows you register in it, chat with the others participants, shares files and view pdf files. 
 
-You can enter in the app as a 'tutor' or as a 'student'.
+You can register in the app as a 'tutor' or as a 'student'.
 
-![alt tag](https://github.com/Echeverrias/OnlineVideoTutorials/blob/2.0.0/src/main/resources/img/OVT%20-%20login.png)
-*Figure 1*  <br /><br />
+![alt tag](https://github.com/Echeverrias/OnlineVideoTutorials/blob/2.0.0/src/main/resources/img/OVT%20-%20sign%20up.png)
+       *Figure 1*  <br /><br />
 
-
-
-If you enter as a tutor, you'll create a room and get into it.
-
-![alt tag](https://github.com/Echeverrias/OnlineVideoTutorials/blob/2.0.0/src/main/resources/img/OVT%20-%20room.png)
-*Figure 2*  <br /><br />
+![alt tag](https://github.com/Echeverrias/OnlineVideoTutorials/blob/2.0.0/src/main/resources/img/OVT%20-%20sign%20up2.png)
+       *Figure 2*  <br /><br />
 
 
+You can enter in the app and modify your profile.
 
-If you enter as a student, you'll go to the 'waiting room' and you could enter in any tutor room you choose.
+![alt tag](https://github.com/Echeverrias/OnlineVideoTutorials/blob/2.0.0/src/main/resources/img/OVT%20-%20sign%20in.png)
+       *Figure 3*  <br /><br />
 
-![alt tag](https://github.com/Echeverrias/OnlineVideoTutorials/blob/2.0.0/src/main/resources/img/OVT%20-%20waiting%20room.png)
-        *Figure 3*  <br /><br />
+![alt tag](https://github.com/Echeverrias/OnlineVideoTutorials/blob/2.0.0/src/main/resources/img/OVT%20-%20edit%20your%20profile.png)
+       *Figure 4*  <br /><br />
+
+
+If you are registered as a tutor, you can create a room and get into it.
+
+![alt tag](https://github.com/Echeverrias/OnlineVideoTutorials/blob/2.0.0/src/main/resources/img/OVT%20-%20tutor%20waiting%20room.png)
+       *Figure 5*  <br /><br />
+
+
+
+If you are registered as a student, you'll go to the 'waiting room' and you could enter in any tutor room you choose.
+
+![alt tag](https://github.com/Echeverrias/OnlineVideoTutorials/blob/2.0.0/src/main/resources/img/OVT%20-%20waiting%20room2.png)
+       *Figure 6*  <br /><br />
 
 
 
 In the room you could chat with the rest of users.
 
 ![alt tag](https://github.com/Echeverrias/OnlineVideoTutorials/blob/2.0.0/src/main/resources/img/OVT%20-%20room%20chat.png)
-       *Figure 4*  <br /><br />
+       *Figure 7*  <br /><br />
 
 
 
 You could share files with the other participants.
 
 ![alt tag](https://github.com/Echeverrias/OnlineVideoTutorials/blob/2.0.0/src/main/resources/img/OVT%20-%20sharing%20files.png)
-       *Figure 5*  <br /><br />
+       *Figure 8*  <br /><br />
 
 
 
 You could visualize pdf files.
 
 ![alt tag](https://github.com/Echeverrias/OnlineVideoTutorials/blob/2.0.0/src/main/resources/img/OVT%20-%20visualizing%20pdfs.png)
-       *Figure 6*  <br /><br />       
+       *Figure 9*  <br /><br />       
 
 
 
