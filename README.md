@@ -67,12 +67,11 @@ You need to install:
 
 
 ### Run the project
-1. Download the [OnlineVideoTutorialsApp](https://github.com/Echeverrias/OnlineVideoTutorials/tree/1.0.x) project. You can download it as a zip or clone it.
+1. Download the [OnlineVideoTutorialsApp](https://github.com/Echeverrias/OnlineVideoTutorials/tree/2.0.0) project. You can download it as a zip or clone it.
 2. Open the terminal and start kurento media server: **`sudo service kurento-media-server-6.0 start`** 
 3. Go to the root of the project folder and execute **`mvn spring-boot:run`** to run the app.
 4. The application starts in the url [http://localhost:8080/](http://localhost:8080/)
 5. The app has an embedded H2 database. If you want to use a mysql database you will have to modify the application-mysql.properties file located into /src/main/resources/. By default you use a database called 'OVT' in port 3306, with 'root' as username and password. You have to execute **`mvn spring-boot:run -Dspring.profiles.active=mysql`** to use the mysql database.
-
 
 #### Run the app on docker
 You'll need to install [docker](https://docs.docker.com/engine/installation/) and [docker-compose](https://docs.docker.com/compose/install/). Then download the [docker-compose.yml](https://github.com/Echeverrias/OnlineVideoTutorials/blob/2.0.0/docker-compose.yml) file and finally open the terminal, go to the folder in which the file is and execute the command: **`docker-compose up -d`**, the application starts in the url http://localhost:8080/ovt. You'll need to execute **`docker-compose stop`** to stop the app.
