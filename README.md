@@ -71,25 +71,10 @@ You need to install:
 2. Open the terminal and start kurento media server: **`sudo service kurento-media-server-6.0 start`** 
 3. Go to the root of the project folder and execute **`mvn spring-boot:run`** to run the app.
 4. The application starts in the url [http://localhost:8080/](http://localhost:8080/)
-5. The app has an embedded H2 database with some users creted by default. You have to introduce one of the following user names: *maria.gil*, *marta.gil*, *monica.gil*; if you want login as a **tutor**. And if you want login as **student** you have to introduce one of these names: *sandra.ruiz*, *raquel.ruiz*, *elena.ruiz*, *laura.ruiz*, *vanesa.ruiz*, *ines.ruiz*, *carmen.ruiz*, *amanda.ruiz*, *lorena.ruiz*. For both user types the password is *'zzz'*, without the quotes.
+5. The app has an embedded H2 database. If you want to use a mysql database you will have to modify the application-mysql.properties file located into /src/main/resources/. By default you use a database called 'OVT' in port 3306, with 'root' as username and password. Yo have to execute **`mvn spring-boot:run -Dspring.profiles.active=mysql`** to use the mysql database.
 
 #### Run the app on docker
-You'll need to install [docker](https://docs.docker.com/engine/installation/) and [docker-compose](https://docs.docker.com/compose/install/). Then create a file called **'docker-compose.yml'** with the following content:
-```
-version: '2'
-services:
-  ovt:
-    image: echeverrias/ovt:2.0.0
-    ports:
-      - "8080:8080"
-    links:
-      - kurento:kms
-  kurento:
-    image: fiware/stream-oriented-kurento:latest
-    ports:
-      - "8888:8888"
-```
-And finally open the terminal, go to the created file path and execute the command: **`docker-compose up -d`**, the application starts in the url http://localhost:8080/ovt. You'll need to execute **`docker-compose stop`** to stop the app.
+You'll need to install [docker](https://docs.docker.com/engine/installation/) and [docker-compose](https://docs.docker.com/compose/install/). Then download the [docker-compose.yml](https://github.com/Echeverrias/OnlineVideoTutorials/blob/2.0.0/docker-compose.yml) file and finally open the terminal, go to the folder in which the file is and execute the command: **`docker-compose up -d`**, the application starts in the url http://localhost:8080/ovt. You'll need to execute **`docker-compose stop`** to stop the app.
 
 
 ## Development
@@ -97,7 +82,7 @@ The app is being developed in [TypeScript](https://www.typescriptlang.org/) and 
 
 If you modify some TypeScript files you will have to compile them to create the JavaScript files. To do it, you'll have to open the terminal, go to the OnlineVideoTutorials/src/main/webapp folder and execute **`tsc`**
 
-The app has an embedded H2 database by default with an ['import.sql'](https://github.com/Echeverrias/OnlineVideoTutorials/blob/2.0.0/src/main/resources/import.sql) file located into /src/main/resources/ that initializes a table with some users when the app starts, so to add your own database, whith your users, you have to modify the ['application.properties'](https://github.com/Echeverrias/OnlineVideoTutorials/blob/2.0.0/src/main/resources/application.properties) and change the configuration. You have information about that at the official Spring documentation:
+The app has an embedded H2 database by default, so to add your own database, whith your users, you have to modify the application.properties file which is located into /src/main/resources/ and change the configuration. You have information about that at the official Spring documentation:
 - [Connection to a production database](http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-connect-to-production-database)
 - [Creating and dropping JPA databases](http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-spring-data-jpa-repositories)
 
