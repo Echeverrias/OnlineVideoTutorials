@@ -71,25 +71,10 @@ You need to install:
 2. Open the terminal and start kurento media server: **`sudo service kurento-media-server-6.0 start`** 
 3. Go to the root of the project folder and execute **`mvn spring-boot:run`** to run the app.
 4. The application starts in the url [http://localhost:8080/](http://localhost:8080/)
-5. The app has an embedded H2 database with some users creted by default. You have to introduce one of the following user names: *maria.gil*, *marta.gil*, *monica.gil*; if you want login as a **tutor**. And if you want login as **student** you have to introduce one of these names: *sandra.ruiz*, *raquel.ruiz*, *elena.ruiz*, *laura.ruiz*, *vanesa.ruiz*, *ines.ruiz*, *carmen.ruiz*, *amanda.ruiz*, *lorena.ruiz*. For both user types the password is *'zzz'*, without the quotes.
+5. The app has an embedded H2 database. If you want to use a mysql database you will have to modify the application-mysql.properties file which is in the src/main/resources folder, in the root path. By default you use a database called 'OVT' in port 3306, whith 'root' as username and password. Yo have to execute **`mvn spring-boot:run -Dspring.profiles.active=mysql`** to use the mysql database.
 
 #### Run the app on docker
-You'll need to install [docker](https://docs.docker.com/engine/installation/) and [docker-compose](https://docs.docker.com/compose/install/). Then create a file called **'docker-compose.yml'** with the following content:
-```
-version: '2'
-services:
-  ovt:
-    image: echeverrias/ovt:2.0.0
-    ports:
-      - "8080:8080"
-    links:
-      - kurento:kms
-  kurento:
-    image: fiware/stream-oriented-kurento:latest
-    ports:
-      - "8888:8888"
-```
-And finally open the terminal, go to the created file path and execute the command: **`docker-compose up -d`**, the application starts in the url http://localhost:8080/ovt. You'll need to execute **`docker-compose stop`** to stop the app.
+You'll need to install [docker](https://docs.docker.com/engine/installation/) and [docker-compose](https://docs.docker.com/compose/install/). Then download the [docker-compose.yml](https://docs.docker.com/compose/install/) file and finally open the terminal, go to the folder in which the file is and execute the command: **`docker-compose up -d`**, the application starts in the url http://localhost:8080/ovt. You'll need to execute **`docker-compose stop`** to stop the app.
 
 
 ## Development
