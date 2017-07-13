@@ -12,7 +12,7 @@ var appRoutes = [
     { path: 'rooms', component: waitingRoom_component_1.WaitingRoomComponent, canActivate: [auth_guard_1.AuthGuard] },
     { path: 'room/:roomName', component: room_component_1.RoomComponent, canActivate: [auth_guard_1.AuthGuard] },
     // otherwise redirect to home
-    { path: '**', redirectTo: '' }
+    { path: '**', redirectTo: '/sign' }
 ];
 exports.routing = router_1.RouterModule.forRoot(appRoutes);
 //# sourceMappingURL=app.routing.js.map

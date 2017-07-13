@@ -21,7 +21,8 @@ var AuthGuard = (function () {
             return true;
         }
         else {
-            this.router.navigate(["/login"]);
+            console.log("this.router.navigate([\"/sign\"])");
+            this.router.navigate(["/sign"]);
         }
     };
     return AuthGuard;

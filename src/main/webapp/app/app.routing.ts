@@ -14,7 +14,7 @@ const appRoutes: Routes = [
     { path: 'rooms', component: WaitingRoomComponent, canActivate:[AuthGuard] },
     { path: 'room/:roomName', component: RoomComponent , canActivate:[AuthGuard]},
     // otherwise redirect to home
-    { path: '**', redirectTo: '' }
+    { path: '**', redirectTo: '/sign' }
 ];
 
 export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes);
