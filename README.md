@@ -67,7 +67,7 @@ You need to install:
 
 
 ### Run the project
-1. Download the [OnlineVideoTutorialsApp](https://github.com/Echeverrias/OnlineVideoTutorials/tree/1.0.x) project. You can download it as a zip or clone it.
+1. Download the [OnlineVideoTutorialsApp](https://github.com/Echeverrias/OnlineVideoTutorials/tree/2.0.0) project. You can download it as a zip or clone it.
 2. Open the terminal and start kurento media server: **`sudo service kurento-media-server-6.0 start`** 
 3. Go to the root of the project folder and execute **`mvn spring-boot:run`** to run the app.
 4. The application starts in the url [http://localhost:8080/](http://localhost:8080/)
