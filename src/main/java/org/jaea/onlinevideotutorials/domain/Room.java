@@ -14,19 +14,36 @@
  */
 package org.jaea.onlinevideotutorials.domain;
 
+import org.jaea.onlinevideotutorials.Hour;
+import org.jaea.onlinevideotutorials.Info;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.JsonObject;
 import java.io.Closeable;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.PreDestroy;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.EntityListeners;
+import javax.persistence.Transient;
 import org.kurento.client.Continuation;
 import org.kurento.client.MediaPipeline;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.Collections;
-import java.util.Map;
-import org.jaea.onlinevideotutorials.Hour;
-import org.jaea.onlinevideotutorials.Info;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 
 
 /**
@@ -34,17 +51,43 @@ import org.jaea.onlinevideotutorials.Info;
  * 
  * @author Juan Antonio Echeverrías Aranda (juanan.echeve@gmail.com)
 */
+@Entity
+@Table(name="rooms")
+@JsonIgnoreProperties(value={"log","createdAt","participantsByUserName", "pipeline"})
+@EntityListeners(AuditingEntityListener.class)
 public class Room implements Closeable {
-    private final Logger log = LoggerFactory.getLogger(Room.class);
     
+    
+    @Transient
+    private final Logger log = LoggerFactory.getLogger(Room.class);
+
+    @JsonIgnore
+    @Id
+    @GeneratedValue
+    @Column(name = "id", unique = true, nullable = false)
+    private Long id;
+
+    @Column(nullable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP) 
+    @CreatedDate
+    private Date createdAt;
+    
+    private String name = "";;
+
     //private ParticipantSession tutor = null;
     private String tutor = "";
     
-    // The tutor is included in the participants
-    private final ConcurrentHashMap<String, ParticipantSession> participantsByUserName = new ConcurrentHashMap<>();
-    private final MediaPipeline pipeline;
-    private final String name;
+    @Transient
+    private List<ParticipantSession> participantsHistorial = new ArrayList<>();
     
+    // The tutor is included in the participants
+    @Transient
+    private final ConcurrentHashMap<String, ParticipantSession> participantsByUserName = new ConcurrentHashMap<>();
+    
+    @Transient
+    private MediaPipeline pipeline;
+    
+    private Room(){};
     
     public Room(String name, MediaPipeline pipeline) {
         log.info("% ROOM {}", Hour.getTime());
@@ -53,11 +96,21 @@ public class Room implements Closeable {
         
 	log.info("/ ROOM {} has been created {}", this.name, Hour.getTime());
     }
+
+    @JsonProperty 
+    public Date getcreatedAt(){
+        return this.createdAt;
+    }
     
     public String getName() {
         return this.name;
     }
+
+    public List<ParticipantSession> getParticipantsHistorial(){
+        return this.participantsHistorial;
+    }
     
+    @JsonIgnore
     public boolean isEmpty(){
         return this.participantsByUserName.isEmpty();
     }
@@ -113,18 +166,29 @@ public class Room implements Closeable {
         log.info("{} ROOM.addParticipant {} to {} {}", Info.START_SYMBOL, user.getUserName(), this.name, Hour.getTime());
         Info.logInfoStart2("assignRoomMedia");
         
-	    user.assignRoomMedia(new TutorialMedia(this.pipeline, user.getSession(), user.getUserName())); 
-	
+        this.addParticipantToHistorial(user);
+        user.assignRoomMedia(new TutorialMedia(this.pipeline, user.getSession(), user.getUserName())); 
+	    this.checkIfTheUserIsATutor(user);
         Info.logInfoFinish2("assignRoomMedia");
         
-        participantsByUserName.put(user.getUserName(), user);
-        if (this.tutor.equals("") && user.isATutor() ) {
-            this.tutor = user.getUserName();
-        }
-        
+        this.participantsByUserName.put(user.getUserName(), user);
+               
         this.printTheRoomParticipants(); //*
         log.info(participantsByUserName.keys().toString());
         log.info("{} ROOM.addParticipant {}", Info.FINISH_SYMBOL, Hour.getTime());
+    }
+
+    private void addParticipantToHistorial(ParticipantSession participant){
+     
+        if (!this.participantsHistorial.contains(participant)){
+            this.participantsHistorial.add(participant);
+        }
+    }
+
+    private void checkIfTheUserIsATutor(ParticipantSession user){
+        if (this.tutor.equals("") && user.isATutor() ) {
+            this.tutor = user.getUserName();
+        }
     }
     
     public ParticipantSession leave(String userName) {

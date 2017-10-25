@@ -29,6 +29,7 @@ import org.jaea.onlinevideotutorials.Info;
 import org.jaea.onlinevideotutorials.domain.ParticipantSession;
 import org.jaea.onlinevideotutorials.domain.Room;
 import org.jaea.onlinevideotutorials.domain.UserSession;
+import org.jaea.onlinevideotutorials.repositories.RoomRepository;
 
 import org.kurento.client.KurentoClient;
 import org.slf4j.Logger;
@@ -44,7 +45,11 @@ public class RoomsManager {
 
     @Autowired
     private KurentoClient kurento;
-    
+
+    @Autowired
+    private RoomRepository roomRepositoty;
+
+      
     private final ConcurrentHashMap<String, String> roomsNamesByUserName = new ConcurrentHashMap();
     private final ConcurrentHashMap<String, Room> roomsByName = new ConcurrentHashMap<>(); 
     private final CopyOnWriteArrayList<String> availableRoomsNames = new CopyOnWriteArrayList<>();;
@@ -198,6 +203,7 @@ public class RoomsManager {
             this.availableRoomsNames.remove(roomName);
             room.close();
             this.roomsByName.remove(roomName);
+            roomRepositoty.save(room);
 	    }
 	Info.logInfoFinish("/ Room.remove: removed and closed");
     }

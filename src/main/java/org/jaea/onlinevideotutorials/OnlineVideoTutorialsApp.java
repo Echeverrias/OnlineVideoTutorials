@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 /**
  * Online Video Tutorials App main class.
@@ -20,6 +21,7 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
  * @author Juan Antonio Echeverrías Aranda (juanan.echeve@gmail.com)
  */
 @SpringBootApplication
+@EnableJpaAuditing
 public class OnlineVideoTutorialsApp extends SpringBootServletInitializer{
 
     

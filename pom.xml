@@ -186,7 +186,7 @@
               
             <executions>
 
-             
+             <!--
                       <execution>
 
                         <id>exec-bower-install</id>
@@ -218,7 +218,7 @@
                         </configuration>
                         </execution>
 
-
+-->
                  <execution>
 
                         <id>exec-tsc</id>

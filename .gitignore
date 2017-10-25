@@ -17,3 +17,4 @@ temp/
 /ovt-mysql/
 wait-for-it/
 start.sh
+pom.xml

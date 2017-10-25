@@ -8,5 +8,5 @@
                                    | |   | |    
                                    |_|   |_|              
                                              
-       ${groupId}
-       Version ${version}
+       org.jaea
+       Version 2.0.0.RELEASE

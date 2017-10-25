@@ -57,8 +57,8 @@ public class RoomHandler extends TextMessageWebSocketHandler{
     
     @Autowired
     private RoomsManager roomsManager;
-
-    @Autowired
+    
+     @Autowired
     private UserSessionsRegistry usersRegistry;
 
 
