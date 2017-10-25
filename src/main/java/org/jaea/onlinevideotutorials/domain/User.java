@@ -1,28 +1,29 @@
 
 package org.jaea.onlinevideotutorials.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.MapsId;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.FetchType;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.CascadeType;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
  *
  * @author Juan Antonio Echeverrías Aranda
  */
 
-@Entity
-@Table(name="users")
+
+@MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 public  class User implements Comparable<User>{
     
     
@@ -34,6 +35,11 @@ public  class User implements Comparable<User>{
     @GeneratedValue
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
+
+    @Column(nullable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP) 
+    @CreatedDate
+    private Date createdAt;
     
     @Column(nullable = false)
     protected String name;
@@ -57,7 +63,7 @@ public  class User implements Comparable<User>{
     private UserFile userImage;
    
 
-    private User(){}
+    protected User(){}
     
     public User(String userName, String userType, String name){
         this.userName = userName;

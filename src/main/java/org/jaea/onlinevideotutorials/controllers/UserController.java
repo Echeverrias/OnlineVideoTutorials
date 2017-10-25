@@ -1,6 +1,7 @@
 package org.jaea.onlinevideotutorials.controllers;
 
 import org.jaea.onlinevideotutorials.domain.User;
+import org.jaea.onlinevideotutorials.domain.ParticipantSession;
 import org.jaea.onlinevideotutorials.domain.UserFile;
 import org.jaea.onlinevideotutorials.domain.FieldValidationRequest;
 
@@ -9,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jaea.onlinevideotutorials.domain.ResponseMessage;
-import org.jaea.onlinevideotutorials.repositories.UserRepository;
+import org.jaea.onlinevideotutorials.repositories.ParticipantSessionRepository;
 import org.jaea.onlinevideotutorials.repositories.UserFileRepository;
 import org.jaea.onlinevideotutorials.managers.UserSessionsRegistry;
 
@@ -46,7 +47,7 @@ public class UserController {
     private UserSessionsRegistry usersRegistry;
 
     @Autowired
-    private UserRepository userRepository;
+    private ParticipantSessionRepository participantRepository;
     
     /* 
     @Autowired
@@ -67,7 +68,7 @@ public class UserController {
         }
         else{    
              log.info("The user is not logged");
-           User user = this.userRepository.findByUserName(userRequest.getUserName());
+           User user = this.participantRepository.findByUserName(userRequest.getUserName());
            if (user == null){
                 log.info("NOT_FOUND");
                 response = new ResponseEntity(null, HttpStatus.NOT_FOUND);
@@ -99,10 +100,10 @@ public class UserController {
         Boolean validField = false;
         
         if (field.equals("userName")) {
-            user = this.userRepository.findByUserName(value);
+            user = this.participantRepository.findByUserName(value);
         }
         else if (field.equals("email")) {
-            user = this.userRepository.findByEmail(value);
+            user = this.participantRepository.findByEmail(value);
         }
 
         if (user == null){
@@ -136,7 +137,7 @@ public class UserController {
     }
 
     @RequestMapping(value ="/register", method = RequestMethod.POST)
-    public synchronized ResponseEntity<User> registerNewUser(HttpServletRequest request, @RequestBody User userRequest){
+    public synchronized ResponseEntity<User> registerNewUser(HttpServletRequest request, @RequestBody ParticipantSession userRequest){
 
         log.info("Usercontroller.registerNewUser");
         ResponseEntity <User> response = null;
@@ -150,7 +151,7 @@ public class UserController {
         uf.setName(userRequest.getUserName());
         userRequest.setUserImage(uf);
 
-        this.userRepository.save(userRequest);
+        this.participantRepository.save(userRequest);
         log.info("The user has been registered");
         response = new ResponseEntity(userRequest, HttpStatus.OK);
         return response;
@@ -161,14 +162,14 @@ public class UserController {
 
         log.info("Usercontroller.editPerfil");
         ResponseEntity <User> response = null;
-        User user = userRepository.findByUserName(userRequest.getUserName());
+        ParticipantSession user = participantRepository.findByUserName(userRequest.getUserName());
         
         if (user != null){
         	 user.setName(userRequest.getName());
         	 user.setSurname(userRequest.getSurname());
         	 user.setEmail(userRequest.getEmail());
         	 user.setPasswordFromOtherUser(userRequest);
-        	 this.userRepository.save(user);
+        	 this.participantRepository.save(user);
              log.info("The user has been modified");
         	 response = new ResponseEntity(user, HttpStatus.OK);
         }

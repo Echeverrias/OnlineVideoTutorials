@@ -14,20 +14,30 @@
  */
 package org.jaea.onlinevideotutorials.domain;
 
+import org.jaea.onlinevideotutorials.Hour;
+import org.jaea.onlinevideotutorials.Info;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.util.logging.Level;
-import org.jaea.onlinevideotutorials.Hour;
-import org.jaea.onlinevideotutorials.Info;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import org.kurento.client.WebRtcEndpoint;
 import org.springframework.web.socket.WebSocketSession;
 
-
+@Entity
+@Table(name="users")
 public class ParticipantSession  extends UserSession{
     
+    @JsonIgnore
+    @Transient
     private TutorialMedia tutorialMedia; 
     
-   
+    private ParticipantSession(){
+        super();
+    }
+    
     public ParticipantSession(WebSocketSession session, String userName, String userType, String name){
         super(session, userName, userType, name);
     

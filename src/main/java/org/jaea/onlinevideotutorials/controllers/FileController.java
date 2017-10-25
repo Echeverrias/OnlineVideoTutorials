@@ -1,6 +1,9 @@
 package org.jaea.onlinevideotutorials.controllers;
 
-
+import org.jaea.onlinevideotutorials.domain.ParticipantSession;
+import org.jaea.onlinevideotutorials.domain.UserFile;
+import org.jaea.onlinevideotutorials.repositories.UserFileRepository;
+import org.jaea.onlinevideotutorials.repositories.ParticipantSessionRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,10 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.JsonObject;
 import java.util.logging.Level;
-import org.jaea.onlinevideotutorials.domain.User;
-import org.jaea.onlinevideotutorials.domain.UserFile;
-import org.jaea.onlinevideotutorials.repositories.UserFileRepository;
-import org.jaea.onlinevideotutorials.repositories.UserRepository;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +52,7 @@ public class FileController {
 	private final String UPLOAD_PATH = "/files/";
 
     @Autowired
-    private UserRepository userRepository;
+    private ParticipantSessionRepository participantRepository;
     
     @Autowired
     private UserFileRepository userFileRepository;
@@ -142,14 +142,14 @@ public class FileController {
         UserFile userImage = null;
         userImage = new UserFile(fileRequest);
         userImage.setName(userName);
-        User user = userRepository.findByUserName(userName);
+        ParticipantSession user = participantRepository.findByUserName(userName);
         HttpStatus httpStatus;
         try{
             // We delete the previous user image to save the new one with the same name
             user.setUserImage(null);
-            userRepository.save(user);
+            participantRepository.save(user);
             user.setUserImage(userImage);
-            userRepository.save(user);
+            participantRepository.save(user);
             httpStatus = HttpStatus.OK;
             log.info("the user image has been saved");
         }

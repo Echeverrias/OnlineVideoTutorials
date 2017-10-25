@@ -5,7 +5,11 @@
  */
 package org.jaea.onlinevideotutorials.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.gson.JsonObject;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 import org.jaea.onlinevideotutorials.Hour;
 import org.jaea.onlinevideotutorials.SendMessage;
 import org.slf4j.Logger;
@@ -16,12 +20,22 @@ import org.springframework.web.socket.WebSocketSession;
  *
  * @author juanan
  */
+
+@MappedSuperclass
+@JsonIgnoreProperties(value={"log", "session"})
 public class UserSession extends User{
     
+    
+    @Transient
     protected final Logger log = LoggerFactory.getLogger(UserSession.class);
     
-    private final WebSocketSession session;
-
+    @Transient
+    private WebSocketSession session;
+    
+    protected UserSession(){
+        super();
+    }
+    
     public UserSession(WebSocketSession session, String userName, String userType, String name){
         
         super(userName, userType, name);
@@ -49,10 +63,12 @@ public class UserSession extends User{
         log.info("/ UserSession: {} {}", name, Hour.getTime());
     }
     
+    
     public WebSocketSession getSession() {
         return session;
     }
     
+    @JsonIgnore
     public String getSessionId() {
         return session.getId();
     }
