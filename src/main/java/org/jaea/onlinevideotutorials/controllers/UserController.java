@@ -1,6 +1,7 @@
 package org.jaea.onlinevideotutorials.controllers;
 
 import org.jaea.onlinevideotutorials.domain.User;
+import org.jaea.onlinevideotutorials.domain.UserSession;
 import org.jaea.onlinevideotutorials.domain.ParticipantSession;
 import org.jaea.onlinevideotutorials.domain.UserFile;
 import org.jaea.onlinevideotutorials.domain.FieldValidationRequest;
@@ -55,7 +56,7 @@ public class UserController {
    */
 
     @RequestMapping(value ="/validateUser", method = RequestMethod.POST)
-    public synchronized ResponseEntity<User> validateUser(@RequestBody User userRequest){
+    public synchronized ResponseEntity<User> validateUser(@RequestBody UserSession userRequest){
        
         log.info("Usercontroller.validateUser");
         log.info(userRequest.toString());
@@ -68,7 +69,7 @@ public class UserController {
         }
         else{    
              log.info("The user is not logged");
-           User user = this.participantRepository.findByUserName(userRequest.getUserName());
+           UserSession user = this.participantRepository.findByUserName(userRequest.getUserName());
            if (user == null){
                 log.info("NOT_FOUND");
                 response = new ResponseEntity(null, HttpStatus.NOT_FOUND);
@@ -76,6 +77,7 @@ public class UserController {
             else{
                 log.info(user.toString());
                 if (user.comparePassword(userRequest)){
+                    this.usersRegistry.registerUser(user);
                     response = new ResponseEntity(user, HttpStatus.OK);
                 }
                 else {
@@ -153,6 +155,7 @@ public class UserController {
 
         this.participantRepository.save(userRequest);
         log.info("The user has been registered");
+        this.usersRegistry.registerUser(userRequest);
         response = new ResponseEntity(userRequest, HttpStatus.OK);
         return response;
     }

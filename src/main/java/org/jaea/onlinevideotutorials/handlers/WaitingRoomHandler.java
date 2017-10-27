@@ -105,11 +105,13 @@ public class WaitingRoomHandler extends TextMessageWebSocketHandler {
         this.log.info("* waitingRoom.enter");
         
         UserSession user = this.usersRegistry.getUserByUserName(userName);
+        
         this.roomsManager.addIncomingParticipant(user);
         
         JsonElement availableRoomsNames = null;
         if (userType.equals(User.STUDENT_TYPE)){
-        	availableRoomsNames = gson.toJsonTree(this.roomsManager.getAvailableRoomsNames(), new TypeToken<List<String>>() {}.getType());
+            availableRoomsNames = gson.toJsonTree(this.roomsManager.getAvailableRoomsNames(), new TypeToken<List<String>>() {}.getType());
+            this.log.debug("The number of avaibles room is: " + this.roomsManager.getAvailableRoomsNames().size());
         }
         else{
         	availableRoomsNames = gson.toJsonTree(this.roomsManager.getTutorAvailableRoomsNames(userName), new TypeToken<List<String>>() {}.getType());
@@ -121,7 +123,7 @@ public class WaitingRoomHandler extends TextMessageWebSocketHandler {
         
         SendMessage.toClient(jsonAnswer, session);
         
-        this.log.info("/waitingRoom.enter - the message has been sent");
+        this.log.info("/waitingRoom.enter - the message has been sent to id 'availableRoomsNames'");
     }
 
     private synchronized void exit (final WebSocketSession session, String userName){

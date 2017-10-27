@@ -62,9 +62,9 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler implements
         
         //#
         if (!id.equals("receiveAddress")){ //**
-             log.info(""); 
-            log.info("OnlineVideoTutorialsHandler.handleTextMessage"); 
-            log.info("<- A message has arrived: " + id);
+            this.log.info(""); 
+            this.log.info("OnlineVideoTutorialsHandler.handleTextMessage"); 
+            this.log.info("<- A message has arrived: " + id);
         }   
 
         TextMessageWebSocketHandler handler = this.handlers.get(id);
@@ -75,7 +75,8 @@ public class OnlineVideoTutorialsHandler extends TextWebSocketHandler implements
            try{ 
                 /* If the general handler doesn't find a specific handler for the message,
                it send the message to all the handlers with the hope that one knows how to
-               handler the message */            
+               handler the message */       
+               this.log.error("The message " + id + " could not be handled"); 
                for(Map.Entry<String,TextMessageWebSocketHandler> entry : this.handlers.entrySet()){
                     entry.getValue().handleTextMessage(session, message);
                 }

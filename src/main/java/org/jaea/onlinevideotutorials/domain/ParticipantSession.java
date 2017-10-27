@@ -17,10 +17,14 @@ package org.jaea.onlinevideotutorials.domain;
 import org.jaea.onlinevideotutorials.Hour;
 import org.jaea.onlinevideotutorials.Info;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.gson.JsonObject;
 import java.io.IOException;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.kurento.client.WebRtcEndpoint;
@@ -32,7 +36,11 @@ public class ParticipantSession  extends UserSession{
     
     @JsonIgnore
     @Transient
-    private TutorialMedia tutorialMedia; 
+    private TutorialMedia tutorialMedia;
+    
+    @ManyToMany(mappedBy="participantsHistorial")
+    @JsonIgnoreProperties(value = "participantsHistorial")
+    private List<Room> roomsHistorial = new ArrayList<>(); 
     
     private ParticipantSession(){
         super();
@@ -51,13 +59,25 @@ public class ParticipantSession  extends UserSession{
     public ParticipantSession(UserSession user){
         super(user);
     }
-    
-    public void assignRoomMedia (TutorialMedia tutorialMedia){
-        Info.logInfoStart("* Participant.assignRoomMedia: " + this.getUserName());
+
+    public List<Room> getRoomsHistorial(){
+        return this.roomsHistorial;
+    }
+
+    public void attachRoomMedia (TutorialMedia tutorialMedia){
+        Info.logInfoStart("* Participant.attachRoomMedia: " + this.getUserName());
         
-        this.tutorialMedia = tutorialMedia;
+        if (this.tutorialMedia == null) {
+            this.tutorialMedia = tutorialMedia;
+        }
         
-        Info.logInfoFinish("/ User.assignRoomMedia");
+        Info.logInfoFinish("/ User.attachRoomMedia");
+    }
+
+    public void addRoomToHistorial(Room room){
+        if (!this.roomsHistorial.contains(room)){
+            this.roomsHistorial.add(room);
+        }
     }
     
     public void addAddress (JsonObject address, ParticipantSession participant) {
@@ -98,6 +118,7 @@ public class ParticipantSession  extends UserSession{
         log.info("{} Participant.leavesRoom: {} - {}", Info.START_SYMBOL, this.getUserName(), Hour.getTime());
         try {
             this.tutorialMedia.close();
+            this.tutorialMedia = null;
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(ParticipantSession.class.getName()).log(Level.SEVERE, null, ex);
         

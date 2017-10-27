@@ -26,6 +26,7 @@ export class HandlerService{
         let parsedMessage: Message = JSON.parse(message.data);
         let idMessage: string = parsedMessage.id;
         console.log(`HandlerService.handler ${idMessage}`);
+        console.log(`message`, message);
         
         let ee: EventEmitter<Message> = this.handlers.get(idMessage);
         try {

@@ -32,11 +32,15 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.EntityListeners;
 import javax.persistence.Transient;
+import javax.persistence.CascadeType;
 import org.kurento.client.Continuation;
 import org.kurento.client.MediaPipeline;
 import org.slf4j.Logger;
@@ -55,7 +59,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name="rooms")
 @JsonIgnoreProperties(value={"log","createdAt","participantsByUserName", "pipeline"})
 @EntityListeners(AuditingEntityListener.class)
-public class Room implements Closeable {
+public class Room implements Closeable, Comparable<Room>{
     
     
     @Transient
@@ -72,12 +76,18 @@ public class Room implements Closeable {
     @CreatedDate
     private Date createdAt;
     
-    private String name = "";;
+    private String name = "";
 
     //private ParticipantSession tutor = null;
     private String tutor = "";
     
-    @Transient
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(
+        name="rooms_users",
+        joinColumns=@JoinColumn(name="room_id", referencedColumnName="id"),
+        inverseJoinColumns=@JoinColumn(name="user_id", referencedColumnName="id")
+        )
+    @JsonIgnoreProperties(value = "roomsHistorial")
     private List<ParticipantSession> participantsHistorial = new ArrayList<>();
     
     // The tutor is included in the participants
@@ -98,12 +108,20 @@ public class Room implements Closeable {
     }
 
     @JsonProperty 
-    public Date getcreatedAt(){
+    public Date getCreatedAt(){
         return this.createdAt;
     }
     
     public String getName() {
         return this.name;
+    }
+
+    public String getTutor(){
+        return this.tutor;
+    }
+
+    private void setTutor(String tutor){
+        this.tutor = tutor;
     }
 
     public List<ParticipantSession> getParticipantsHistorial(){
@@ -164,12 +182,12 @@ public class Room implements Closeable {
 
     public void addParticipant(ParticipantSession user) {
         log.info("{} ROOM.addParticipant {} to {} {}", Info.START_SYMBOL, user.getUserName(), this.name, Hour.getTime());
-        Info.logInfoStart2("assignRoomMedia");
+        Info.logInfoStart2("attachRoomMedia");
         
         this.addParticipantToHistorial(user);
-        user.assignRoomMedia(new TutorialMedia(this.pipeline, user.getSession(), user.getUserName())); 
+        user.attachRoomMedia(new TutorialMedia(this.pipeline, user.getSession(), user.getUserName())); 
 	    this.checkIfTheUserIsATutor(user);
-        Info.logInfoFinish2("assignRoomMedia");
+        Info.logInfoFinish2("attachRoomMedia");
         
         this.participantsByUserName.put(user.getUserName(), user);
                
@@ -181,13 +199,18 @@ public class Room implements Closeable {
     private void addParticipantToHistorial(ParticipantSession participant){
      
         if (!this.participantsHistorial.contains(participant)){
+            this.log.info("Participant: " + participant.getUserName() + "has been added to the historial");
+            this.log.info(participant.getUserName());
+            this.log.info(participant.getEmail());
+            this.log.info("... has been added to the historial");
             this.participantsHistorial.add(participant);
         }
     }
 
     private void checkIfTheUserIsATutor(ParticipantSession user){
         if (this.tutor.equals("") && user.isATutor() ) {
-            this.tutor = user.getUserName();
+            log.info("The participant is a tutor named: " + user.getUserName());
+            this.setTutor(user.getUserName());
         }
     }
     
@@ -293,6 +316,47 @@ public class Room implements Closeable {
         for(Map.Entry<String, ParticipantSession> entry : this.participantsByUserName.entrySet()){
             log.info("- " + entry.getKey());
         }
+    }
+
+    @Override
+    public int compareTo(Room room) {
+        if ((room == null) || !(room instanceof Room)) {
+            return 1;
+        }
+        
+        int result = this.createdAt.compareTo(room.getCreatedAt());
+        if (result == 0) {
+            result = this.name.compareTo(room.getName());
+            if (result == 0) {
+                result = this.tutor.compareTo(room.tutor);
+            }
+        }
+       return result;
+    }
+    
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
+        result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
+        return result;
+    }
+    
+    
+    @Override
+    public boolean equals(Object obj) {
+        
+        if (this == obj) {
+            return true;
+    }
+    if ((obj == null) || !(obj instanceof User)) {
+            return false;
+    }
+    Room other = (Room) obj;
+    boolean eq = this.compareTo(other) == 0;
+
+    return eq;
     }
     
  }

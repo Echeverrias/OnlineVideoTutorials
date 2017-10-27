@@ -114,21 +114,17 @@ public class RoomHandler extends TextMessageWebSocketHandler{
         String userName = jsonMessage.get("userName").getAsString();
         String roomName = jsonMessage.get("roomName").getAsString();
         String userType = jsonMessage.get("userType").getAsString();
-        
-        UserSession newParticipant;
-        
+                
         if (!this.roomsManager.existRoom(roomName)){
             this.roomsManager.createRoom(roomName);
             this.makeKnowThereIsANewRoom(roomName);
         }
         
-        newParticipant = this.usersRegistry.getUserBySessionId(session.getId());
+        UserSession newParticipant = this.usersRegistry.getUserBySessionId(session.getId());
         
-        this.log.info("userName: {}", userName);
-        this.log.info("roomName: {}", roomName);
-
         this.roomsManager.addParticipant(newParticipant, roomName);
-        this.makeKnowTheParticipantsOfRoom((ParticipantSession)newParticipant, roomName);
+        
+        this.makeKnowTheParticipantsOfRoom((ParticipantSession) newParticipant, roomName);
         this.makeKnowThereIsANewParticipant((ParticipantSession) newParticipant, roomName);
         
         this.log.info("/joinRoom - the message has been sent");

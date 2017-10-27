@@ -4,6 +4,7 @@ package org.jaea.onlinevideotutorials.domain;
 
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
@@ -13,8 +14,11 @@ import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.CascadeType;
+import javax.persistence.Transient;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -23,9 +27,13 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 
 @MappedSuperclass
+@JsonIgnoreProperties(value={"log, createdAt"}, allowGetters=true)
 @EntityListeners(AuditingEntityListener.class)
 public  class User implements Comparable<User>{
     
+    @JsonIgnore
+	@Transient
+    private final Logger log = LoggerFactory.getLogger(User.class);
     
     public static final String TUTOR_TYPE = "tutor";
     public static final String STUDENT_TYPE = "student";
@@ -124,6 +132,10 @@ public  class User implements Comparable<User>{
     public UserFile getUserImage(){
     	return this.userImage;
     }
+
+    public Date getCreatedAt(){
+        return this.createdAt;
+    }
     
     public void setName(String name) {
 		this.name = name;
@@ -153,6 +165,7 @@ public  class User implements Comparable<User>{
     
     @JsonIgnore
     public boolean isATutor(){
+        this.log.info(this.userType + " == " + TUTOR_TYPE);
         return this.userType.equals(TUTOR_TYPE);
     }
 

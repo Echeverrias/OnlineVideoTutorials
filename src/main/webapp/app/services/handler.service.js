@@ -27,6 +27,7 @@ var HandlerService = (function () {
         var parsedMessage = JSON.parse(message.data);
         var idMessage = parsedMessage.id;
         console.log("HandlerService.handler " + idMessage);
+        console.log("message", message);
         var ee = this.handlers.get(idMessage);
         try {
             console.log("ee" + idMessage + ".next");

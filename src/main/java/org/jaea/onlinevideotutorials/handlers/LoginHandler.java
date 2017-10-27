@@ -101,10 +101,8 @@ public class LoginHandler extends TextMessageWebSocketHandler {
         String userName = jsonMessage.get("userName").getAsString();
         String name = jsonMessage.get("name").getAsString();
         String userType = jsonMessage.get("userType").getAsString();
-            
-        UserSession newUser = new ParticipantSession(session, userName, userType, name);
-
-        this.usersRegistry.addUser(newUser);
+        
+        this.usersRegistry.registerUserSession(userName, session);
         
         log.info("/LoginHandler.login");
     }
@@ -116,7 +114,7 @@ public class LoginHandler extends TextMessageWebSocketHandler {
         log.info("<- logout - id: {}, message: {}", session.getId(), jsonMessage.toString());
         
        String userName = jsonMessage.get("userName").getAsString();
-       this.usersRegistry.removeUser(userName);
+       this.usersRegistry.unregisterUser(userName);
        
        log.info("/logout");
     }

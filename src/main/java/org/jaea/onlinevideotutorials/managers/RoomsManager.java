@@ -47,7 +47,7 @@ public class RoomsManager {
     private KurentoClient kurento;
 
     @Autowired
-    private RoomRepository roomRepositoty;
+    private RoomRepository roomRepository;
 
       
     private final ConcurrentHashMap<String, String> roomsNamesByUserName = new ConcurrentHashMap();
@@ -66,6 +66,8 @@ public class RoomsManager {
         log.info("{} Room.createRoom {} not existent. Will create now! {}", Info.START_SYMBOL, roomName, Hour.getTime());
 	
         Room room = new Room(roomName, kurento.createMediaPipeline());
+        roomRepository.save(room);
+        
 	    this.roomsByName.put(roomName, room); 
         this.availableRoomsNames.add(roomName);
             
@@ -128,9 +130,11 @@ public class RoomsManager {
            
         }
         if (room != null) {
-            log.info("Participant {} is going to be added to room {}", participant.getUserName(), room.getName());
+            log.info("Participant {} is going to be added into room {}", participant.getUserName(), room.getName());
             room.addParticipant(participant);
+            log.info("Participant {} has been added into room {}", participant.getUserName(), room.getName());
             this.roomsNamesByUserName.put(participant.getUserName(), roomName);
+            participant.addRoomToHistorial(room);
         }    
         Info.logInfoFinish("RoomManager.addParticipant");
     }
@@ -182,6 +186,9 @@ public class RoomsManager {
             
             room.printTheRoomParticipants(); //*
         }
+        else{
+            log.info("There is no room named " + roomName);
+        }
         Info.logInfoFinish("/ RoomManager.participantLeavesARoom");
         return user;
     }
@@ -203,7 +210,15 @@ public class RoomsManager {
             this.availableRoomsNames.remove(roomName);
             room.close();
             this.roomsByName.remove(roomName);
-            roomRepositoty.save(room);
+            this.log.info("The room is going to be closed and persisted");
+            this.log.info("room.tutor = " + room.getTutor());
+            this.log.info("room.numberOfParticipantsHistorial = " + room.getParticipantsHistorial().size());
+            try{
+                roomRepository.save(room);
+            }
+            catch(Exception e){
+                this.log.info("!!! Error al persistir la room: " + e.getMessage());
+            }    
 	    }
 	Info.logInfoFinish("/ Room.remove: removed and closed");
     }

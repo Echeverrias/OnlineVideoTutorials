@@ -18,9 +18,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.jaea.onlinevideotutorials.Hour;
 import org.jaea.onlinevideotutorials.Info;
+import org.jaea.onlinevideotutorials.domain.ParticipantSession;
 import org.jaea.onlinevideotutorials.domain.UserSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.socket.WebSocketSession;
 
 public class UserSessionsRegistry {
     
@@ -44,33 +46,65 @@ public class UserSessionsRegistry {
         return this.usersByUserName.containsKey(userName);
     }
     
-    public void addUser (UserSession user){
-        log.info("{} UserRegistry.addUser: {}, {}", Info.START_SYMBOL, user.getUserName(), Hour.getTime());
+    public void registerUser (UserSession user){
+        log.info("{} UserRegistry.registerUser: {}, {}", Info.START_SYMBOL, user.getUserName(), Hour.getTime());
         
         this.usersByUserName.put(user.getUserName(), user);
         log.info(" add to usersByUserName");
+       
+        Info.logInfoFinish("UserRegistry.addUser");
+    }
+
+    public boolean registerUserSession (String userName, WebSocketSession session){
+        log.info("{} UserRegistry.registerUserSession: {}, {}", Info.START_SYMBOL, userName, Hour.getTime());
+        
+        UserSession user = this.getUserByUserName(userName);
+        if (user == null) {
+            log.error("El usuario {} no se encuentra en el registro", userName);
+            return false;
+        }
+        user.attachSession(session);
+        
+        log.info(" add to usersBySessionId");
+        Info.logInfoFinish("UserRegistry.registerUserSession");
+        
+        return this.registerUserSession(user);
+    }
+
+    public boolean registerUserSession (UserSession user){
+        log.info("{} UserRegistry.registerUserSession: {}, {}", Info.START_SYMBOL, user.getUserName(), Hour.getTime());
+        
+        if ((user == null) || (user.getSession() == null)){
+            log.error("La sesión del ususario {} es nula", user.getUserName());
+            return false;
+        }
+
         this.usersBySessionId.put(user.getSession().getId(), user);
         log.info(" add to usersBySessionId");
        
-        Info.logInfoFinish("UserRegistry.addUser");
+        Info.logInfoFinish("UserRegistry.registerUserSession");
+        return true;
     }
     
     public UserSession getUserByUserName(String userName){
      //   log.info("{} UserRegistry.getUserByUserName: {} {}", Info.START_SYMBOL,userName, Hour.getTime());
       //  Info.logInfoFinish("UserRegistry.getUserByUserName");
         
-        return usersByUserName.get(userName);
+        return this.usersByUserName.get(userName);
     }
     
     public UserSession getUserBySessionId(String sessionId){
-       // log.info("{} UserRegistry.getUserBySessionId: {} {}", Info.START_SYMBOL,sessionId, Hour.getTime());
+       this.log.info("{} UserRegistry.getUserBySessionId: {} {}", Info.START_SYMBOL,sessionId, Hour.getTime());
       //  Info.logInfoFinish("UserRegistry.getUserBySessionId: " + usersBySessionId.get(sessionId));
-        
-        return usersBySessionId.get(sessionId);
+        UserSession user = this.usersBySessionId.get(sessionId);
+        if (user == null) {
+            this.log.error("!!! No se ha encontrado al usuario");
+        }
+        return user;
     }
 
-    public UserSession removeUser (String userName){
-        log.info("{} UserRegistry.removeUser: {}, {}", Info.START_SYMBOL, userName, Hour.getTime());
+    public UserSession unregisterUser (String userName){
+        log.info("{} UserRegistry.unregisterUser: {}, {}", Info.START_SYMBOL, userName, Hour.getTime());
         
         UserSession outgoingUser = this.usersByUserName.remove(userName);
         if (outgoingUser != null) {

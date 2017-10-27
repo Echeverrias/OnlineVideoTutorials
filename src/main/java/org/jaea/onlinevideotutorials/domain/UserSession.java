@@ -67,6 +67,12 @@ public class UserSession extends User{
     public WebSocketSession getSession() {
         return session;
     }
+
+    public void attachSession(WebSocketSession session){
+        if (this.session == null) {
+            this.session = session;
+        }
+    }
     
     @JsonIgnore
     public String getSessionId() {
