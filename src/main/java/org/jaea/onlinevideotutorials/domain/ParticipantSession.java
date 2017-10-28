@@ -38,9 +38,9 @@ public class ParticipantSession  extends UserSession{
     @Transient
     private TutorialMedia tutorialMedia;
     
-    @ManyToMany(mappedBy="participantsHistorial")
-    @JsonIgnoreProperties(value = "participantsHistorial")
-    private List<Room> roomsHistorial = new ArrayList<>(); 
+    @ManyToMany(mappedBy="participantsHistory")
+    @JsonIgnoreProperties(value = "participantsHistory")
+    private List<Room> roomsHistory = new ArrayList<>(); 
     
     private ParticipantSession(){
         super();
@@ -60,8 +60,8 @@ public class ParticipantSession  extends UserSession{
         super(user);
     }
 
-    public List<Room> getRoomsHistorial(){
-        return this.roomsHistorial;
+    public List<Room> getRoomsHistory(){
+        return this.roomsHistory;
     }
 
     public void attachRoomMedia (TutorialMedia tutorialMedia){
@@ -75,8 +75,8 @@ public class ParticipantSession  extends UserSession{
     }
 
     public void addRoomToHistorial(Room room){
-        if (!this.roomsHistorial.contains(room)){
-            this.roomsHistorial.add(room);
+        if (!this.roomsHistory.contains(room)){
+            this.roomsHistory.add(room);
         }
     }
     

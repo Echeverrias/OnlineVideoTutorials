@@ -27,6 +27,11 @@ export class UserOptionsComponent{
         this.router.navigate(['/sign', { state: SignStates.EditPerfil }]);
     }
 
+    onGoToHistorial(){
+        this.displayOrHideMenu();
+        this.router.navigate(['/history']);
+    }
+
     onSignOut(){
         console.log("");
         console.log(`* <- UserOptions.onSignOut ${new Date().toLocaleTimeString()}`);

@@ -19,6 +19,10 @@ ovt-app {
     
 }
 
+.ovt-selectable:hover{
+  cursor: pointer;
+}
+
 /*
 .ovt-user-options {
   position: absolute;

@@ -13,6 +13,7 @@ var http_1 = require("@angular/http");
 var app_routing_1 = require("./app.routing");
 var ngx_uploader_1 = require("ngx-uploader");
 var gadgetsContainer_module_1 = require("./components/gadgetsContainer/gadgetsContainer.module");
+var history_module_1 = require("./components/history/history.module");
 var app_component_1 = require("./app.component");
 var sign_component_1 = require("./components/sign/sign.component");
 var userOptions_component_1 = require("./components/userOptions/userOptions.component");
@@ -39,9 +40,10 @@ AppModule = __decorate([
             forms_1.FormsModule,
             forms_1.ReactiveFormsModule,
             http_1.HttpModule,
-            app_routing_1.routing,
             ngx_uploader_1.NgUploaderModule,
-            gadgetsContainer_module_1.GadgetsContainerModule
+            gadgetsContainer_module_1.GadgetsContainerModule,
+            history_module_1.HistoryModule,
+            app_routing_1.routing,
         ],
         declarations: [
             userOptions_component_1.UserOptionsComponent,

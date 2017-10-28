@@ -15,11 +15,13 @@
 package org.jaea.onlinevideotutorials.managers;
 
 import java.util.Map;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import org.jaea.onlinevideotutorials.Hour;
 import org.jaea.onlinevideotutorials.Info;
 import org.jaea.onlinevideotutorials.domain.ParticipantSession;
 import org.jaea.onlinevideotutorials.domain.UserSession;
+import org.jaea.onlinevideotutorials.domain.Room;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.WebSocketSession;
@@ -50,7 +52,6 @@ public class UserSessionsRegistry {
         log.info("{} UserRegistry.registerUser: {}, {}", Info.START_SYMBOL, user.getUserName(), Hour.getTime());
         
         this.usersByUserName.put(user.getUserName(), user);
-        log.info(" add to usersByUserName");
        
         Info.logInfoFinish("UserRegistry.addUser");
     }

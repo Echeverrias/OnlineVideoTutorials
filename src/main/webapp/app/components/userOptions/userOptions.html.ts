@@ -18,6 +18,7 @@ export var userOptionsTemplate: string = `<div id="ovt-user-options">
                 <div class="ovt-full-name"><p><strong>{{me.myName}} {{me.mySurname}}</strong><p></div>
                 <hr>
                 <div><button class="btn ovt-btn" (click)="onEditAccount()">Editar perfil</button></div>
+                <div><button class="btn ovt-btn" (click)="onGoToHistorial()">Ir al historial</button></div>
             </div>
         </div>   
          <div class="ovt-footer">

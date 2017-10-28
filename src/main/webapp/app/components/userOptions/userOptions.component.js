@@ -27,6 +27,10 @@ var UserOptionsComponent = (function () {
         this.displayOrHideMenu();
         this.router.navigate(['/sign', { state: sign_component_1.SignStates.EditPerfil }]);
     };
+    UserOptionsComponent.prototype.onGoToHistorial = function () {
+        this.displayOrHideMenu();
+        this.router.navigate(['/history']);
+    };
     UserOptionsComponent.prototype.onSignOut = function () {
         console.log("");
         console.log("* <- UserOptions.onSignOut " + new Date().toLocaleTimeString());

@@ -18,6 +18,7 @@
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/repositories/ParticipantSessionRepository.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/domain/ParticipantSession.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/managers/ManagersConfig.java
+/home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/controllers/HistoryController.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/domain/FieldValidationRequest.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/handlers/LoginHandler.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/controllers/StompConfig.java

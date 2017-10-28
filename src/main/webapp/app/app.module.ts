@@ -5,6 +5,7 @@ import { HttpModule }    from '@angular/http';
 import { routing } from './app.routing';
 import { NgUploaderModule } from 'ngx-uploader';
 import { GadgetsContainerModule } from './components/gadgetsContainer/gadgetsContainer.module';
+import { HistoryModule } from './components/history/history.module';
 
 import { AppComponent }  from './app.component';
 import { SignComponent } from './components/sign/sign.component';
@@ -31,9 +32,10 @@ import { AuthGuard } from './guards/auth.guard';
     FormsModule,
     ReactiveFormsModule,
     HttpModule,
+   NgUploaderModule, 
+    GadgetsContainerModule, 
+    HistoryModule,
     routing, 
-    NgUploaderModule, 
-    GadgetsContainerModule
   ],
   declarations: [
     UserOptionsComponent,

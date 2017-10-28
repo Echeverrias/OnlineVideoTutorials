@@ -212,7 +212,7 @@ public class RoomsManager {
             this.roomsByName.remove(roomName);
             this.log.info("The room is going to be closed and persisted");
             this.log.info("room.tutor = " + room.getTutor());
-            this.log.info("room.numberOfParticipantsHistorial = " + room.getParticipantsHistorial().size());
+            this.log.info("room.numberOfParticipantsHistorial = " + room.getParticipantsHistory().size());
             try{
                 roomRepository.save(room);
             }

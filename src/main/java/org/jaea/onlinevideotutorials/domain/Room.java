@@ -57,7 +57,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 */
 @Entity
 @Table(name="rooms")
-@JsonIgnoreProperties(value={"log","createdAt","participantsByUserName", "pipeline"})
+@JsonIgnoreProperties(value={"log","participantsByUserName", "pipeline"})
 @EntityListeners(AuditingEntityListener.class)
 public class Room implements Closeable, Comparable<Room>{
     
@@ -71,6 +71,7 @@ public class Room implements Closeable, Comparable<Room>{
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
 
+    @JsonIgnore
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP) 
     @CreatedDate
@@ -87,13 +88,16 @@ public class Room implements Closeable, Comparable<Room>{
         joinColumns=@JoinColumn(name="room_id", referencedColumnName="id"),
         inverseJoinColumns=@JoinColumn(name="user_id", referencedColumnName="id")
         )
-    @JsonIgnoreProperties(value = "roomsHistorial")
-    private List<ParticipantSession> participantsHistorial = new ArrayList<>();
+    @JsonIgnoreProperties(value = "roomsHistory")
+    private List<ParticipantSession> participantsHistory = new ArrayList<>();
     
     // The tutor is included in the participants
     @Transient
     private final ConcurrentHashMap<String, ParticipantSession> participantsByUserName = new ConcurrentHashMap<>();
     
+    @Transient
+    private List<UserFile> filesHistory = new ArrayList<>();
+
     @Transient
     private MediaPipeline pipeline;
     
@@ -124,15 +128,20 @@ public class Room implements Closeable, Comparable<Room>{
         this.tutor = tutor;
     }
 
-    public List<ParticipantSession> getParticipantsHistorial(){
-        return this.participantsHistorial;
+    public List<ParticipantSession> getParticipantsHistory(){
+        return this.participantsHistory;
+    }
+
+    public List<UserFile> getFilesHistory(){
+        return this.filesHistory;
     }
     
     @JsonIgnore
     public boolean isEmpty(){
         return this.participantsByUserName.isEmpty();
     }
-
+    
+    @JsonIgnore
     public int getParticipantsNumber(){
         int participantsNumber = 0;
         if (this.participantsByUserName != null) {
@@ -184,7 +193,7 @@ public class Room implements Closeable, Comparable<Room>{
         log.info("{} ROOM.addParticipant {} to {} {}", Info.START_SYMBOL, user.getUserName(), this.name, Hour.getTime());
         Info.logInfoStart2("attachRoomMedia");
         
-        this.addParticipantToHistorial(user);
+        this.addParticipantTohistory(user);
         user.attachRoomMedia(new TutorialMedia(this.pipeline, user.getSession(), user.getUserName())); 
 	    this.checkIfTheUserIsATutor(user);
         Info.logInfoFinish2("attachRoomMedia");
@@ -196,14 +205,14 @@ public class Room implements Closeable, Comparable<Room>{
         log.info("{} ROOM.addParticipant {}", Info.FINISH_SYMBOL, Hour.getTime());
     }
 
-    private void addParticipantToHistorial(ParticipantSession participant){
+    private void addParticipantTohistory(ParticipantSession participant){
      
-        if (!this.participantsHistorial.contains(participant)){
-            this.log.info("Participant: " + participant.getUserName() + "has been added to the historial");
+        if (!this.participantsHistory.contains(participant)){
+            this.log.info("Participant: " + participant.getUserName() + "has been added to the history");
             this.log.info(participant.getUserName());
             this.log.info(participant.getEmail());
-            this.log.info("... has been added to the historial");
-            this.participantsHistorial.add(participant);
+            this.log.info("... has been added to the history");
+            this.participantsHistory.add(participant);
         }
     }
 
