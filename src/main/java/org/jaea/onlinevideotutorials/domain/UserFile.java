@@ -7,6 +7,7 @@ import org.jaea.onlinevideotutorials.controllers.UserController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
@@ -49,7 +50,7 @@ public class UserFile implements Comparable<UserFile>{
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
     
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String name;
 
     private String extension;
@@ -58,8 +59,17 @@ public class UserFile implements Comparable<UserFile>{
 
     @Lob @Basic(fetch = FetchType.LAZY)
     private byte[] content;
+
     
-    public UserFile(){}
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id")
+    @JsonIgnoreProperties(value = "files")
+    public Room room;
+
+    public UserFile(){
+        this.log.info("The file is being constructed");
+    }
     
     public UserFile (File file){
     	 byte[] arrayBytes = new byte [(int) file.length()];
@@ -112,7 +122,6 @@ public class UserFile implements Comparable<UserFile>{
     
     public byte[] getContent(){
         return this.content;
-
     }
     
     // The extension of the file will not change
@@ -124,6 +133,15 @@ public class UserFile implements Comparable<UserFile>{
     	else {
     		this.name = name + "." + this.extension;
     	}
+    }
+
+    public Room getRoom(){
+        return this.room;
+    }
+
+    public void setRoom(Room room){
+        log.info("UserFile.set(room)");
+        this.room = room;
     }
 
     
@@ -193,6 +211,7 @@ public class UserFile implements Comparable<UserFile>{
         return "Name: " + this.name + ", Extension: " + this.extension + ", Mime Type: " + this.mimeType;
     }
     
+    @JsonIgnore
     private String getFileExtension(String fileName){
         String extension = "";
         int index = fileName.lastIndexOf(".");
@@ -202,6 +221,7 @@ public class UserFile implements Comparable<UserFile>{
         return extension;
     }
     
+    @JsonIgnore
     private String getNameWithoutExtension(String fileName){
         String name = "";
         int index = fileName.lastIndexOf(".");

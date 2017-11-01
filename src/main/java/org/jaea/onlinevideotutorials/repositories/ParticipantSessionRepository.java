@@ -10,5 +10,5 @@ public interface ParticipantSessionRepository extends CrudRepository<Participant
 
     public ParticipantSession findByEmail(String email);
     
-    public ParticipantSession findByUserImageId(Long id);
+   // public ParticipantSession findByUserImageId(Long id);
 }

@@ -8,18 +8,22 @@ package org.jaea.onlinevideotutorials.handlers;
 
 import org.jaea.onlinevideotutorials.Info;
 import org.jaea.onlinevideotutorials.Hour;
-
+import org.jaea.onlinevideotutorials.domain.Message;   //#####
+import org.jaea.onlinevideotutorials.domain.AvailableRoom;  //#####
 import org.jaea.onlinevideotutorials.domain.ParticipantSession;
 import org.jaea.onlinevideotutorials.domain.UserSession;
+import org.jaea.onlinevideotutorials.domain.Room;
 import org.jaea.onlinevideotutorials.managers.UserSessionsRegistry;
 import org.jaea.onlinevideotutorials.managers.RoomsManager;
 
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,19 +118,23 @@ public class RoomHandler extends TextMessageWebSocketHandler{
         String userName = jsonMessage.get("userName").getAsString();
         String roomName = jsonMessage.get("roomName").getAsString();
         String userType = jsonMessage.get("userType").getAsString();
-                
+        
+        Room room = null; // ###
         if (!this.roomsManager.existRoom(roomName)){
-            this.roomsManager.createRoom(roomName);
+            room = this.roomsManager.createRoom(roomName);
             this.makeKnowThereIsANewRoom(roomName);
         }
-        
-        UserSession newParticipant = this.usersRegistry.getUserBySessionId(session.getId());
+        this.log.info("########################## 1");
+         
+       // availableRoomsNames = gson.toJsonTree(this.roomsManager.getAvailableRoomsNames(), new TypeToken<List<String>>() {}.getType());
+         UserSession newParticipant = this.usersRegistry.getUserBySessionId(session.getId());
         
         this.roomsManager.addParticipant(newParticipant, roomName);
-        
+        this.log.info("########################## 2");
         this.makeKnowTheParticipantsOfRoom((ParticipantSession) newParticipant, roomName);
+        this.log.info("########################## 3");
         this.makeKnowThereIsANewParticipant((ParticipantSession) newParticipant, roomName);
-        
+        this.log.info("########################## 4");
         this.log.info("/joinRoom - the message has been sent");
     }
     

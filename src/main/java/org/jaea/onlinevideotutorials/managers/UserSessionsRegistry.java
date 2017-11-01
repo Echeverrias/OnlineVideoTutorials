@@ -98,8 +98,12 @@ public class UserSessionsRegistry {
        this.log.info("{} UserRegistry.getUserBySessionId: {} {}", Info.START_SYMBOL,sessionId, Hour.getTime());
       //  Info.logInfoFinish("UserRegistry.getUserBySessionId: " + usersBySessionId.get(sessionId));
         UserSession user = this.usersBySessionId.get(sessionId);
+        this.log.info("this.usersBySessionId.size(): {}", this.usersBySessionId.size());
         if (user == null) {
             this.log.error("!!! No se ha encontrado al usuario");
+        }
+        else{ //####
+            this.log.info("UserName: {}", user.getUserName());
         }
         return user;
     }

@@ -63,19 +63,19 @@ export class WaitingRoomService {
     }
 
     getAvailableRooms(): Subject<string[]> {
-        console.log(`* WaitingRoomService.getavailableRooms`);
+        console.log(`* WaitingRoomService.getAvailableRooms`);
         return this.availableRoomsObserver;
     }
 
     onSetAvailableRooms(msg: AvailableRoomsMessage): void{
         console.log("");
-        console.log(`* WaitingRoomService.onSetavailableRooms ${new Date().toLocaleTimeString()}`);
+        console.log(`* WaitingRoomService.onSetAvailableRooms ${new Date().toLocaleTimeString()}`);
         console.log(msg.availableRoomsNames);
         
         this.availableRoomsNames = msg.availableRoomsNames;
         this.availableRoomsObserver.next(this.availableRoomsNames);
         
-        console.log(`/ WaitingRoomService.onSetavailableRooms ${new Date().toLocaleTimeString()}`);
+        console.log(`/ WaitingRoomService.onSetAvailableRooms ${new Date().toLocaleTimeString()}`);
         console.log("");
     }
 

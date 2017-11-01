@@ -37,6 +37,18 @@ public class MediaUtilities {
             log.error("Sender: {}", session.getId());
         }
     }
+
+    public static void sendMessageToClient(String jsonMessage, WebSocketSession session){
+        TextMessage textAnswer = new TextMessage(jsonMessage);
+        
+        try{
+            log.info("Sending message: {} to {}", jsonMessage, session.getId());
+            session.sendMessage(textAnswer);
+        }
+        catch(IOException e){
+            log.error("Sender: {}", session.getId());
+        }
+    }
     
     
     public static void releaseWebRtc(WebRtcEndpoint webRtc, final String webRtcAlias){

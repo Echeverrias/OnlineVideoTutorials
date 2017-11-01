@@ -1,9 +1,11 @@
 package org.jaea.onlinevideotutorials.controllers;
 
 import org.jaea.onlinevideotutorials.domain.ParticipantSession;
+import org.jaea.onlinevideotutorials.domain.Room;
+//import org.jaea.onlinevideotutorials.domain.UserFile;
 import org.jaea.onlinevideotutorials.domain.UserFile;
-import org.jaea.onlinevideotutorials.repositories.UserFileRepository;
 import org.jaea.onlinevideotutorials.repositories.ParticipantSessionRepository;
+import org.jaea.onlinevideotutorials.managers.RoomsManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +29,7 @@ import java.io.IOException;
 import java.net.URLConnection;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -53,10 +56,11 @@ public class FileController {
 
     @Autowired
     private ParticipantSessionRepository participantRepository;
-    
+      
     @Autowired
-    private UserFileRepository userFileRepository;
-	
+    private RoomsManager roomsManager; 
+
+    
 	@Autowired
     private HttpServletRequest request;
 	
@@ -66,15 +70,15 @@ public class FileController {
 	}
     private final Logger log = LoggerFactory.getLogger(FileController.class);
     
-    @PostMapping("/upload/{room:.+}")
+    @PostMapping("/upload/{roomName:.+}")
     @ResponseStatus(value = HttpStatus.OK)
-    public void saveFile(@RequestParam("file") MultipartFile file, @PathVariable String room) throws Exception{
+    public void saveFile(@RequestParam("file") MultipartFile file, @PathVariable String roomName) throws Exception{
         log.info("* SaveFile: " + file.getName());
         log.info("* SaveFile: " + file.getOriginalFilename());
         log.info("* SaveFile: " + file.getContentType());
         
         String fileName = file.getOriginalFilename();
-        String roomFolder = room + "_" + this.getFormatedDate();
+        String roomFolder = roomName + "_" + this.getFormatedDate();
         String filePath = UPLOAD_PATH + roomFolder + "/";
         
         ServletContext context = request.getServletContext();
@@ -88,15 +92,33 @@ public class FileController {
         log.info("Context path: " + fileAbsolutePath);
         File uploadedFile = new File(fileAbsolutePath + "/" + fileName);
         uploadedFile.createNewFile();
+        this.log.info("### Archivo creado:");
+        this.log.info("### getAbsoluteFile: {}", uploadedFile.getAbsoluteFile());
+        this.log.info("### getAbsolutePath: {}", uploadedFile.getAbsolutePath());
+        this.log.info("### getCanonicalFile: {}", uploadedFile.getCanonicalFile());
+        this.log.info("### getCanonicalPath: {}", uploadedFile.getCanonicalPath());
+        this.log.info("### real load url: {}", filePath + fileName);
         FileOutputStream fos = new FileOutputStream(uploadedFile);
         fos.write(file.getBytes());
         fos.close(); 
         
+        Room room = this.roomsManager.getRoom(roomName);
+        this.log.info("### Room.id {}", room.getId());
+        UserFile uf = new UserFile(uploadedFile);
+        this.log.info("### {}", uf.getName());
+        this.log.info("### {}", room.getName());
+        this.log.info("### The room is going to add de file");
+        room.addFileToHistory(uf);
+      //  this.userFileRepository.save(uf);
+        this.log.info("### The room has added the file");
+        this.log.info("### room.getFiles().size(): {}", room.getFilesHistory().size());
+       
+       
         JsonObject msg = new JsonObject();
         msg.addProperty("name", fileName);
         msg.addProperty("loadUrl", filePath + fileName);
         msg.addProperty("downloadUrl", "/download/" + roomFolder + "/" + fileName);
-        this.template.convertAndSend("/uploadedFile/shared/" + room, msg.toString());
+        this.template.convertAndSend("/uploadedFile/shared/" + roomName, msg.toString());
     }
 
      @RequestMapping("/download/{folder:.+}/{file:.+}")

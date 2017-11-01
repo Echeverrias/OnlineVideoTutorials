@@ -50,16 +50,16 @@ var WaitingRoomService = (function () {
         console.log("");
     };
     WaitingRoomService.prototype.getAvailableRooms = function () {
-        console.log("* WaitingRoomService.getavailableRooms");
+        console.log("* WaitingRoomService.getAvailableRooms");
         return this.availableRoomsObserver;
     };
     WaitingRoomService.prototype.onSetAvailableRooms = function (msg) {
         console.log("");
-        console.log("* WaitingRoomService.onSetavailableRooms " + new Date().toLocaleTimeString());
+        console.log("* WaitingRoomService.onSetAvailableRooms " + new Date().toLocaleTimeString());
         console.log(msg.availableRoomsNames);
         this.availableRoomsNames = msg.availableRoomsNames;
         this.availableRoomsObserver.next(this.availableRoomsNames);
-        console.log("/ WaitingRoomService.onSetavailableRooms " + new Date().toLocaleTimeString());
+        console.log("/ WaitingRoomService.onSetAvailableRooms " + new Date().toLocaleTimeString());
         console.log("");
     };
     WaitingRoomService.prototype.onAddAvailableRoom = function (msg) {

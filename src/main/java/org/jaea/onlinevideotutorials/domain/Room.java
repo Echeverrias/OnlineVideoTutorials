@@ -35,6 +35,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -59,30 +60,15 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name="rooms")
 @JsonIgnoreProperties(value={"log","participantsByUserName", "pipeline"})
 @EntityListeners(AuditingEntityListener.class)
-public class Room implements Closeable, Comparable<Room>{
+public class Room extends AvailableRoom implements Closeable{
     
     
     @Transient
     private final Logger log = LoggerFactory.getLogger(Room.class);
 
-    @JsonIgnore
-    @Id
-    @GeneratedValue
-    @Column(name = "id", unique = true, nullable = false)
-    private Long id;
-
-    @JsonIgnore
-    @Column(nullable = false, updatable = false)
-    @Temporal(TemporalType.TIMESTAMP) 
-    @CreatedDate
-    private Date createdAt;
     
-    private String name = "";
-
-    //private ParticipantSession tutor = null;
-    private String tutor = "";
     
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     @JoinTable(
         name="rooms_users",
         joinColumns=@JoinColumn(name="room_id", referencedColumnName="id"),
@@ -95,7 +81,8 @@ public class Room implements Closeable, Comparable<Room>{
     @Transient
     private final ConcurrentHashMap<String, ParticipantSession> participantsByUserName = new ConcurrentHashMap<>();
     
-    @Transient
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties(value = "room")
     private List<UserFile> filesHistory = new ArrayList<>();
 
     @Transient
@@ -104,38 +91,29 @@ public class Room implements Closeable, Comparable<Room>{
     private Room(){};
     
     public Room(String name, MediaPipeline pipeline) {
+        super(name);
         log.info("% ROOM {}", Hour.getTime());
-        this.name = name;
         this.pipeline = pipeline;
         
 	log.info("/ ROOM {} has been created {}", this.name, Hour.getTime());
     }
 
-    @JsonProperty 
-    public Date getCreatedAt(){
-        return this.createdAt;
-    }
-    
-    public String getName() {
-        return this.name;
-    }
-
-    public String getTutor(){
-        return this.tutor;
-    }
-
-    private void setTutor(String tutor){
-        this.tutor = tutor;
-    }
-
-    public List<ParticipantSession> getParticipantsHistory(){
-        return this.participantsHistory;
-    }
 
     public List<UserFile> getFilesHistory(){
         return this.filesHistory;
     }
     
+    public void addFileToHistory(UserFile userFile){
+        this.filesHistory.add(userFile);
+        userFile.setRoom(this);
+    }
+
+    public void removeFile(UserFile userFile){
+        this.filesHistory.remove(userFile);
+        userFile.setRoom(null);
+    }
+    
+
     @JsonIgnore
     public boolean isEmpty(){
         return this.participantsByUserName.isEmpty();
@@ -157,45 +135,18 @@ public class Room implements Closeable, Comparable<Room>{
     public ParticipantSession getParticipant(String userName) {
         return this.participantsByUserName.get(userName);
     }
-/*
-    public boolean isTheTutor(ParticipantSession user){
-        log.info("* Room.isTheTutor?");
-        return user.equals(this.tutor);
-       
-    }
-  
-    public boolean isTheTutor(String userName){
-        log.info("* Room.isTheTutor?: {}", userName);
-        log.info("Tutor: " + this.tutor.getUserName());
-        String tutorUserName = null;
-        boolean answer = false;
-        if (this.tutor == null){
-            log.info("The tutor is null");
-            answer = false;
-        }
-        else {
-            tutorUserName = this.tutor.getUserName();
-            answer = tutorUserName.equals(userName);
 
-        }
-        
-        log.info("/ Room.isTheTutor? The tutor is {}", tutorUserName);
-        return answer;
-    }
-    */  
-    public boolean isTheTutor(String userName){
-        log.info("* Room.isTheTutor?: {}", userName);
-        log.info("Tutor: " + this.tutor);
-        return this.tutor.equals(userName);
+    public List<ParticipantSession> getParticipantsHistory(){
+        return this.participantsHistory;
     }
 
     public void addParticipant(ParticipantSession user) {
         log.info("{} ROOM.addParticipant {} to {} {}", Info.START_SYMBOL, user.getUserName(), this.name, Hour.getTime());
         Info.logInfoStart2("attachRoomMedia");
         
-        this.addParticipantTohistory(user);
+        this.addParticipantToHistory(user);
         user.attachRoomMedia(new TutorialMedia(this.pipeline, user.getSession(), user.getUserName())); 
-	    this.checkIfTheUserIsATutor(user);
+        this.checkIfTheUserIsATutor(user);
         Info.logInfoFinish2("attachRoomMedia");
         
         this.participantsByUserName.put(user.getUserName(), user);
@@ -205,24 +156,31 @@ public class Room implements Closeable, Comparable<Room>{
         log.info("{} ROOM.addParticipant {}", Info.FINISH_SYMBOL, Hour.getTime());
     }
 
-    private void addParticipantTohistory(ParticipantSession participant){
+    private void addParticipantToHistory(ParticipantSession participant){
      
         if (!this.participantsHistory.contains(participant)){
             this.log.info("Participant: " + participant.getUserName() + "has been added to the history");
-            this.log.info(participant.getUserName());
-            this.log.info(participant.getEmail());
-            this.log.info("... has been added to the history");
+            this.log.info(participant.getUserName()); //*
+            this.log.info(participant.getEmail()); //*
+            this.log.info("... has been added to the history");//*
             this.participantsHistory.add(participant);
+        }    
+        List<Room> roomsHistory = participant.getRoomsHistory();
+        if (!roomsHistory.contains(this)){
+            roomsHistory.add(this);
         }
     }
 
     private void checkIfTheUserIsATutor(ParticipantSession user){
+        log.info("START: checkIfTheUserIsATutor");//*
         if (this.tutor.equals("") && user.isATutor() ) {
-            log.info("The participant is a tutor named: " + user.getUserName());
+            log.info("The participant is a tutor named: " + user.getUserName());//*
             this.setTutor(user.getUserName());
         }
+        log.info("END: checkIfTheUserIsATutor");//*
     }
-    
+
+   
     public ParticipantSession leave(String userName) {
         log.info("{} Room.leave - PARTICIPANT {}: Leaving room {} {}", Info.START_SYMBOL, userName, this.name, Hour.getTime());
         
@@ -327,45 +285,6 @@ public class Room implements Closeable, Comparable<Room>{
         }
     }
 
-    @Override
-    public int compareTo(Room room) {
-        if ((room == null) || !(room instanceof Room)) {
-            return 1;
-        }
-        
-        int result = this.createdAt.compareTo(room.getCreatedAt());
-        if (result == 0) {
-            result = this.name.compareTo(room.getName());
-            if (result == 0) {
-                result = this.tutor.compareTo(room.tutor);
-            }
-        }
-       return result;
-    }
     
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
-        result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
-        return result;
-    }
-    
-    
-    @Override
-    public boolean equals(Object obj) {
-        
-        if (this == obj) {
-            return true;
-    }
-    if ((obj == null) || !(obj instanceof User)) {
-            return false;
-    }
-    Room other = (Room) obj;
-    boolean eq = this.compareTo(other) == 0;
-
-    return eq;
-    }
     
  }

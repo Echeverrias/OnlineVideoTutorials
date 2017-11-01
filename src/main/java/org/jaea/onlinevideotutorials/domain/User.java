@@ -67,6 +67,7 @@ public  class User implements Comparable<User>{
     @Column(nullable = false)
     private String password;
     
+    
     @OneToOne(cascade=CascadeType.PERSIST, orphanRemoval=true, optional=true)
     private UserFile userImage;
    

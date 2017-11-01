@@ -74,12 +74,6 @@ public class ParticipantSession  extends UserSession{
         Info.logInfoFinish("/ User.attachRoomMedia");
     }
 
-    public void addRoomToHistorial(Room room){
-        if (!this.roomsHistory.contains(room)){
-            this.roomsHistory.add(room);
-        }
-    }
-    
     public void addAddress (JsonObject address, ParticipantSession participant) {
        // Info.logInfoStart("* Participant.addAddress: " + participant.getUserName());
         

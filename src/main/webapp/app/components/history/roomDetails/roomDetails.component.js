@@ -25,11 +25,10 @@ var RoomDetailsComponent = (function () {
         console.log("/ RoomDetailsComponent constructor " + new Date().toLocaleTimeString());
         console.log("");
     }
-    RoomDetailsComponent.prototype.showOrHideParticipants = function (event) {
+    RoomDetailsComponent.prototype.showOrHideParticipants = function () {
         this.participantsSelected = !this.participantsSelected;
     };
-    RoomDetailsComponent.prototype.showOrHideFiles = function (event) {
-        event.stopPropagation();
+    RoomDetailsComponent.prototype.showOrHideFiles = function () {
         this.filesSelected = !this.filesSelected;
     };
     return RoomDetailsComponent;

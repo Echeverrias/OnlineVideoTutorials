@@ -26,3 +26,10 @@ export type FieldValidationRequest = { field: string, value: string, userName: s
 export type IdMessage = { id: string };
 export type Message = IdMessage & Object;
 export type UserInfoMessage = IdMessage & UserInfo;
+
+export type AvailableRoom = {
+    id: number,
+    name: string,
+    tutor: string,
+    createdAt: any
+}

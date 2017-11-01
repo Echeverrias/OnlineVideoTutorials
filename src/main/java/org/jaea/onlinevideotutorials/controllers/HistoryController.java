@@ -23,6 +23,8 @@ import org.slf4j.LoggerFactory;
 @RestController
 public class HistoryController {
 
+    private final Logger log = LoggerFactory.getLogger(HistoryController.class);
+
     @Autowired
     private ParticipantSessionRepository participantRepository;  
 
@@ -39,6 +41,9 @@ public class HistoryController {
         }
         else{
             rooms = participant.getRoomsHistory();
+            for(Room r : rooms){
+                this.log.info("Room: {} {}", r.getId(), r.getName());
+            }
             httpStatus = HttpStatus.OK;
         }    
         return new ResponseEntity(rooms, httpStatus);
