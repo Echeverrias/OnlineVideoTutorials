@@ -40,7 +40,7 @@ public class ParticipantSession  extends UserSession{
     
     @ManyToMany(mappedBy="participantsHistory")
     @JsonIgnoreProperties(value = "participantsHistory")
-    private List<Room> roomsHistory = new ArrayList<>(); 
+    private List<MediaRoom> roomsHistory = new ArrayList<>(); 
     
     private ParticipantSession(){
         super();
@@ -60,7 +60,7 @@ public class ParticipantSession  extends UserSession{
         super(user);
     }
 
-    public List<Room> getRoomsHistory(){
+    public List<MediaRoom> getRoomsHistory(){
         return this.roomsHistory;
     }
 

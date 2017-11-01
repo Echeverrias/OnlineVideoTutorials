@@ -1,7 +1,7 @@
 package org.jaea.onlinevideotutorials.controllers;
 
 import org.jaea.onlinevideotutorials.domain.ParticipantSession;
-import org.jaea.onlinevideotutorials.domain.Room;
+import org.jaea.onlinevideotutorials.domain.MediaRoom;
 //import org.jaea.onlinevideotutorials.domain.UserFile;
 import org.jaea.onlinevideotutorials.domain.UserFile;
 import org.jaea.onlinevideotutorials.repositories.ParticipantSessionRepository;
@@ -102,8 +102,8 @@ public class FileController {
         fos.write(file.getBytes());
         fos.close(); 
         
-        Room room = this.roomsManager.getRoom(roomName);
-        this.log.info("### Room.id {}", room.getId());
+        MediaRoom room = this.roomsManager.getRoom(roomName);
+        this.log.info("### MediaRoom.id {}", room.getId());
         UserFile uf = new UserFile(uploadedFile);
         this.log.info("### {}", uf.getName());
         this.log.info("### {}", room.getName());

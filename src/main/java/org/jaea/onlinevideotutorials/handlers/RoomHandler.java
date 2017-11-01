@@ -9,10 +9,10 @@ package org.jaea.onlinevideotutorials.handlers;
 import org.jaea.onlinevideotutorials.Info;
 import org.jaea.onlinevideotutorials.Hour;
 import org.jaea.onlinevideotutorials.domain.Message;   //#####
-import org.jaea.onlinevideotutorials.domain.AvailableRoom;  //#####
+import org.jaea.onlinevideotutorials.domain.Room;  //#####
 import org.jaea.onlinevideotutorials.domain.ParticipantSession;
 import org.jaea.onlinevideotutorials.domain.UserSession;
-import org.jaea.onlinevideotutorials.domain.Room;
+import org.jaea.onlinevideotutorials.domain.MediaRoom;
 import org.jaea.onlinevideotutorials.managers.UserSessionsRegistry;
 import org.jaea.onlinevideotutorials.managers.RoomsManager;
 
@@ -119,7 +119,7 @@ public class RoomHandler extends TextMessageWebSocketHandler{
         String roomName = jsonMessage.get("roomName").getAsString();
         String userType = jsonMessage.get("userType").getAsString();
         
-        Room room = null; // ###
+        MediaRoom room = null; // ###
         if (!this.roomsManager.existRoom(roomName)){
             room = this.roomsManager.createRoom(roomName);
             this.makeKnowThereIsANewRoom(roomName);
@@ -221,7 +221,7 @@ public class RoomHandler extends TextMessageWebSocketHandler{
     }
     
     private void makeKnowThereIsANewParticipant(ParticipantSession newParticipant, String roomName){
-        log.info("{} Room.makeKnowThereIsANewParticipant ({}) to participants of room {} {}", Info.START_SYMBOL, newParticipant.toString(), roomName, Hour.getTime());
+        log.info("{} MediaRoom.makeKnowThereIsANewParticipant ({}) to participants of room {} {}", Info.START_SYMBOL, newParticipant.toString(), roomName, Hour.getTime());
         //this.printTheRoomParticipants();
         List<ParticipantSession> participants = this.roomsManager.getParticipantsByRoomName(roomName);
         
@@ -243,7 +243,7 @@ public class RoomHandler extends TextMessageWebSocketHandler{
             }    
         }  
             
-        log.info("{} Room.makeKnowThereIsANewParticipant - the messages have been sent {}", Info.FINISH_SYMBOL, Hour.getTime());
+        log.info("{} MediaRoom.makeKnowThereIsANewParticipant - the messages have been sent {}", Info.FINISH_SYMBOL, Hour.getTime());
     }
     
     private synchronized void receiveVideoFrom(WebSocketSession session, JsonObject jsonMessage){
@@ -326,7 +326,7 @@ public class RoomHandler extends TextMessageWebSocketHandler{
     }
 
     private void makeKnowAParticipantHasLeftTheRoom(UserSession user, String roomName){
-        log.info("{} Room.makeKnowAParticipantHasLeftTheRoom: {} {}", Info.START_SYMBOL, user.getUserName(), Hour.getTime());
+        log.info("{} MediaRoom.makeKnowAParticipantHasLeftTheRoom: {} {}", Info.START_SYMBOL, user.getUserName(), Hour.getTime());
        
         List<ParticipantSession> participants = this.roomsManager.getParticipantsByRoomName(roomName);
         

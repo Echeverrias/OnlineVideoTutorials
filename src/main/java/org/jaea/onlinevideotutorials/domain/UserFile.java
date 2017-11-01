@@ -65,7 +65,7 @@ public class UserFile implements Comparable<UserFile>{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     @JsonIgnoreProperties(value = "files")
-    public Room room;
+    public MediaRoom room;
 
     public UserFile(){
         this.log.info("The file is being constructed");
@@ -135,11 +135,11 @@ public class UserFile implements Comparable<UserFile>{
     	}
     }
 
-    public Room getRoom(){
+    public MediaRoom getRoom(){
         return this.room;
     }
 
-    public void setRoom(Room room){
+    public void setRoom(MediaRoom room){
         log.info("UserFile.set(room)");
         this.room = room;
     }

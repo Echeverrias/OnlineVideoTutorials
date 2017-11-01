@@ -27,9 +27,9 @@ import java.util.stream.Collectors;
 import org.jaea.onlinevideotutorials.Hour;
 import org.jaea.onlinevideotutorials.Info;
 import org.jaea.onlinevideotutorials.domain.ParticipantSession;
-import org.jaea.onlinevideotutorials.domain.Room;
+import org.jaea.onlinevideotutorials.domain.MediaRoom;
 import org.jaea.onlinevideotutorials.domain.UserSession;
-import org.jaea.onlinevideotutorials.repositories.RoomRepository;
+import org.jaea.onlinevideotutorials.repositories.MediaRoomRepository;
 
 import org.kurento.client.KurentoClient;
 import org.slf4j.Logger;
@@ -47,11 +47,11 @@ public class RoomsManager {
     private KurentoClient kurento;
 
     @Autowired
-    private RoomRepository roomRepository;
+    private MediaRoomRepository roomRepository;
 
       
     private final ConcurrentHashMap<String, String> roomsNamesByUserName = new ConcurrentHashMap();
-    private final ConcurrentHashMap<String, Room> roomsByName = new ConcurrentHashMap<>(); 
+    private final ConcurrentHashMap<String, MediaRoom> roomsByName = new ConcurrentHashMap<>(); 
     private final CopyOnWriteArrayList<String> availableRoomsNames = new CopyOnWriteArrayList<>();;
     // It stores the students which are not still in a room
     private final ConcurrentHashMap<String, UserSession> incomingParticipantsByUserName = new ConcurrentHashMap();
@@ -61,30 +61,30 @@ public class RoomsManager {
     }   
 
 
-    public Room createRoom(String roomName){
+    public MediaRoom createRoom(String roomName){
         //We supose the room name will never be repeated
-        log.info("{} Room.createRoom {} not existent. Will create now! {}", Info.START_SYMBOL, roomName, Hour.getTime());
+        log.info("{} MediaRoom.createRoom {} not existent. Will create now! {}", Info.START_SYMBOL, roomName, Hour.getTime());
 	
-        Room room = new Room(roomName, kurento.createMediaPipeline());
+        MediaRoom room = new MediaRoom(roomName, kurento.createMediaPipeline());
         roomRepository.save(room); //* #*
         
 	    this.roomsByName.put(roomName, room); 
         this.availableRoomsNames.add(roomName);
             
-        log.info("{} Room.createRoom {}", Info.FINISH_SYMBOL, Hour.getTime());
+        log.info("{} MediaRoom.createRoom {}", Info.FINISH_SYMBOL, Hour.getTime());
         return room;
     }
     
-    public Room getRoom(String roomName) {
+    public MediaRoom getRoom(String roomName) {
         log.info("{} RoomManager.getRoom: {} {}",Info.START_SYMBOL, roomName, Hour.getTime());
         
-        Room room = this.roomsByName.get(roomName);
+        MediaRoom room = this.roomsByName.get(roomName);
 
         if (room == null) {
-            log.debug("Room {} not existent.", roomName);
+            log.debug("MediaRoom {} not existent.", roomName);
         }
                 
-        log.debug("{} Room {} found! {}",Info.FINISH_SYMBOL, roomName, Hour.getTime());
+        log.debug("{} MediaRoom {} found! {}",Info.FINISH_SYMBOL, roomName, Hour.getTime());
         return room;
     }
     
@@ -104,7 +104,7 @@ public class RoomsManager {
     public List<String> getTutorAvailableRoomsNames(String userName){
         log.info("{} RoomManager.getTutorAvailableRoomsNames: {}",Info.START_SYMBOL, Hour.getTime());
         
-        for (Room room: roomsByName.values()){
+        for (MediaRoom room: roomsByName.values()){
             log.info(String.valueOf(room.isTheTutor(userName)));
         }
         List<String> avaibleRoomsNames = roomsByName.values().stream() 
@@ -123,7 +123,7 @@ public class RoomsManager {
         log.info("{} RoomManager.addParticipant: {} to {} {}",Info.START_SYMBOL,  user.getUserName(), roomName, Hour.getTime());
           
         ParticipantSession participant = (ParticipantSession) user;
-        Room room = this.roomsByName.get(roomName);
+        MediaRoom room = this.roomsByName.get(roomName);
         if (room == null && participant.isATutor()){
             log.info("The user is a tutor named {}", participant.getUserName());
             room = this.createRoom(roomName);
@@ -156,7 +156,7 @@ public class RoomsManager {
         log.info("{} RoomManager.getParticipantsByRoomName: {} {}",Info.START_SYMBOL, roomName, Hour.getTime());
         
         List<ParticipantSession> participants = new ArrayList();
-        Room room = this.roomsByName.get(roomName);
+        MediaRoom room = this.roomsByName.get(roomName);
         
         if (room != null){
             Info.logInfoFinish("RoomManager.getParticipantsByRoomName");
@@ -171,7 +171,7 @@ public class RoomsManager {
         
         UserSession user = null;
 
-        Room room = this.roomsByName.get(roomName);
+        MediaRoom room = this.roomsByName.get(roomName);
         
         if (room != null){
 
@@ -193,16 +193,16 @@ public class RoomsManager {
     }
     
     public void removeRoom(String roomName) {
-        log.info("{} Room.removeRoom {} {}",Info.START_SYMBOL, roomName, Hour.getTime());
+        log.info("{} MediaRoom.removeRoom {} {}",Info.START_SYMBOL, roomName, Hour.getTime());
         
-        Room room = this.roomsByName.get(roomName);
+        MediaRoom room = this.roomsByName.get(roomName);
         this.removeRoom(room);
         
-	   Info.logInfoFinish("/ Room.remove: removed and closed");
+	   Info.logInfoFinish("/ MediaRoom.remove: removed and closed");
     }
     
-    public void removeRoom(Room room) {
-        log.info("{} Room.removeRoom");
+    public void removeRoom(MediaRoom room) {
+        log.info("{} MediaRoom.removeRoom");
         
         if (room != null){
             String roomName = room.getName();
@@ -220,14 +220,14 @@ public class RoomsManager {
                 this.log.info("!!! Error al persistir la room: " + e.getMessage());
             }    
 	    }
-	Info.logInfoFinish("/ Room.remove: removed and closed");
+	Info.logInfoFinish("/ MediaRoom.remove: removed and closed");
     }
     
     public String manageOfferVideo(String addresseeUserName, String senderUserName, String offer){
         log.info("* RoomManager.manageOfferVideo -> {} <- {}: {}", addresseeUserName, senderUserName);
         
         String roomName = this.roomsNamesByUserName.get(addresseeUserName);
-        Room room = this.roomsByName.get(roomName);
+        MediaRoom room = this.roomsByName.get(roomName);
         String sdpAnswer = null;
 
         if (room != null){
@@ -243,7 +243,7 @@ public class RoomsManager {
         
          
         String roomName = this.roomsNamesByUserName.get(addresseeUserName);
-        Room room = this.roomsByName.get(roomName);
+        MediaRoom room = this.roomsByName.get(roomName);
         if (room != null){
             room.manageAddress(addresseeUserName, senderUserName, address);
         }

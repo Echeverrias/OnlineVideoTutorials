@@ -27,16 +27,14 @@
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/managers/RoomsManager.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/domain/ChatMessage.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/domain/Message.java
-/home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/repositories/ImageFileRepository.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/handlers/WebSocketConfig.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/Info.java
-/home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/domain/ImageFile2.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/services/KurentoConfig.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/repositories/RoomRepository.java
+/home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/domain/UserFile.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/handlers/GeneralHandler.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/handlers/ConcreteHandler.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/handlers/WaitingRoomHandler.java
-/home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/domain/ImageFile.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/handlers/RoomHandler.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/domain/UserSession.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/controllers/ChatController.java

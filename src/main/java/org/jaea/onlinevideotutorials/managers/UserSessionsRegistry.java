@@ -21,7 +21,7 @@ import org.jaea.onlinevideotutorials.Hour;
 import org.jaea.onlinevideotutorials.Info;
 import org.jaea.onlinevideotutorials.domain.ParticipantSession;
 import org.jaea.onlinevideotutorials.domain.UserSession;
-import org.jaea.onlinevideotutorials.domain.Room;
+import org.jaea.onlinevideotutorials.domain.MediaRoom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.WebSocketSession;
