@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/http");
 var Subject_1 = require("rxjs/Subject");
+var Observable_1 = require("rxjs/Observable");
 var connection_service_1 = require("./connection.service");
 var FileService = (function () {
     function FileService(http, connection) {
@@ -23,16 +24,16 @@ var FileService = (function () {
         this.userImagePath = 'userImage';
         this._sizeLimit = 1000000;
         console.log("");
-        console.log("*** new FileService");
-        this.uploadFileAddress = "" + this.connection.urlServer + this.uploadFilePath;
+        console.log("****** new FileService");
         this.uploadUserImageAddress = "" + this.connection.urlServer + this.uploadFilePath + "/" + this.userImagePath;
-        this.shippingAddress = "/" + this.uploadedFileEndPoint;
-        this.filesObserver = new Subject_1.Subject();
-        this.files = [];
+        this.sharedFiles$ = new Subject_1.Subject();
+        this.sharedFiles$ = new Subject_1.Subject();
     }
     FileService.prototype.init = function (address) {
-        this.uploadFileAddress = this.uploadFileAddress + "/" + address;
-        this.shippingAddress = this.shippingAddress + "/" + address;
+        console.log("FileService.init(" + address + ")");
+        // console.log(`FileService - this.files:`, this.files); 
+        this.uploadFileAddress = "" + this.connection.urlServer + this.uploadFilePath + "/" + address;
+        this.shippingAddress = "/" + this.uploadedFileEndPoint + "/" + address;
         console.log(this.uploadFilePath);
         console.log(this.shippingAddress);
         this.stompClient = this.connection.stompOverWsClient;
@@ -55,8 +56,13 @@ var FileService = (function () {
     FileService.prototype.getUploadUserImageUrl = function (userName) {
         return this.uploadUserImageAddress + "/" + userName;
     };
-    FileService.prototype.getFiles = function () {
-        return this.filesObserver;
+    FileService.prototype.getExistingFiles = function () {
+        // Implementar llamada al servidor para que devuelva los archivos compartidos
+        var existingFiles = [];
+        return Observable_1.Observable.of(existingFiles);
+    };
+    FileService.prototype.getSharedFiles = function () {
+        return this.sharedFiles$;
     };
     FileService.prototype.getOnMessage = function () {
         var _this = this;
@@ -67,8 +73,7 @@ var FileService = (function () {
             file.loadUrl = file.loadUrl.replace('//', '/');
             file.downloadUrl = _this.connection.pathName + file.downloadUrl;
             file.downloadUrl = file.downloadUrl.replace('//', '/');
-            _this.files.push(file);
-            _this.filesObserver.next(_this.files);
+            _this.sharedFiles$.next(file);
         };
         return onMessage;
     };

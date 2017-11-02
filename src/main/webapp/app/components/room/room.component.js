@@ -43,6 +43,7 @@ var RoomComponent = (function () {
             _this.name = params['roomName'];
         });
         this.address = this.name;
+        console.log("RoomComponent.ngOnInit - this.address: " + this.address); //*
         this.room.init(this.name);
         this.room.getParticipants().subscribe(function (users) { _this.users = users; });
         this.room.getMainParticipant().subscribe(function (mainUser) { _this.mainUser = mainUser; });

@@ -1,6 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { Http, Headers, Response, RequestOptions } from '@angular/http';
 import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs/Observable';
 import { ConnectionService } from './connection.service';
 import { File } from '../models/types';
 
@@ -19,25 +20,25 @@ export class FileService{
     private uploadFileAddress: string; 
     private uploadUserImageAddress: string; 
     private shippingAddress: string; 
-    private files: File[];
-    private filesObserver: Subject<File[]>;
+    private sharedFiles$: Subject<File>;
     private newFileAlert: EventEmitter<string>;
 
     private _sizeLimit: number = 1000000;
 
     constructor(private http: Http, private connection: ConnectionService) {
         console.log("");
-        console.log("*** new FileService");
-        this.uploadFileAddress = `${this.connection.urlServer}${this.uploadFilePath}`;
+        console.log("****** new FileService");
         this.uploadUserImageAddress = `${this.connection.urlServer}${this.uploadFilePath}/${this.userImagePath}`;
-        this.shippingAddress = `/${this.uploadedFileEndPoint}`; 
-        this.filesObserver = new Subject<File[]>();
-        this.files = [];
+        this.sharedFiles$ = new Subject<File>();
+        this.sharedFiles$ = new Subject<File>();
+
     }
 
     init(address: string): void {
-        this.uploadFileAddress = `${this.uploadFileAddress}/${address}`;
-        this.shippingAddress = `${this.shippingAddress}/${address}`;
+        console.log(`FileService.init(${address})`); 
+       // console.log(`FileService - this.files:`, this.files); 
+        this.uploadFileAddress = `${this.connection.urlServer}${this.uploadFilePath}/${address}`;
+        this.shippingAddress = `/${this.uploadedFileEndPoint}/${address}`;
         console.log(this.uploadFilePath);
         console.log(this.shippingAddress);
         this.stompClient = this.connection.stompOverWsClient;
@@ -55,9 +56,15 @@ export class FileService{
     public getUploadUserImageUrl(userName: string): string {
         return `${this.uploadUserImageAddress}/${userName}`;
     }
+    
+    public getExistingFiles(): Observable<File []>{
+        // Implementar llamada al servidor para que devuelva los archivos compartidos
+        let existingFiles = [];
+        return Observable.of(existingFiles);
+    }
 
-    public getFiles(): Subject<File[]>{
-        return this.filesObserver;
+    public getSharedFiles(): Subject<File>{
+        return this.sharedFiles$;
     }
 
     private getOnMessage(): any{
@@ -68,8 +75,7 @@ export class FileService{
             file.loadUrl = file.loadUrl.replace('//', '/');
             file.downloadUrl = this.connection.pathName + file.downloadUrl;
             file.downloadUrl = file.downloadUrl.replace('//', '/');
-            this.files.push(file);
-            this.filesObserver.next(this.files);
+            this.sharedFiles$.next(file);
          }
 
         return onMessage;

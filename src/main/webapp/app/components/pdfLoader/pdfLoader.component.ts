@@ -29,19 +29,31 @@ export class PdfLoaderComponent implements OnInit, OnDestroy{
      this.sizeLimit = this.file.sizeLimit;
      this.sharedFile = new EventEmitter<string>();
      this.newFile = new EventEmitter<string>();
+     this.files = []; //*
   }
   
   ngOnInit(){
+    console.log("PdfLoaderComponent.ngOnInit");
+    console.log(`address: ${this.address}`);
     this.file.init(this.address);
     console.log(`uploadFileUrl: ${this.file.uploadFileUrl}`); 
     this.options = {
       url: this.file.uploadFileUrl
     }
-    this.file.getFiles().subscribe((files: File[]): void => {
-      if (!this.files) {
-        this.files = files;
-       }
-      let fileName = this.files[this.files.length - 1].name;
+    this.getExistingFiles();
+    this.getSharedFiles();
+  }
+  
+  getExistingFiles(){
+    this.file.getExistingFiles()
+      .subscribe(files => { this.files = files.slice(0) });
+  }
+
+  getSharedFiles(){
+    this.file.getSharedFiles()
+    .subscribe((file: File): void => {
+      this.files.push(file);
+      let fileName = file.name;
       console.log(`shared file: ${fileName}`);
       console.log(`uploaded file: ${this.uploadFile}`);
       setTimeout(() => {
@@ -49,7 +61,10 @@ export class PdfLoaderComponent implements OnInit, OnDestroy{
           this.alertOfANewFile(fileName);
         }
       }, 1500); // Wait for the execution of the handleUpload function
-    });
+    },
+    error => console.log(error),
+    ()=>console.log('complete')
+  );
   }
 
   beforeUpload(uploadingFile): void {

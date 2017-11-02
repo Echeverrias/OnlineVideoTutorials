@@ -11,6 +11,7 @@ node_modules/
 nm/
 temp/
 /target/
+files/
 /files/
 /data/
 /prueba/

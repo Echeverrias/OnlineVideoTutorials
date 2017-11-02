@@ -2,12 +2,13 @@ package org.jaea.onlinevideotutorials.controllers;
 
 import org.jaea.onlinevideotutorials.domain.ParticipantSession;
 import org.jaea.onlinevideotutorials.domain.MediaRoom;
-//import org.jaea.onlinevideotutorials.domain.UserFile;
+import org.jaea.onlinevideotutorials.domain.UserFileAccess;
 import org.jaea.onlinevideotutorials.domain.UserFile;
 import org.jaea.onlinevideotutorials.repositories.ParticipantSessionRepository;
 import org.jaea.onlinevideotutorials.managers.RoomsManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
 import org.springframework.util.FileCopyUtils;
 
 import java.io.InputStream;
@@ -34,7 +36,8 @@ import java.util.List;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import java.util.logging.Level;
 
@@ -51,8 +54,12 @@ import org.springframework.http.ResponseEntity;
 @Controller
 public class FileController {
 	
-	private SimpMessagingTemplate template;
-	private final String UPLOAD_PATH = "/files/";
+    private SimpMessagingTemplate template;
+
+    @Value("${filesStore.path}")
+    private String UPLOAD_PATH;
+
+    public static final String DOWNLOAD_ENDPOINT = "/download";
 
     @Autowired
     private ParticipantSessionRepository participantRepository;
@@ -60,9 +67,10 @@ public class FileController {
     @Autowired
     private RoomsManager roomsManager; 
 
-    
-	@Autowired
+    @Autowired
     private HttpServletRequest request;
+
+    
 	
 	@Autowired
 	public FileController(SimpMessagingTemplate template){
@@ -79,7 +87,7 @@ public class FileController {
         
         String fileName = file.getOriginalFilename();
         String roomFolder = roomName + "_" + this.getFormatedDate();
-        String filePath = UPLOAD_PATH + roomFolder + "/";
+        String filePath = UPLOAD_PATH +  "/" + roomFolder + "/";
         
         ServletContext context = request.getServletContext();
         String fileAbsolutePath = context.getRealPath(filePath);
@@ -113,15 +121,27 @@ public class FileController {
         this.log.info("### The room has added the file");
         this.log.info("### room.getFiles().size(): {}", room.getFilesHistory().size());
        
-       
+        
         JsonObject msg = new JsonObject();
         msg.addProperty("name", fileName);
         msg.addProperty("loadUrl", filePath + fileName);
         msg.addProperty("downloadUrl", "/download/" + roomFolder + "/" + fileName);
+        
         this.template.convertAndSend("/uploadedFile/shared/" + roomName, msg.toString());
+        
+
+        /*
+        UserFileAccess accessFile = new UserFileAccess(uf, roomFolder);
+        this.log.info("### loadUrl: {}", filePath + fileName);
+        this.log.info("### downloadUrl {}","/download/" + roomFolder + "/" + fileName);
+        this.log.info("### fileAccess {}",accessFile.toString());
+       
+        this.template.convertAndSend("/uploadedFile/shared/" + roomName, accessFile);
+    */
     }
 
-     @RequestMapping("/download/{folder:.+}/{file:.+}")
+    //@RequestMapping(DOWNLOAD_ENDPOINT + "/{folder:.+}/{file:.+}")
+    @RequestMapping("/download/{folder:.+}/{file:.+}")
     public void downloadFile(HttpServletResponse response, @PathVariable String folder, @PathVariable String file){
         log.info("Download: " + folder + "/" + file);
         

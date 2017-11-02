@@ -19,19 +19,30 @@ var PdfLoaderComponent = (function () {
         this.sizeLimit = this.file.sizeLimit;
         this.sharedFile = new core_1.EventEmitter();
         this.newFile = new core_1.EventEmitter();
+        this.files = []; //*
     }
     PdfLoaderComponent.prototype.ngOnInit = function () {
-        var _this = this;
+        console.log("PdfLoaderComponent.ngOnInit");
+        console.log("address: " + this.address);
         this.file.init(this.address);
         console.log("uploadFileUrl: " + this.file.uploadFileUrl);
         this.options = {
             url: this.file.uploadFileUrl
         };
-        this.file.getFiles().subscribe(function (files) {
-            if (!_this.files) {
-                _this.files = files;
-            }
-            var fileName = _this.files[_this.files.length - 1].name;
+        this.getExistingFiles();
+        this.getSharedFiles();
+    };
+    PdfLoaderComponent.prototype.getExistingFiles = function () {
+        var _this = this;
+        this.file.getExistingFiles()
+            .subscribe(function (files) { _this.files = files.slice(0); });
+    };
+    PdfLoaderComponent.prototype.getSharedFiles = function () {
+        var _this = this;
+        this.file.getSharedFiles()
+            .subscribe(function (file) {
+            _this.files.push(file);
+            var fileName = file.name;
             console.log("shared file: " + fileName);
             console.log("uploaded file: " + _this.uploadFile);
             setTimeout(function () {
@@ -39,7 +50,7 @@ var PdfLoaderComponent = (function () {
                     _this.alertOfANewFile(fileName);
                 }
             }, 1500); // Wait for the execution of the handleUpload function
-        });
+        }, function (error) { return console.log(error); }, function () { return console.log('complete'); });
     };
     PdfLoaderComponent.prototype.beforeUpload = function (uploadingFile) {
         if (uploadingFile.size > this.sizeLimit) {

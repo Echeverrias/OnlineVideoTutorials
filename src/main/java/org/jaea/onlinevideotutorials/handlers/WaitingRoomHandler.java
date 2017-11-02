@@ -9,6 +9,7 @@ import org.jaea.onlinevideotutorials.managers.RoomsManager;
 import org.jaea.onlinevideotutorials.managers.UserSessionsRegistry;
 import org.jaea.onlinevideotutorials.domain.User;
 import org.jaea.onlinevideotutorials.domain.UserSession;
+import org.jaea.onlinevideotutorials.domain.WebSocketMessage;
 import org.jaea.onlinevideotutorials.SendMessage;
 
 import com.google.gson.Gson;
@@ -116,7 +117,9 @@ public class WaitingRoomHandler extends TextMessageWebSocketHandler {
         else{
         	availableRoomsNames = gson.toJsonTree(this.roomsManager.getTutorAvailableRoomsNames(userName), new TypeToken<List<String>>() {}.getType());
         }
-        
+
+        WebSocketMessage wsm = new WebSocketMessage("availableRooms", availableRoomsNames);
+        this.log.info("### {}", wsm.toString());
         JsonObject jsonAnswer = new JsonObject();
         jsonAnswer.addProperty("id","availableRooms");
         jsonAnswer.add("availableRoomsNames", availableRoomsNames);

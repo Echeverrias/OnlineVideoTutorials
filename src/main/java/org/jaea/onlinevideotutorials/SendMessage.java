@@ -7,6 +7,7 @@ package org.jaea.onlinevideotutorials;
 
 import com.google.gson.JsonObject;
 import java.io.IOException;
+import org.jaea.onlinevideotutorials.domain.WebSocketMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.TextMessage;
@@ -21,12 +22,22 @@ public class SendMessage {
     private static Logger log = LoggerFactory.getLogger(SendMessage.class);
      
     public static synchronized boolean toClient(JsonObject message, WebSocketSession session){
+        
+        return toClient(message.toString(), session);
+    }
+
+    public static synchronized boolean toClient(WebSocketMessage message, WebSocketSession session){
+        
+        return toClient(message.toString(), session);
+    }
+
+    private static synchronized boolean toClient(String message, WebSocketSession session){
         //log.info("SendMessage.toClient");
         //log.info("session: {}", session);
         //Info.SendMsg(session.getId());
         boolean isSuccessful = false;
         
-        TextMessage textAnswer = new TextMessage(message.toString());
+        TextMessage textAnswer = new TextMessage(message);
         
         try{
            
@@ -48,7 +59,7 @@ public class SendMessage {
     }
     
     // for debugging
-    public static synchronized void toClient(String value, WebSocketSession session){
+    public static synchronized void toClientDebug(String value, WebSocketSession session){
         
         JsonObject msg = new JsonObject();
         msg.addProperty("id", "server");

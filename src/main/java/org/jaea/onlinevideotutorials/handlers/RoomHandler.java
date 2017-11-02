@@ -8,7 +8,6 @@ package org.jaea.onlinevideotutorials.handlers;
 
 import org.jaea.onlinevideotutorials.Info;
 import org.jaea.onlinevideotutorials.Hour;
-import org.jaea.onlinevideotutorials.domain.Message;   //#####
 import org.jaea.onlinevideotutorials.domain.Room;  //#####
 import org.jaea.onlinevideotutorials.domain.ParticipantSession;
 import org.jaea.onlinevideotutorials.domain.UserSession;
