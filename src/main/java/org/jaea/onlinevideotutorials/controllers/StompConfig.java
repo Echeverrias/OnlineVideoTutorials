@@ -27,7 +27,7 @@ public class StompConfig extends AbstractWebSocketMessageBrokerConfigurer{
      
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config){
-        config.enableSimpleBroker("/chat", "/uploadedFile");
+        config.enableSimpleBroker("/chat", "/uploadedFile", "/created_room");
         config.setApplicationDestinationPrefixes("/chat", "/uploadedFile");
     }
     

@@ -62,7 +62,7 @@ public class UserFile implements Comparable<UserFile>{
 
     
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "room_id")
     @JsonIgnoreProperties(value = "files")
     public MediaRoom room;

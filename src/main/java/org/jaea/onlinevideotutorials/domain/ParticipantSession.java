@@ -112,10 +112,12 @@ public class ParticipantSession  extends UserSession{
         log.info("{} Participant.leavesRoom: {} - {}", Info.START_SYMBOL, this.getUserName(), Hour.getTime());
         try {
             this.tutorialMedia.close();
-            this.tutorialMedia = null;
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(ParticipantSession.class.getName()).log(Level.SEVERE, null, ex);
         
+        }
+        finally{
+            this.tutorialMedia = null;
         }
         Info.logInfoFinish("Participant.leavesRoom");
     }

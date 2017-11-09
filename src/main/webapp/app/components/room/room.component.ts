@@ -9,10 +9,10 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 
 import { UserService } from '../../services/user.service';
-import { RoomService } from '../../services/room.service';
-import { ParticipantsService } from '../../services/participants.service';
+import { RoomService } from './room.service';
+import { ParticipantsService } from './participants.service';
 
-import { ParticipantComponent } from '../participant/participant.component';
+import { ParticipantComponent } from './participant/participant.component';
 
 import { User } from '../../models/user';
 
@@ -31,8 +31,7 @@ export class RoomComponent implements OnInit, OnDestroy{
     @ViewChild(ParticipantComponent) mainParticipant: ParticipantComponent;
     @ViewChildren(ParticipantComponent) participants: QueryList<ParticipantComponent>;
     
-    private name: string;
-    private address: string;
+    private id: string;
     private mainUser: User = new User();
     private users: User[];
     private activeGadget: boolean;  
@@ -43,6 +42,9 @@ export class RoomComponent implements OnInit, OnDestroy{
       
       console.log("");
       console.log(`% Room constructor ${new Date().toLocaleTimeString()}`);
+      console.log("this.me: ", this.me)
+      console.log("this.me.getMe(): ", this.me.getMe());
+      console.log("this.me.getMyInfo(): ", this.me.getMyInfo());
       console.log(this.users);
       console.log(`/ Room constructor ${new Date().toLocaleTimeString()}`);
       console.log("");
@@ -51,18 +53,17 @@ export class RoomComponent implements OnInit, OnDestroy{
     
     ngOnInit(){
       this.route.params.forEach((params: Params) => {
-            this.name = params['roomName'];
+            this.id = params['roomId'];
         });
-      this.address = this.name;
-      console.log(`RoomComponent.ngOnInit - this.address: ${this.address}`); //*
-      this.room.init(this.name);
+      console.log(`RoomComponent.ngOnInit - this.id: ${this.id}`); //*
+      this.room.init(this.id);
       this.room.getParticipants().subscribe((users: User[]): void => { this.users = users } );
       this.room.getMainParticipant().subscribe((mainUser: User): void  => { this.mainUser = mainUser });
     }
     
     onExitOfRoom(): void {
         console.log("");
-        console.log(`<- Room.onExitOfRoom: ${this.name} ${new Date().toLocaleTimeString()}`);
+        console.log(`<- Room.onExitOfRoom: ${this.id} ${new Date().toLocaleTimeString()}`);
          
         this.room.onExit();
         
@@ -97,6 +98,7 @@ export class RoomComponent implements OnInit, OnDestroy{
       console.log(`* Room.OnDestroy ${new Date().toLocaleTimeString()}`);
       this._participants.destroy();  
       this.room.destroy();
+      this.me.deleteMyCurrentRoom();
     }
 
    

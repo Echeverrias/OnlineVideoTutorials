@@ -11,7 +11,7 @@ import { UserService } from '../../services/user.service';
 
 import{ historyTemplate } from './history.html'
 
-import { Room } from './room';
+import { IRoomHistory, RoomHistory } from './history.types';
 
  @Component({
     moduleId: module.id, 
@@ -24,8 +24,8 @@ import { Room } from './room';
  export class HistoryComponent implements OnInit{
      
     private userName: string;
-    private rooms: Room [];
-    private selectedRoom: Room = null;
+    private rooms: RoomHistory [];
+    private selectedRoom: RoomHistory = null;
     
         
     constructor(private history: HistoryService, private router: Router, private me: UserService){
@@ -38,20 +38,23 @@ import { Room } from './room';
     
     ngOnInit(){
         console.log("HistoryComponent.onInit");
-        this.userName = this.me.myUserName;
+        this.userName = this.me.userName;
         this.getRoomsHistory(this.userName);
     }
 
     private getRoomsHistory(userName: string): void{
         this.history.getRoomsHistory(userName)
         .subscribe(
-            (rooms: Room []) => {this.rooms = rooms.slice(0); console.log(this.rooms)},
+            (rooms: RoomHistory []) => {
+                this.rooms = rooms; 
+                console.log(this.rooms)
+            },
             error => console.log(error),
             () => console.log('completed')
         )
     }
 
-    onSelectedRoom(room: Room){
+    onSelectedRoom(room: RoomHistory){
         if (this.selectedRoom == room){
             this.selectedRoom = null;
         }
@@ -67,7 +70,13 @@ import { Room } from './room';
     
     
     ngOnDestroy(){
-       
+        console.log("");
+        console.log(`* <- History.ngOnDestroy ${new Date().toLocaleTimeString()}`);
+        
+        this.history.destroy();
+        
+        console.log(`/ History.ngOnDestroy ${new Date().toLocaleTimeString()}`);
+        console.log("")
     }
      
  }

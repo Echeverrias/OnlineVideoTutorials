@@ -108,6 +108,15 @@ var User = (function () {
         enumerable: true,
         configurable: true
     });
+    User.prototype.json = function () {
+        return {
+            userName: this._userName,
+            name: this._name,
+            surname: this._surname,
+            userType: this._userType,
+            email: this._email
+        };
+    };
     User.prototype.set = function (user) {
         console.log('User.set');
         console.log(user);

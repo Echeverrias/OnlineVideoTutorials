@@ -15,123 +15,154 @@ Object.defineProperty(exports, "__esModule", { value: true });
  */
 var core_1 = require("@angular/core");
 var user_1 = require("../models/user");
+var room_1 = require("../models/room");
 /**
  * It allows to share information through all the components.
  */
 var UserService = (function () {
     function UserService() {
-        this._myRoomName = "";
         console.log("% MyService");
         this._me = new user_1.User();
+        this._currentRoom = new room_1.Room();
+        this._lastRoom = new room_1.Room();
     }
     UserService.prototype.getMe = function () {
-        return this._me;
+        return this._me && this._me.json();
+    };
+    UserService.prototype.getMyCurrentRoom = function () {
+        return this._currentRoom && this._currentRoom.json();
+    };
+    UserService.prototype.getMyLastRoom = function () {
+        return this._lastRoom && this._lastRoom.json();
     };
     UserService.prototype.getMyInfo = function () {
-        var myProperties = {
-            userName: this._me.userName,
-            userType: this._me.userType,
-            name: this._me.name,
-            surname: this._me.surname,
-            email: this._me.email,
-            roomName: this._myRoomName
-        };
+        var myProperties = Object.assign(this.getMe(), { room: this.getMyCurrentRoom() });
         return myProperties;
     };
     UserService.prototype.registerMe = function (user) {
         console.log('+++++ USER.REGISTERME ++++++++++++'); //%
         console.log(user);
-        this._me.userName = user.userName;
-        this._me.userType = user.userType;
-        this._me.name = user.name;
-        this._me.surname = user.surname;
-        this._me.email = user.email;
-        this._me.userImage = user.userImage;
+        this._me.set(user);
         this.logged = true;
         console.log("* MyService.me: " + this._me + " ");
     };
-    Object.defineProperty(UserService.prototype, "myUserName", {
+    Object.defineProperty(UserService.prototype, "userName", {
         get: function () {
             return this._me.userName;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(UserService.prototype, "myUserType", {
+    Object.defineProperty(UserService.prototype, "userType", {
         get: function () {
             return this._me.userType;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(UserService.prototype, "myName", {
+    Object.defineProperty(UserService.prototype, "name", {
         get: function () {
             return this._me.name;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(UserService.prototype, "mySurname", {
+    Object.defineProperty(UserService.prototype, "surname", {
         get: function () {
             return this._me.surname;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(UserService.prototype, "myEmail", {
+    Object.defineProperty(UserService.prototype, "email", {
         get: function () {
             return this._me.email;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(UserService.prototype, "myUserImageMimeType", {
+    Object.defineProperty(UserService.prototype, "userImageMimeType", {
         get: function () {
             return this._me.userImage && this._me.userImage.mimeType;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(UserService.prototype, "myUserImageContent", {
+    Object.defineProperty(UserService.prototype, "userImageContent", {
         get: function () {
             return this._me.userImage && this._me.userImage.content;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(UserService.prototype, "myRoomName", {
-        get: function () {
-            return this._myRoomName;
-        },
-        set: function (roomName) {
-            this._myRoomName = roomName;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UserService.prototype, "myUserImage", {
+    Object.defineProperty(UserService.prototype, "userImage", {
         set: function (userImage) {
             this._me.userImage = userImage;
         },
         enumerable: true,
         configurable: true
     });
-    UserService.prototype.deleteMyRoomName = function () {
-        this._myRoomName = "";
+    UserService.prototype.registerCurrentRoom = function (room) {
+        this._currentRoom.setDataRoom(room);
     };
-    UserService.prototype.amATutor = function () {
+    UserService.prototype.isThereACurrentRoom = function () {
+        return this._currentRoom && this._currentRoom.id > 0;
+    };
+    Object.defineProperty(UserService.prototype, "currentRoomName", {
+        get: function () {
+            return this._currentRoom.name;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UserService.prototype, "currentRoomId", {
+        get: function () {
+            return this._currentRoom.id;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    UserService.prototype.deleteMyCurrentRoom = function () {
+        this.registerLastRoom(this._currentRoom.json());
+        this._currentRoom.setToUndefined();
+    };
+    UserService.prototype.registerLastRoom = function (room) {
+        this._lastRoom.setDataRoom(room);
+    };
+    UserService.prototype.isThereALastRoom = function () {
+        return this._lastRoom && this._lastRoom.id > 0;
+    };
+    Object.defineProperty(UserService.prototype, "lastRoomName", {
+        get: function () {
+            return this._lastRoom.name;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UserService.prototype, "lastRoomId", {
+        get: function () {
+            return this._lastRoom.id;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    UserService.prototype.amIATutor = function () {
         return this._me.isATutor();
     };
-    UserService.prototype.amAStudent = function () {
+    UserService.prototype.amIAStudent = function () {
         return this._me.isAStudent();
     };
-    UserService.prototype.amLogged = function () {
+    UserService.prototype.amILogged = function () {
         return this.logged;
+    };
+    UserService.prototype.amIInARoom = function () {
+        return this._currentRoom === null;
     };
     UserService.prototype.deleteMe = function () {
         console.log('+++++ USER.DELETE    ME ++++++++++++'); //%
         this._me.setToUndefined();
-        this._myRoomName = "";
+        this._currentRoom.setToUndefined();
+        this._lastRoom.setToUndefined();
         this.logged = false;
     };
     return UserService;

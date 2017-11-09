@@ -81,19 +81,14 @@ public  class User implements Comparable<User>{
     }
 
      public User(String userName, String userType, String name, String password){
-        this.userName = userName;
-        this.userType = userType;
-        this.name = name;
+        this(userName, userType, name);
         this.password = password;
     }
 
 
     public User(String userName, String userType, String name, String surname, String email, String password){
-        this.userName = userName;
-        this.userType = userType;
-        this.name = name;
+        this(userName, userType, name, password);
         this.surname = surname;
-        this.password = password;
         this.email = email;
     }
     

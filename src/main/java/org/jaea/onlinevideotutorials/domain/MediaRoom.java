@@ -48,6 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.transaction.annotation.Transactional;
 
 
 
@@ -88,7 +89,9 @@ public class MediaRoom extends Room implements Closeable{
     @Transient
     private MediaPipeline pipeline;
     
-    private MediaRoom(){};
+    private MediaRoom(){
+        super();
+    };
     
     public MediaRoom(String name, MediaPipeline pipeline) {
         super(name);
@@ -98,14 +101,42 @@ public class MediaRoom extends Room implements Closeable{
 	log.info("/ ROOM {} has been created {}", this.name, Hour.getTime());
     }
 
+    public MediaRoom(String name, String tutor, MediaPipeline pipeline) {
+        super(name, tutor);
+        log.info("% ROOM {}", Hour.getTime());
+        this.pipeline = pipeline;
+        
+	log.info("/ ROOM {} has been created {}", this.name, Hour.getTime());
+    }
 
+    public MediaRoom(Room room, MediaPipeline pipeline) {
+        super(room.name, room.tutor);
+        log.info("% ROOM {}", Hour.getTime());
+        this.pipeline = pipeline;
+        
+	log.info("/ ROOM {} has been created {}", this.name, Hour.getTime());
+    }
+    
+    public void attachPipeline (MediaPipeline pipeline){
+        Info.logInfoStart("* MediaRoom.attachPipeline");
+        
+        if (this.pipeline == null) {
+            this.pipeline = pipeline;
+        }
+        
+        Info.logInfoFinish("/ MediaRoom.attachPipeline");
+    }
+    
     public List<UserFile> getFilesHistory(){
         return this.filesHistory;
     }
     
     public void addFileToHistory(UserFile userFile){
+        this.log.info("MediaRoom.addFileToHistory");
         this.filesHistory.add(userFile);
+        this.log.info("file added");
         userFile.setRoom(this);
+        this.log.info("room added to the file");
     }
 
     public void removeFile(UserFile userFile){
@@ -135,7 +166,7 @@ public class MediaRoom extends Room implements Closeable{
     public ParticipantSession getParticipant(String userName) {
         return this.participantsByUserName.get(userName);
     }
-
+    
     public List<ParticipantSession> getParticipantsHistory(){
         return this.participantsHistory;
     }
@@ -145,8 +176,11 @@ public class MediaRoom extends Room implements Closeable{
         Info.logInfoStart2("attachRoomMedia");
         
         this.addParticipantToHistory(user);
+        log.info("### 1");
         user.attachRoomMedia(new TutorialMedia(this.pipeline, user.getSession(), user.getUserName())); 
+        log.info("### 2");
         this.checkIfTheUserIsATutor(user);
+        log.info("### 3");
         Info.logInfoFinish2("attachRoomMedia");
         
         this.participantsByUserName.put(user.getUserName(), user);
@@ -156,17 +190,36 @@ public class MediaRoom extends Room implements Closeable{
         log.info("{} ROOM.addParticipant {}", Info.FINISH_SYMBOL, Hour.getTime());
     }
 
+   
     private void addParticipantToHistory(ParticipantSession participant){
-     
-        if (!this.participantsHistory.contains(participant)){
+        log.info("* MediaRoom.addParticipantToHistory()");
+       
+        if (this.participantsHistory == null){
+        log.info("this.participantsHistory is null");
+        }
+        else{
+            log.info("this.participantsHistory is not null");
+        }
+
+        try{
+            log.info("* this.participantsHistory.size: {}", this.participantsHistory.size());
+        }
+        catch(Exception e){
+            log.info(e.getMessage());
+            log.info(e.toString());
+        }    
+       if (!this.participantsHistory.contains(participant)){
             this.log.info("Participant: " + participant.getUserName() + "has been added to the history");
             this.log.info(participant.getUserName()); //*
             this.log.info(participant.getEmail()); //*
             this.log.info("... has been added to the history");//*
             this.participantsHistory.add(participant);
         }    
+        log.info("We are going to check the rooms history of the participant");
         List<MediaRoom> roomsHistory = participant.getRoomsHistory();
+        log.info("roomsHistory.size: {}", roomsHistory.size());
         if (!roomsHistory.contains(this)){
+            log.info("This room isn't in the rooms history of the participant");
             roomsHistory.add(this);
         }
     }
@@ -238,7 +291,9 @@ public class MediaRoom extends Room implements Closeable{
                 log.warn("PARTICIPANT {}: Could not release Pipeline",
                     MediaRoom.this.name);
             }
-	});
+        });
+        
+        this.pipeline = null;
 
             log.debug("{} MediaRoom {} closed",Info.FINISH_SYMBOL, this.name);
             Info.logInfoFinish();

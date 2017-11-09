@@ -40,7 +40,7 @@ export class UserOptionsComponent{
      }
 
     getUserImageUrl(): SafeResourceUrl{
-       return this.sanitizer.bypassSecurityTrustResourceUrl(`data:${this.me.myUserImageMimeType}; base64,${this.me.myUserImageContent}`);
+       return this.sanitizer.bypassSecurityTrustResourceUrl(`data:${this.me.userImageMimeType}; base64,${this.me.userImageContent}`);
     }
 
     onDisplayMenu(event:Event){

@@ -12,6 +12,7 @@ import org.jaea.onlinevideotutorials.domain.Room;  //#####
 import org.jaea.onlinevideotutorials.domain.ParticipantSession;
 import org.jaea.onlinevideotutorials.domain.UserSession;
 import org.jaea.onlinevideotutorials.domain.MediaRoom;
+import org.jaea.onlinevideotutorials.domain.WebSocketMessage;
 import org.jaea.onlinevideotutorials.managers.UserSessionsRegistry;
 import org.jaea.onlinevideotutorials.managers.RoomsManager;
 
@@ -46,6 +47,11 @@ public class RoomHandler extends TextMessageWebSocketHandler{
     public static final String ID_RECEIVE_VIDEO_FROM = "receiveVideoFrom";
     public static final String ID_RECEIVE_ADDRESS = "receiveAddress";
     public static final  String ID_EXIT_ROOM = "exitRoom";
+
+    /**
+     * The id values to the messages send by websocket to the client
+     */
+    public static final  String ID_AVAILABLE_ROOM_LESS = "thereIsAnAvailableRoomLess";
     private String [] ids = {ID_JOIN_ROOM, ID_RECEIVE_VIDEO_FROM, ID_RECEIVE_ADDRESS, ID_EXIT_ROOM}; 
     
     
@@ -72,7 +78,6 @@ public class RoomHandler extends TextMessageWebSocketHandler{
 
     public RoomHandler(GeneralHandler generalHandler){
         log.info("RoomHandler created");
-
         this.attributeNameOfTheMessageId = generalHandler.getAttributeNameOfTheMessageId();
         this.signIn(generalHandler);
     }
@@ -115,44 +120,68 @@ public class RoomHandler extends TextMessageWebSocketHandler{
         
         String name = jsonMessage.get("name").getAsString();
         String userName = jsonMessage.get("userName").getAsString();
-        String roomName = jsonMessage.get("roomName").getAsString();
+        Long roomId = jsonMessage.get("roomId").getAsLong();
         String userType = jsonMessage.get("userType").getAsString();
         
-        MediaRoom room = null; // ###
-        if (!this.roomsManager.existRoom(roomName)){
-            room = this.roomsManager.createRoom(roomName);
-            this.makeKnowThereIsANewRoom(roomName);
-        }
-        this.log.info("########################## 1");
-         
        // availableRoomsNames = gson.toJsonTree(this.roomsManager.getAvailableRoomsNames(), new TypeToken<List<String>>() {}.getType());
          UserSession newParticipant = this.usersRegistry.getUserBySessionId(session.getId());
         
-        this.roomsManager.addParticipant(newParticipant, roomName);
+        this.roomsManager.addParticipant(newParticipant,roomId);
         this.log.info("########################## 2");
-        this.makeKnowTheParticipantsOfRoom((ParticipantSession) newParticipant, roomName);
+        this.makeKnowTheParticipantsOfRoom((ParticipantSession) newParticipant, roomId);
         this.log.info("########################## 3");
-        this.makeKnowThereIsANewParticipant((ParticipantSession) newParticipant, roomName);
+        this.makeKnowThereIsANewParticipant((ParticipantSession) newParticipant, roomId);
         this.log.info("########################## 4");
+        this.log.info("-------- PRUEBAS");
+        
+       
+        this.log.info("-------- PRUEBAS");
         this.log.info("/joinRoom - the message has been sent");
     }
     
-    private void makeKnowThereIsANewRoom(String roomName){//%%
+    // NO se utiliza, reciben el aviso mediante suscripcion al recibir el controlador la
+    //.. llamada para crear la room
+    private void makeKnowThereIsANewRoom(Long roomId){//%%
         log.info(" * makeKnowThereIsANewRoom to...");
         this.roomsManager.printIncomingParticipants();//*
-
-        JsonObject jsonAnswer = new JsonObject();
-        jsonAnswer.addProperty("id", "thereIsANewRoom");
-        jsonAnswer.addProperty("roomName", roomName);
         
+        Room room = new Room(this.roomsManager.getRoom(roomId));
+        WebSocketMessage wsmsg = new WebSocketMessage("thereIsANewRoom", room);
+        log.info("gson: {}", wsmsg.toString());
         List<UserSession> incomingParticipants = this.roomsManager.getIncomingParticipants();
-        this.sendAMessageToUsers(jsonAnswer, incomingParticipants);
+        this.sendAMessageToUsers(wsmsg, incomingParticipants);
         
         log.info(" /makeKnowThereIsANewRoom - the message has been sent");
     }
     
     // Return the unnotified participants
     private List<UserSession> sendAMessageToUsers(JsonObject message, List<UserSession> users){
+        log.info("{} sendAMessageToIncomingParticipants - message: {} {}",Info.START_SYMBOL, message, Hour.getTime());
+        log.info("users: " + users.size());
+       
+        List<UserSession> unnotifiedUsers = new ArrayList<>();
+        
+        for (UserSession user : users){
+            log.info("User: {}", user.getUserName());
+
+            if (!user.sendMeAMessage(message)){
+                unnotifiedUsers.add(user);
+            }
+        }  
+        
+        if (!unnotifiedUsers.isEmpty()) {
+            log.debug("{} users don't have receive the message", unnotifiedUsers.size());
+        }
+        
+        log.info("the message has been sent to all teh users");
+        log.info("{} users don't have receive the message", unnotifiedUsers.size());
+        Info.logInfoFinish("sendAMessageToIncomingParticipants");
+        return unnotifiedUsers;
+    }
+
+
+    // Return the unnotified participants
+    private List<UserSession> sendAMessageToUsers(WebSocketMessage message, List<UserSession> users){
         log.info("{} sendAMessageToIncomingParticipants - message: {} {}",Info.START_SYMBOL, message, Hour.getTime());
         log.info("users: " + users.size());
        
@@ -198,10 +227,10 @@ public class RoomHandler extends TextMessageWebSocketHandler{
     }
     
         
-    private void makeKnowTheParticipantsOfRoom (ParticipantSession newParticipant, String roomName){
-        log.info("{} RoomHandler.makeKnowTheParticipantsOfRoom {}{}{}", Info.START_SYMBOL, newParticipant.getName(), roomName, Hour.getTime());
+    private void makeKnowTheParticipantsOfRoom (ParticipantSession newParticipant, Long roomId){
+        log.info("{} RoomHandler.makeKnowTheParticipantsOfRoom {}{}{}", Info.START_SYMBOL, newParticipant.getName(), roomId, Hour.getTime());
         
-        List<ParticipantSession> participants = this.roomsManager.getParticipantsByRoomName(roomName);
+        List<ParticipantSession> participants = this.roomsManager.getParticipantsByRoomId(roomId);
         
         JsonObject jsonAnswer = new JsonObject();
         jsonAnswer.addProperty("id", "thereIsAParticipant");
@@ -219,10 +248,10 @@ public class RoomHandler extends TextMessageWebSocketHandler{
         log.info("{} RoomHandelr.makeKnowTheParticipantsOfRoom - the messages have been sent", Info.FINISH_SYMBOL, Hour.getTime());
     }
     
-    private void makeKnowThereIsANewParticipant(ParticipantSession newParticipant, String roomName){
-        log.info("{} MediaRoom.makeKnowThereIsANewParticipant ({}) to participants of room {} {}", Info.START_SYMBOL, newParticipant.toString(), roomName, Hour.getTime());
+    private void makeKnowThereIsANewParticipant(ParticipantSession newParticipant, Long roomId){
+        log.info("{} MediaRoom.makeKnowThereIsANewParticipant ({}) to participants of room {} {}", Info.START_SYMBOL, newParticipant.toString(), roomId, Hour.getTime());
         //this.printTheRoomParticipants();
-        List<ParticipantSession> participants = this.roomsManager.getParticipantsByRoomName(roomName);
+        List<ParticipantSession> participants = this.roomsManager.getParticipantsByRoomId(roomId);
         
         JsonObject jsonAnswer = new JsonObject();
         jsonAnswer.addProperty("id", "thereIsANewParticipant");
@@ -233,7 +262,7 @@ public class RoomHandler extends TextMessageWebSocketHandler{
        log.info("Message to send to: {}",jsonAnswer.toString());
        
         for (ParticipantSession participant : participants){
-            log.debug(roomName +":");
+            log.debug(roomId +":");
             log.debug("- " + participant.getUserName());
             // The new participant already knows he's in the room
             if (!participant.equals(newParticipant)){
@@ -291,43 +320,50 @@ public class RoomHandler extends TextMessageWebSocketHandler{
     * An user has left the room.
     */
     private synchronized void exitRoom (WebSocketSession session, JsonObject jsonMessage){
-        this.log.info("<- exitRoom: id: {}, message: {}", session.getId(), jsonMessage.toString());
+        this.log.info("<- %%%%% RoomHandler.exitRoom: id: {}, message: {}", session.getId(), jsonMessage.toString());
         
-        String roomName = jsonMessage.get("roomName").getAsString();
         String userName = jsonMessage.get("userName").getAsString();
+        Room room =this.gson.fromJson(jsonMessage.get("room"),Room.class);
+        this.log.info("Se ha desereliciado la room");
+        this.log.info("El id de la room es: {}", room.getId());
+        Long roomId = room.getId();
         
-        UserSession user = this.roomsManager.participantLeavesARoom(userName, roomName);
+        UserSession user = this.roomsManager.participantLeavesARoom(userName, roomId);
 
         if (user != null){
             this.log.info("** The participant {} has been got out from the room **", user.getUserName());
             
-            if (!this.roomsManager.existRoom(roomName)){
-                this.makeKnowThereIsAnAvailableRoomLess(roomName);
+            if (!this.roomsManager.existRoom(roomId)){
+                this.makeKnowThereIsAnAvailableRoomLess(roomId);
             }
             else{
-                this.makeKnowAParticipantHasLeftTheRoom(user, roomName);
+                this.makeKnowAParticipantHasLeftTheRoom(user, roomId);
             }
         }
-        this.log.info("/exitRoom - it has finished");
+        this.log.info("/ $$$$$ RoomHandler.exitRoom - it has finished");
     }
     
-    private void makeKnowThereIsAnAvailableRoomLess(String roomName){
+    private void makeKnowThereIsAnAvailableRoomLess(Long roomId){
         this.log.info("  * makeKnowThereIsARoomLess to...");
-        
+        /*
         JsonObject jsonAnswer = new JsonObject();
         jsonAnswer.addProperty("id", "thereIsAnAvailableRoomLess");
-        jsonAnswer.addProperty("roomName", roomName);
+        jsonAnswer.addProperty("roomId", roomId);
         
         List<UserSession> incomingParticipants = this.roomsManager.getIncomingParticipants();
         this.sendAMessageToUsers(jsonAnswer, incomingParticipants);
+        */
+        List<UserSession> incomingParticipants = this.roomsManager.getIncomingParticipants();
+        WebSocketMessage wsm = new WebSocketMessage(ID_AVAILABLE_ROOM_LESS, roomId);
+        this.sendAMessageToUsers(wsm, incomingParticipants);
         
         this.log.info("  /makeKnowThereIsARoomLess - the message has been sent");
     }
 
-    private void makeKnowAParticipantHasLeftTheRoom(UserSession user, String roomName){
+    private void makeKnowAParticipantHasLeftTheRoom(UserSession user, Long roomId){
         log.info("{} MediaRoom.makeKnowAParticipantHasLeftTheRoom: {} {}", Info.START_SYMBOL, user.getUserName(), Hour.getTime());
        
-        List<ParticipantSession> participants = this.roomsManager.getParticipantsByRoomName(roomName);
+        List<ParticipantSession> participants = this.roomsManager.getParticipantsByRoomId(roomId);
         
         if (!participants.isEmpty()){
             
@@ -337,7 +373,7 @@ public class RoomHandler extends TextMessageWebSocketHandler{
             participantLeftJson.addProperty("id", "aParticipantHasLeftTheRoom");
             participantLeftJson.addProperty("userName", userName);
             participantLeftJson.addProperty("userType", user.getUserType());
-            participantLeftJson.addProperty("roomName", roomName);
+            participantLeftJson.addProperty("roomId", roomId);
 
             final List<UserSession> unnotifiedParticipants;
             unnotifiedParticipants =  this.sendAMessageToParticipants(participantLeftJson, participants);

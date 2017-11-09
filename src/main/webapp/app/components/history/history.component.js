@@ -31,13 +31,16 @@ var HistoryComponent = (function () {
     }
     HistoryComponent.prototype.ngOnInit = function () {
         console.log("HistoryComponent.onInit");
-        this.userName = this.me.myUserName;
+        this.userName = this.me.userName;
         this.getRoomsHistory(this.userName);
     };
     HistoryComponent.prototype.getRoomsHistory = function (userName) {
         var _this = this;
         this.history.getRoomsHistory(userName)
-            .subscribe(function (rooms) { _this.rooms = rooms.slice(0); console.log(_this.rooms); }, function (error) { return console.log(error); }, function () { return console.log('completed'); });
+            .subscribe(function (rooms) {
+            _this.rooms = rooms;
+            console.log(_this.rooms);
+        }, function (error) { return console.log(error); }, function () { return console.log('completed'); });
     };
     HistoryComponent.prototype.onSelectedRoom = function (room) {
         if (this.selectedRoom == room) {
@@ -51,6 +54,11 @@ var HistoryComponent = (function () {
         this.router.navigate(["/rooms"]);
     };
     HistoryComponent.prototype.ngOnDestroy = function () {
+        console.log("");
+        console.log("* <- History.ngOnDestroy " + new Date().toLocaleTimeString());
+        this.history.destroy();
+        console.log("/ History.ngOnDestroy " + new Date().toLocaleTimeString());
+        console.log("");
     };
     return HistoryComponent;
 }());

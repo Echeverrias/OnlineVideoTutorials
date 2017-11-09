@@ -38,7 +38,7 @@ var UserOptionsComponent = (function () {
         this.router.navigate(['/sign']);
     };
     UserOptionsComponent.prototype.getUserImageUrl = function () {
-        return this.sanitizer.bypassSecurityTrustResourceUrl("data:" + this.me.myUserImageMimeType + "; base64," + this.me.myUserImageContent);
+        return this.sanitizer.bypassSecurityTrustResourceUrl("data:" + this.me.userImageMimeType + "; base64," + this.me.userImageContent);
     };
     UserOptionsComponent.prototype.onDisplayMenu = function (event) {
         this.displayOrHideMenu();

@@ -3,10 +3,10 @@
  * 
  */
 import { Injectable } from '@angular/core';
-import { User } from '../models/user';
-import { FormUser } from '../models/types';
-import { UserInfo } from '../models/types';
-import { UserFile } from '../models/types';
+import { IUserInfo, IUser, User } from '../models/user';
+import { IRoom, Room } from '../models/room';
+import { UserFile, ParticipantInfo } from '../models/types';
+import {  } from '../models/types';
 
 
 /**
@@ -16,105 +16,134 @@ import { UserFile } from '../models/types';
 export class UserService{
     
     private _me: User;
-    private _myRoomName: string = "";
+    private _currentRoom: Room;
+    private _lastRoom: Room;
     private logged: boolean;
     
     constructor (){
         console.log(`% MyService`); 
         this._me = new User();
-     }
+        this._currentRoom = new Room();
+        this._lastRoom = new Room();
+    }
     
-    getMe(): User{
-        return this._me;
+    getMe(): IUserInfo{
+        return this._me && this._me.json();
     }
 
-    getMyInfo(): UserInfo {
+    getMyCurrentRoom(): IRoom{
+        return this._currentRoom && this._currentRoom.json();
+    }
 
-        let myProperties: UserInfo = {
-            userName: this._me.userName,
-            userType: this._me.userType,
-            name: this._me.name,
-            surname: this._me.surname,
-            email: this._me.email,
-            roomName: this._myRoomName
-        }
+    getMyLastRoom(): IRoom{
+        return this._lastRoom && this._lastRoom.json();
+    }
+
+    getMyInfo(): ParticipantInfo {
+
+        let myProperties: ParticipantInfo = Object.assign(this.getMe(), {room: this.getMyCurrentRoom()});
 
         return myProperties;
     }
         
-    registerMe (user: any): void {
+    registerMe (user: IUser): void {
         console.log('+++++ USER.REGISTERME ++++++++++++');  //%
         console.log(user);
-        this._me.userName = user.userName;
-        this._me.userType = user.userType;
-        this._me.name = user.name;
-        this._me.surname = user.surname;
-        this._me.email = user.email;
-        this._me.userImage = user.userImage;
+        this._me.set(user);
         this.logged = true;
         console.log(`* MyService.me: ${this._me} `);
     }
     
-    get myUserName(): string {
+    get userName(): string {
         return this._me.userName;
     }
     
-    get myUserType(): string {
+    get userType(): string {
         return this._me.userType;
     }
 
-    get myName(): string { 
+    get name(): string { 
         return this._me.name;
     }
 
-    get mySurname(): string { 
+    get surname(): string { 
         return this._me.surname;
     }
 
-    get myEmail(): string { 
+    get email(): string { 
         return this._me.email;
     }
 
-    get myUserImageMimeType(): any{
+    get userImageMimeType(): any{
         return this._me.userImage && this._me.userImage.mimeType;
     }
 
-    get myUserImageContent(): any{
+    get userImageContent(): any{
         return this._me.userImage && this._me.userImage.content;
     }
 
-    get myRoomName(): string {
-        return this._myRoomName;
-    }
-
-
-    set myUserImage(userImage: UserFile){
+    set userImage(userImage: UserFile){
         this._me.userImage = userImage;
     }
-    
-    set myRoomName(roomName: string) {
-        this._myRoomName = roomName;
-    }
-    
-    deleteMyRoomName():void {
-        this._myRoomName = "";
+
+    registerCurrentRoom(room: IRoom) {
+        this._currentRoom.setDataRoom(room);
     }
 
-    amATutor(): boolean{
+    isThereACurrentRoom():boolean{
+        return this._currentRoom && this._currentRoom.id > 0;
+    }
+
+    get currentRoomName(): string {
+        return this._currentRoom.name;
+    }
+
+    get currentRoomId(): number {
+        return this._currentRoom.id;
+    }
+
+    deleteMyCurrentRoom():void {
+        this.registerLastRoom(this._currentRoom.json()); 
+        this._currentRoom.setToUndefined();
+    }
+
+    private registerLastRoom(room: IRoom) {
+        this._lastRoom.setDataRoom(room);
+    }
+
+    isThereALastRoom():boolean{
+        return this._lastRoom && this._lastRoom.id > 0;
+    }
+
+    get lastRoomName(): string {
+        return this._lastRoom.name;
+    }
+
+    get lastRoomId(): number {
+        return this._lastRoom.id;
+    }
+    
+    amIATutor(): boolean{
         return this._me.isATutor();
     }
 
-    amAStudent(): boolean {
+    amIAStudent(): boolean {
         return this._me.isAStudent();
     }
-    amLogged(): boolean{
+
+    amILogged(): boolean{
         return this.logged;
+    }
+
+    amIInARoom():boolean{
+        return this._currentRoom === null;
     }
 
     deleteMe(): void{
         console.log('+++++ USER.DELETE    ME ++++++++++++');  //%
         this._me.setToUndefined();
-        this._myRoomName = "";
+        this._currentRoom.setToUndefined();
+        this._lastRoom.setToUndefined();
         this.logged = false;
     }
     

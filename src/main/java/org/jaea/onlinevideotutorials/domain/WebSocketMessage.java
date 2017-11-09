@@ -17,22 +17,22 @@ public class WebSocketMessage{
     private String id;
 
     @Expose
-    private Object body;
+    private Object payload;
 
     @Expose
     private String error;
 
-    public WebSocketMessage(String id, Object body){
+    public WebSocketMessage(String id, Object payload){
         this.id = id;
-        this.body = body;
+        this.payload = payload;
     }
 
     public String getId(){
         return this.id;
     }
 
-    public Object getBody(){
-        return this.body;
+    public Object getPayload(){
+        return this.payload;
     }
 
     public String getError(){
@@ -43,8 +43,8 @@ public class WebSocketMessage{
         this.id = id;
     }
 
-    public void setBody(Object body){
-        this.body = body;
+    public void setPayload(Object payload){
+        this.payload = payload;
     }
 
     public void setError(String error){
@@ -57,11 +57,16 @@ public class WebSocketMessage{
             msg = this.gson.toJson(this);
         }    
         catch(Exception e){
-            this.setBody(null);
+            this.log.info("ERROR: {}", e.getMessage());
+            this.setPayload(null);
             this.setError(e.getMessage());
             msg = this.gson.toJson(this);
         }
         return msg;
+    }
+
+    public String toString2(){
+        return this.gson.toJson(this);
     }
 
 }

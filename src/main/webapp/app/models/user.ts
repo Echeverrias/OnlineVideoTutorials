@@ -8,7 +8,19 @@ import { UserFile } from './types';
 const TUTOR: string = "tutor";
 const STUDENT: string = "student";
 
-export class User {
+export interface IUserInfo  {
+    userName: string;
+    name: string;
+    surname: string;
+    userType: any;
+    email: string
+}
+
+export interface IUser  extends IUserInfo{
+     userImage: UserFile
+}
+
+export class User implements IUser{
     
     private _userName: string = "";
     private _name: string = "";
@@ -99,7 +111,17 @@ export class User {
         this._userImage = userImage; 
     }
 
-    set(user: User){
+    json(): IUserInfo{
+        return {
+            userName: this._userName,
+            name: this._name,
+            surname: this._surname,
+            userType: this._userType,
+            email: this._email
+        }
+    }
+
+    set(user: IUser){
         console.log('User.set');
         console.log(user); 
         this._userName = user.userName;

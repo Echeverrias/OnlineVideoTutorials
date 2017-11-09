@@ -78,15 +78,15 @@ public class FileController {
 	}
     private final Logger log = LoggerFactory.getLogger(FileController.class);
     
-    @PostMapping("/upload/{roomName:.+}")
+    @PostMapping("/upload/{roomId:.+}")
     @ResponseStatus(value = HttpStatus.OK)
-    public void saveFile(@RequestParam("file") MultipartFile file, @PathVariable String roomName) throws Exception{
+    public void saveFile(@RequestParam("file") MultipartFile file, @PathVariable Long roomId) throws Exception{
         log.info("* SaveFile: " + file.getName());
         log.info("* SaveFile: " + file.getOriginalFilename());
         log.info("* SaveFile: " + file.getContentType());
         
         String fileName = file.getOriginalFilename();
-        String roomFolder = roomName + "_" + this.getFormatedDate();
+        String roomFolder = roomId.toString();
         String filePath = UPLOAD_PATH +  "/" + roomFolder + "/";
         
         ServletContext context = request.getServletContext();
@@ -110,16 +110,37 @@ public class FileController {
         fos.write(file.getBytes());
         fos.close(); 
         
-        MediaRoom room = this.roomsManager.getRoom(roomName);
+        MediaRoom room = this.roomsManager.getRoom(roomId);
         this.log.info("### MediaRoom.id {}", room.getId());
         UserFile uf = new UserFile(uploadedFile);
         this.log.info("### {}", uf.getName());
         this.log.info("### {}", room.getName());
+        try{
+            Object o = room.getFilesHistory();
+            this.log.info("### 1");
+            if (o == null){
+                this.log.info("room.getFilesHistory is null");
+            }
+            else{
+                this.log.info("room.getFilesHistory is not null");
+                Object oo = room.getFilesHistory().get(0);
+                this.log.info("The object has been getted");
+            }
+            this.log.info("### room.getFilesHistory().size: {}", room.getFilesHistory().size());
+            this.log.info("### 2");
+            this.log.info("### 3");
+        }
+        catch(Exception e){
+            this.log.info("Error");
+            this.log.info(e.getMessage());
+            this.log.info(e.toString());
+        }    
         this.log.info("### The room is going to add de file");
         room.addFileToHistory(uf);
+
       //  this.userFileRepository.save(uf);
         this.log.info("### The room has added the file");
-        this.log.info("### room.getFiles().size(): {}", room.getFilesHistory().size());
+        this.log.info("### room.getFilesHistory().size: {}", room.getFilesHistory().size());
        
         
         JsonObject msg = new JsonObject();
@@ -127,7 +148,7 @@ public class FileController {
         msg.addProperty("loadUrl", filePath + fileName);
         msg.addProperty("downloadUrl", "/download/" + roomFolder + "/" + fileName);
         
-        this.template.convertAndSend("/uploadedFile/shared/" + roomName, msg.toString());
+        this.template.convertAndSend("/uploadedFile/shared/" + roomId.toString(), msg.toString());
         
 
         /*

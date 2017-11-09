@@ -9,7 +9,8 @@ import { Router } from '@angular/router';
 
 import{ roomDetailsTemplate } from './roomDetails.html'
 
-import { Room, IParticipant } from './../room';
+import { RoomHistory } from './../history.types';
+import { IUser } from './../../../models/user';
 
  @Component({
     moduleId: module.id, 
@@ -20,7 +21,7 @@ import { Room, IParticipant } from './../room';
 
  export class RoomDetailsComponent {
     
-    @Input() room: Room;
+    @Input() room: RoomHistory;
     
     private participantsSelected: boolean = false;
     private filesSelected: boolean = false;

@@ -28,7 +28,7 @@ var AppComponent = (function () {
         console.log(event);
         if (!sessionStorage.getItem("downloadEvent")) {
             console.log(this.me);
-            console.log(this.me.myUserName);
+            console.log(this.me.userName);
             var jsonMessage = Object.assign(this.me.getMyInfo(), { id: "closeTab" });
             console.log(jsonMessage);
             this.connection.sendMessage(jsonMessage);

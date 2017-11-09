@@ -15,7 +15,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var roomDetails_html_1 = require("./roomDetails.html");
-var room_1 = require("./../room");
+var history_types_1 = require("./../history.types");
 var RoomDetailsComponent = (function () {
     function RoomDetailsComponent() {
         this.participantsSelected = false;
@@ -35,7 +35,7 @@ var RoomDetailsComponent = (function () {
 }());
 __decorate([
     core_1.Input(),
-    __metadata("design:type", room_1.Room)
+    __metadata("design:type", history_types_1.RoomHistory)
 ], RoomDetailsComponent.prototype, "room", void 0);
 RoomDetailsComponent = __decorate([
     core_1.Component({

@@ -32,29 +32,32 @@ public class SendMessage {
     }
 
     private static synchronized boolean toClient(String message, WebSocketSession session){
-        //log.info("SendMessage.toClient");
+        log.info("SendMessage.toClient");
         //log.info("session: {}", session);
+        log.info("message: {}", message);
         //Info.SendMsg(session.getId());
         boolean isSuccessful = false;
         
         TextMessage textAnswer = new TextMessage(message);
-        
+        log.info("######## SendMessage.toClient 1");
         try{
-           
+            
              //   log.info("Sending message: {} to {}", message.toString(), session.getId());
             
             session.sendMessage(textAnswer);
+            log.info("######## SendMessage.toClient 2");
             //log.info("message has been sent");
             isSuccessful = true;
         }
         catch(IOException e){
+            log.info("######## SendMessage.toClient 3");
             log.info("error"); 
             log.info("Can't deliver the message: {} to {} ", message.toString(), session.getId());
             log.error("Sender: {}", session.getId());
         }
         
           // log.info("(message has been sent: {})", isSuccessful);
-          
+          log.info("######## SendMessage.toClient 4");
         return isSuccessful;
     }
     

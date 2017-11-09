@@ -36,25 +36,9 @@ public class UserFileAccess{
     private String downloadUrl; 
     
     @JsonIgnore
-    private Room room;
-    
-    @JsonIgnore
     private Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
     
-    public UserFileAccess(File file, Room room){
-        String fileName = file.getName();
-        String folderName = room.getName();
-        this.room = room;
-        this.constructor(fileName, folderName);
-    }
-
-    public UserFileAccess(UserFile userFile, Room room){
-        String fileName = userFile.getName();
-        String folderName = room.getName();
-        this.room = room;
-        this.constructor(fileName, folderName);
-    }
-
+   
     public UserFileAccess(File file, String folderName){
         String fileName = file.getName();
         String _folderName = folderName;

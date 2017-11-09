@@ -10,7 +10,7 @@ var appRoutes = [
     { path: 'sign', component: sign_component_1.SignComponent },
     { path: 'editPerfil', component: sign_component_1.SignComponent },
     { path: 'rooms', component: waitingRoom_component_1.WaitingRoomComponent, canActivate: [auth_guard_1.AuthGuard] },
-    { path: 'room/:roomName', component: room_component_1.RoomComponent, canActivate: [auth_guard_1.AuthGuard] },
+    { path: 'rooms/:roomId', component: room_component_1.RoomComponent, canActivate: [auth_guard_1.AuthGuard] },
     // otherwise redirect to home
     { path: '**', redirectTo: '/sign' }
 ];

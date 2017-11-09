@@ -18,7 +18,7 @@ var router_1 = require("@angular/router");
 var forms_1 = require("@angular/forms");
 var platform_browser_1 = require("@angular/platform-browser");
 var Rx_1 = require("rxjs/Rx");
-var sign_service_1 = require("../../services/sign.service");
+var sign_service_1 = require("./sign.service");
 var user_service_1 = require("../../services/user.service");
 var file_service_1 = require("../../services/file.service");
 var sign_html_1 = require("./sign.html");
@@ -87,16 +87,16 @@ var SignComponent = (function () {
         }
         else if (this.state === SignStates.EditPerfil) {
             this.editPerfilForm = this.formBuilder.group({
-                password: [sessionStorage.getItem(this.me.myUserName), [forms_1.Validators.minLength(this.minPasswordLength)]],
-                confirmationPassword: [sessionStorage.getItem(this.me.myUserName), [forms_1.Validators.minLength(this.minPasswordLength), this.confirmPassword.bind(this)]],
-                name: [this.me.myName, [forms_1.Validators.required, forms_1.Validators.minLength(this.minLength)]],
-                surname: [this.me.mySurname, [forms_1.Validators.required, forms_1.Validators.minLength(this.minLength)]],
-                email: [this.me.myEmail, [forms_1.Validators.required, this.validateEmailPattern], this.validateEmail.bind(this)],
-                userType: [this.me.myUserType, forms_1.Validators.required]
+                password: [sessionStorage.getItem(this.me.userName), [forms_1.Validators.minLength(this.minPasswordLength)]],
+                confirmationPassword: [sessionStorage.getItem(this.me.userName), [forms_1.Validators.minLength(this.minPasswordLength), this.confirmPassword.bind(this)]],
+                name: [this.me.name, [forms_1.Validators.required, forms_1.Validators.minLength(this.minLength)]],
+                surname: [this.me.surname, [forms_1.Validators.required, forms_1.Validators.minLength(this.minLength)]],
+                email: [this.me.email, [forms_1.Validators.required, this.validateEmailPattern], this.validateEmail.bind(this)],
+                userType: [this.me.userType, forms_1.Validators.required]
             }, { validator: this.checkPassword });
             this.editPerfilForm.controls['password'].valueChanges.subscribe(function (value) { setTimeout(function () { return _this.editPerfilForm.controls['confirmationPassword'].updateValueAndValidity(); }, 200); });
             this.uploadImageUserOptions = {
-                url: this.file.getUploadUserImageUrl(this.me.myUserName)
+                url: this.file.getUploadUserImageUrl(this.me.userName)
             };
             this.userImage$.subscribe(function (userImage) { _this.setMeUserImage(userImage), console.log(userImage); }, function (error) { return console.log(error); }, function () { return console.log('complete'); });
         }
@@ -136,7 +136,7 @@ var SignComponent = (function () {
             var infoField = {
                 field: field,
                 value: value,
-                userName: _this.me.myUserName
+                userName: _this.me.userName
             };
             _this.sign.validateField(infoField)
                 .subscribe(function (response) {
@@ -279,10 +279,10 @@ var SignComponent = (function () {
         }
     };
     SignComponent.prototype.setMeUserImage = function (userImage) {
-        this.me.myUserImage = userImage;
+        this.me.userImage = userImage;
     };
     SignComponent.prototype.getUserImageUrl = function () {
-        return this.sanitizer.bypassSecurityTrustResourceUrl("data:" + this.me.myUserImageMimeType + "; base64," + this.me.myUserImageContent);
+        return this.sanitizer.bypassSecurityTrustResourceUrl("data:" + this.me.userImageMimeType + "; base64," + this.me.userImageContent);
     };
     SignComponent.prototype.isSignInState = function () {
         return this.state === SignStates.SignIn;

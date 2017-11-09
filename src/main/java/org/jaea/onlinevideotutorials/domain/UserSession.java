@@ -84,6 +84,13 @@ public class UserSession extends User{
         boolean result = SendMessage.toClient(message, this.session);
         return result;
     }
+
+    public boolean sendMeAMessage(WebSocketMessage message){
+        log.info("UserSession.sendMeAMessage:");
+        log.info(message.toString());
+        boolean result = SendMessage.toClient(message, this.session);
+        return result;
+    }
     
     
 }

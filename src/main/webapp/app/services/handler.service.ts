@@ -23,6 +23,7 @@ export class HandlerService{
     }
 
     handle(message: any): boolean{
+        console.log("HandlerService.handle: ", message);
         let parsedMessage: Message = JSON.parse(message.data);
         let idMessage: string = parsedMessage.id;
         console.log(`HandlerService.handler ${idMessage}`);

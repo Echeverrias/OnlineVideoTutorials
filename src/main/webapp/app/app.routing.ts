@@ -12,7 +12,7 @@ const appRoutes: Routes = [
     { path: 'sign', component: SignComponent },
     { path: 'editPerfil', component: SignComponent },
     { path: 'rooms', component: WaitingRoomComponent, canActivate:[AuthGuard] },
-    { path: 'room/:roomName', component: RoomComponent , canActivate:[AuthGuard]},
+    { path: 'rooms/:roomId', component: RoomComponent , canActivate:[AuthGuard]},
     // otherwise redirect to home
     { path: '**', redirectTo: '/sign' }
 ];

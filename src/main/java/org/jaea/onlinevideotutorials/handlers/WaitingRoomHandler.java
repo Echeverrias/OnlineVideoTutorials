@@ -26,6 +26,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
+
+import org.jaea.onlinevideotutorials.domain.WebSocketMessage;
+import org.jaea.onlinevideotutorials.domain.Room;
+import org.jaea.onlinevideotutorials.domain.MediaRoom;
+import org.jaea.onlinevideotutorials.domain.debug.DebugFactory;
+
+
 /**
  * 
  * 
@@ -109,30 +116,48 @@ public class WaitingRoomHandler extends TextMessageWebSocketHandler {
         
         this.roomsManager.addIncomingParticipant(user);
         
-        JsonElement availableRoomsNames = null;
+        /*
+        JsonElement jsonAvailableRooms = null;
         if (userType.equals(User.STUDENT_TYPE)){
-            availableRoomsNames = gson.toJsonTree(this.roomsManager.getAvailableRoomsNames(), new TypeToken<List<String>>() {}.getType());
-            this.log.debug("The number of avaibles room is: " + this.roomsManager.getAvailableRoomsNames().size());
+            jsonAvailableRooms = gson.toJsonTree(this.roomsManager.getAvailableRooms(), new TypeToken<List<Room>>() {}.getType());
+            this.log.debug("The number of avaibles room is: " + this.roomsManager.getAvailableRooms().size());
         }
         else{
-        	availableRoomsNames = gson.toJsonTree(this.roomsManager.getTutorAvailableRoomsNames(userName), new TypeToken<List<String>>() {}.getType());
+        	jsonAvailableRooms = gson.toJsonTree(this.roomsManager.getTutorAvailableRooms(userName), new TypeToken<List<Room>>() {}.getType());
         }
 
-        WebSocketMessage wsm = new WebSocketMessage("availableRooms", availableRoomsNames);
+        
         this.log.info("### {}", wsm.toString());
         JsonObject jsonAnswer = new JsonObject();
         jsonAnswer.addProperty("id","availableRooms");
-        jsonAnswer.add("availableRoomsNames", availableRoomsNames);
+        jsonAnswer.add("availableRoomsNames", jsonAvailableRooms);
         
         SendMessage.toClient(jsonAnswer, session);
+        */
+        List<Room> availableRooms = new ArrayList<>();
+        if (userType.equals(User.STUDENT_TYPE)){
+            availableRooms = this.roomsManager.getAvailableRooms();
+            this.log.debug("The number of avaibles room is: " + this.roomsManager.getAvailableRooms().size());
+        }
+        else{
+        	availableRooms = this.roomsManager.getTutorAvailableRooms(userName);
+        }
+
+        WebSocketMessage wsm = new WebSocketMessage("availableRooms", availableRooms);
+        this.log.info("### {}", wsm.toString());
+       
         
+        SendMessage.toClient(wsm, session);
+       
+
+        this.log.info("-----------FIN PRUEBAS");
         this.log.info("/waitingRoom.enter - the message has been sent to id 'availableRoomsNames'");
     }
 
     private synchronized void exit (final WebSocketSession session, String userName){
-        this.log.info("* waitingRoom.exit");
+        this.log.info("<- %%%%% WaitingRoomHandler.exit");
         this.roomsManager.removeIncomingParticipant(userName);
-        this.log.info("/waitingRoom.exit");
+        this.log.info("/ $$$$$ WaitingRoomHandler.exit");
     }
     
     public String getAttributeNameOfTheMessageId(){

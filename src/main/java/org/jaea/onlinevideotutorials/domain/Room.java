@@ -19,7 +19,7 @@ import org.jaea.onlinevideotutorials.Info;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.gson.JsonObject;
+
 import java.io.Closeable;
 import java.util.Collections;
 import java.util.Date;
@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-
+import com.google.gson.annotations.Expose;
 
 /**
  * MediaRoom
@@ -63,22 +63,24 @@ public class Room implements  Comparable<Room>{
     
     @Transient
     private final Logger log = LoggerFactory.getLogger(Room.class);
-
-    @JsonIgnore
+    
+    @Expose
     @Id
     @GeneratedValue
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
-
-    @JsonIgnore
+    
+    @Expose
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP) 
     @CreatedDate
     protected Date createdAt;
     
+    @Expose
     @Column(nullable = false)
     protected String name = "";
- 
+    
+    @Expose
     @Column(nullable = false)
     protected String tutor = "";
     
@@ -86,12 +88,23 @@ public class Room implements  Comparable<Room>{
     protected Room(){};
        
 
+    public Room(String name, String tutor){
+        this(name);
+        this.tutor = tutor;
+    };
 
-    protected Room(String name){
+    public Room(String name){
        this.name = name;
     };
 
     public Room(MediaRoom room){
+        this.id = room.getId();
+        this.name = room.getName();
+        this.createdAt = room.getCreatedAt();
+        this.tutor = room.getTutor() ;
+    }
+
+    public Room(Room room){
         this.id = room.getId();
         this.name = room.getName();
         this.createdAt = room.getCreatedAt();
@@ -103,7 +116,6 @@ public class Room implements  Comparable<Room>{
         return this.id;
     }
 
-    @JsonProperty 
     public Date getCreatedAt(){
         return this.createdAt;
     }
@@ -122,6 +134,7 @@ public class Room implements  Comparable<Room>{
         }
     }
 
+    @JsonIgnore
     public boolean isTheTutor(String userName){
         log.info("* MediaRoom.isTheTutor?: {}", userName);
         log.info("Tutor: " + this.tutor);
@@ -134,12 +147,18 @@ public class Room implements  Comparable<Room>{
         if ((room == null) || !(room instanceof Room)) {
             return 1;
         }
-        
-        int result = this.createdAt.compareTo(room.getCreatedAt());
+        int result = 0;
+        try{
+            result = this.id.compareTo(room.id);
+        }
+        catch(Exception e){ result = 0;}    
         if (result == 0) {
-            result = this.name.compareTo(room.getName());
+            result = this.createdAt.compareTo(room.getCreatedAt());
             if (result == 0) {
-                result = this.tutor.compareTo(room.tutor);
+                result = this.name.compareTo(room.getName());
+                if (result == 0) {
+                    result = this.tutor.compareTo(room.tutor);
+                }
             }
         }
        return result;
@@ -151,6 +170,7 @@ public class Room implements  Comparable<Room>{
         int result = 1;
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
         result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
+        result = prime * result + ((this.createdAt == null) ? 0 : this.createdAt.hashCode());
         return result;
     }
     
@@ -161,7 +181,7 @@ public class Room implements  Comparable<Room>{
         if (this == obj) {
             return true;
     }
-    if ((obj == null) || !(obj instanceof User)) {
+    if ((obj == null) || !(obj instanceof Room)) {
             return false;
     }
     Room other = (Room) obj;

@@ -24,9 +24,12 @@
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/domain/FieldValidationRequest.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/domain/WebSocketMessage.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/handlers/LoginHandler.java
+/home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/managers/RoomsManager2.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/controllers/StompConfig.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/managers/RoomsManager.java
+/home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/controllers/RoomController.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/domain/ChatMessage.java
+/home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/domain/debug/DebugFactory.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/handlers/WebSocketConfig.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/Info.java
 /home/juanan/Proyecto/OnlineVideoTutorials/src/main/java/org/jaea/onlinevideotutorials/services/KurentoConfig.java

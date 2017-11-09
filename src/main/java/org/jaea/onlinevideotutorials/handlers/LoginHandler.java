@@ -111,12 +111,12 @@ public class LoginHandler extends TextMessageWebSocketHandler {
     * An user has left the application.
     */
     private synchronized void logout(final WebSocketSession session, JsonObject jsonMessage){
-        log.info("<- logout - id: {}, message: {}", session.getId(), jsonMessage.toString());
+        log.info("<- %%%%% LoginHandler.logout - id: {}, message: {}", session.getId(), jsonMessage.toString());
         
        String userName = jsonMessage.get("userName").getAsString();
        this.usersRegistry.unregisterUser(userName);
        
-       log.info("/logout");
+       log.info("/ $$$$$ LoginHandler.logout");
     }
 
     public String getAttributeNameOfTheMessageId(){

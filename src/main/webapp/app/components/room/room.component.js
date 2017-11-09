@@ -17,9 +17,9 @@ var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var platform_browser_1 = require("@angular/platform-browser");
 var user_service_1 = require("../../services/user.service");
-var room_service_1 = require("../../services/room.service");
-var participants_service_1 = require("../../services/participants.service");
-var participant_component_1 = require("../participant/participant.component");
+var room_service_1 = require("./room.service");
+var participants_service_1 = require("./participants.service");
+var participant_component_1 = require("./participant/participant.component");
 var user_1 = require("../../models/user");
 var room_html_1 = require("./room.html");
 var RoomComponent = (function () {
@@ -33,6 +33,9 @@ var RoomComponent = (function () {
         this.mainUser = new user_1.User();
         console.log("");
         console.log("% Room constructor " + new Date().toLocaleTimeString());
+        console.log("this.me: ", this.me);
+        console.log("this.me.getMe(): ", this.me.getMe());
+        console.log("this.me.getMyInfo(): ", this.me.getMyInfo());
         console.log(this.users);
         console.log("/ Room constructor " + new Date().toLocaleTimeString());
         console.log("");
@@ -40,17 +43,16 @@ var RoomComponent = (function () {
     RoomComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.route.params.forEach(function (params) {
-            _this.name = params['roomName'];
+            _this.id = params['roomId'];
         });
-        this.address = this.name;
-        console.log("RoomComponent.ngOnInit - this.address: " + this.address); //*
-        this.room.init(this.name);
+        console.log("RoomComponent.ngOnInit - this.id: " + this.id); //*
+        this.room.init(this.id);
         this.room.getParticipants().subscribe(function (users) { _this.users = users; });
         this.room.getMainParticipant().subscribe(function (mainUser) { _this.mainUser = mainUser; });
     };
     RoomComponent.prototype.onExitOfRoom = function () {
         console.log("");
-        console.log("<- Room.onExitOfRoom: " + this.name + " " + new Date().toLocaleTimeString());
+        console.log("<- Room.onExitOfRoom: " + this.id + " " + new Date().toLocaleTimeString());
         this.room.onExit();
         this.router.navigate(['/rooms']);
         console.log("/ Room.onExitOfRoom " + new Date().toLocaleTimeString());
@@ -77,6 +79,7 @@ var RoomComponent = (function () {
         console.log("* Room.OnDestroy " + new Date().toLocaleTimeString());
         this._participants.destroy();
         this.room.destroy();
+        this.me.deleteMyCurrentRoom();
     };
     return RoomComponent;
 }());

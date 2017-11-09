@@ -4,18 +4,14 @@ import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
 import { HttpModule }    from '@angular/http';
 import { routing } from './app.routing';
 import { NgUploaderModule } from 'ngx-uploader';
-import { GadgetsContainerModule } from './components/gadgetsContainer/gadgetsContainer.module';
+import { RoomModule } from './components/room/room.module';
+
 import { HistoryModule } from './components/history/history.module';
 
 import { AppComponent }  from './app.component';
 import { SignComponent } from './components/sign/sign.component';
 import { UserOptionsComponent } from './components/userOptions/userOptions.component';
 import { WaitingRoomComponent } from './components/waitingRoom/waitingRoom.component';
-import { RoomComponent } from './components/room/room.component';
-import { ParticipantComponent } from './components/participant/participant.component';
-import { LoadingComponent } from './components/loading/loading.component';
-import { ChatComponent } from './components/chat/chat.component';
-import { ChatMessageComponent } from './components/chatMessage/chatMessage.component';
 
 import { ConnectionService } from './services/connection.service';
 import { UserService } from './services/user.service';
@@ -32,8 +28,8 @@ import { AuthGuard } from './guards/auth.guard';
     FormsModule,
     ReactiveFormsModule,
     HttpModule,
-   NgUploaderModule, 
-    GadgetsContainerModule, 
+    NgUploaderModule, 
+    RoomModule,
     HistoryModule,
     routing, 
   ],
@@ -42,11 +38,6 @@ import { AuthGuard } from './guards/auth.guard';
     AppComponent,
     SignComponent,
     WaitingRoomComponent,
-    RoomComponent,
-    ParticipantComponent,
-    LoadingComponent,
-    ChatComponent,
-    ChatMessageComponent,
   ],
   providers: [
       HandlerService,

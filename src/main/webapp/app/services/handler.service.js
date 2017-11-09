@@ -24,6 +24,7 @@ var HandlerService = (function () {
         this.handlers.delete(id);
     };
     HandlerService.prototype.handle = function (message) {
+        console.log("HandlerService.handle: ", message);
         var parsedMessage = JSON.parse(message.data);
         var idMessage = parsedMessage.id;
         console.log("HandlerService.handler " + idMessage);

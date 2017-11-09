@@ -13,7 +13,7 @@ var core_1 = require("@angular/core");
 var http_1 = require("@angular/http");
 var Observable_1 = require("rxjs/Observable");
 var connection_service_1 = require("./../../services/connection.service");
-var room_1 = require("./room");
+var history_types_1 = require("./history.types");
 var ROOMS_HISTORY_URI = "/{userName}/roomshistory";
 var HistoryService = (function () {
     function HistoryService(connection, http) {
@@ -27,7 +27,7 @@ var HistoryService = (function () {
             console.log('response: ', response);
             var rooms = response.json();
             console.log('rooms: ', rooms);
-            return rooms.map(function (room) { return new room_1.Room(room); });
+            return rooms.map(function (room) { return new history_types_1.RoomHistory(room); });
         })
             .catch(function (error) {
             return Observable_1.Observable.throw(error);
@@ -39,6 +39,11 @@ var HistoryService = (function () {
         var roomsHistoryUrl = "" + this.connection.urlServer + roomsHistoryUri;
         console.log(roomsHistoryUrl);
         return roomsHistoryUrl;
+    };
+    HistoryService.prototype.destroy = function () {
+        this.exit();
+    };
+    HistoryService.prototype.exit = function () {
     };
     return HistoryService;
 }());

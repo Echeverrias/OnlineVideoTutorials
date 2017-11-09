@@ -30,7 +30,8 @@ public class HistoryController {
 
     @Autowired
     private MediaRoomRepository roomRepository; 
-
+    
+    // Modificar, debe devolver RoomHistory con UserFileAccess
     @GetMapping("/{userName:.+}/roomshistory")
     public ResponseEntity<List<MediaRoom>> getRoomsHistorial(@PathVariable String userName){
         HttpStatus httpStatus = null;

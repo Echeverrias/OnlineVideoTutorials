@@ -10,14 +10,14 @@ import { NgUploaderOptions, UploadedFile } from 'ngx-uploader';
 import { Observable, Subject } from 'rxjs/Rx';
 import { first } from 'rxjs/operator/first';
 
-import { SignService } from '../../services/sign.service';
+import { SignService } from './sign.service';
 import { UserService } from '../../services/user.service';
 import { FileService } from '../../services/file.service';
 
 import { User } from '../../models/user';
 import { UserFile } from '../../models/types';
-import { FormUser } from '../../models/types';
-import { FieldValidationRequest } from '../../models/types';
+import { FormUser } from './sign.types';
+import { FieldValidationRequest } from './sign.types';
 
 import { signTemplate } from './sign.html';
 
@@ -112,12 +112,12 @@ export class SignComponent implements OnInit {
         else if (this.state === SignStates.EditPerfil){
 
             this.editPerfilForm = this.formBuilder.group({
-                password: [sessionStorage.getItem(this.me.myUserName), [Validators.minLength(this.minPasswordLength)]],
-                confirmationPassword: [sessionStorage.getItem(this.me.myUserName), [Validators.minLength(this.minPasswordLength), this.confirmPassword.bind(this)]],
-                name: [this.me.myName, [Validators.required, Validators.minLength(this.minLength)]],
-                surname: [this.me.mySurname, [Validators.required, Validators.minLength(this.minLength)]],
-                email: [this.me.myEmail, [Validators.required, this.validateEmailPattern], this.validateEmail.bind(this)],
-                userType: [this.me.myUserType, Validators.required]
+                password: [sessionStorage.getItem(this.me.userName), [Validators.minLength(this.minPasswordLength)]],
+                confirmationPassword: [sessionStorage.getItem(this.me.userName), [Validators.minLength(this.minPasswordLength), this.confirmPassword.bind(this)]],
+                name: [this.me.name, [Validators.required, Validators.minLength(this.minLength)]],
+                surname: [this.me.surname, [Validators.required, Validators.minLength(this.minLength)]],
+                email: [this.me.email, [Validators.required, this.validateEmailPattern], this.validateEmail.bind(this)],
+                userType: [this.me.userType, Validators.required]
             }, {validator: this.checkPassword});
 
             this.editPerfilForm.controls['password'].valueChanges.subscribe(
@@ -125,7 +125,7 @@ export class SignComponent implements OnInit {
             );
 
             this.uploadImageUserOptions = {
-                url: this.file.getUploadUserImageUrl(this.me.myUserName)
+                url: this.file.getUploadUserImageUrl(this.me.userName)
             }
 
             this.userImage$.subscribe(
@@ -176,7 +176,7 @@ export class SignComponent implements OnInit {
             let infoField: FieldValidationRequest = {
                 field: field,
                 value: value,
-                userName: this.me.myUserName
+                userName: this.me.userName
             };
             this.sign.validateField(infoField)
                 .subscribe(
@@ -351,11 +351,11 @@ export class SignComponent implements OnInit {
     }
 
     private setMeUserImage(userImage: UserFile): void {
-        this.me.myUserImage = userImage;   
+        this.me.userImage = userImage;   
     }
 
     getUserImageUrl() {
-        return this.sanitizer.bypassSecurityTrustResourceUrl(`data:${this.me.myUserImageMimeType}; base64,${this.me.myUserImageContent}`);
+        return this.sanitizer.bypassSecurityTrustResourceUrl(`data:${this.me.userImageMimeType}; base64,${this.me.userImageContent}`);
     }
 
     isSignInState(): boolean{

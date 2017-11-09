@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { ConnectionService } from './../../services/connection.service';
 
 
-import { IRoom, Room } from './room';
+import { IRoomHistory, RoomHistory } from './history.types';
 
 const ROOMS_HISTORY_URI ="/{userName}/roomshistory";
 
@@ -15,14 +15,14 @@ export class HistoryService {
 
     constructor(private connection: ConnectionService, private http: Http){}
     
-    getRoomsHistory (userName: string): Observable<Room []>{
+    getRoomsHistory (userName: string): Observable<RoomHistory []>{
         console.log(`getRoomsHistory of:  ${userName}`);
         return this.http.get(this.getRoomsHistoryUrl(userName))
         .map((response : Response) => {
             console.log('response: ', response);
-            let rooms: IRoom []= response.json();
+            let rooms: IRoomHistory [] = response.json();
             console.log('rooms: ', rooms);
-            return rooms.map(room => new Room(room));
+            return rooms.map(room => new RoomHistory(room));
         })
         .catch((error: any) => {
            return  Observable.throw(error);
@@ -36,6 +36,14 @@ export class HistoryService {
         console.log(roomsHistoryUrl);
         return roomsHistoryUrl;
     }
-    
+
+    destroy(){
+        
+        this.exit();
+    }
+        
+    private exit(): void {
+        
+    }
     
 }
