@@ -147,7 +147,6 @@ export class WaitingRoomService {
         this.destroy(user);
         this.eeThereIsAnAvailableRoomLess.unsubscribe();
         this.subscription.unsubscribe();
-        this.stompClient.
         this.eeThereIsANewRoom.unsubscribe(); //*
     }
 
