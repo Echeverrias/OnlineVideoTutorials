@@ -1,0 +1,50 @@
+.ovt-pdfLoader{
+    padding: 0.5em;
+    background:#F1F1F1;
+    height:100%;
+    display:block;
+}
+
+
+.ovt-files-list{
+    border: solid;
+    overflow-y: scroll;
+    height: 90%;
+}
+
+.ovt-pdfLoader ul{
+    list-style: none;
+    margin: 0;
+    margin-left: 0.5em;
+    padding: 0;
+}
+
+.ovt-pdfLoader ul li{
+   margin-top: 0.5em;
+   margin-bottom: 0.5em;
+}
+
+li span.ovt-pdf-file:hover{
+     cursor: pointer;
+     background: #FFEB3B;
+     font-weight: bold;
+}
+
+
+.ovt-download-btn{
+    margin-right: 0.5em;
+    border: none;
+    background: none;
+}
+
+.ovt-download-btn:hover{
+    cursor: pointer;
+} 
+
+.ovt-download-link::before{
+    content: url("app/components/room/gadgetsContainer/pdfLoader/img/download-file-icon-off.png");
+}
+
+.ovt-download-link:hover::before{
+    content: url("app/components/room/gadgetsContainer/pdfLoader/img/download-file-icon-on.png");
+}

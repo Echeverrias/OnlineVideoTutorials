@@ -21,24 +21,31 @@ public class WebSocketConfig implements WebSocketConfigurer {
      */
     private final String ATTRIBUTE_NAME_MESSAGE_ID = "id";
     
+    /**
+     * Name of the message payload attribute that has 
+     * the information.
+     */
+    private final String ATTRIBUTE_NAME_MESSAGE_PAYLOAD = "payload";
+    
+
     @Bean
     public OnlineVideoTutorialsHandler onlineVideoTutorialsHandler() {
-        return new OnlineVideoTutorialsHandler(ATTRIBUTE_NAME_MESSAGE_ID);
+        return new OnlineVideoTutorialsHandler(ATTRIBUTE_NAME_MESSAGE_ID, ATTRIBUTE_NAME_MESSAGE_PAYLOAD);
     }
 
     @Bean
     public LoginHandler loginHandler() {
-        return new LoginHandler(onlineVideoTutorialsHandler());
+        return new LoginHandler(ATTRIBUTE_NAME_MESSAGE_ID, ATTRIBUTE_NAME_MESSAGE_PAYLOAD, onlineVideoTutorialsHandler());
     }
 
     @Bean
     public WaitingRoomHandler waitingRoomHandler() {
-        return new WaitingRoomHandler(onlineVideoTutorialsHandler());
+        return new WaitingRoomHandler(ATTRIBUTE_NAME_MESSAGE_ID, ATTRIBUTE_NAME_MESSAGE_PAYLOAD, onlineVideoTutorialsHandler());
     }
 
     @Bean
     public RoomHandler roomHandler() {
-        return new RoomHandler(onlineVideoTutorialsHandler());
+        return new RoomHandler(ATTRIBUTE_NAME_MESSAGE_ID, ATTRIBUTE_NAME_MESSAGE_PAYLOAD, onlineVideoTutorialsHandler());
     }
 
     @Override

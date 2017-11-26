@@ -40,21 +40,17 @@ import org.jaea.onlinevideotutorials.domain.debug.DebugFactory;
 */
 public class WaitingRoomHandler extends TextMessageWebSocketHandler {
     /**
-     * Valid values of the message payload 'id' attribute which tell 
+     * Valid values of the message payload 'id' attribute from the client, which tell 
      * the handler how handle the message.
      */
-    private static final String ID_CLOSE_TAB = "closeTab";
+    public static final String ID_ENTER_WAITING_ROOM = "enterWaitingRoom";
+    public static final String ID_EXIT_WAITING_ROOM = "exitWaitingRoom";
+    private String [] ids = { ID_ENTER_WAITING_ROOM, ID_EXIT_WAITING_ROOM}; 
 
-    public static final String ID_ENTER = "enterWaitingRoom";
-    public static final String ID_EXIT = "exitWaitingRoom";
-    private String [] ids = { ID_ENTER, ID_EXIT}; 
+    private static final String PAYLOAD_ATTRIBUTE_USER_NAME = "userName";
+    private static final String PAYLOAD_ATTRIBUTE_USER_TYPE = "userType";
 
-    /**
-     * Name of the message payload attribute that tells 
-     * the handler how handle the message.
-     */
-    protected String attributeNameOfTheMessageId;
-
+    
     @Autowired
     private RoomsManager roomsManager;
 
@@ -62,19 +58,19 @@ public class WaitingRoomHandler extends TextMessageWebSocketHandler {
     private UserSessionsRegistry usersRegistry;
 
     private final Logger log = LoggerFactory.getLogger(WaitingRoomHandler.class);
-    private Gson gson = new GsonBuilder().create();
+    //private Gson gson = new GsonBuilder().create();
 
 
 
-    public WaitingRoomHandler(String attributeNameOfTheMessageId){
-        this.attributeNameOfTheMessageId = attributeNameOfTheMessageId;
+    public WaitingRoomHandler(String attributeNameOfTheMessageId, String attributeNameOfTheMessagePayload){
+        super(attributeNameOfTheMessageId, attributeNameOfTheMessagePayload);
+        //this.attributeNameOfTheMessageId = attributeNameOfTheMessageId;
     }
 
-    public WaitingRoomHandler(GeneralHandler generalHandler){
-        log.info("WaitingRoomHandler created");
-        
-        this.attributeNameOfTheMessageId = generalHandler.getAttributeNameOfTheMessageId();
+    public  WaitingRoomHandler(String attributeNameOfTheMessageId, String attributeNameOfTheMessagePayload, GeneralHandler generalHandler){
+        super(attributeNameOfTheMessageId, attributeNameOfTheMessagePayload);
         this.signIn(generalHandler);
+        log.info("WaitingRoomHandler created");
     }
 
     
@@ -87,18 +83,27 @@ public class WaitingRoomHandler extends TextMessageWebSocketHandler {
     
     @Override
     public synchronized void handleTextMessage(WebSocketSession session, TextMessage message) throws  Exception{
+        /** 
         JsonObject jsonMessage = this.gson.fromJson(message.getPayload(), JsonObject.class);
         String id = jsonMessage.get(this.attributeNameOfTheMessageId).getAsString(); 
         String userName = jsonMessage.get("userName").getAsString(); 
         String userType = jsonMessage.get("userType").getAsString();
-        
-        this.log.info("<- waitingRoom - id: {}, message: {}", session.getId(), jsonMessage.toString());
+        */
+        String id = this.getTextMessageId(message); 
+        String userName = this.getTextMessagePayLoadData(PAYLOAD_ATTRIBUTE_USER_NAME, message); 
+        String userType = null; 
+        this.log.info("WaitingRoomHandler.handleTextMessage"); 
+        this.log.info("------------------------------------------------------------");
+        this.log.info("<- The message '{}' from {} has arrived", id, session.getId());
+        this.log.info("------------------------------------------------------------");
+        this.log.info("<- waitingRoom - id: {}, message: {} {}", session.getId(), userName);
         
         switch (id){
-            case ID_ENTER:
+            case ID_ENTER_WAITING_ROOM:
+                userType = this.getTextMessagePayLoadData(PAYLOAD_ATTRIBUTE_USER_TYPE, message); 
                 this.enter(session, userName, userType);
                 break;
-            case ID_EXIT : case ID_CLOSE_TAB  :
+            case ID_EXIT_WAITING_ROOM : case ID_CLOSE_TAB  :
                 this.exit(session, userName);
                 break;    
             default:log.info("id {} doesn't found", id);
@@ -160,10 +165,6 @@ public class WaitingRoomHandler extends TextMessageWebSocketHandler {
         this.log.info("/ $$$$$ WaitingRoomHandler.exit");
     }
     
-    public String getAttributeNameOfTheMessageId(){
-        return this.attributeNameOfTheMessageId;
-    }
-
     public List<String> getTextMessageIdsICanHandle(){
         List<String> idsList = new ArrayList<>(Arrays.asList(this.ids));
         return idsList;   

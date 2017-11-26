@@ -17,5 +17,5 @@ public interface GeneralHandler {
     
     public void attach(String idMessage, TextMessageWebSocketHandler handler);
 
-    public String getAttributeNameOfTheMessageId();
+
 }

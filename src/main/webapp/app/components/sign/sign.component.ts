@@ -14,7 +14,7 @@ import { SignService } from './sign.service';
 import { UserService } from '../../services/user.service';
 import { FileService } from '../../services/file.service';
 
-import { User } from '../../models/user';
+import { IUser, User } from '../../models/user';
 import { UserFile } from '../../models/types';
 import { FormUser } from './sign.types';
 import { FieldValidationRequest } from './sign.types';
@@ -86,7 +86,7 @@ export class SignComponent implements OnInit {
         
         if (this.state === SignStates.SignIn){
 
-            this.sign.init();
+            this.init();
             this.initStorage();
             
                 this.signInForm = this.formBuilder.group({
@@ -135,6 +135,17 @@ export class SignComponent implements OnInit {
                 )
         }    
 
+   }
+
+   private init(){
+    if (this.me.amILogged()) {
+        this.sign.logout(this.me.getMe());
+        this.me.deleteMe();
+    }
+
+     // Reset login status
+        
+        //localStorage.removeItem('ovtUser');
    }
 
    private initStorage(){
@@ -239,10 +250,11 @@ export class SignComponent implements OnInit {
         console.log(this.signUpForm.controls);
 
         this.sign.registerNewUser(this.signUpForm.value).subscribe(
-            (success: boolean): void => {
-                if (success) {
-                    this.authorizeUser(this.signUpForm.value);
+            (user: IUser): void => {
+                if (this.registerUser(user)) {
+                   this.authorizeUser(this.signUpForm.value);
                     this.router.navigate(['/rooms']);
+                    this.sign.login(this.me.getMe());
                 }
             }, error => {
                 console.log("ERROR");
@@ -260,8 +272,8 @@ export class SignComponent implements OnInit {
         console.log(this.editPerfilForm.controls);
 
         this.sign.modifyPerfilUser(this.editPerfilForm.value).subscribe(
-            (success: boolean): void => {
-                if (success) {
+            (user: IUser): void => {
+                if (this.registerUser(user)) {
                     this.router.navigate(['/rooms']);
                 }
             }, error => {
@@ -280,16 +292,17 @@ export class SignComponent implements OnInit {
         
         
         this.sign.validateUser(this.signInForm.value).subscribe(
-          (validUser: User): void => {
+          (user: IUser): void => {
         
                 console.log("VALID USER");
-                console.log(validUser);
+                console.log(user);
                 console.log(this.signInForm);
                 console.log(this.signInForm.controls);
-
-               this.authorizeUser(this.signInForm.value);
-               this.router.navigate(['/rooms']);
-
+               if (this.registerUser(user)){ 
+                this.authorizeUser(this.signInForm.value);
+                this.router.navigate(['/rooms']);
+                this.sign.login(this.me.getMe());
+               }
             },
             error => {
                 alert("El nombre de usuario o la contraseña son incorrectos");
@@ -304,6 +317,16 @@ export class SignComponent implements OnInit {
         console.log(`/ sign.doSignIn ${new Date().toLocaleTimeString()}`);
         console.log("");
                 
+    }
+
+    private registerUser(user: IUser): boolean{
+        if (user){ 
+            this.me.registerMe(user); 
+            return true;
+        }
+        else{
+            return false;
+        }    
     }
 
     onReturnToSignIn(){

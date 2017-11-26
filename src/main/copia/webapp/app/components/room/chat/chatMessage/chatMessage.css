@@ -1,0 +1,39 @@
+/* 
+    Created on : 06-dic-2015, 10:54:14
+    Author     : juanan
+*/
+
+
+.ovt-chatmessage{
+  padding:0.2em 0;
+  width: 100%;
+ 
+}
+
+
+.sender, .message{
+  font-size: 1.3em;
+  
+ }
+
+
+.sender{
+  float:left;
+   margin-right: 0.5em;
+   padding: 0em 0.5em;
+   border-radius: 1em;
+   font-weight: bold;
+}
+
+.message{
+   word-break: break-all;
+   word-wrap: break-word;
+   
+}
+
+.sendMessage{
+  z-index: 100;
+}
+
+
+

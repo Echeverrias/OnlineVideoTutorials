@@ -1,0 +1,8 @@
+{
+  "resolution": "main",
+  "tree": {
+    "src": "/home/juanan/Proyecto/OnlineVideoTutorials/src/main/webapp/app/app.d.ts",
+    "raw": "file:./app/app.d.ts",
+    "typings": "/home/juanan/Proyecto/OnlineVideoTutorials/src/main/webapp/app/app.d.ts"
+  }
+}

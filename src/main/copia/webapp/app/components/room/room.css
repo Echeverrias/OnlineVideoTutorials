@@ -1,0 +1,253 @@
+/* 
+    Created on : 06-dic-2015, 10:54:14
+    Author     : Juan Antonio Echeverrías Aranda
+*/
+
+#ovt-room{
+    height: auto;
+    min-height: 100%;
+    width: auto;
+    min-width: 1024px;
+    display:-webkit-flex;
+    -webkit-flex-direction: row;
+    display:flex;
+    flex-direction: row;
+    z-index:95;
+    background: #002400;
+    background: -webkit-linear-gradient(#002400 0%, #005700 0%, #008a00 0%, #83c783 100%, #b4ddb4 100%);
+    background: -o-linear-gradient(#002400 0%, #005700 0%, #008a00 0%, #83c783 100%, #b4ddb4 100%);
+    background: linear-gradient(#002400 0%, #005700 0%, #008a00 0%, #83c783 100%, #b4ddb4 100%);
+    position: relative;
+    
+}
+
+
+/* GadgetContainerComponent  */
+ovt-gadgets-container{
+  height:100%;
+  width: 28.45vw;
+  right: -28.45vw;
+  position: fixed;
+  display:block;
+  -moz-transition: all 1s;
+  -webkit-transition: all 1s;
+  -o-transition: all 1s;
+    z-index:100;
+}
+
+.showed{
+  right: 0%;
+}
+
+
+
+.main{
+
+   
+    -webkit-order: 1;
+    order: 1;
+
+    flex: 5 0 57em;
+    -webkit-flex: 5 0 57em;
+    min-width: 57em;
+
+
+  }
+
+.secundary{
+    
+   -webkit-order: 2;
+    order: 2;
+   
+    
+    display: -webkit-flex;
+    -webkit-flex-wrap: wrap;
+    -webkit-flex-direction: row;
+    -webkit-justify-content: space-around;
+    -webkit-align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    
+
+     flex: 2 0 22em;
+     -webkit-flex: 2 0 22em;
+     min-width: 22em;
+     height:100%;
+     min-height: 45em;
+     overflow-x: hidden;
+     overflow-y: auto;
+
+ }
+
+
+button[name=exitRoom] {
+    position:absolute;
+    bottom:0.5em;
+    right:1em;
+    box-shadow: -2px 2px 2px #299D29;
+    z-index:95;
+}  
+
+
+/*  div.main  */
+
+.dashboard{
+    width:100%;
+    margin: auto;
+    box-sizing: border-box;
+    padding: 0.5em 0 0.5em 0;
+
+    position:relative;
+    
+    display: -webkit-flex;
+    -webkit-flex-direction: row;
+    -webkit-flex-wrap: wrap;
+    -webkit-justify-content: space-around;
+    -webkit-align-items: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    
+
+    height: 80%;
+    min-height: 36em;
+}
+
+
+ovt-chat{
+    display:block;
+    box-sizing: border-box;
+    width:100%;
+    height: 20%;
+    min-height: 9em;
+
+}
+
+
+ovt-participant {
+    display: block;
+    width: 100%;
+}
+
+
+
+
+/* div.main div.dashoard */
+
+div.main ovt-participant{
+    max-height: 99%;
+}
+
+div.secundary ovt-participant{
+    max-width: 99%;
+}
+
+ovt-participant.main-participant {
+    width: 95%;
+    max-width: 97vh;
+}
+
+
+ovt-participant.minimized{
+
+    -webkit-flex: 0 1 28%;
+    -webkit-order: 1;
+    flex: 0 1 28%;
+    order: 1;
+    height: 31.5%;
+}
+
+
+div.ovt-file {
+    -webkit-flex: 0 3 619px;
+    -webkit-order: 2;
+    flex: 0 3 619px;
+    order: 2;
+    max-height: 99%;
+    height: 99%;
+    position: relative;
+    margin:0em;
+}
+
+div.ovt-file img.btn {
+    position: absolute;
+    top: 0.8em;
+    margin-left: -8%;
+    z-index:4;
+}
+
+div.ovt-file object{
+    height: 100%;
+    width: 100%;
+    border: 0.4em solid #1C1C1C;
+    background: #414141;
+}
+
+
+
+/* div.secundary */
+
+
+.secundary ovt-participant {
+    margin: 0.5em;
+    font-size: 0.8em;
+}
+
+@media screen and (max-width: 1210px){
+
+    ovt-participant.minimized{
+
+        -webkit-flex: 0 1 0%;
+        -webkit-order: 1;
+        flex: 0 1 0%;
+        order: 2;
+        height: auto;
+        position: absolute;
+        width: 20vw;
+        bottom: 0.5em;
+        left: 0.5em;
+        z-index:1;
+    }
+}
+
+@media screen and (max-width: 1024px){
+
+    ovt-gadgets-container{
+ 
+  width: 22em;
+  right: -22em;
+  
+    }
+
+    ovt-participant.minimized{
+
+        -webkit-flex: 0 1 0%;
+        -webkit-order: 1;
+        flex: 0 1 0%;
+        order: 2;
+        height: auto;
+        position: absolute;
+        width: 20vw;
+        bottom: 0.5em;
+        left: 0.5em;
+        z-index:1;
+    }
+}
+
+@media screen and (max-height: 590px){
+
+    ovt-participant.main-participant {
+        width: 95%;
+        max-width: 43em;
+    }
+
+}    
+
+
+
+

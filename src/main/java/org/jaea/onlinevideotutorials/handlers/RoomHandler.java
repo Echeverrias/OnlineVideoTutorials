@@ -29,6 +29,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+
 
 /**
  * 
@@ -54,12 +56,7 @@ public class RoomHandler extends TextMessageWebSocketHandler{
     public static final  String ID_AVAILABLE_ROOM_LESS = "thereIsAnAvailableRoomLess";
     private String [] ids = {ID_JOIN_ROOM, ID_RECEIVE_VIDEO_FROM, ID_RECEIVE_ADDRESS, ID_EXIT_ROOM}; 
     
-    
-    /**
-     * Name of the message payload attribute that tells 
-     * the handler how handle the message.
-     */
-    protected String attributeNameOfTheMessageId;
+   
 
     private final Logger log = LoggerFactory.getLogger(RoomHandler.class);
     private Gson gson = new GsonBuilder().create();
@@ -70,15 +67,17 @@ public class RoomHandler extends TextMessageWebSocketHandler{
      @Autowired
     private UserSessionsRegistry usersRegistry;
 
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
 
 
-    public RoomHandler(String attributeNameOfTheMessageId){
-        this.attributeNameOfTheMessageId = attributeNameOfTheMessageId;
+
+    public RoomHandler(String attributeNameOfTheMessageId, String attributeNameOfTheMessagePayload){
+        super(attributeNameOfTheMessageId, attributeNameOfTheMessagePayload);
     }
 
-    public RoomHandler(GeneralHandler generalHandler){
-        log.info("RoomHandler created");
-        this.attributeNameOfTheMessageId = generalHandler.getAttributeNameOfTheMessageId();
+    public RoomHandler(String attributeNameOfTheMessageId, String attributeNameOfTheMessagePayload, GeneralHandler generalHandler){
+        super(attributeNameOfTheMessageId, attributeNameOfTheMessagePayload);
         this.signIn(generalHandler);
     }
 
@@ -93,7 +92,7 @@ public class RoomHandler extends TextMessageWebSocketHandler{
     @Override
     public synchronized void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         JsonObject jsonMessage = this.gson.fromJson(message.getPayload(), JsonObject.class);
-        String id = jsonMessage.get(this.attributeNameOfTheMessageId).getAsString();                
+        String id = this.getTextMessageId(message);              
         switch (id){
             case ID_JOIN_ROOM:
                 this.joinRoom(session, jsonMessage);
@@ -334,7 +333,8 @@ public class RoomHandler extends TextMessageWebSocketHandler{
             this.log.info("** The participant {} has been got out from the room **", user.getUserName());
             
             if (!this.roomsManager.existRoom(roomId)){
-                this.makeKnowThereIsAnAvailableRoomLess(roomId);
+                this.simpMessagingTemplate.convertAndSend("/eliminated_room", room);
+                //this.makeKnowThereIsAnAvailableRoomLess(roomId);
             }
             else{
                 this.makeKnowAParticipantHasLeftTheRoom(user, roomId);
@@ -387,9 +387,6 @@ public class RoomHandler extends TextMessageWebSocketHandler{
         log.info("{} RoomHandler.makeKnowAParticipantHasLeftTheRoom - the messages have been sent {}", Info.FINISH_SYMBOL, Hour.getTime());
     }
 
-    public String getAttributeNameOfTheMessageId(){
-        return this.attributeNameOfTheMessageId;
-    }
 
     public List<String> getTextMessageIdsICanHandle(){
         List<String> idsList = new ArrayList<>(Arrays.asList(this.ids));

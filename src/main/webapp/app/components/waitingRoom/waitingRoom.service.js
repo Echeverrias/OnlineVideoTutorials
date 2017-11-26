@@ -15,29 +15,47 @@ var Subject_1 = require("rxjs/Subject");
 var connection_service_1 = require("./../../services/connection.service");
 var handler_service_1 = require("./../../services/handler.service");
 var room_1 = require("./../../models/room");
+//type RoomMessage = { roomName: string } & IdMessage;
+//type AvailableRoomsMessage = { availableRooms: Room[] } & IdMessage;
 var CREATE_ROOM_ENDPOINT = '/create_room';
-var SUBSCRIPTION_ENDPOINT = '/created_room';
+var SUBSCRIPTION_CREATED_ROOM_ENDPOINT = '/created_room';
+var SUBSCRIPTION_ELIMINATED_ROOM_ENDPOINT = '/eliminated_room';
+// Messages to the server
+var WS_MSG_ID_ENTER_WAITING_ROOM = 'enterWaitingRoom';
+var WS_MSG_ID_EXIT_WAITING_ROOM = 'exitWaitingRoom';
+/* //*
+// Messages from the server
+const WS_MSG_ID_ROOM_LESS: string = 'thereIsAnAvailableRoomLess';
+const WS_MSG_ID_NEW_ROOM: string = 'thereIsANewRoom';
+*/
 var WaitingRoomService = (function () {
+    /* /*
+    private eeThereIsAnAvailableRoomLess: EventEmitter<Message>;
+    */
     function WaitingRoomService(http, connection, handler) {
         this.http = http;
         this.connection = connection;
         this.handler = handler;
-        this.shippingAddress = "" + SUBSCRIPTION_ENDPOINT;
         console.log("*WaitingRoomService constructor");
         this.availableRooms$ = new Subject_1.Subject();
+        this.availableRooms = [];
     }
     WaitingRoomService.prototype.initAsStudent = function (user) {
-        var _this = this;
         console.log("WRService.inisAsStudent: ", user);
-        this.eeThereIsAnAvailableRoomLess = new core_1.EventEmitter()
-            .subscribe(function (data) { _this.onRemoveAvailableRoom(data.payload); });
-        this.handler.attach('thereIsunAvailableRoomLess', this.eeThereIsAnAvailableRoomLess);
-        //* sustituido po suscripcion stomp
-        this.eeThereIsANewRoom = new core_1.EventEmitter()
-            .subscribe(function (data) { _this.onAddAvailableRoom(data.payload); });
-        this.handler.attach('thereIsANewRoom', this.eeThereIsANewRoom);
+        /* //*
+        // sustituido po suscripcion stomp
+        this.eeThereIsAnAvailableRoomLess = new EventEmitter<Message>()
+            .subscribe((data: WSMessage): void => { this.onRemoveAvailableRoom2(data.payload) });
+        this.handler.attach(WS_MSG_ID_ROOM_LESS, this.eeThereIsAnAvailableRoomLess);
+    
+       
+        this.eeThereIsANewRoom = new EventEmitter<Message>()
+            .subscribe((data: WSMessage): void => { this.onAddAvailableRoom(data.payload) });
+       this.handler.attach(WS_MSG_ID_NEW_ROOM, this.eeThereIsANewRoom);
+       */
         this.stompClient = this.connection.stompOverWsClient;
-        this.subscription = this.stompClient.subscribe(this.shippingAddress, this.getOnSubscription());
+        this.createdRoomSubscription = this.stompClient.subscribe(SUBSCRIPTION_CREATED_ROOM_ENDPOINT, this.getOnCreatedRoomSubscription());
+        this.eliminatedRoomSubscription = this.stompClient.subscribe(SUBSCRIPTION_ELIMINATED_ROOM_ENDPOINT, this.getOnEliminatedRoomSubscription());
         this.init(user);
     };
     WaitingRoomService.prototype.initAsTutor = function (user) {
@@ -54,17 +72,28 @@ var WaitingRoomService = (function () {
     WaitingRoomService.prototype.enter = function (user) {
         console.log("");
         console.log("* <- WaitingRoomService.lookingForRooms " + new Date().toLocaleTimeString());
-        var jsonMessage = Object.assign({ id: "enterWaitingRoom" }, user);
+        /**
+        let jsonMessage: UserInfoMessage = Object.assign({ id: "enterWaitingRoom" }, user);
         console.log(jsonMessage);
         this.connection.sendMessage(jsonMessage);
+        */
+        this.connection.sendWSMessage(WS_MSG_ID_ENTER_WAITING_ROOM, user);
         console.log("/ WaitingRoomService.lookingForRooms " + new Date().toLocaleTimeString());
         console.log("");
     };
-    WaitingRoomService.prototype.getOnSubscription = function () {
+    WaitingRoomService.prototype.getOnCreatedRoomSubscription = function () {
         var _this = this;
         var onSubscription = function (message) {
             console.log("Msg received: " + message);
             _this.onAddAvailableRoom(JSON.parse(message.body));
+        };
+        return onSubscription;
+    };
+    WaitingRoomService.prototype.getOnEliminatedRoomSubscription = function () {
+        var _this = this;
+        var onSubscription = function (message) {
+            console.log("Msg received: " + message);
+            _this.onRemoveAvailableRoom(JSON.parse(message.body));
         };
         return onSubscription;
     };
@@ -91,7 +120,18 @@ var WaitingRoomService = (function () {
         console.log("");
     };
     ;
-    WaitingRoomService.prototype.onRemoveAvailableRoom = function (roomId) {
+    WaitingRoomService.prototype.onRemoveAvailableRoom = function (room) {
+        console.log("");
+        console.log("* <- WaitingRoomService.onRemoveavailableRoom : " + room.id + " " + new Date().toLocaleTimeString());
+        var roomId = room.id;
+        var i = this.availableRooms.findIndex(function (r) { return r.id == roomId; });
+        this.availableRooms.splice(i, 1);
+        console.log("this.availableRooms: " + this.availableRooms);
+        console.log("/ WaitingRoomService.onRemoveavailableRoom : " + roomId + " " + new Date().toLocaleTimeString());
+        console.log("");
+    };
+    ;
+    WaitingRoomService.prototype.onRemoveAvailableRoom2 = function (roomId) {
         console.log("");
         console.log("* <- WaitingRoomService.onRemoveavailableRoom : " + roomId + " " + new Date().toLocaleTimeString());
         var i = this.availableRooms.findIndex(function (r) { return r.id == roomId; });
@@ -115,9 +155,11 @@ var WaitingRoomService = (function () {
     WaitingRoomService.prototype.destroyAsStudent = function (user) {
         console.log("WRService.destroyAsStudent: ", user);
         this.destroy(user);
+        this.createdRoomSubscription.unsubscribe();
+        this.eliminatedRoomSubscription.unsubscribe();
+        /** //*
         this.eeThereIsAnAvailableRoomLess.unsubscribe();
-        this.subscription.unsubscribe();
-        this.eeThereIsANewRoom.unsubscribe(); //*
+        this.eeThereIsANewRoom.unsubscribe();  */
     };
     WaitingRoomService.prototype.destroyAsTutor = function (user) {
         console.log("WRService.destroyAsTutor: ", user);
@@ -126,13 +168,17 @@ var WaitingRoomService = (function () {
     WaitingRoomService.prototype.destroy = function (user) {
         this.exit(user);
         this.eeAvailableRooms.unsubscribe();
+        this.availableRooms.length = 0;
     };
     WaitingRoomService.prototype.exit = function (user) {
         console.log("");
         console.log("* <- WaitingRoomService.exit " + new Date().toLocaleTimeString());
-        var jsonMessage = Object.assign({ id: "exitWaitingRoom" }, user);
+        /*
+        let jsonMessage: UserInfoMessage = Object.assign({id: "exitWaitingRoom"}, user);
         console.log('user exit message: ', jsonMessage);
         this.connection.sendMessage(jsonMessage);
+        */
+        this.connection.sendWSMessage(WS_MSG_ID_EXIT_WAITING_ROOM, user);
         console.log("/ WaitingRoomService.exit " + new Date().toLocaleTimeString());
         console.log("");
     };

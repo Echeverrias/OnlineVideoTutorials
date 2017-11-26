@@ -111,6 +111,19 @@ var ConnectionService = (function () {
             console.log("----------> The message " + jsonMessage.id + " has been send");
         }
     };
+    ConnectionService.prototype.sendWSMessage = function (id, payload) {
+        var _this = this;
+        //console.log(`---------->  ${jsonMessage.id} ${new Date().toLocaleTimeString()}`);
+        //console.log(`-> message: ${JSON.stringify(jsonMessage)}`);
+        var message = { id: id, payload: payload };
+        var stringifyMessage = JSON.stringify(message);
+        // while(this._ws.readyState === this._ws.CONNECTING) {}
+        this.waitForConnection(function () { return _this._ws.send(stringifyMessage); });
+        console.log(stringifyMessage);
+        if (!message.id.includes('receiveAddress')) {
+            console.log("----------> The message " + message.id + " has been send");
+        }
+    };
     ConnectionService.prototype.waitForConnection = function (callback) {
         if (this._ws.readyState === this._ws.OPEN) {
             console.log(typeof callback);

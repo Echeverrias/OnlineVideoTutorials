@@ -185,9 +185,9 @@
                  </configuration>
               
             <executions>
-
-             <!--
-                      <execution>
+ <!--   
+             
+                  <execution>
 
                         <id>exec-bower-install</id>
                         <phase>generate-sources</phase>
@@ -217,8 +217,8 @@
                             <basedir>src/main/webapp</basedir>
                         </configuration>
                         </execution>
-
 -->
+
                  <execution>
 
                         <id>exec-tsc</id>
@@ -244,13 +244,13 @@
 		 	<configuration>
 
 					<filesets>
-						<fileset>
+				<!--		<fileset>
 							<directory>src/main/webapp/bower_components</directory>
                         </fileset>
                         <fileset>
                             <directory>src/main/webapp/node_modules</directory>
                         </fileset> 
-					</filesets>
+				-->	</filesets>
                                         
 				</configuration> 
 

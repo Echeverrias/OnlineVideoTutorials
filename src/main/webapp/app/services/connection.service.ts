@@ -92,6 +92,20 @@ export class ConnectionService {
         }
     }
 
+    sendWSMessage(id: string, payload:any){
+        //console.log(`---------->  ${jsonMessage.id} ${new Date().toLocaleTimeString()}`);
+        //console.log(`-> message: ${JSON.stringify(jsonMessage)}`);
+        let message = {id: id, payload: payload};    
+        let stringifyMessage = JSON.stringify(message);
+        // while(this._ws.readyState === this._ws.CONNECTING) {}
+        this.waitForConnection(() => this._ws.send(stringifyMessage));
+        console.log(stringifyMessage);
+        if (!message.id.includes('receiveAddress')){ //#
+            console.log( `----------> The message ${message.id} has been send`);
+        }
+    }
+
+
     private waitForConnection(callback: any){
         if (this._ws.readyState === this._ws.OPEN){
             console.log(typeof callback);

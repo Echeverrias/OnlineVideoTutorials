@@ -52,7 +52,9 @@ public class UserSessionsRegistry {
         log.info("{} UserRegistry.registerUser: {}, {}", Info.START_SYMBOL, user.getUserName(), Hour.getTime());
         
         this.usersByUserName.put(user.getUserName(), user);
-       
+        log.info("-------------------------------------------------------------------------");
+        log.info("");
+        this.log.info("THe user {} has been added to usersByUserName",user.getUserName());
         Info.logInfoFinish("UserRegistry.addUser");
     }
 
@@ -61,7 +63,7 @@ public class UserSessionsRegistry {
         
         UserSession user = this.getUserByUserName(userName);
         if (user == null) {
-            log.error("El usuario {} no se encuentra en el registro", userName);
+            log.error("!!! El usuario {} no se encuentra en el registro", userName);
             return false;
         }
         user.attachSession(session);
@@ -76,12 +78,14 @@ public class UserSessionsRegistry {
         log.info("{} UserRegistry.registerUserSession: {}, {}", Info.START_SYMBOL, user.getUserName(), Hour.getTime());
         
         if ((user == null) || (user.getSession() == null)){
-            log.error("La sesión del ususario {} es nula", user.getUserName());
+            log.error("!!! La sesión del ususario {} es nula", user.getUserName());
             return false;
         }
 
         this.usersBySessionId.put(user.getSession().getId(), user);
-        log.info(" add to usersBySessionId");
+        log.info("-------------------------------------------------------------------------");
+        log.info("");
+        log.info(" The user {} with session id {} has been addes to usersBySessionId",user.getName(), user.getSession().getId());
        
         Info.logInfoFinish("UserRegistry.registerUserSession");
         return true;
@@ -100,7 +104,14 @@ public class UserSessionsRegistry {
         UserSession user = this.usersBySessionId.get(sessionId);
         this.log.info("this.usersBySessionId.size(): {}", this.usersBySessionId.size());
         if (user == null) {
-            this.log.error("!!! No se ha encontrado al usuario");
+            this.log.error("!!! No se ha encontrado al usuario con id de sesion  {}", sessionId);
+            this.log.info("Los usuarios registrados son: ");
+            this.usersBySessionId.forEach((k,v)->{
+                this.log.info("{} - {}",k,v.getUserName());
+            });
+            this.usersByUserName.forEach((k,v)->{
+                this.log.info("{} - {}",k,v.getUserName());
+            });
         }
         else{ //####
             this.log.info("UserName: {}", user.getUserName());

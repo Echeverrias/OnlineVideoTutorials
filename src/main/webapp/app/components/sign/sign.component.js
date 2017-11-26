@@ -67,7 +67,7 @@ var SignComponent = (function () {
         console.log(this.me);
         console.log(this.me.getMe());
         if (this.state === SignStates.SignIn) {
-            this.sign.init();
+            this.init();
             this.initStorage();
             this.signInForm = this.formBuilder.group({
                 userName: [localStorage.getItem('ovtLastUserName'), forms_1.Validators.required],
@@ -100,6 +100,14 @@ var SignComponent = (function () {
             };
             this.userImage$.subscribe(function (userImage) { _this.setMeUserImage(userImage), console.log(userImage); }, function (error) { return console.log(error); }, function () { return console.log('complete'); });
         }
+    };
+    SignComponent.prototype.init = function () {
+        if (this.me.amILogged()) {
+            this.sign.logout(this.me.getMe());
+            this.me.deleteMe();
+        }
+        // Reset login status
+        //localStorage.removeItem('ovtUser');
     };
     SignComponent.prototype.initStorage = function () {
         sessionStorage.setItem(localStorage.getItem('ovtLastUserName'), undefined),
@@ -192,10 +200,11 @@ var SignComponent = (function () {
         var _this = this;
         console.log(this.signUpForm);
         console.log(this.signUpForm.controls);
-        this.sign.registerNewUser(this.signUpForm.value).subscribe(function (success) {
-            if (success) {
+        this.sign.registerNewUser(this.signUpForm.value).subscribe(function (user) {
+            if (_this.registerUser(user)) {
                 _this.authorizeUser(_this.signUpForm.value);
                 _this.router.navigate(['/rooms']);
+                _this.sign.login(_this.me.getMe());
             }
         }, function (error) {
             console.log("ERROR");
@@ -207,8 +216,8 @@ var SignComponent = (function () {
         var _this = this;
         console.log(this.editPerfilForm);
         console.log(this.editPerfilForm.controls);
-        this.sign.modifyPerfilUser(this.editPerfilForm.value).subscribe(function (success) {
-            if (success) {
+        this.sign.modifyPerfilUser(this.editPerfilForm.value).subscribe(function (user) {
+            if (_this.registerUser(user)) {
                 _this.router.navigate(['/rooms']);
             }
         }, function (error) {
@@ -221,13 +230,16 @@ var SignComponent = (function () {
         var _this = this;
         console.log("");
         console.log("* Sign.doSignIn " + new Date().toLocaleTimeString());
-        this.sign.validateUser(this.signInForm.value).subscribe(function (validUser) {
+        this.sign.validateUser(this.signInForm.value).subscribe(function (user) {
             console.log("VALID USER");
-            console.log(validUser);
+            console.log(user);
             console.log(_this.signInForm);
             console.log(_this.signInForm.controls);
-            _this.authorizeUser(_this.signInForm.value);
-            _this.router.navigate(['/rooms']);
+            if (_this.registerUser(user)) {
+                _this.authorizeUser(_this.signInForm.value);
+                _this.router.navigate(['/rooms']);
+                _this.sign.login(_this.me.getMe());
+            }
         }, function (error) {
             alert("El nombre de usuario o la contraseña son incorrectos");
             console.log("ERROR");
@@ -237,6 +249,15 @@ var SignComponent = (function () {
         }, function () { });
         console.log("/ sign.doSignIn " + new Date().toLocaleTimeString());
         console.log("");
+    };
+    SignComponent.prototype.registerUser = function (user) {
+        if (user) {
+            this.me.registerMe(user);
+            return true;
+        }
+        else {
+            return false;
+        }
     };
     SignComponent.prototype.onReturnToSignIn = function () {
         this.state = SignStates.SignIn;

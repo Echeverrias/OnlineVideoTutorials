@@ -1,0 +1,197 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 10-mar-2016, 19:08:06
+    Author     : juanan
+*/
+
+  body, html {
+	 
+    height: 100%;
+    width:100%;
+    margin: 0px;
+    padding: 0px;
+    background:#F7D31D;
+    background: #002400;
+    background: -webkit-linear-gradient(#002400 0%, #005700 0%, #008a00 0%, #83c783 100%, #b4ddb4 100%);
+    background: -o-linear-gradient(#002400 0%, #005700 0%, #008a00 0%, #83c783 100%, #b4ddb4 100%);
+    background: linear-gradient(#002400 0%, #005700 0%, #008a00 0%, #83c783 100%, #b4ddb4 100%);
+    
+    
+}
+
+header, footer, figure {
+  display: block;
+}
+
+
+.wrapper{
+   
+   width: 80%;
+   min-height: 100%;     
+   height: 100%;     
+   margin: 0 auto;
+   overflow: hidden;
+   display:block;
+   clear:both;
+  }
+
+footer {
+    
+   display: block;
+   margin: 4px;
+   padding: 5px;
+   min-height: 100px;
+   border: 1px solid #eebb55;
+   border-radius: 7pt;
+   background: #ffeebb;
+   
+     
+}
+
+footer p {
+  margin: auto 0.5%;
+}
+
+.ovt-selectable:hover{
+  cursor: pointer;
+}
+
+.ovt-none-list-syle{
+  list-style:none;
+}
+
+.ovt-container{
+  padding: 3% 3%;
+  
+}
+
+.ovt-container-col{
+  padding: 3% 3%;
+  display:flex;
+  flex-direction:column;
+}
+
+.ovt-container-row{
+  padding: 3% 3%;
+  display:flex;
+  flex-direction:row;
+  
+}
+
+.ovt-btn{
+    color: #fff;  
+    width: auto;
+    font-weight: bold;
+    background-color: #0174DF;
+    margin: 0.5em auto 0.5em auto; 
+    cursor:pointer;
+    border-color: #7dc9e2;
+     
+}
+
+.ovt-btn:hover{
+    color: #fff;  
+    background-color: #013ADF;
+    border-color: 37B0D8;
+    box-shadow:  0 0 0 4px #dceefc;
+	
+}
+
+
+.ovt-header {
+	width:100%;
+  font-size: large;
+	line-height: 3em;
+	font-weight: bold;
+	color: #555;
+	text-align: center;
+	text-shadow: 0 1px white;
+	background: #f3f3f3;
+	border-bottom: 1px solid #cfcfcf;
+	border-radius: 3px 3px 0 0;
+	background-image: -webkit-linear-gradient(top, whiteffd, #eef2f5);
+	background-image: -moz-linear-gradient(top, whiteffd, #eef2f5);
+	background-image: -o-linear-gradient(top, whiteffd, #eef2f5);
+	background-image: linear-gradient(to bottom, whiteffd, #eef2f5);
+	-webkit-box-shadow: 0 1px whitesmoke;
+	box-shadow: 0 1px whitesmoke;
+  
+  
+}
+
+.ovt-subheader {
+  font-size: medium; ;
+}
+
+.ovt-clear {
+    clear:both;
+}
+
+.ovt-inline {
+  display: inline-block;
+  width: auto;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.ovt-separator{
+  border-color: grey;
+}
+
+.ovt-full-name{
+  text-transform: capitalize;
+}
+
+
+.join {
+    
+	position: relative;
+	margin: auto;
+	width: 35%;
+	background: white;
+	border-radius: 3px;
+	-webkit-box-shadow: 0 0 200px rgba(255, 255, 255, 0.5), 0 1px 2px
+		rgba(0, 0, 0, 0.3);
+	box-shadow: 0 0 200px rgba(255, 255, 255, 0.5), 0 1px 2px
+		rgba(0, 0, 0, 0.3);
+	
+	-webkit-transition: all 0.3s linear;
+	-moz-transition: all 0.3s linear;
+	-o-transition: all 0.3s linear;
+	transition: all 0.3s linear;
+}
+
+.join::before {
+	content: '';
+	position: absolute;
+	top: -8px;
+	right: -8px;
+	bottom: -8px;
+	left: -8px;
+	z-index: -1;
+	background: rgba(0, 0, 0, 0.08);
+	border-radius: 4px;
+}
+
+
+@media screen and (max-width:800px) {
+  
+  
+  .join {
+    width: 50%;
+  }
+}
+
+
+
+@media screen and (max-width:400px) {
+  
+  
+  .join {
+    width: 95%;
+  }
+}

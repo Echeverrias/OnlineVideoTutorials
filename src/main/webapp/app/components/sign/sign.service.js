@@ -17,47 +17,44 @@ require("rxjs/add/operator/catch");
 var connection_service_1 = require("./../../services/connection.service");
 var handler_service_1 = require("./../../services/handler.service");
 var user_service_1 = require("./../../services/user.service");
-var userFactory_1 = require("./../../models/userFactory");
+//type UserMessage = { userName: string, userType: string, name: string}
+//type LoginMessage = UserMessage & IdMessage;
+//type LogoutMessage = { userName: string } & IdMessage;
+// Messages to the server
 var WS_MSG_ID_LOGIN = 'login';
 var WS_MSG_ID_LOGOUT = 'logout';
+var VALIDATE_USER_ENDPOINT = "validateUser";
+var VALIDATE_ENDPOINT = "validateField";
+var REGISTER_ENDPOINT = "register";
+var EDIT_PERFIL_ENDPOINT = "editPerfil";
 var SignService = (function () {
     function SignService(http, connection, handler, me) {
         this.http = http;
         this.connection = connection;
         this.handler = handler;
         this.me = me;
-        this.validateUserEndPoint = "validateUser";
-        this.validateEndPoint = "validateField";
-        this.registerEndPoint = "register";
-        this.editPerfilEndPoint = "editPerfil";
         console.log("*SignService constructor");
     }
-    SignService.prototype.init = function () {
-        console.log("*SignService.init");
-        this.signOut();
-        // Reset login status
-        //this.destroyMe();
-    };
     SignService.prototype.validateUser = function (user) {
-        var _this = this;
         var headers = new http_1.Headers();
         headers.append("Content-Type", "application/json");
         var options = new http_1.RequestOptions({ headers: headers });
         var body = JSON.stringify(user);
         console.log(this.http); //%%
-        return this.http.post("" + this.connection.urlServer + this.validateUserEndPoint, body, options)
+        return this.http.post("" + this.connection.urlServer + VALIDATE_USER_ENDPOINT, body, options)
             .map(function (res) {
             console.log("VALIDATE USER");
             console.log(res);
             console.log(res.toString());
             if (res.status = 200) {
                 console.log("res.json(): " + res.json());
-                _this.createUser(res.json());
+                //this.createUser(res.json());
+                return res.json();
             }
             else {
                 console.log("res.status: " + res.status);
+                return null;
             }
-            return userFactory_1.UserFactory.createAnUser(res.json());
         })
             .catch(function (error) { return Rx_1.Observable.throw(error); });
     };
@@ -67,52 +64,53 @@ var SignService = (function () {
         var headers = new http_1.Headers();
         headers.append("Content-Type", "application/json");
         var options = new http_1.RequestOptions({ headers: headers });
-        return this.http.post("" + this.connection.urlServer + this.validateEndPoint, body, options);
+        return this.http.post("" + this.connection.urlServer + VALIDATE_ENDPOINT, body, options);
     };
     ;
     SignService.prototype.registerNewUser = function (user) {
-        var _this = this;
         console.log(user);
         console.log(JSON.stringify(user));
         var headers = new http_1.Headers();
         headers.append("Content-Type", "application/json");
         var options = new http_1.RequestOptions({ headers: headers });
         var body = JSON.stringify(user);
-        return this.http.post("" + this.connection.urlServer + this.registerEndPoint, body, options)
+        return this.http.post("" + this.connection.urlServer + REGISTER_ENDPOINT, body, options)
             .map(function (res) {
             console.log("REGISTER USER");
             console.log(res);
             console.log(res.toString());
             var success;
             if (res.status == 200) {
-                _this.createUser(res.json());
-                success = true;
+                // this.createUser(res.json());
+                return res.json();
             }
             else {
+                console.log("The user is not registered");
                 success = false;
+                return null;
             }
-            return success;
         })
             .catch(function (error) { return Rx_1.Observable.throw(error); });
     };
-    SignService.prototype.createUser = function (user) {
+    SignService.prototype.login = function (user) {
         console.log("");
         console.log("* SignService.createUser " + new Date().toLocaleTimeString());
         console.log(user);
-        this.me.registerMe(user);
-        console.log(this.me.getMe());
-        var jsonMessage = {
+        /* //*
+        let um :LoginMessage = {
             id: WS_MSG_ID_LOGIN,
-            userName: this.me.userName,
-            name: this.me.name,
-            userType: this.me.userType
-        };
-        this.connection.sendMessage(jsonMessage);
+            name: user.name,
+            userName: user.userName,
+            userType: user.userType
+        }
+
+        // this.connection.sendMessage(um);
+        */
+        this.connection.sendWSMessage(WS_MSG_ID_LOGIN, user);
         console.log("/ SignService.createUser " + new Date().toLocaleTimeString());
         console.log("");
     };
     SignService.prototype.modifyPerfilUser = function (user) {
-        var _this = this;
         console.log(user);
         Object.assign(user, { userName: this.me.userName });
         console.log(JSON.stringify(user));
@@ -120,63 +118,28 @@ var SignService = (function () {
         headers.append("Content-Type", "application/json");
         var options = new http_1.RequestOptions({ headers: headers });
         var body = JSON.stringify(user);
-        return this.http.post("" + this.connection.urlServer + this.editPerfilEndPoint, body, options)
+        return this.http.post("" + this.connection.urlServer + EDIT_PERFIL_ENDPOINT, body, options)
             .map(function (res) {
             console.log("REDIT PERFIL");
             console.log(res);
             console.log(res.toString());
             var success;
             if (res.status == 200) {
-                _this.modifyUser(res.json());
-                success = true;
+                return res.json();
             }
             else {
-                success = false;
+                return null;
             }
-            return success;
         })
             .catch(function (error) { return Rx_1.Observable.throw(error); });
     };
-    SignService.prototype.modifyUser = function (user) {
-        console.log("");
-        console.log("* SignService.modifyUser " + new Date().toLocaleTimeString());
-        console.log(user);
-        this.me.registerMe(user);
-        console.log(this.me.getMe());
-        /**
-        let jsonMessage: LoginMessage = {
-            id: "modify",
-            userName: this.me.userName,
-            name: this.me.name,
-            userType: this.me.userType
-        };
-
-        this.connection.sendMessage(jsonMessage);
-        */
-        console.log("/ SignService.modifyUser " + new Date().toLocaleTimeString());
-        console.log("");
-    };
-    SignService.prototype.signOut = function () {
+    SignService.prototype.logout = function (user) {
         console.log("");
         console.log("* <- SignService.logOut " + new Date().toLocaleTimeString());
-        if (this.me.amILogged()) {
-            console.log("* I'm going to logout me");
-            var jsonMessage = {
-                id: WS_MSG_ID_LOGOUT,
-                userName: this.me.userName,
-            };
-            this.connection.sendMessage(jsonMessage);
-            this.me.deleteMe();
-        }
+        this.connection.sendWSMessage(WS_MSG_ID_LOGOUT, user);
+        this.me.deleteMe();
         console.log("/ SignService.logOut " + new Date().toLocaleTimeString());
         console.log("");
-    };
-    SignService.prototype.destroyMe = function () {
-        console.log("*SignService.destroyMe");
-        //localStorage.removeItem('ovtUser');
-    };
-    SignService.prototype.destroy = function () {
-        console.log("*SignService.destroy");
     };
     return SignService;
 }());

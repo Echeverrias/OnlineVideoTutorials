@@ -1,0 +1,128 @@
+
+/* 
+    Created on : 06-dic-2015, 10:54:14
+    Author     : Juan Antonio Echeverrías Aranda
+*/
+
+.ovt-participant {
+
+    text-align:center;
+    width:100%;
+}
+
+
+
+.video{
+    position: relative;
+    width: 100%;
+}
+
+
+
+video {
+  width:100% !importat;
+  height: auto !importat;
+  
+}
+
+video.loading{
+  
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+
+}
+
+
+
+
+video.small {
+ 
+   /* 
+   min-height: 211px;
+   */
+
+}
+video.large{
+    
+
+    /*
+    min-height: 538px;
+    */
+}
+
+div.video-footer{
+    border: 2px solid #000000;
+    font-weight: bold;
+    background-color: azure;
+    position: absolute;
+    width: 100%;
+    display: none;
+    overflow:hidden;
+ }
+
+video.small + div.video-footer{
+    border-bottom-left-radius: 2em;
+    border-bottom-right-radius: 2em;
+    bottom: -0.2em;
+    display: block;
+    
+    
+}
+
+video.large + div.video-footer{
+    border-bottom-left-radius: 20em;
+    border-bottom-right-radius: 20em;
+    bottom: -0.2em;
+    display: block;
+    
+    
+}
+
+ovt-loading{
+  margin:auto;  
+  width:100%;
+  border-radius: 2em;
+  display: block;
+  z-index: 97;
+  background: black;
+
+ }
+
+ovt-loading:after{
+  content: "";
+  display: block;
+  padding-top: 76%;
+  padding-top: calc(75% + 2em);
+}
+
+
+
+video {
+    border: 2px solid #000000;
+    -webkit-border-radius: 2em;
+    -moz-border-radius: 2em;
+    border-radius: 2em;
+    background-color: #000000;
+    width: 100%;
+    z-index: 95%;
+
+}
+
+video:after{
+  content: "";
+  padding-top: 75%;
+  display: block;
+}
+
+
+.important{
+    border: 2px solid #000000;
+    -webkit-border-radius: 2em;
+    -moz-border-radius: 2em;
+    border-radius: 2em;
+    width:50%;
+    max-height: 90%;
+}

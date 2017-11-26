@@ -1,0 +1,142 @@
+/* 
+    Created on : 25-ene-2016, 19:24:29
+    Author     : juanan
+*/
+#ovt-waitingRoom {
+    position:relative;
+    top: 1em;
+    width: 52%;
+    display: block;
+    margin: auto;
+    background-color: #EEFACA;
+    box-sizing: border-box;
+    text-align: center;
+    border-radius: 3px;
+    -webkit-box-shadow: 0 0 200px rgba(255, 255, 255, 0.5), 0 1px 2px
+        rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 200px rgba(255, 255, 255, 0.5), 0 1px 2px
+        rgba(0, 0, 0, 0.3);
+    
+    -webkit-transition: all 0.3s linear;
+    -moz-transition: all 0.3s linear;
+    -o-transition: all 0.3s linear;
+    transition: all 0.3s linear;
+}
+
+#ovt-waitingRoom:before {
+    content: '';
+    background: rgba(0, 0, 0, 0.08);
+    border-radius: 4px;
+}
+
+#ovt-waitingRoom .header {
+  width: 100%;
+  
+   
+}
+
+#ovt-waitingRoom .ovt-out {
+  margin-bottom:1em;
+  
+}
+
+div.ovt-container-col div.ovt-available-rooms > div.header {
+  margin-bottom:1em;
+  margin-top:1em;
+}
+
+div.ovt-available-rooms  div.header {
+  margin-bottom:1em;
+  
+}
+
+#ovt-waitingRoom div.ovt-available-rooms{
+  padding: 0em;
+}
+
+div.ovt-rooms{
+  width: 70%;
+  margin:auto;
+}
+
+div.ovt-rooms ul{
+  list-style: none; 
+  padding:0;  
+  margin:0; 
+  text-align: left;
+}
+
+div.ovt-rooms li.ovt-room-selector{
+  margin-bottom:0.5em;
+  padding-left: 1em; 
+  text-indent: -1em;
+}
+
+div.ovt-rooms li.ovt-room-selector::before{
+ content: '\2022';
+ padding-right:7px;
+}
+
+div.ovt-rooms li.ovt-room-selector span:hover{
+  cursor: pointer;
+  background: #FFEB3B;
+  font-weight: bold;
+}
+
+button.ovt-inline{
+  display: inline-block;
+}
+
+div.ovt-inline p{
+  display: inline;
+  margin-right: 0.5em;
+}
+
+div.ovt-create-room div div input{
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  border: 0.5px solid;
+  border-radius: 5px;
+}
+
+div.ovt-create-room div div{
+margin-bottom: 1em;
+}
+
+div.ovt-create-room div div{
+  display: inline-block;
+  margin-left: 0.5em;
+}
+
+div.ovt-create-room button{
+  padding-left: 1em;
+}
+
+div.ovt-out button{
+  margin: 2em auto 0em auto;
+}
+
+@media screen and (max-width: 1140px){
+  
+  #ovt-waitingRoom{
+      width: 65%;
+  }
+}
+
+@media screen and (max-width:900px) {
+  
+  
+  #ovt-waitingRoom {
+    width: 78%;
+  }
+}
+
+
+
+@media screen and (max-width:425px) {
+  
+  
+  #ovt-waitingRoom {
+    width: 95%;
+  }
+}
