@@ -8,7 +8,7 @@ type DisplayAlertOptions = { option: string, initialState: string, data: string 
 })
 
 
-export class OptionDirective implements AfterViewInit, OnChanges {
+export class OptionDirective implements AfterViewInit, OnChanges, ngOnDestroy {
 
   @Input('ovt-option') option: string;
   @Input('ovt-imagePath') imagePath: string;
@@ -110,6 +110,9 @@ export class OptionDirective implements AfterViewInit, OnChanges {
     return changeImage;   
   }
 
+  onDestroy(){
+    clearInterval(this.intervalAlert);
+  } 
  
   
 }
