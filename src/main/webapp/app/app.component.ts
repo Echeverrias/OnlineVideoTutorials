@@ -6,6 +6,7 @@ import { UserService } from './services/user.service';
 import { UserOptionsComponent } from './components/userOptions/userOptions.component';
 
 const validUserOptionsPath: string = 'rooms';  
+const WS_MSG_ID_CLOSE_TAB: string = 'closeTab';
 
 @Component({
     moduleId: module.id,
@@ -29,9 +30,12 @@ export class AppComponent {
            if (! sessionStorage.getItem("downloadEvent")){
                console.log(this.me);
                console.log(this.me.userName);
+               /*
                let jsonMessage = Object.assign(this.me.getMyInfo(), {id: "closeTab"});
                console.log(jsonMessage);
                this.connection.sendMessage(jsonMessage);
+               */
+               this.connection.sendWSMessage(WS_MSG_ID_CLOSE_TAB, this.me.getMyInfo());
                this.connection.destroy();
            }   
 

@@ -15,6 +15,7 @@ var connection_service_1 = require("./services/connection.service");
 var user_service_1 = require("./services/user.service");
 var userOptions_component_1 = require("./components/userOptions/userOptions.component");
 var validUserOptionsPath = 'rooms';
+var WS_MSG_ID_CLOSE_TAB = 'closeTab';
 var AppComponent = (function () {
     function AppComponent(location, connection, me) {
         this.location = location;
@@ -29,9 +30,12 @@ var AppComponent = (function () {
         if (!sessionStorage.getItem("downloadEvent")) {
             console.log(this.me);
             console.log(this.me.userName);
-            var jsonMessage = Object.assign(this.me.getMyInfo(), { id: "closeTab" });
+            /*
+            let jsonMessage = Object.assign(this.me.getMyInfo(), {id: "closeTab"});
             console.log(jsonMessage);
             this.connection.sendMessage(jsonMessage);
+            */
+            this.connection.sendWSMessage(WS_MSG_ID_CLOSE_TAB, this.me.getMyInfo());
             this.connection.destroy();
         }
         sessionStorage.removeItem("downloadEvent");

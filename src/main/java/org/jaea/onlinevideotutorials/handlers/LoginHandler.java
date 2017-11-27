@@ -40,6 +40,7 @@ public class LoginHandler extends TextMessageWebSocketHandler {
     
     public static final String ID_LOGIN = "login";
     public static final String ID_LOGOUT = "logout";
+    public static final String ID_RECONNECT = "reConnect";
     private String [] ids = {ID_LOGIN, ID_LOGOUT}; 
     
     private static final String PAYLOAD_ATTRIBUTE_USER_NAME = "userName";

@@ -17,6 +17,7 @@ org/jaea/onlinevideotutorials/domain/WebSocketMessage.class
 org/jaea/onlinevideotutorials/OnlineVideoTutorialsApp.class
 org/jaea/onlinevideotutorials/domain/MediaRoom.class
 org/jaea/onlinevideotutorials/controllers/ChatController.class
+org/jaea/onlinevideotutorials/handlers/RoomHandler$1.class
 org/jaea/onlinevideotutorials/domain/FieldValidationRequest.class
 org/jaea/onlinevideotutorials/repositories/ParticipantSessionRepository.class
 org/jaea/onlinevideotutorials/handlers/TextMessageWebSocketHandler.class
@@ -38,6 +39,7 @@ org/jaea/onlinevideotutorials/MediaUtilities$2.class
 org/jaea/onlinevideotutorials/handlers/HandlerException.class
 org/jaea/onlinevideotutorials/handlers/WebSocketConfig.class
 org/jaea/onlinevideotutorials/managers/UserSessionsRegistry.class
+org/jaea/onlinevideotutorials/handlers/RoomHandler$2.class
 org/jaea/onlinevideotutorials/controllers/HistoryController.class
 org/jaea/onlinevideotutorials/domain/UserFile.class
 org/jaea/onlinevideotutorials/domain/OnIceCandidateMessage.class

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.lang.reflect.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,13 +50,17 @@ public class RoomHandler extends TextMessageWebSocketHandler{
     public static final String ID_RECEIVE_VIDEO_FROM = "receiveVideoFrom";
     public static final String ID_RECEIVE_ADDRESS = "receiveAddress";
     public static final  String ID_EXIT_ROOM = "exitRoom";
-
+    private String [] ids = {ID_JOIN_ROOM, ID_RECEIVE_VIDEO_FROM, ID_RECEIVE_ADDRESS, ID_EXIT_ROOM}; 
     /**
      * The id values to the messages send by websocket to the client
      */
     public static final  String ID_AVAILABLE_ROOM_LESS = "thereIsAnAvailableRoomLess";
-    private String [] ids = {ID_JOIN_ROOM, ID_RECEIVE_VIDEO_FROM, ID_RECEIVE_ADDRESS, ID_EXIT_ROOM}; 
     
+    private static final String PAYLOAD_ATTRIBUTE_USER_NAME = "userName";
+    private static final String PAYLOAD_ATTRIBUTE_CANDIDATE = "address";
+    private static final String PAYLOAD_ATTRIBUTE_OFFER = "offer";
+    private static final String PAYLOAD_ATTRIBUTE_ROOM = "room";
+    private static final String PAYLOAD_ATTRIBUTE_ID = "id";
    
 
     private final Logger log = LoggerFactory.getLogger(RoomHandler.class);
@@ -92,10 +97,21 @@ public class RoomHandler extends TextMessageWebSocketHandler{
     @Override
     public synchronized void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         JsonObject jsonMessage = this.gson.fromJson(message.getPayload(), JsonObject.class);
-        String id = this.getTextMessageId(message);              
+        String id = this.getTextMessageId(message); 
+        this.log.info("RoomHandler.handleTextMessage: {}", id);
+        String userName = null; 
+        Room room = null;
+        String userType = null;       
+        Type type = null;                    
         switch (id){
             case ID_JOIN_ROOM:
-                this.joinRoom(session, jsonMessage);
+            try{
+                room = (Room) this.getTextMessagePayLoadDataAsObject(PAYLOAD_ATTRIBUTE_ROOM, new TypeToken<Room>() {}.getType(), message);
+            }
+            catch(Exception e){
+                this.log.info("ERROR: {}", e.getMessage());
+            }   
+                this.joinRoom(session, room);
                 break;
             case ID_RECEIVE_VIDEO_FROM:
                 this.receiveVideoFrom(session, jsonMessage);
@@ -104,7 +120,9 @@ public class RoomHandler extends TextMessageWebSocketHandler{
                 this.receiveAddress(session, jsonMessage);
                 break;
             case ID_EXIT_ROOM : case ID_CLOSE_TAB  :
-                this.exitRoom(session, jsonMessage);
+                userName = this.getTextMessagePayLoadData(PAYLOAD_ATTRIBUTE_USER_NAME, message); 
+                room = (Room) this.getTextMessagePayLoadDataAsObject(PAYLOAD_ATTRIBUTE_ROOM, new TypeToken<Room>() {}.getType(), message);
+                this.exitRoom(session, userName, room);
                 break;
             default:log.info("id {} doesn't found", id);
                 throw new HandlerException("The handler does't know how handle the " + id + " message");   
@@ -114,16 +132,26 @@ public class RoomHandler extends TextMessageWebSocketHandler{
     /**
     * An user has come into the waiting room.
     */
-    private synchronized void joinRoom (WebSocketSession session, JsonObject jsonMessage){
-        this.log.info("<- joinRoom -> id: {}, message: {}", session.getId(), jsonMessage.toString());
+    private synchronized void joinRoom (WebSocketSession session, Room room){
+        this.log.info("<- joinRoom -> id: {}, message: {}", session.getId());
         
+        /* //*
         String name = jsonMessage.get("name").getAsString();
         String userName = jsonMessage.get("userName").getAsString();
         Long roomId = jsonMessage.get("roomId").getAsLong();
         String userType = jsonMessage.get("userType").getAsString();
-        
-       // availableRoomsNames = gson.toJsonTree(this.roomsManager.getAvailableRoomsNames(), new TypeToken<List<String>>() {}.getType());
-         UserSession newParticipant = this.usersRegistry.getUserBySessionId(session.getId());
+        */
+
+       //* availableRoomsNames = gson.toJsonTree(this.roomsManager.getAvailableRoomsNames(), new TypeToken<List<String>>() {}.getType());
+       Long roomId = null;
+       try{
+        roomId = room.getId(); 
+        this.log.info("roomId: {}", roomId.toString());
+       }
+       catch(Exception e){
+           this.log.info("ERROR: {}", e.getMessage());
+       }
+       UserSession newParticipant = this.usersRegistry.getUserBySessionId(session.getId());
         
         this.roomsManager.addParticipant(newParticipant,roomId);
         this.log.info("########################## 2");
@@ -138,8 +166,10 @@ public class RoomHandler extends TextMessageWebSocketHandler{
         this.log.info("/joinRoom - the message has been sent");
     }
     
+    
     // NO se utiliza, reciben el aviso mediante suscripcion al recibir el controlador la
     //.. llamada para crear la room
+    /*
     private void makeKnowThereIsANewRoom(Long roomId){//%%
         log.info(" * makeKnowThereIsANewRoom to...");
         this.roomsManager.printIncomingParticipants();//*
@@ -152,7 +182,8 @@ public class RoomHandler extends TextMessageWebSocketHandler{
         
         log.info(" /makeKnowThereIsANewRoom - the message has been sent");
     }
-    
+    */
+
     // Return the unnotified participants
     private List<UserSession> sendAMessageToUsers(JsonObject message, List<UserSession> users){
         log.info("{} sendAMessageToIncomingParticipants - message: {} {}",Info.START_SYMBOL, message, Hour.getTime());
@@ -318,13 +349,16 @@ public class RoomHandler extends TextMessageWebSocketHandler{
     /**
     * An user has left the room.
     */
-    private synchronized void exitRoom (WebSocketSession session, JsonObject jsonMessage){
-        this.log.info("<- %%%%% RoomHandler.exitRoom: id: {}, message: {}", session.getId(), jsonMessage.toString());
+    private synchronized void exitRoom (WebSocketSession session, String userName, Room room){
+        this.log.info("<- %%%%% RoomHandler.exitRoom: id: {}, message: {} {}", session.getId(), userName, room.getId().toString());
         
+        /*
         String userName = jsonMessage.get("userName").getAsString();
         Room room =this.gson.fromJson(jsonMessage.get("room"),Room.class);
+        **/
         this.log.info("Se ha desereliciado la room");
         this.log.info("El id de la room es: {}", room.getId());
+
         Long roomId = room.getId();
         
         UserSession user = this.roomsManager.participantLeavesARoom(userName, roomId);
@@ -333,8 +367,9 @@ public class RoomHandler extends TextMessageWebSocketHandler{
             this.log.info("** The participant {} has been got out from the room **", user.getUserName());
             
             if (!this.roomsManager.existRoom(roomId)){
+                this.log.info("La room {} ya no existe", roomId);
+                //this.makeKnowThereIsAnAvailableRoomLess(roomId); //*
                 this.simpMessagingTemplate.convertAndSend("/eliminated_room", room);
-                //this.makeKnowThereIsAnAvailableRoomLess(roomId);
             }
             else{
                 this.makeKnowAParticipantHasLeftTheRoom(user, roomId);

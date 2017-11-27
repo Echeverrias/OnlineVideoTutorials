@@ -56,7 +56,7 @@ export class RoomComponent implements OnInit, OnDestroy{
             this.id = params['roomId'];
         });
       console.log(`RoomComponent.ngOnInit - this.id: ${this.id}`); //*
-      this.room.init(this.id);
+      this.room.init(this.me.getMyInfo());
       this.room.getParticipants().subscribe((users: User[]): void => { this.users = users } );
       this.room.getMainParticipant().subscribe((mainUser: User): void  => { this.mainUser = mainUser });
     }

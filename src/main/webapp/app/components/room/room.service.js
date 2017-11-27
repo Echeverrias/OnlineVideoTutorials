@@ -16,15 +16,19 @@ var user_service_1 = require("./../../services/user.service");
 var connection_service_1 = require("./../../services/connection.service");
 var user_1 = require("./../../models/user");
 var userFactory_1 = require("./../../models/userFactory");
-;
+// Messages to the server
+var WS_MSG_ID_JOIN_ROOM = 'joinRoom';
+var WS_MSG_ID_EXIT_ROOM = 'exitRoom';
+// Messages from the server
+var WS_MSG_ID_NEW_PARTICIPANT = 'thereIsANewParticipant';
+var WS_MSG_ID_EXISTING_PARTICIPANT = 'thereIsAParticipant';
+var WS_MSG_ID_PARTICIPANT_DEPARTURE = 'aParticipantHasLeftTheRoom';
 var RoomService = (function () {
     function RoomService(handler, connection, me) {
         var _this = this;
         this.handler = handler;
         this.connection = connection;
         this.me = me;
-        this.mainParticipantObserver = new Subject_1.Subject();
-        this.participantsObserver = new Subject_1.Subject();
         this.mainParticipant = new user_1.User();
         this.participants = [];
         this.eeThereIsANewParticipant = new core_1.EventEmitter()
@@ -34,29 +38,34 @@ var RoomService = (function () {
         this.eeAParticipantHasLefTheRoom = new core_1.EventEmitter()
             .subscribe(function (data) { _this.onRemoveParticipant(data); });
         this.handler.attach('aParticipantHasLeftTheRoom', this.eeAParticipantHasLefTheRoom);
+        this.mainParticipant$ = new Subject_1.Subject();
+        this.participants$ = new Subject_1.Subject();
     }
-    RoomService.prototype.init = function (roomId) {
-        this.roomId = roomId;
-        // this.me.myCurrentRoomId = roomId; //*
+    RoomService.prototype.init = function (participantInfo) {
+        this.participantInfo = participantInfo;
+        this.connection.sendWSMessage(WS_MSG_ID_JOIN_ROOM, participantInfo);
     };
     RoomService.prototype.getParticipants = function () {
         console.log("");
         console.log("* Room.lookingForParticipants " + new Date().toLocaleTimeString());
-        var jsonMessage = {
+        /**
+        let jsonMessage: any = {
             id: "joinRoom",
             roomId: +this.roomId,
             userName: this.me.userName,
             userType: this.me.userType,
             name: this.me.name
         };
+
         this.connection.sendMessage(jsonMessage);
+        */
         console.log(this.participants);
         console.log("/ Room.lookingForParticipants " + new Date().toLocaleTimeString());
         console.log("");
-        return this.participantsObserver;
+        return this.participants$;
     };
     RoomService.prototype.getMainParticipant = function () {
-        return this.mainParticipantObserver;
+        return this.mainParticipant$;
     };
     RoomService.prototype.onAddParticipant = function (msg) {
         console.log("");
@@ -64,7 +73,7 @@ var RoomService = (function () {
         console.log("<- message: " + JSON.stringify(msg));
         console.log(this.participants);
         if (this.participants.length == 0) {
-            this.participantsObserver.next(this.participants);
+            this.participants$.next(this.participants);
         }
         var user = userFactory_1.UserFactory.createAnUser(msg);
         ;
@@ -80,7 +89,7 @@ var RoomService = (function () {
                 console.log("Am I a tutor?: " + this.me.amIATutor());
                 console.log("Is the new user a tutor?: " + user.isATutor());
                 this.mainParticipant.set(user);
-                this.mainParticipantObserver.next(this.mainParticipant);
+                this.mainParticipant$.next(this.mainParticipant);
             }
             else {
                 this.participants.splice(this.participants.length - 1, 0, user);
@@ -127,10 +136,13 @@ var RoomService = (function () {
     };
     RoomService.prototype.onExit = function () {
         console.log("");
-        console.log("<- RoomService.onExit: " + this.roomId + " " + new Date().toLocaleTimeString());
-        var jsonMessage = Object.assign(this.me.getMyInfo(), { id: "exitRoom" });
+        console.log("<- RoomService.onExit: " + this.participantInfo.room.id + " " + new Date().toLocaleTimeString());
+        /**
+        let jsonMessage: ParticipantMessage = Object.assign(this.me.getMyInfo(), {id: "exitRoom"});
         console.log(jsonMessage);
         this.connection.sendMessage(jsonMessage);
+        */
+        this.connection.sendWSMessage(WS_MSG_ID_EXIT_ROOM, this.participantInfo);
         console.log("/ RoomService.onExitOfRoom " + new Date().toLocaleTimeString());
         console.log("");
     };
