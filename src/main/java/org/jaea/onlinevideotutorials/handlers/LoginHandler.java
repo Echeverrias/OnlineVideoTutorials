@@ -5,7 +5,6 @@
  */
 package org.jaea.onlinevideotutorials.handlers;
 
-import org.jaea.onlinevideotutorials.domain.WebSocketMessage;
 import org.jaea.onlinevideotutorials.domain.ParticipantSession;
 import org.jaea.onlinevideotutorials.domain.UserSession;
 import org.jaea.onlinevideotutorials.domain.User;
@@ -89,7 +88,7 @@ public class LoginHandler extends TextMessageWebSocketHandler {
         String id = jsonMessage.get(this.attributeNameOfTheMessageId).getAsString();
         */
         /*
-            WebSocketMessage wsMessage = this.gson.fromJson(message.getPayload(), WebSocketMessage.class);
+            WSMessage wsMessage = this.gson.fromJson(message.getPayload(), WSMessage.class);
             String id = wsMessage.getId();
             this.log.info("handle: {}", id);
             log.info("user is going to be deserialiced");

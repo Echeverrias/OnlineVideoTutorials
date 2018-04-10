@@ -13,7 +13,7 @@ var UserFactory = (function () {
     function UserFactory() {
         console.log("% UserFactory");
     }
-    UserFactory.createAnUser = function (msg) {
+    UserFactory.createAnUser2 = function (msg) {
         console.log("UserFactory.createAnUser");
         console.log(msg);
         var propertiesNumber = Object.keys(msg).length;
@@ -26,6 +26,23 @@ var UserFactory = (function () {
             user = new user_1.User(msg.userName, msg.userType, msg.name);
         }
         return user;
+    };
+    //static createAnUser (user: User | IUser | IUserInfo | UserForm): User{
+    UserFactory.createAnUser = function (user) {
+        console.log("UserFactory.createAnUser");
+        console.log(user);
+        var propertiesNumber = Object.keys(user).length;
+        var _user;
+        if (propertiesNumber >= 5) {
+            _user = new user_1.User(user.userName, user.userType, user.name, user.surname, user.email);
+            if (propertiesNumber > 5) {
+                _user.userImage = user.userImage;
+            }
+        }
+        else if (propertiesNumber >= 3) {
+            _user = new user_1.User(user.userName, user.userType, user.name);
+        }
+        return _user;
     };
     return UserFactory;
 }());

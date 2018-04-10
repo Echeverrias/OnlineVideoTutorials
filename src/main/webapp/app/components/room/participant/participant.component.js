@@ -15,12 +15,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var participants_service_1 = require("./../participants.service");
-var user_service_1 = require("./../../../services/user.service");
+var user_service_1 = require("./../../../core/user.service");
 var participant_html_1 = require("./participant.html");
+var Subject_1 = require("rxjs/Subject");
 var ParticipantComponent = (function () {
     function ParticipantComponent(participants, me) {
         this.participants = participants;
         this.me = me;
+        this.destroyed$ = new Subject_1.Subject();
         console.log("");
         console.log("% Participant constructor " + new Date().toLocaleTimeString());
         this.important = false;
@@ -39,10 +41,21 @@ var ParticipantComponent = (function () {
         console.log("");
     }
     ParticipantComponent.prototype.ngOnInit = function () {
-        //console.log(`Participant.onInit - userType: ${this.userType}`);
-        this.participantUserName = this.id;
+        var _this = this;
+        console.log("Participant.onInit - userName: " + this._userName);
         this.createRtcPeer();
-        this.participants.attachParticipant(this.participantUserName, this.processAnswer(), this.addIceCandidate());
+        /*
+        //this.participants.attachParticipant(this._userName, this.processAnswer(), this.addIceCandidate());
+         attachParticipant(participantUserName: string, receiveVideoAnswer: (sdpAnswer: any) => any , iceCandidate: (candidate: any) => any ){
+        .subscribe((offerInfo: OfferInfo): void => { receiveVideoAnswer(offerInfo.answerSdp) })
+        .subscribe((addressInfo: AddressInfo): void => { iceCandidate(addressInfo.iceCandidate) });
+        */
+        this.participants.getVideoAnswer(this._userName)
+            .takeUntil(this.destroyed$)
+            .subscribe(function (offerInfo) { _this.processAnswer()(offerInfo.answerSdp); });
+        this.participants.getIceCandidate(this._userName)
+            .takeUntil(this.destroyed$)
+            .subscribe(function (addressInfo) { _this.addIceCandidate()(addressInfo.iceCandidate); });
     };
     ParticipantComponent.prototype.ngAfterViewInit = function () {
         var _this = this;
@@ -54,7 +67,7 @@ var ParticipantComponent = (function () {
         _options.onicecandidate = _participant.onIceCandidate.bind(_participant);
         //   console.log("# {onicecandidate: participant.onIceCandidate.bind(participant)}");
         // It is me
-        if (this.me.userName === this.participantUserName) {
+        if (this.me.userName === this._userName) {
             _options.localVideo = this.video.nativeElement;
             //  console.log("video:");
             //console.log(this.video.nativeElement);
@@ -89,15 +102,15 @@ var ParticipantComponent = (function () {
     };
     ParticipantComponent.prototype.offerToReceiveVideo = function (error, offerSdp, wp) {
         console.log("");
-        console.log("***-> ParticipantComponent.offerToReceiveVideo  " + this.participantUserName + " " + new Date().toLocaleTimeString());
-        this.participants.offerToReceiveVideo(this.participantUserName, this.roomName, offerSdp);
+        console.log("***-> ParticipantComponent.offerToReceiveVideo  " + this._userName + " " + new Date().toLocaleTimeString());
+        this.participants.offerToReceiveVideo(this.roomId, this._userName, offerSdp);
         console.log("/ ParticipantComponent.offerToReceiveVideo " + new Date().toLocaleTimeString());
         console.log("");
     };
     ParticipantComponent.prototype.onIceCandidate = function (candidate, wp) {
         // console.log("");
         // console.log(`* -> Participant.onIceCandidtae - Local candidate: ${JSON.stringify(candidate)} ${new Date().toLocaleTimeString()}`);
-        this.participants.onIceCandidate(this.participantUserName, this.roomName, candidate);
+        this.participants.onIceCandidate(this.roomId, this._userName, candidate);
         // console.log(`/ Local candidate ${new Date().toLocaleTimeString()}`);
         //console.log("");
     };
@@ -120,11 +133,11 @@ var ParticipantComponent = (function () {
     };
     ParticipantComponent.prototype.addIceCandidate = function () {
         // console.log("");
-        //  console.log(`* Participant.getAddIceCandidate  ${new Date().toLocaleTimeString()}`);
-        // console.log("");
         var _this = this;
-        return (function (candidate) {
-            _this._rtcPeer.addIceCandidate(candidate, function (error) {
+        // console.log("");
+        return (function (iceCandidate) {
+            console.log(' Participant.addIceCandidate:', iceCandidate);
+            _this._rtcPeer.addIceCandidate(iceCandidate, function (error) {
                 if (error) {
                     console.error("!! ERROR:Participant.addIceCandidate");
                     console.error(error);
@@ -135,14 +148,14 @@ var ParticipantComponent = (function () {
     };
     ParticipantComponent.prototype.dispose = function () {
         console.log("");
-        console.log("* ParticipantComponent.dispose I'm " + this.participantUserName + " and i'm disposed " + new Date().toLocaleTimeString());
+        console.log("* ParticipantComponent.dispose I'm " + this._userName + " and i'm disposed " + new Date().toLocaleTimeString());
         this._rtcPeer.dispose();
-        console.log("/ ParticipantComponent.dispose I'm " + this.participantUserName + "} and i'm disposed " + new Date().toLocaleTimeString());
+        console.log("/ ParticipantComponent.dispose I'm " + this._userName + "} and i'm disposed " + new Date().toLocaleTimeString());
         console.log("");
     };
     Object.defineProperty(ParticipantComponent.prototype, "userName", {
         get: function () {
-            return this.participantUserName;
+            return this._userName;
         },
         enumerable: true,
         configurable: true
@@ -164,9 +177,12 @@ var ParticipantComponent = (function () {
         this.loading = false;
     };
     ParticipantComponent.prototype.ngOnDestroy = function () {
-        console.log("* Participant(" + this.participantUserName + ").onDestroy " + new Date().toLocaleTimeString());
+        console.log("* Participant(" + this._userName + ").onDestroy " + new Date().toLocaleTimeString());
         this.dispose();
-        this.participants.detachParticipant(this.participantUserName);
+        //this.participants.detachParticipant(this._userName);
+        this.participants.destroyParticipant(this._userName);
+        this.destroyed$.next(true);
+        this.destroyed$.complete();
     };
     return ParticipantComponent;
 }());
@@ -175,9 +191,9 @@ __decorate([
     __metadata("design:type", core_1.ElementRef)
 ], ParticipantComponent.prototype, "video", void 0);
 __decorate([
-    core_1.Input(),
+    core_1.Input('userName'),
     __metadata("design:type", String)
-], ParticipantComponent.prototype, "id", void 0);
+], ParticipantComponent.prototype, "_userName", void 0);
 __decorate([
     core_1.Input(),
     __metadata("design:type", String)
@@ -192,8 +208,8 @@ __decorate([
 ], ParticipantComponent.prototype, "userType", void 0);
 __decorate([
     core_1.Input(),
-    __metadata("design:type", String)
-], ParticipantComponent.prototype, "roomName", void 0);
+    __metadata("design:type", Number)
+], ParticipantComponent.prototype, "roomId", void 0);
 __decorate([
     core_1.Input(),
     __metadata("design:type", String)

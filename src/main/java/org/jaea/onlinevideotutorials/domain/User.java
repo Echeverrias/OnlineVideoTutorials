@@ -19,6 +19,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.google.gson.annotations.Expose;
 
 /**
  *
@@ -31,23 +32,6 @@ import org.slf4j.LoggerFactory;
 @EntityListeners(AuditingEntityListener.class)
 public  class User implements Comparable<User>{
     
-    @JsonIgnore
-	@Transient
-    private final Logger log = LoggerFactory.getLogger(User.class);
-    
-    public static final String TUTOR_TYPE = "tutor";
-    public static final String STUDENT_TYPE = "student";
-    
-    @JsonIgnore
-    @Id
-    @GeneratedValue
-    @Column(name = "id", unique = true, nullable = false)
-    private Long id;
-
-    @Column(nullable = false, updatable = false)
-    @Temporal(TemporalType.TIMESTAMP) 
-    @CreatedDate
-    private Date createdAt;
     
     @Column(nullable = false)
     protected String name;
@@ -55,23 +39,43 @@ public  class User implements Comparable<User>{
     @Column(nullable = false)
     protected String surname;
     
-     @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     protected String email;
-
+    
     @Column(unique = true, nullable = false)
     protected String userName;
     
     @Column(nullable = false)
     protected String userType;
     
+    @Exclude
     @Column(nullable = false)
     private String password;
     
-    
     @OneToOne(cascade=CascadeType.PERSIST, orphanRemoval=true, optional=true)
     private UserFile userImage;
-   
 
+    public static final String TUTOR_TYPE = "tutor";
+    public static final String STUDENT_TYPE = "student";
+    
+    @Exclude
+    @JsonIgnore
+    @Id
+    @GeneratedValue
+    @Column(name = "id", unique = true, nullable = false)
+    private Long id;
+
+    @Exclude
+    @Column(nullable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP) 
+    @CreatedDate
+    private Date createdAt;
+
+    @Exclude
+    @JsonIgnore
+	@Transient
+    private final Logger log = LoggerFactory.getLogger(User.class);
+   
     protected User(){}
     
     public User(String userName, String userType, String name){
@@ -84,7 +88,6 @@ public  class User implements Comparable<User>{
         this(userName, userType, name);
         this.password = password;
     }
-
 
     public User(String userName, String userType, String name, String surname, String email, String password){
         this(userName, userType, name, password);

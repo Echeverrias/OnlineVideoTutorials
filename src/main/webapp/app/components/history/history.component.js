@@ -15,8 +15,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
+var Subject_1 = require("rxjs/Subject");
 var history_service_1 = require("./history.service");
-var user_service_1 = require("../../services/user.service");
+var user_service_1 = require("../../core/user.service");
 var history_html_1 = require("./history.html");
 var HistoryComponent = (function () {
     function HistoryComponent(history, router, me) {
@@ -24,6 +25,7 @@ var HistoryComponent = (function () {
         this.router = router;
         this.me = me;
         this.selectedRoom = null;
+        this.destroyed$ = new Subject_1.Subject();
         console.log("");
         console.log("% HistoryComponent constructor " + new Date().toLocaleTimeString());
         console.log("/ HistoryComponent constructor " + new Date().toLocaleTimeString());
@@ -37,12 +39,14 @@ var HistoryComponent = (function () {
     HistoryComponent.prototype.getRoomsHistory = function (userName) {
         var _this = this;
         this.history.getRoomsHistory(userName)
+            .takeUntil(this.destroyed$)
             .subscribe(function (rooms) {
-            _this.rooms = rooms;
+            _this.rooms = rooms.reverse();
             console.log(_this.rooms);
         }, function (error) { return console.log(error); }, function () { return console.log('completed'); });
     };
     HistoryComponent.prototype.onSelectedRoom = function (room) {
+        console.log("click onSelectedRoom");
         if (this.selectedRoom == room) {
             this.selectedRoom = null;
         }
@@ -56,7 +60,8 @@ var HistoryComponent = (function () {
     HistoryComponent.prototype.ngOnDestroy = function () {
         console.log("");
         console.log("* <- History.ngOnDestroy " + new Date().toLocaleTimeString());
-        this.history.destroy();
+        this.destroyed$.next(true);
+        this.destroyed$.complete();
         console.log("/ History.ngOnDestroy " + new Date().toLocaleTimeString());
         console.log("");
     };

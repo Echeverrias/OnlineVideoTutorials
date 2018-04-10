@@ -8,11 +8,12 @@ import { UserFile } from './types';
 const TUTOR: string = "tutor";
 const STUDENT: string = "student";
 
+
 export interface IUserInfo  {
     userName: string;
     name: string;
     surname: string;
-    userType: any;
+    userType: string;
     email: string
 }
 
@@ -142,11 +143,11 @@ export class User implements IUser{
     }
     
     isATutor(): boolean {
-        return this._userType === User.tutorType;
+        return this._userType === TUTOR;
     }
 
     isAStudent(): boolean {
-        return this._userType === User.studentType;
+        return this._userType === STUDENT;
     }
 
     exist(): boolean{

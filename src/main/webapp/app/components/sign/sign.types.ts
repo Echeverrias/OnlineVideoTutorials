@@ -3,7 +3,7 @@ export type FieldValidationRequest = {
     value: string, 
     userName: string };
 
-export type FormUser = { 
+export type UserForm = { 
     userName: string, 
     password: string, 
     userType: string, 

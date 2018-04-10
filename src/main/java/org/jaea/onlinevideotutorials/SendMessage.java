@@ -7,7 +7,7 @@ package org.jaea.onlinevideotutorials;
 
 import com.google.gson.JsonObject;
 import java.io.IOException;
-import org.jaea.onlinevideotutorials.domain.WebSocketMessage;
+import org.jaea.onlinevideotutorials.domain.WSMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.TextMessage;
@@ -26,38 +26,38 @@ public class SendMessage {
         return toClient(message.toString(), session);
     }
 
-    public static synchronized boolean toClient(WebSocketMessage message, WebSocketSession session){
+    public static synchronized boolean toClient(WSMessage message, WebSocketSession session){
         
         return toClient(message.toString(), session);
     }
 
     private static synchronized boolean toClient(String message, WebSocketSession session){
         log.info("SendMessage.toClient");
+       
         //log.info("session: {}", session);
         log.info("message: {}", message);
         //Info.SendMsg(session.getId());
         boolean isSuccessful = false;
         
         TextMessage textAnswer = new TextMessage(message);
-        log.info("######## SendMessage.toClient 1");
+        log.info("TextMessage created");
         try{
             
-             //   log.info("Sending message: {} to {}", message.toString(), session.getId());
+               log.info("Sending message: {} to {}", message.toString(), session.getId());
             
             session.sendMessage(textAnswer);
-            log.info("######## SendMessage.toClient 2");
-            //log.info("message has been sent");
+           
+            log.info("message has been sent");
             isSuccessful = true;
         }
         catch(IOException e){
-            log.info("######## SendMessage.toClient 3");
-            log.info("error"); 
-            log.info("Can't deliver the message: {} to {} ", message.toString(), session.getId());
+           
+           log.info("!!! ERROR: Can't deliver the message: {} to {} ", message.toString(), session.getId());
             log.error("Sender: {}", session.getId());
         }
         
           // log.info("(message has been sent: {})", isSuccessful);
-          log.info("######## SendMessage.toClient 4");
+         
         return isSuccessful;
     }
     

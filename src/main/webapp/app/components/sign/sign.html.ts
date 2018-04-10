@@ -147,17 +147,20 @@ export const signTemplate = ` <div id="ovt-sign" class="animate container">
              <div class="ovt-container">
                     <div class="ovt-image">
                         <div class="ovt-user-icon big">
-                             <img [src]="getUserImageUrl()" />
+                             <img [src]="me.userImage | userImageSanitizer" />
                         </div>
+                        <button type="button" (click)="fileInput.click()">Elige una imagen</button> 
+                        <input 
+                          style="display: none"
+                          type="file"
+                          ngFileSelect
+                          [options]="uploadImageUserOptions"
+                          (onUpload)="handleUpload($event)"
+                          (beforeUpload)="beforeUpload($event)"
+                          #fileInput>
                      </div>   
                     <div class="ovt-options">
-                        <div class="ovt-text"><p><strong>{{me.myUserName}}</strong></p></div>
-                        <div>Elige una imagen:</div> 
-                         <input type="file"
-                           ngFileSelect
-                           [options]="uploadImageUserOptions"
-                           (onUpload)="handleUpload($event)"
-                           (beforeUpload)="beforeUpload($event)">
+                        <div class="ovt-text"><p><strong>{{me.userName}}</strong></p></div>
                     </div>
 
                 </div>   

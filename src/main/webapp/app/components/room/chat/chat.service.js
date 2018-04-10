@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
-var connection_service_1 = require("./../../../services/connection.service");
+var connection_service_1 = require("./../../../core/connection.service");
 var hexColorGenerator_1 = require("./hexColorGenerator");
 var ChatService = (function () {
     function ChatService(connection) {

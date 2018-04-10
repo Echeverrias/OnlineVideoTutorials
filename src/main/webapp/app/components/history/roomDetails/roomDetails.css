@@ -2,90 +2,71 @@
     Created on : 25-ene-2016, 19:24:29
     Author     : juanan
 */
-.ovt-room-details {
-    position:relative;
-    top: 1em;
-    width: 52%;
-    display: block;
-    margin: auto;
-    background-color: #EEFACA;
-    box-sizing: border-box;
-    text-align: center;
-    border-radius: 3px;
-    -webkit-box-shadow: 0 0 200px rgba(255, 255, 255, 0.5), 0 1px 2px
-        rgba(0, 0, 0, 0.3);
-    box-shadow: 0 0 200px rgba(255, 255, 255, 0.5), 0 1px 2px
-        rgba(0, 0, 0, 0.3);
-    
-    -webkit-transition: all 0.3s linear;
-    -moz-transition: all 0.3s linear;
-    -o-transition: all 0.3s linear;
-    transition: all 0.3s linear;
+
+
+.ovt-room-data{
+  position: relative;
+  left: 0.5em;
+  margin-bottom: 1em;
 }
 
-.selectedRoom {
-  
-}
-
-#ovt-history:before {
-    content: '';
-    background: rgba(0, 0, 0, 0.08);
-    border-radius: 4px;
-}
-
-#ovt-history .header {
-  width: 100%;
-  
-   
-}
-
-#ovt-history .ovt-out {
-  margin-bottom:1em;
-  
-}
-
-div.ovt-container-col div.ovt-rooms > div.header {
-  margin-bottom:1em;
-  margin-top:1em;
-}
-
-div.ovt-rooms  div.header {
-  margin-bottom:1em;
-  
-}
-
-#ovt-history div.ovt-rooms{
-  padding: 0em;
-}
 
 div.ovt-rooms{
   width: 70%;
   margin:auto;
 }
 
-div.ovt-rooms ul{
-  list-style: none; 
+div.ovt-selectable ul{
   padding:0;  
   margin:0; 
   text-align: left;
 }
 
-div.ovt-rooms li.ovt-room-selector{
-  margin-bottom:0.5em;
-  padding-left: 1em; 
-  text-indent: -1em;
+div.ovt-room-data ul li{
+  position:relative;
+  left: 1.4em;
+  cursor: auto;
 }
 
+.ovt-selectable:hover{
+  font-weight: bold;
+}
+
+.ovt-selectable.ovt-select{
+  font-weight: bold;
+}
+
+.ovt-selectable.ovt-select lu{
+  padding-left: 0.5em;
+}
+
+
+.ovt-selectable.ovt-select li{
+  font-weight: initial;
+}
+
+div.ovt-selectable {
+  display: inline;
+}
+
+/*
 div.ovt-rooms li.ovt-room-selector::before{
  content: '\2022';
  padding-right:7px;
 }
+*/
 
 div.ovt-rooms li.ovt-room-selector span:hover{
   cursor: pointer;
   background: #FFEB3B;
   font-weight: bold;
 }
+
+
+
+
+
+
 
 button.ovt-inline{
   display: inline-block;
@@ -120,27 +101,18 @@ div.ovt-out button{
   margin: 2em auto 0em auto;
 }
 
-@media screen and (max-width: 1140px){
-  
-  #ovt-history{
-      width: 65%;
-  }
+img.participantImage{
+  margin-left:0.5em;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: block;
+  margin: 0em;
+  overflow: hidden;
+  position: absolute;
+  right: -6em;
+  top: -1em;
 }
 
-@media screen and (max-width:900px) {
-  
-  
-  #ovt-history {
-    width: 78%;
-  }
-}
 
 
-
-@media screen and (max-width:425px) {
-  
-  
-  #ovt-history {
-    width: 95%;
-  }
-}

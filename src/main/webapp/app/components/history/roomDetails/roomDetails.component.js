@@ -25,11 +25,36 @@ var RoomDetailsComponent = (function () {
         console.log("/ RoomDetailsComponent constructor " + new Date().toLocaleTimeString());
         console.log("");
     }
+    RoomDetailsComponent.prototype.ngOnChanges = function (changes) {
+        console.log('onChanges');
+        var dsNow = changes['detailsSelected'].currentValue;
+        this.participantsSelected = this.participantsSelected && dsNow;
+        this.filesSelected = this.filesSelected && dsNow;
+    };
+    RoomDetailsComponent.prototype.onStopPropagation = function (event) {
+        console.log("onStopPropagation");
+        event.stopPropagation();
+    };
+    RoomDetailsComponent.prototype.showOrHideDetails = function () {
+        console.log('click showOrHideDetails');
+        this.detailsSelected = !this.detailsSelected;
+        if (!this.detailsSelected) {
+            this.participantsSelected = false;
+            this.filesSelected = false;
+        }
+    };
     RoomDetailsComponent.prototype.showOrHideParticipants = function () {
+        console.log('click showOrHideParticipants');
         this.participantsSelected = !this.participantsSelected;
     };
     RoomDetailsComponent.prototype.showOrHideFiles = function () {
+        console.log(' click showOrHideFiles');
         this.filesSelected = !this.filesSelected;
+    };
+    RoomDetailsComponent.prototype.onDownload = function () {
+        // The download event trigger the beforeunload event
+        //console.log('downloadEvent');
+        //sessionStorage.setItem('downloadEvent', 'true'); 
     };
     return RoomDetailsComponent;
 }());
@@ -37,6 +62,10 @@ __decorate([
     core_1.Input(),
     __metadata("design:type", history_types_1.RoomHistory)
 ], RoomDetailsComponent.prototype, "room", void 0);
+__decorate([
+    core_1.Input(),
+    __metadata("design:type", Boolean)
+], RoomDetailsComponent.prototype, "detailsSelected", void 0);
 RoomDetailsComponent = __decorate([
     core_1.Component({
         moduleId: module.id,

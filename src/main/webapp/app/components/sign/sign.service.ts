@@ -6,13 +6,12 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 
-import { ConnectionService } from './../../services/connection.service';
-import { HandlerService } from './../../services/handler.service';
-import { UserService } from './../../services/user.service';
+import { ConnectionService } from './../../core/connection.service';
+import { UserService } from './../../core/user.service';
 
 import { IUser, IUserInfo, User } from './../../models/user';
 import { UserFile } from './../../models/types';
-import { FormUser } from './sign.types';
+import { UserForm } from './sign.types';
 import { FieldValidationRequest } from './sign.types';
 import { UserFactory } from './../../models/userFactory';
 import { IdMessage } from './../../models/types';
@@ -34,7 +33,7 @@ const EDIT_PERFIL_ENDPOINT: string = "editPerfil";
 export class SignService {
    
     
-    constructor(private http: Http, private connection: ConnectionService, private handler: HandlerService, private me: UserService){
+    constructor(private http: Http, private connection: ConnectionService, private me: UserService){
         console.log("*SignService constructor")
         
     }

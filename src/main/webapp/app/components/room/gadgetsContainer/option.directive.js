@@ -86,6 +86,9 @@ var OptionDirective = (function () {
         };
         return changeImage;
     };
+    OptionDirective.prototype.ngOnDestroy = function () {
+        clearInterval(this.intervalAlert);
+    };
     return OptionDirective;
 }());
 __decorate([

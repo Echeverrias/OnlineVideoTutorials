@@ -35,15 +35,21 @@ import org.springframework.web.multipart.MultipartFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.JsonAdapter;
+
 
 @Entity
 @Table(name="files")
+@JsonAdapter(UserFileSerializer.class)
 public class UserFile implements Comparable<UserFile>{
     
+    @Exclude
 	@JsonIgnore
 	@Transient
 	private final Logger log = LoggerFactory.getLogger(UserFile.class);
-	 
+    
+    @Exclude
     @JsonIgnore
     @Id
     @GeneratedValue
@@ -52,15 +58,19 @@ public class UserFile implements Comparable<UserFile>{
     
     @Column(nullable = false)
     private String name;
-
+    
     private String extension;
-
+    
     private String mimeType; 
-
+    
     @Lob @Basic(fetch = FetchType.LAZY)
     private byte[] content;
 
+    private String loadUrl;
     
+    private String downloadUrl;
+
+    @Exclude
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "room_id")
@@ -123,6 +133,18 @@ public class UserFile implements Comparable<UserFile>{
     public byte[] getContent(){
         return this.content;
     }
+
+    public String getLoadUrl(){
+        return this.loadUrl;
+    }
+
+    public String getDownloadUrl(){
+        return this.downloadUrl;
+    }
+
+    public AccessFile getAccessToTheFile(){
+        return new AccessFile(this.name, this.loadUrl, this.downloadUrl);
+    }
     
     // The extension of the file will not change
     public void setName(String name){
@@ -142,6 +164,14 @@ public class UserFile implements Comparable<UserFile>{
     public void setRoom(MediaRoom room){
         log.info("UserFile.set(room)");
         this.room = room;
+    }
+
+    public void setLoadUrl(String loadUrl){
+        this.loadUrl = loadUrl;
+    }
+
+    public void setDownloadUrl(String downloadUrl){
+        this.downloadUrl = downloadUrl;
     }
 
     

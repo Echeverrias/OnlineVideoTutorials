@@ -8,7 +8,7 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { ChatMessageComponent } from './chatMessage/chatMessage.component';
 
 import { ChatService } from './chat.service';
-import { UserService } from './../../../services/user.service';
+import { UserService } from './../../../core/user.service';
 
 import { ChatMessage } from './chatMessage/chatMessage.types';
 

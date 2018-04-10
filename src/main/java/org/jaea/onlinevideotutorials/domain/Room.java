@@ -45,6 +45,7 @@ import javax.persistence.Transient;
 import javax.persistence.CascadeType;
 import org.kurento.client.Continuation;
 import org.kurento.client.MediaPipeline;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.CreatedDate;
@@ -60,27 +61,23 @@ import com.google.gson.annotations.Expose;
 @MappedSuperclass
 public class Room implements  Comparable<Room>{
     
-    
+    @Exclude
     @Transient
     private final Logger log = LoggerFactory.getLogger(Room.class);
     
-    @Expose
     @Id
     @GeneratedValue
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
     
-    @Expose
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP) 
     @CreatedDate
     protected Date createdAt;
     
-    @Expose
     @Column(nullable = false)
     protected String name = "";
     
-    @Expose
     @Column(nullable = false)
     protected String tutor = "";
     

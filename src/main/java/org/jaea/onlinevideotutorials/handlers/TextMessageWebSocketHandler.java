@@ -94,6 +94,42 @@ public abstract class TextMessageWebSocketHandler extends TextWebSocketHandler {
       
     }
 
+    protected Object getTextMessagePayLoadAsObject(Type dataType, TextMessage message){
+        
+                JsonObject jsonMessage = this.gson.fromJson(message.getPayload(), JsonObject.class);
+                JsonObject payload = null;
+                try {
+                    payload = jsonMessage.getAsJsonObject(this.attributeNameOfTheMessagePayload); 
+                }
+                catch (Exception e){
+                    payload = new JsonObject();
+                }
+                Object data = null;
+                try {
+                    data = this.gson.fromJson(payload, dataType);
+                }
+                catch(Exception e){
+                    this.log.info("ERROR:{}", e.getMessage());
+                }  
+                return data;
+              
+            }
+
+
+        protected String getTextMessagePayLoadAsString(TextMessage message){
+                
+            JsonObject jsonMessage = this.gson.fromJson(message.getPayload(), JsonObject.class);
+            this.log.info("jsonMessage: {}", jsonMessage.toString());
+            String payload = null;
+            try {
+                payload = jsonMessage.get("payload").getAsString(); 
+            }
+            catch (Exception e){
+                this.log.info("ERROR:{}", e.getMessage());
+            }  
+            return payload;
+        }        
+
     protected String getTextMessagePayLoadData(String dataName, TextMessage message){
         JsonObject payload = this.getTextMessagePayLoad(message);
         return payload.get(dataName).getAsString();

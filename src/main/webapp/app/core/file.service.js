@@ -12,43 +12,38 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/http");
 var Subject_1 = require("rxjs/Subject");
-var Observable_1 = require("rxjs/Observable");
 var connection_service_1 = require("./connection.service");
 var FileService = (function () {
     function FileService(http, connection) {
         this.http = http;
         this.connection = connection;
-        this.uploadedFileEndPoint = "uploadedFile/shared"; // stomp
         this.uploadFilePath = 'upload';
         this.downloadFilePath = "download";
         this.userImagePath = 'userImage';
+        //private newFileAlert: EventEmitter<string>;
         this._sizeLimit = 1000000;
         console.log("");
         console.log("****** new FileService");
         this.uploadUserImageAddress = "" + this.connection.urlServer + this.uploadFilePath + "/" + this.userImagePath;
         this.sharedFiles$ = new Subject_1.Subject();
-        this.sharedFiles$ = new Subject_1.Subject();
     }
-    FileService.prototype.init = function (address) {
-        console.log("FileService.init(" + address + ")");
-        // console.log(`FileService - this.files:`, this.files); 
-        this.uploadFileAddress = "" + this.connection.urlServer + this.uploadFilePath + "/" + address;
-        this.shippingAddress = "/" + this.uploadedFileEndPoint + "/" + address;
-        console.log(this.uploadFilePath);
-        console.log(this.shippingAddress);
-        this.stompClient = this.connection.stompOverWsClient;
-        this.subscription = this.stompClient.subscribe(this.shippingAddress, this.getOnMessage());
-    };
     Object.defineProperty(FileService.prototype, "sizeLimit", {
+        /*
+        init(address: string): void {
+            console.log(`FileService.init(${address})`);
+           // console.log(`FileService - this.files:`, this.files);
+            this.uploadFileAddress = `${this.connection.urlServer}${this.uploadFilePath}/${address}`;
+            console.log(this.uploadFilePath);
+            /*
+            this.shippingAddress = `/${this.uploadedFileEndPoint}/${address}`;
+            console.log(this.shippingAddress);
+            this.stompClient = this.connection.stompOverWsClient;
+            this.subscription = this.stompClient.subscribe(this.shippingAddress, this.getOnMessage());
+            //
+        }
+    */
         get: function () {
             return this._sizeLimit;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(FileService.prototype, "uploadFileUrl", {
-        get: function () {
-            return this.uploadFileAddress;
         },
         enumerable: true,
         configurable: true
@@ -56,32 +51,36 @@ var FileService = (function () {
     FileService.prototype.getUploadUserImageUrl = function (userName) {
         return this.uploadUserImageAddress + "/" + userName;
     };
-    FileService.prototype.getExistingFiles = function () {
+    /*
+    public getExistingFiles(): Observable<AccessFile []>{
         // Implementar llamada al servidor para que devuelva los archivos compartidos
-        var existingFiles = [];
-        return Observable_1.Observable.of(existingFiles);
-    };
-    FileService.prototype.getSharedFiles = function () {
+        let existingFiles = [];
+        return Observable.of(existingFiles);
+    }
+
+    public getSharedFiles(): Subject<AccessFile>{
         return this.sharedFiles$;
-    };
-    FileService.prototype.getOnMessage = function () {
-        var _this = this;
-        var onMessage = function (data) {
-            console.log("FileService.onMessage: ", data);
-            var file = JSON.parse(data.body);
-            file.loadUrl = _this.connection.pathName + file.loadUrl;
+    }
+
+    private getOnMessage(): any{
+        let onMessage = (data: any) => {
+            console.log("FileService.onMessage: ",data);
+            let file: AccessFile = JSON.parse(data.body);
+            file.loadUrl = this.connection.pathName + file.loadUrl;
             file.loadUrl = file.loadUrl.replace('//', '/');
-            file.downloadUrl = _this.connection.pathName + file.downloadUrl;
+            file.downloadUrl = this.connection.pathName + file.downloadUrl;
             file.downloadUrl = file.downloadUrl.replace('//', '/');
-            _this.sharedFiles$.next(file);
-        };
+            this.sharedFiles$.next(file);
+         }
+
         return onMessage;
-    };
+    }
+   */
     FileService.prototype.getFileName = function (file) {
         return file;
     };
     FileService.prototype.destroy = function () {
-        this.subscription.unsubscribe();
+        //    this.subscription.unsubscribe();
     };
     return FileService;
 }());

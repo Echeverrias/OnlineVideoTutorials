@@ -4,19 +4,16 @@ import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
 import { HttpModule }    from '@angular/http';
 import { routing } from './app.routing';
 import { NgUploaderModule } from 'ngx-uploader';
-import { RoomModule } from './components/room/room.module';
 
+import { CoreModule } from './core/core.module';
+import { RoomModule } from './components/room/room.module';
 import { HistoryModule } from './components/history/history.module';
+import { PipesModule } from './pipes/pipes.module';
 
 import { AppComponent }  from './app.component';
 import { SignComponent } from './components/sign/sign.component';
 import { UserOptionsComponent } from './components/userOptions/userOptions.component';
 import { WaitingRoomComponent } from './components/waitingRoom/waitingRoom.component';
-
-import { ConnectionService } from './services/connection.service';
-import { UserService } from './services/user.service';
-import { HandlerService } from './services/handler.service';
-import { FileService } from './services/file.service';
 
 import { AuthGuard } from './guards/auth.guard';
 
@@ -29,8 +26,10 @@ import { AuthGuard } from './guards/auth.guard';
     ReactiveFormsModule,
     HttpModule,
     NgUploaderModule, 
+    CoreModule,
     RoomModule,
     HistoryModule,
+    PipesModule,
     routing, 
   ],
   declarations: [
@@ -40,11 +39,7 @@ import { AuthGuard } from './guards/auth.guard';
     WaitingRoomComponent,
   ],
   providers: [
-      HandlerService,
-      ConnectionService, 
-      UserService,
-      AuthGuard,
-      FileService
+      AuthGuard
   ],
   bootstrap: [ AppComponent ]
 })

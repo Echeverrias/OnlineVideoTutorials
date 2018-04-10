@@ -201,6 +201,7 @@ div.ovt-signUp  div.ovt-container button{
 
 
 
+
 div.ovt-user-menu div.ovt-container {
     
     display: flex;
@@ -251,8 +252,12 @@ div.ovt-edit-perfil div.ovt-container div.ovt-container{
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
-  width: 100%
+  width: 100%;
+  margin-bottom: 1em;
 }
+
+
+
 
 div.ovt-edit-perfil div.ovt-container form{
   padding-top: 0.5em;
@@ -271,7 +276,13 @@ div.ovt-image{
     align-items: center;
     justify-content: space-around;
     
+}
 
+
+div.ovt-edit-perfil div.ovt-container div.ovt-image button{
+  position: relative;
+  bottom: -0.5em;
+  right: 0em;
 }
 
 div.ovt-options{
@@ -279,6 +290,7 @@ div.ovt-options{
     -webkit-order: 2;
     flex: 2 1 60%;
     order: 2;
+    text-align: center,
 }
 
 
@@ -356,13 +368,20 @@ div.ovt-edit-perfil div.ovt-container form div.ovt-submit input.btn{
   margin-bottom: 1em;
 }
 
-div.ovt-edit-perfil div.ovt-container button{
+div.ovt-edit-perfil div.ovt-container form button{
   position: absolute;
   margin: 0;
   width: auto;
   bottom: 0.9em;
   right: 1.7em;
 }
+
+div.ovt-edit-perfil  div.ovt-container button{
+  bottom: 0.9em;
+  right: 1.5em;
+  position: absolute;
+}
+
 
 div.ovt.edit.perfil div.ovt-submit{
   margin-top: 1em;

@@ -8,12 +8,14 @@ import { Component, ViewChild, ElementRef, Input, OnInit, AfterViewInit } from '
 import { LoadingComponent } from './loading/loading.component';
 
 import { ParticipantsService } from './../participants.service';
-import { UserService } from './../../../services/user.service';
+import { UserService } from './../../../core/user.service';
 
 import { participantComponentTemplate } from './participant.html';
 
 import { RtcPeerOptions } from './participant.types';
+import { IceCandidate, OfferInfo, AddressInfo } from './../participants.types';
 
+import { Subject } from 'rxjs/Subject';
 
 @Component({
     moduleId: module.id,
@@ -25,11 +27,11 @@ import { RtcPeerOptions } from './participant.types';
 export class ParticipantComponent implements OnInit{
 
     @ViewChild('video') video : ElementRef;
-    @Input() id : string;
+    @Input('userName') _userName: string;
     @Input() class : string;
     @Input() name : string;
     @Input() userType : string;
-    @Input() roomName : string;
+    @Input() roomId : number;
     @Input() size: string; 
     
     private loading: boolean;
@@ -39,7 +41,8 @@ export class ParticipantComponent implements OnInit{
     private constraints: Object;
     private options: RtcPeerOptions;
     private _rtcPeer: any;
-   
+    
+    private destroyed$: Subject<boolean> = new Subject<boolean>();
     
     constructor(private participants: ParticipantsService, private me: UserService) {
 
@@ -67,10 +70,22 @@ export class ParticipantComponent implements OnInit{
     }
 
     ngOnInit() { 
-        //console.log(`Participant.onInit - userType: ${this.userType}`);
-        this.participantUserName = this.id;
+        console.log(`Participant.onInit - userName: ${this._userName}`);
         this.createRtcPeer();
-        this.participants.attachParticipant(this.participantUserName, this.processAnswer(), this.addIceCandidate());
+        /*
+        //this.participants.attachParticipant(this._userName, this.processAnswer(), this.addIceCandidate());
+         attachParticipant(participantUserName: string, receiveVideoAnswer: (sdpAnswer: any) => any , iceCandidate: (candidate: any) => any ){
+        .subscribe((offerInfo: OfferInfo): void => { receiveVideoAnswer(offerInfo.answerSdp) })
+        .subscribe((addressInfo: AddressInfo): void => { iceCandidate(addressInfo.iceCandidate) });
+        */
+        this.participants.getVideoAnswer(this._userName)
+        .takeUntil(this.destroyed$)
+        .subscribe((offerInfo: OfferInfo): void => { this.processAnswer()(offerInfo.answerSdp) })
+        this.participants.getIceCandidate(this._userName)
+        .takeUntil(this.destroyed$)
+        .subscribe((addressInfo: AddressInfo): void => { this.addIceCandidate()(addressInfo.iceCandidate) });
+
+        
     }
 
     ngAfterViewInit() {
@@ -85,7 +100,7 @@ export class ParticipantComponent implements OnInit{
 //   console.log("# {onicecandidate: participant.onIceCandidate.bind(participant)}");
 
         // It is me
-        if (this.me.userName === this.participantUserName) {
+        if (this.me.userName === this._userName) {
 
            _options.localVideo = this.video.nativeElement;
 
@@ -129,9 +144,9 @@ export class ParticipantComponent implements OnInit{
 
     offerToReceiveVideo(error: any, offerSdp: any, wp: any): void {
         console.log("");
-        console.log(`***-> ParticipantComponent.offerToReceiveVideo  ${this.participantUserName} ${new Date().toLocaleTimeString()}`);
+        console.log(`***-> ParticipantComponent.offerToReceiveVideo  ${this._userName} ${new Date().toLocaleTimeString()}`);
         
-        this.participants.offerToReceiveVideo(this.participantUserName, this.roomName, offerSdp);
+        this.participants.offerToReceiveVideo(this.roomId, this._userName, offerSdp);
         
 
         console.log(`/ ParticipantComponent.offerToReceiveVideo ${new Date().toLocaleTimeString()}`);
@@ -142,7 +157,7 @@ export class ParticipantComponent implements OnInit{
         // console.log("");
         // console.log(`* -> Participant.onIceCandidtae - Local candidate: ${JSON.stringify(candidate)} ${new Date().toLocaleTimeString()}`);
 
-        this.participants.onIceCandidate(this.participantUserName, this.roomName, candidate);
+        this.participants.onIceCandidate(this.roomId, this._userName, candidate);
        
         // console.log(`/ Local candidate ${new Date().toLocaleTimeString()}`);
         //console.log("");
@@ -169,14 +184,15 @@ export class ParticipantComponent implements OnInit{
         
     }
 
-    addIceCandidate(): (candidate: any) => any {
+    addIceCandidate(): (iceCandidate: IceCandidate) => any {
         // console.log("");
-        //  console.log(`* Participant.getAddIceCandidate  ${new Date().toLocaleTimeString()}`);
+       
         // console.log("");
 
         return (
-            (candidate: any): any => {
-                this._rtcPeer.addIceCandidate(candidate, function(error) {
+            (iceCandidate: IceCandidate): any => {
+                console.log(' Participant.addIceCandidate:', iceCandidate);
+                this._rtcPeer.addIceCandidate(iceCandidate, function(error) {
                     if (error) {
                         console.error(`!! ERROR:Participant.addIceCandidate`);
                         console.error(error);
@@ -188,16 +204,16 @@ export class ParticipantComponent implements OnInit{
 
     private dispose(): void {
         console.log("");
-        console.log(`* ParticipantComponent.dispose I'm ${this.participantUserName} and i'm disposed ${new Date().toLocaleTimeString()}`);
+        console.log(`* ParticipantComponent.dispose I'm ${this._userName} and i'm disposed ${new Date().toLocaleTimeString()}`);
 
         this._rtcPeer.dispose();
 
-        console.log(`/ ParticipantComponent.dispose I'm ${this.participantUserName}} and i'm disposed ${new Date().toLocaleTimeString()}`);
+        console.log(`/ ParticipantComponent.dispose I'm ${this._userName}} and i'm disposed ${new Date().toLocaleTimeString()}`);
         console.log("");
     }
 
     get userName():string{
-        return this.participantUserName;
+        return this._userName;
     }
 
     private getFirstName():string{
@@ -221,9 +237,12 @@ export class ParticipantComponent implements OnInit{
     }
 
     ngOnDestroy() {
-        console.log(`* Participant(${this.participantUserName}).onDestroy ${new Date().toLocaleTimeString()}`);
+        console.log(`* Participant(${this._userName}).onDestroy ${new Date().toLocaleTimeString()}`);
         this.dispose();
-        this.participants.detachParticipant(this.participantUserName);
+        //this.participants.detachParticipant(this._userName);
+        this.participants.destroyParticipant(this._userName);
+        this.destroyed$.next(true);
+        this.destroyed$.complete();
     }
 
      

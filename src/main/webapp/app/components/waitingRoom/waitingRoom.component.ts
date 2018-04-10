@@ -1,4 +1,5 @@
 
+
 /**
  * @author Juan Antonio Echeverrías Aranda (juanan.echeve@gmail.com)
  * 
@@ -9,10 +10,12 @@ import { Router } from '@angular/router';
 
 
 import { WaitingRoomService } from './waitingRoom.service';
-import { UserService } from '../../services/user.service';
+import { UserService } from '../../core/user.service';
 
 import{ waitingRoomTemplate } from './waitingRoom.html'
 import { IRoom, Room } from './../../models/room';
+import { IUserInfo } from './../../models/user';
+import { Subject } from 'rxjs/Subject';
 
 
  @Component({
@@ -20,18 +23,20 @@ import { IRoom, Room } from './../../models/room';
     selector:'ovt-waitingRoom',
     styleUrls: ["waitingRoom.css"],
     template: waitingRoomTemplate,
-    providers: [WaitingRoomService]
+    providers: [WaitingRoomService],
+    //changeDetection: ChangeDetectionStrategy.OnPush,
  })
 
- export class WaitingRoomComponent implements OnInit, OnDestroy{
+ export class WaitingRoomComponent implements OnInit, OnDestroy {
      
     private availableRooms : IRoom[];
     private roomName: string;
+    private destroyed$: Subject<boolean> = new Subject<boolean>();
     
     private onavailableRoomsSubscription : Object; 
     private onNewavailableRoomSubscription: Object;
     private onavailableRoomLessSubscription: Object;
-     
+    
     constructor(private waitingRoom: WaitingRoomService, private router: Router, private me: UserService){
         console.log("");
         console.log(`% WaitingRoom constructor ${new Date().toLocaleTimeString()}`); 
@@ -44,27 +49,27 @@ import { IRoom, Room } from './../../models/room';
     ngOnInit(){
         console.log("WaitingRoomComponent.onInit");
         console.log(this.me);
-        this.getAvailableRooms();
-        if (this.me.amIAStudent()){
-            this.waitingRoom.initAsStudent(this.me.getMe());
+        this.waitingRoom.init(this.me.getMe());
+        if(this.me.amIAStudent()){
+            this.waitingRoom.initSubscription();
         }
-        else{
-            console.log("Im a tutor");
-            console.log("My current room: ", this.me.getMyCurrentRoom());
-            this.waitingRoom.initAsTutor(this.me.getMe());
-        }    
+        this.getAvailableRooms(this.me.getMe());
+       
     }
 
-    getAvailableRooms(){    
+    getAvailableRooms(me: IUserInfo){    
         this.waitingRoom.getAvailableRooms()
+        .takeUntil(this.destroyed$)
         .subscribe(availableRooms => {
-            console.log("available rooms: ", availableRooms);
-            this.availableRooms = availableRooms
+            console.log('WaitingRoomComponent.getAvailableRooms.subscription:');
+            console.log(availableRooms);
+            this.availableRooms = availableRooms;
         });
     }    
-
+    
     onCreateRoom(roomName: string){
         this.waitingRoom.createRoom(roomName, this.me.userName)
+       .takeUntil(this.destroyed$)
        .subscribe(
             (room: IRoom) => {
                 this.enterIntoRoom(room);
@@ -74,16 +79,6 @@ import { IRoom, Room } from './../../models/room';
         
     }
 
-/* // EL nombre de la room será su id
-    private createRoomName(roomName : string): string{
-        let name = roomName;
-        if (name !== ""){ 
-            name = name.replace(this.me.userName, ""); 
-            name = name.replace(" ", "_");
-        }     
-        return name === "" ? `${this.me.userName}` : `${this.me.userName }_${name }`;
-    }
-*/
     onJoinRoom (room: IRoom){
         console.log("");
         console.log(`* WaitingRoom.joinRoom: ${room.name} ${new Date().toLocaleTimeString()}`);
@@ -91,6 +86,7 @@ import { IRoom, Room } from './../../models/room';
             let auxRoom: Room = new Room();
             auxRoom.setDataRoom(room);
             this.waitingRoom.retrieveRoom(auxRoom.json())
+            .takeUntil(this.destroyed$)
             .subscribe(
                 (room: IRoom) => {
                     this.enterIntoRoom(room);
@@ -123,12 +119,9 @@ import { IRoom, Room } from './../../models/room';
         console.log("");
         console.log(`* <- WaitingRoom.ngOnDestroy ${new Date().toLocaleTimeString()}`);
         
-        if (this.me.amIAStudent()){
-            this.waitingRoom.destroyAsStudent(this.me.getMe());
-        }
-        else{
-            this.waitingRoom.destroyAsTutor(this.me.getMe());
-        }    
+        this.waitingRoom.destroy();
+        this.destroyed$.next(true);
+        this.destroyed$.complete();
         
         console.log(`/ WaitingRoom.ngOnDestroy ${new Date().toLocaleTimeString()}`);
         console.log("")

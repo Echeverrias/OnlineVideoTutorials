@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var platform_browser_1 = require("@angular/platform-browser");
-var user_service_1 = require("../../services/user.service");
+var user_service_1 = require("../../core/user.service");
 var userOptions_html_1 = require("./userOptions.html");
 var sign_component_1 = require("../sign/sign.component");
 var UserOptionsComponent = (function () {
@@ -37,9 +37,15 @@ var UserOptionsComponent = (function () {
         this.displayOrHideMenu();
         this.router.navigate(['/sign']);
     };
-    UserOptionsComponent.prototype.getUserImageUrl = function () {
-        return this.sanitizer.bypassSecurityTrustResourceUrl("data:" + this.me.userImageMimeType + "; base64," + this.me.userImageContent);
-    };
+    /*
+   getUserImageUrl(): SafeResourceUrl{
+      if (this.me.userImageMimeType) {
+           return this.sanitizer.bypassSecurityTrustResourceUrl(`data:${this.me.userImageMimeType}; base64,${this.me.userImageContent}`);
+      }else{
+          return null;
+      }
+   }
+*/
     UserOptionsComponent.prototype.onDisplayMenu = function (event) {
         this.displayOrHideMenu();
         event.stopPropagation();

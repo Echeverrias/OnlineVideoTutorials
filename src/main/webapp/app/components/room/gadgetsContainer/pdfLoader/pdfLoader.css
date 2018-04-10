@@ -3,6 +3,7 @@
     background:#F1F1F1;
     height:100%;
     display:block;
+    text-align: center;
 }
 
 
@@ -10,6 +11,7 @@
     border: solid;
     overflow-y: scroll;
     height: 90%;
+    text-align: left;
 }
 
 .ovt-pdfLoader ul{

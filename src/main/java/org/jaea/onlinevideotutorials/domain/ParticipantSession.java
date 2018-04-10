@@ -19,6 +19,7 @@ import org.jaea.onlinevideotutorials.Info;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.gson.JsonObject;
+import com.google.gson.annotations.JsonAdapter;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
@@ -28,16 +29,20 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.kurento.client.WebRtcEndpoint;
+import org.kurento.client.IceCandidate;
 import org.springframework.web.socket.WebSocketSession;
 
 @Entity
 @Table(name="users")
+@JsonAdapter(ParticipantSessionSerializer.class)
 public class ParticipantSession  extends UserSession{
     
+    @Exclude
     @JsonIgnore
     @Transient
     private TutorialMedia tutorialMedia;
     
+    @Exclude
     @ManyToMany(mappedBy="participantsHistory")
     @JsonIgnoreProperties(value = "participantsHistory")
     private List<MediaRoom> roomsHistory = new ArrayList<>(); 
@@ -74,10 +79,10 @@ public class ParticipantSession  extends UserSession{
         Info.logInfoFinish("/ User.attachRoomMedia");
     }
 
-    public void addAddress (JsonObject address, ParticipantSession participant) {
+    public void addAddress (IceCandidate iceCandidate, ParticipantSession participant) {
        // Info.logInfoStart("* Participant.addAddress: " + participant.getUserName());
         
-        this.tutorialMedia.addCandidate(address, participant);
+        this.tutorialMedia.addCandidate(iceCandidate, participant);
        // Info.logInfoStart("/ Participant.addAddress: " + participant.getUserName());
     }
     

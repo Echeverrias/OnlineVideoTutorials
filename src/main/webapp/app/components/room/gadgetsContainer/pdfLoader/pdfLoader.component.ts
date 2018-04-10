@@ -1,9 +1,15 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
-import { FileService } from '../../../../services/file.service';
+import { PdfLoaderService } from './pdfLoader.service';
+import { FileService } from '../../../../core/file.service';
 import { pdfLoaderTemplate } from './pdfLoader.html';
 import { NgUploaderOptions, UploadedFile } from 'ngx-uploader';
+import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs/Observable';
 
-import { File } from '../../../../models/types';
+
+import { DownloadDirective } from '../../../../directives/download.directive';
+
+import { AccessFile } from '../../../../models/types';
 
 
 @Component({
@@ -11,6 +17,7 @@ import { File } from '../../../../models/types';
   selector: 'ovt-pdf-loader',
   template: pdfLoaderTemplate,
   styleUrls: ['pdfLoader.css'],
+  providers: [PdfLoaderService]
 })
 
 export class PdfLoaderComponent implements OnInit, OnDestroy{
@@ -22,36 +29,60 @@ export class PdfLoaderComponent implements OnInit, OnDestroy{
   private uploadFile: string;
   private options: NgUploaderOptions ;
   private sizeLimit: number; 
-  private files : File [];
+  private files : AccessFile [];
+  
 
-  constructor (private file: FileService){
+  private destroyed$: Subject<boolean> = new Subject<boolean>();
+ 
+
+  constructor (private pdfLoader: PdfLoaderService){
     console.log("*** new PdfLoaderComponent");
-     this.sizeLimit = this.file.sizeLimit;
+     this.sizeLimit = this.pdfLoader.sizeLimit;
+     
      this.sharedFile = new EventEmitter<string>();
      this.newFile = new EventEmitter<string>();
-     this.files = []; //*
+
+    // this.files = []; //*
   }
   
   ngOnInit(){
     console.log("PdfLoaderComponent.ngOnInit");
     console.log(`address: ${this.address}`);
-    this.file.init(this.address);
-    console.log(`uploadFileUrl: ${this.file.uploadFileUrl}`); 
+    //this.file.init(this.address);
+    this.pdfLoader.init(this.address);
+    console.log(`uploadFileUrl: ${this.pdfLoader.uploadRoomFileUrl}`); 
     this.options = {
-      url: this.file.uploadFileUrl
+      url: this.pdfLoader.uploadRoomFileUrl
     }
-    this.getExistingFiles();
-    this.getSharedFiles();
+    this.getExistingFiles(this.address);
+    this.getIncomingFiles();
   }
   
-  getExistingFiles(){
+  getExistingFiles(idRoom: string){
+    /*
     this.file.getExistingFiles()
       .subscribe(files => { this.files = files.slice(0) });
+    */
+    console.log(`PdfLoaderComponent.getExistingFiles(${idRoom})`);
+    this.pdfLoader.getRoomFiles(idRoom)
+    .takeUntil(this.destroyed$)
+    .subscribe((availableFiles: AccessFile[]): void => { 
+      console.log('Available files:');
+      console.log(availableFiles); 
+      this.files = availableFiles;
+      if (availableFiles && availableFiles.length > 0) {
+        this.alertOfANewFile(`Available files of ${idRoom} room`);
+      }  
+    });
   }
 
-  getSharedFiles(){
-    this.file.getSharedFiles()
-    .subscribe((file: File): void => {
+  getIncomingFiles(){
+    //this.file.getSharedFiles()
+    this.pdfLoader.getIncomingFile()
+    .takeUntil(this.destroyed$)
+    .subscribe((file: AccessFile): void => {
+      console.log('files:');
+      console.log(this.files);
       this.files.push(file);
       let fileName = file.name;
       console.log(`shared file: ${fileName}`);
@@ -96,13 +127,13 @@ export class PdfLoaderComponent implements OnInit, OnDestroy{
   onDownload(){
     // The download event trigger the beforeunload event
 
-    console.log('downloadEvent');
-    sessionStorage.setItem('downloadEvent', 'true'); 
+   // console.log('downloadEvent');
+   // sessionStorage.setItem('downloadEvent', 'true'); 
   }
 
   alertOfANewFile(fileName: string){
     console.log(`PdfLoader.alertOfANewFile(${fileName})`);
-      this.newFile.emit(fileName);
+    this.newFile.emit(fileName);
   }
   
   getExtension(fileName: string): string{
@@ -110,7 +141,10 @@ export class PdfLoaderComponent implements OnInit, OnDestroy{
   } 
   
   ngOnDestroy(){
-    this.file.destroy();
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
+  //  this.file.destroy();
+    this.pdfLoader.destroy();
   }
  
 }

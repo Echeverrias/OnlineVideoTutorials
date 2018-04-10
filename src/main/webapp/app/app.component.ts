@@ -1,9 +1,13 @@
-import { Component, HostListener, ViewChild , AfterViewInit} from '@angular/core';
+import { Component, HostListener, ViewChild , AfterViewInit, EventEmitter} from '@angular/core';
 import { Location } from '@angular/common';
-import { ConnectionService } from './services/connection.service';
-import { UserService } from './services/user.service';
 
 import { UserOptionsComponent } from './components/userOptions/userOptions.component';
+
+import { UserInfoMessage, IdMessage, Message, WSMessage } from './models/types';
+
+import { HandlerService } from './core/handler.service';
+import { ConnectionService } from './core/connection.service';
+import { UserService } from './core/user.service';
 
 const validUserOptionsPath: string = 'rooms';  
 const WS_MSG_ID_CLOSE_TAB: string = 'closeTab';
@@ -20,7 +24,8 @@ const WS_MSG_ID_CLOSE_TAB: string = 'closeTab';
 })
 
 export class AppComponent {
-       
+       private eeDebug: EventEmitter<any>; //*
+
        @ViewChild(UserOptionsComponent)
        private userOptions: UserOptionsComponent;
 
@@ -42,10 +47,16 @@ export class AppComponent {
            sessionStorage.removeItem("downloadEvent");
        }
        
-       constructor(private location :Location, private connection: ConnectionService, private me: UserService) {
+       constructor(private handler: HandlerService, private location :Location, private connection: ConnectionService, private me: UserService) {
         console.log(`% AppComponent constructor`);
         console.log(this.userOptions);
         console.log(`/ AppComponent constructor`);
+
+
+        this.eeDebug = new EventEmitter<Message>()
+        .subscribe((data: WSMessage): void => { console.log(data), console.log(data.payload) });
+        this.handler.attach("debug", this.eeDebug);
+        this.connection.sendWSMessage("debug", "");
      };
 
      ngAfterViewInit(){

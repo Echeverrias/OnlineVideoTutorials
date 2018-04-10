@@ -25,10 +25,11 @@ import org.springframework.web.socket.WebSocketSession;
 @JsonIgnoreProperties(value={"log", "session"})
 public class UserSession extends User{
     
-    
+    @Exclude
     @Transient
     protected final Logger log = LoggerFactory.getLogger(UserSession.class);
     
+    @Exclude
     @Transient
     private WebSocketSession session;
     
@@ -85,7 +86,7 @@ public class UserSession extends User{
         return result;
     }
 
-    public boolean sendMeAMessage(WebSocketMessage message){
+    public boolean sendMeAMessage(WSMessage message){
         log.info("UserSession.sendMeAMessage:");
         log.info(message.toString());
         boolean result = SendMessage.toClient(message, this.session);

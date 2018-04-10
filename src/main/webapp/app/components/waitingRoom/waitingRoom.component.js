@@ -16,14 +16,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var waitingRoom_service_1 = require("./waitingRoom.service");
-var user_service_1 = require("../../services/user.service");
+var user_service_1 = require("../../core/user.service");
 var waitingRoom_html_1 = require("./waitingRoom.html");
 var room_1 = require("./../../models/room");
+var Subject_1 = require("rxjs/Subject");
 var WaitingRoomComponent = (function () {
     function WaitingRoomComponent(waitingRoom, router, me) {
         this.waitingRoom = waitingRoom;
         this.router = router;
         this.me = me;
+        this.destroyed$ = new Subject_1.Subject();
         console.log("");
         console.log("% WaitingRoom constructor " + new Date().toLocaleTimeString());
         console.log("Last room: ", this.me.getMyLastRoom());
@@ -34,41 +36,30 @@ var WaitingRoomComponent = (function () {
     WaitingRoomComponent.prototype.ngOnInit = function () {
         console.log("WaitingRoomComponent.onInit");
         console.log(this.me);
-        this.getAvailableRooms();
+        this.waitingRoom.init(this.me.getMe());
         if (this.me.amIAStudent()) {
-            this.waitingRoom.initAsStudent(this.me.getMe());
+            this.waitingRoom.initSubscription();
         }
-        else {
-            console.log("Im a tutor");
-            console.log("My current room: ", this.me.getMyCurrentRoom());
-            this.waitingRoom.initAsTutor(this.me.getMe());
-        }
+        this.getAvailableRooms(this.me.getMe());
     };
-    WaitingRoomComponent.prototype.getAvailableRooms = function () {
+    WaitingRoomComponent.prototype.getAvailableRooms = function (me) {
         var _this = this;
         this.waitingRoom.getAvailableRooms()
+            .takeUntil(this.destroyed$)
             .subscribe(function (availableRooms) {
-            console.log("available rooms: ", availableRooms);
+            console.log('WaitingRoomComponent.getAvailableRooms.subscription:');
+            console.log(availableRooms);
             _this.availableRooms = availableRooms;
         });
     };
     WaitingRoomComponent.prototype.onCreateRoom = function (roomName) {
         var _this = this;
         this.waitingRoom.createRoom(roomName, this.me.userName)
+            .takeUntil(this.destroyed$)
             .subscribe(function (room) {
             _this.enterIntoRoom(room);
         }, function (error) { return console.log(error); });
     };
-    /* // EL nombre de la room será su id
-        private createRoomName(roomName : string): string{
-            let name = roomName;
-            if (name !== ""){
-                name = name.replace(this.me.userName, "");
-                name = name.replace(" ", "_");
-            }
-            return name === "" ? `${this.me.userName}` : `${this.me.userName }_${name }`;
-        }
-    */
     WaitingRoomComponent.prototype.onJoinRoom = function (room) {
         var _this = this;
         console.log("");
@@ -77,6 +68,7 @@ var WaitingRoomComponent = (function () {
             var auxRoom = new room_1.Room();
             auxRoom.setDataRoom(room);
             this.waitingRoom.retrieveRoom(auxRoom.json())
+                .takeUntil(this.destroyed$)
                 .subscribe(function (room) {
                 _this.enterIntoRoom(room);
             }, function (error) { return console.log(error); });
@@ -102,12 +94,9 @@ var WaitingRoomComponent = (function () {
     WaitingRoomComponent.prototype.ngOnDestroy = function () {
         console.log("");
         console.log("* <- WaitingRoom.ngOnDestroy " + new Date().toLocaleTimeString());
-        if (this.me.amIAStudent()) {
-            this.waitingRoom.destroyAsStudent(this.me.getMe());
-        }
-        else {
-            this.waitingRoom.destroyAsTutor(this.me.getMe());
-        }
+        this.waitingRoom.destroy();
+        this.destroyed$.next(true);
+        this.destroyed$.complete();
         console.log("/ WaitingRoom.ngOnDestroy " + new Date().toLocaleTimeString());
         console.log("");
     };
@@ -119,7 +108,7 @@ WaitingRoomComponent = __decorate([
         selector: 'ovt-waitingRoom',
         styleUrls: ["waitingRoom.css"],
         template: waitingRoom_html_1.waitingRoomTemplate,
-        providers: [waitingRoom_service_1.WaitingRoomService]
+        providers: [waitingRoom_service_1.WaitingRoomService],
     }),
     __metadata("design:paramtypes", [waitingRoom_service_1.WaitingRoomService, router_1.Router, user_service_1.UserService])
 ], WaitingRoomComponent);

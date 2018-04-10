@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { ConnectionService } from './../../../services/connection.service';
+import { ConnectionService } from './../../../core/connection.service';
 import { IUserInfo } from './../../../models/user';
 
 import { ChatMessage } from './chatMessage/chatMessage.types';

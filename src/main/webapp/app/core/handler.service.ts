@@ -1,20 +1,21 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs/Subject'
 
-import { Message } from '../models/types';
+import { WSMessage } from '../models/types';
 
 @Injectable()
 export class HandlerService{
 
-    private handlers: Map<string, EventEmitter<Message>>;
+    private handlers: Map<string, Subject<any>>;
 
     constructor(){
         console.log("*HandlerService constructor");
-        this.handlers = new Map<string, EventEmitter<Message>>();
+        this.handlers = new Map<string, Subject<any>>();
     }
 
-    attach(id: string, ee: EventEmitter<Message>):void{
+    attach(id: string, sub: Subject<any>):void{
         console.log(`HandlerService.attach ${id}`);
-        this.handlers.set(id, ee);
+        this.handlers.set(id, sub);
     }
 
     detach(id: string): void{
@@ -24,19 +25,21 @@ export class HandlerService{
 
     handle(message: any): boolean{
         console.log("HandlerService.handle: ", message);
-        let parsedMessage: Message = JSON.parse(message.data);
+        let parsedMessage: WSMessage = JSON.parse(message.data);
         let idMessage: string = parsedMessage.id;
         console.log(`HandlerService.handler ${idMessage}`);
         console.log(`message`, message);
         
-        let ee: EventEmitter<Message> = this.handlers.get(idMessage);
+        let sub: Subject<any> = this.handlers.get(idMessage);
         try {
-            console.log(`ee${idMessage}.next`);
-            ee.next(parsedMessage);
+            console.log(`subscription{${idMessage}}.next(${parsedMessage.payload})`);
+            sub.next(parsedMessage.payload);
             return true;
         }
         catch(e){
             console.log(`Can't find a handler for ${idMessage}`);
+            console.log(`Handler keys:`);
+            console.log(this.handlers.keys());
             return false;
         }    
     }

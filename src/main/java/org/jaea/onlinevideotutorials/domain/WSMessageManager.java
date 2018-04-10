@@ -3,30 +3,28 @@ package org.jaea.onlinevideotutorials.domain;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
+import java.lang.reflect.Modifier; 
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class WebSocketMessage{
+public class WSMessageManager{
 
-   private final Logger log = LoggerFactory.getLogger(WebSocketMessage.class);
+   private final Logger log = LoggerFactory.getLogger(WSMessageManager.class);
 
-   private Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+   private Gson gson = new GsonBuilder().create();
 
-    @Expose
-    private String id;
+   
 
-    @Expose
-    private Object payload;
-
-    @Expose
-    private String error;
-
-    public WebSocketMessage(String id, Object payload){
-        this.id = id;
-        this.payload = payload;
+    public WSMessageManager(){
+        this.gson = new GsonBuilder().create();
     }
 
+    public WSMessageManager(GsonBuilder gsonBuilder){
+        this.gson = gsonBuilder.create();
+     
+    }
+/*
     public String getId(){
         return this.id;
     }
@@ -68,5 +66,5 @@ public class WebSocketMessage{
     public String toString2(){
         return this.gson.toJson(this);
     }
-
+*/
 }

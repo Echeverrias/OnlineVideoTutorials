@@ -14,9 +14,8 @@ var http_1 = require("@angular/http");
 var Rx_1 = require("rxjs/Rx");
 require("rxjs/add/operator/map");
 require("rxjs/add/operator/catch");
-var connection_service_1 = require("./../../services/connection.service");
-var handler_service_1 = require("./../../services/handler.service");
-var user_service_1 = require("./../../services/user.service");
+var connection_service_1 = require("./../../core/connection.service");
+var user_service_1 = require("./../../core/user.service");
 //type UserMessage = { userName: string, userType: string, name: string}
 //type LoginMessage = UserMessage & IdMessage;
 //type LogoutMessage = { userName: string } & IdMessage;
@@ -28,10 +27,9 @@ var VALIDATE_ENDPOINT = "validateField";
 var REGISTER_ENDPOINT = "register";
 var EDIT_PERFIL_ENDPOINT = "editPerfil";
 var SignService = (function () {
-    function SignService(http, connection, handler, me) {
+    function SignService(http, connection, me) {
         this.http = http;
         this.connection = connection;
-        this.handler = handler;
         this.me = me;
         console.log("*SignService constructor");
     }
@@ -145,7 +143,7 @@ var SignService = (function () {
 }());
 SignService = __decorate([
     core_1.Injectable(),
-    __metadata("design:paramtypes", [http_1.Http, connection_service_1.ConnectionService, handler_service_1.HandlerService, user_service_1.UserService])
+    __metadata("design:paramtypes", [http_1.Http, connection_service_1.ConnectionService, user_service_1.UserService])
 ], SignService);
 exports.SignService = SignService;
 //# sourceMappingURL=sign.service.js.map

@@ -34,6 +34,7 @@ import org.jaea.onlinevideotutorials.domain.UserSession;
 import org.jaea.onlinevideotutorials.repositories.MediaRoomRepository;
 
 import org.kurento.client.KurentoClient;
+import org.kurento.client.IceCandidate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -275,12 +276,12 @@ public class RoomsManager {
         return sdpAnswer;
     }
     
-    public void manageAddress(String addresseeUserName, String senderUserName, JsonObject address){
+    public void manageAddress(String addresseeUserName, String senderUserName, IceCandidate iceCandidate){
     //    log.info("* RoomManager.manageAddress -> {} <- {}: {}", addresseeUserName, senderUserName);
         
         MediaRoom room = this.roomsByUserName.get(addresseeUserName);
         if (room != null){
-            room.manageAddress(addresseeUserName, senderUserName, address);
+            room.manageAddress(addresseeUserName, senderUserName, iceCandidate);
         }
      //   log.info("/ RoomManager.manageAddress"); 
     }

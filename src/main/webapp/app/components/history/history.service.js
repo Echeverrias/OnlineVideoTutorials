@@ -12,16 +12,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/http");
 var Observable_1 = require("rxjs/Observable");
-var connection_service_1 = require("./../../services/connection.service");
+var connection_service_1 = require("./../../core/connection.service");
 var history_types_1 = require("./history.types");
 var ROOMS_HISTORY_URI = "/{userName}/roomshistory";
 var HistoryService = (function () {
     function HistoryService(connection, http) {
         this.connection = connection;
         this.http = http;
+        this.id = Math.floor(Math.random() * 99);
+        console.log("HistoryService{" + this.id + "} constructed");
     }
     HistoryService.prototype.getRoomsHistory = function (userName) {
-        console.log("getRoomsHistory of:  " + userName);
+        console.log("HistoryService{" + this.id + "}.getRoomsHistory of:  " + userName);
         return this.http.get(this.getRoomsHistoryUrl(userName))
             .map(function (response) {
             console.log('response: ', response);
@@ -39,11 +41,6 @@ var HistoryService = (function () {
         var roomsHistoryUrl = "" + this.connection.urlServer + roomsHistoryUri;
         console.log(roomsHistoryUrl);
         return roomsHistoryUrl;
-    };
-    HistoryService.prototype.destroy = function () {
-        this.exit();
-    };
-    HistoryService.prototype.exit = function () {
     };
     return HistoryService;
 }());

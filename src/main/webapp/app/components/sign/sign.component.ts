@@ -11,12 +11,12 @@ import { Observable, Subject } from 'rxjs/Rx';
 import { first } from 'rxjs/operator/first';
 
 import { SignService } from './sign.service';
-import { UserService } from '../../services/user.service';
-import { FileService } from '../../services/file.service';
+import { UserService } from '../../core/user.service';
+import { FileService } from '../../core/file.service';
 
 import { IUser, User } from '../../models/user';
 import { UserFile } from '../../models/types';
-import { FormUser } from './sign.types';
+import { UserForm } from './sign.types';
 import { FieldValidationRequest } from './sign.types';
 
 import { signTemplate } from './sign.html';
@@ -40,7 +40,7 @@ export enum SignStates { SignIn, SignUp, EditPerfil };
 export class SignComponent implements OnInit {
    
     private state: SignStates;
-    private user: FormUser;
+    private user: UserForm;
     private checkFields: boolean;
     private signInForm: FormGroup;
     private signUpForm: FormGroup;
@@ -129,7 +129,7 @@ export class SignComponent implements OnInit {
             }
 
             this.userImage$.subscribe(
-                (userImage) => { this.setMeUserImage(userImage), console.log(userImage) },
+                (userImage: UserFile) => { this.setMeUserImage(userImage), console.log(userImage) },
                     (error) => console.log(error),
                     () => console.log('complete')    
                 )
@@ -180,7 +180,8 @@ export class SignComponent implements OnInit {
 
     /**
     * It checks, when a new user is going to register, that the user name and the email don't exists in the data base. 
-    */     private checkField(value: string, field: string): Observable<{ [key: string]: any }> {
+    */     
+    private checkField(value: string, field: string): Observable<{ [key: string]: any }> {
         console.log(`check${field}: ${value}`);
         return new Observable((obs: any) => {
             console.log(" new Observable");

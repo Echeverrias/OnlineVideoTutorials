@@ -10,71 +10,130 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
-var handler_service_1 = require("./../../services/handler.service");
-var connection_service_1 = require("./../../services/connection.service");
-var user_service_1 = require("./../../services/user.service");
+var handler_service_1 = require("./../../core/handler.service");
+var connection_service_1 = require("./../../core/connection.service");
+var user_service_1 = require("./../../core/user.service");
+var Subject_1 = require("rxjs/Subject");
+// Messages to the server
+var WS_MSG_ID_RECEIVE_VIDEO_FROM = 'receiveVideoFrom';
+var WS_MSG_ID_RECEIVE_ADDRESS = 'receiveAddress';
+// Messages from the server
+var WS_MSG_ID_PREFIX_VIDEO_ANSWER_FROM = 'receiveVideoAnswer-';
+var WS_MSG_ID_PREFIX_ICE_CANDIDATE = 'iceCandidate-';
 var ParticipantsService = (function () {
     function ParticipantsService(handler, connection, me) {
         this.handler = handler;
         this.connection = connection;
         this.me = me;
-        this.eventEmitters = new Map();
+        // this.subscriptions = new Map<string, any>();
+        this.attached = [];
     }
-    ParticipantsService.prototype.attachParticipant = function (participantUserName, receiveVideoAnswer, iceCandidate) {
-        var eeReceiveVideoAnswer = new core_1.EventEmitter();
-        eeReceiveVideoAnswer.subscribe(function (data) { receiveVideoAnswer(data.sdpAnswer); });
-        this.handler.attach("receiveVideoAnswer-" + participantUserName, eeReceiveVideoAnswer);
-        this.eventEmitters.set("receiveVideoAnswer-" + participantUserName, eeReceiveVideoAnswer);
-        var eeIceCandidate = new core_1.EventEmitter();
-        eeIceCandidate.subscribe(function (data) { iceCandidate(data.candidate); });
-        this.handler.attach("iceCandidate-" + participantUserName, eeIceCandidate);
-        this.eventEmitters.set("iceCandidate-" + participantUserName, eeIceCandidate);
+    /*
+        attachParticipant(participantUserName: string, receiveVideoAnswer: (sdpAnswer: any) => any , iceCandidate: (candidate: any) => any ){
+    
+            let eeReceiveVideoAnswer: EventEmitter<OfferInfo> = new EventEmitter<OfferInfo>();
+            let receiveVideoAnswerSubscription = eeReceiveVideoAnswer
+                .subscribe((offerInfo: OfferInfo): void => { receiveVideoAnswer(offerInfo.answerSdp) })
+            this.handler.attach(`${WS_MSG_ID_PREFIX_VIDEO_ANSWER_FROM}${participantUserName}`, eeReceiveVideoAnswer);
+            this.subscriptions.set(`${WS_MSG_ID_PREFIX_VIDEO_ANSWER_FROM}${participantUserName}`, eeReceiveVideoAnswer);
+    
+            let eeIceCandidate: EventEmitter<AddressInfo> = new EventEmitter<AddressInfo>();
+            let eeIceCandidateSubscription = eeIceCandidate
+                .subscribe((addressInfo: AddressInfo): void => { iceCandidate(addressInfo.iceCandidate) });
+            this.handler.attach(`${WS_MSG_ID_PREFIX_ICE_CANDIDATE}${participantUserName}`, eeIceCandidate);
+            this.subscriptions.set(`${WS_MSG_ID_PREFIX_ICE_CANDIDATE}${participantUserName}`, eeIceCandidate);
+    
+        }
+    */
+    ParticipantsService.prototype.getVideoAnswer = function (participantUserName) {
+        var receiveVideoAnswer$ = new Subject_1.Subject();
+        var id = this.getVideoAnswerId(participantUserName);
+        this.handler.attach(id, receiveVideoAnswer$);
+        this.attached.push(id);
+        return receiveVideoAnswer$.asObservable();
     };
-    ParticipantsService.prototype.offerToReceiveVideo = function (participantUserName, roomName, offerSdp) {
+    ParticipantsService.prototype.getVideoAnswerId = function (participantUserName) {
+        return "" + WS_MSG_ID_PREFIX_VIDEO_ANSWER_FROM + participantUserName;
+    };
+    ParticipantsService.prototype.getIceCandidate = function (participantUserName) {
+        var iceCandidate$ = new Subject_1.Subject();
+        var id = this.getIceCandidateId(participantUserName);
+        this.handler.attach(id, iceCandidate$);
+        this.attached.push(id);
+        return iceCandidate$.asObservable();
+    };
+    ParticipantsService.prototype.getIceCandidateId = function (participantUserName) {
+        return "" + WS_MSG_ID_PREFIX_ICE_CANDIDATE + participantUserName;
+    };
+    ParticipantsService.prototype.offerToReceiveVideo = function (roomId, participantUserName, offerSdp) {
         console.log("");
         console.log("***-> ParticipantService.offerToReceiveVideo  " + participantUserName + " " + new Date().toLocaleTimeString());
         //console.log(`offerSdp: ...`);
         //console.log(offerSdp);
         //console.log('Invoking SDP offer callback function');
-        var message = {
-            id: "receiveVideoFrom",
+        var offer = {
+            roomId: roomId,
             userName: participantUserName,
-            offer: offerSdp,
-            roomName: roomName
+            offerSdp: offerSdp,
+            answerSdp: ""
         };
-        this.connection.sendMessage(message);
+        this.connection.sendWSMessage(WS_MSG_ID_RECEIVE_VIDEO_FROM, offer);
         console.log("/ ParticipantService.offerToReceiveVideo " + new Date().toLocaleTimeString());
         console.log("");
     };
-    ParticipantsService.prototype.onIceCandidate = function (participantUserName, roomName, candidate) {
+    ParticipantsService.prototype.onIceCandidate = function (roomId, participantUserName, iceCandidate) {
         // console.log("");
         // console.log(`* -> Participant.onIceCandidtae - Local candidate: ${JSON.stringify(candidate)} ${new Date().toLocaleTimeString()}`);
-        var message = {
-            id: 'receiveAddress',
-            address: candidate,
+        var address = {
+            roomId: roomId,
             userName: participantUserName,
-            roomName: roomName
+            iceCandidate: iceCandidate
         };
-        this.connection.sendMessage(message);
+        this.connection.sendWSMessage(WS_MSG_ID_RECEIVE_ADDRESS, address);
         // console.log(`/ Local candidate ${new Date().toLocaleTimeString()}`);
         console.log("");
     };
-    ParticipantsService.prototype.detachParticipant = function (participantUserName) {
-        this.eventEmitters.get("receiveVideoAnswer-" + participantUserName).unsubscribe();
-        this.eventEmitters.delete("receiveVideoAnswer-" + participantUserName);
-        this.handler.detach("receiveVideoAnswer-" + participantUserName);
-        this.eventEmitters.get("iceCandidate-" + participantUserName).unsubscribe();
-        this.eventEmitters.delete("iceCandidate-" + participantUserName);
-        this.handler.detach("iceCandidate-" + participantUserName);
-    };
+    /*
+    detachParticipant(participantUserName: string): void {
+
+        this.subscriptions.get(`${WS_MSG_ID_PREFIX_VIDEO_ANSWER_FROM}${participantUserName}`).unsubscribe();
+        this.subscriptions.delete(`${WS_MSG_ID_PREFIX_VIDEO_ANSWER_FROM}${participantUserName}`);
+        this.handler.detach(`${WS_MSG_ID_PREFIX_VIDEO_ANSWER_FROM}${participantUserName}`)
+        this.subscriptions.get(`${WS_MSG_ID_PREFIX_ICE_CANDIDATE}${participantUserName}`).unsubscribe();
+        this.subscriptions.delete(`${WS_MSG_ID_PREFIX_ICE_CANDIDATE}${participantUserName}`);
+        this.handler.detach(`${WS_MSG_ID_PREFIX_ICE_CANDIDATE}${participantUserName}`);
+    }
+
+   
+    destroy(): void {
+        
+        this.subscriptions.forEach((subscription, key) => {
+            subscription.unsubscribe();
+            this.handler.detach(key);
+        });
+        this.subscriptions.clear();
+        console.log(this.subscriptions);
+    }
+    */
     ParticipantsService.prototype.destroy = function () {
         var _this = this;
-        this.eventEmitters.forEach(function (eventEmitter, key) {
-            eventEmitter.unsubscribe();
-            _this.handler.detach(key);
-        });
-        this.eventEmitters.clear();
-        console.log(this.eventEmitters);
+        console.log('ParticipantsService.destroy()');
+        console.log(this.attached);
+        this.attached.forEach(function (id) { return _this.handler.detach(id); });
+        console.log(this.attached);
+    };
+    ParticipantsService.prototype.destroyParticipant = function (participantUserName) {
+        console.log("ParticipantsService.destroyParticipant(" + participantUserName + ")");
+        console.log(this.attached);
+        var id = this.getVideoAnswerId(participantUserName);
+        this.handler.detach(id);
+        var i = this.attached.indexOf(id);
+        this.attached.splice(i, 1);
+        id = this.getIceCandidateId(participantUserName);
+        this.handler.detach(id);
+        i = this.attached.indexOf(this.getIceCandidateId(participantUserName));
+        this.attached.splice(i, 1);
+        console.log(this.attached);
     };
     return ParticipantsService;
 }());

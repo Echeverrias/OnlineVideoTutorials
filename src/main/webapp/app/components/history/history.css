@@ -5,12 +5,10 @@
 #ovt-history {
     position:relative;
     top: 1em;
-    width: 52%;
+    width: 70%;
     display: block;
-    margin: auto;
     background-color: #EEFACA;
     box-sizing: border-box;
-    text-align: center;
     border-radius: 3px;
     -webkit-box-shadow: 0 0 200px rgba(255, 255, 255, 0.5), 0 1px 2px
         rgba(0, 0, 0, 0.3);
@@ -23,10 +21,6 @@
     transition: all 0.3s linear;
 }
 
-.selectedRoom {
-  
-}
-
 #ovt-history:before {
     content: '';
     background: rgba(0, 0, 0, 0.08);
@@ -35,12 +29,16 @@
 
 #ovt-history .header {
   width: 100%;
-  
+  text-align: center;
+  margin-bottom: 2em;
    
 }
 
+
+
 #ovt-history .ovt-out {
-  margin-bottom:1em;
+  margin:3em 0 1em 0;
+  text-align: center;
   
 }
 
@@ -50,7 +48,7 @@ div.ovt-container-col div.ovt-rooms > div.header {
 }
 
 div.ovt-rooms  div.header {
-  margin-bottom:1em;
+  margin-bottom:3em;
   
 }
 
@@ -63,13 +61,28 @@ div.ovt-rooms{
   margin:auto;
 }
 
-div.ovt-rooms ul{
-  list-style: none; 
-  padding:0;  
-  margin:0; 
-  text-align: left;
+
+div.ovt-rooms ul li{
+  margin-bottom: 0.2em; 
 }
 
+
+
+/*
+.ovt-rooms .ovt-room-details::before {
+  content: '.';
+  margin-right: 5px;
+  font-size: 80%;
+  color: rgb(8, 0, 0);
+  font-weight: bold;
+  padding: 3px 8px;
+  border-radius: 3px;
+  position:absolute;
+  left: -1em;
+  top: -0.2em;
+}
+*/
+/*
 div.ovt-rooms li.ovt-room-selector{
   margin-bottom:0.5em;
   padding-left: 1em; 
@@ -80,12 +93,7 @@ div.ovt-rooms li.ovt-room-selector::before{
  content: '\2022';
  padding-right:7px;
 }
-
-div.ovt-rooms li.ovt-room-selector span:hover{
-  cursor: pointer;
-  background: #FFEB3B;
-  font-weight: bold;
-}
+*/
 
 button.ovt-inline{
   display: inline-block;
@@ -120,6 +128,23 @@ div.ovt-out button{
   margin: 2em auto 0em auto;
 }
 
+
+/*
+.ovt-room-details{
+  position:relative;
+  left: 5em;
+}
+
+*/
+
+div.header div {
+  display:inline;  
+ }
+
+ div.header div.subheader {
+  margin-right: 3em;
+ }
+
 @media screen and (max-width: 1140px){
   
   #ovt-history{
@@ -130,9 +155,23 @@ div.ovt-out button{
 @media screen and (max-width:900px) {
   
   
+#ovt-history div.ovt-rooms{
+    width: 85%;
+  }
+}
+
+
+@media screen and (max-width:650px) {
+  
+  
   #ovt-history {
     width: 78%;
   }
+
+  div.header div.subheader {
+   margin-right: 1em;
+   }
+  
 }
 
 
@@ -143,4 +182,14 @@ div.ovt-out button{
   #ovt-history {
     width: 95%;
   }
+
+  div.header div.subheader {
+    margin-right: 0em;
+    margin-bottom: 0.5em;
+  }
+
+  div.header div {
+    display:block;  
+   }
+
 }

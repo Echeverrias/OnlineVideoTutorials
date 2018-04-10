@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
-import { UserService } from '../../services/user.service';
+import { UserService } from '../../core/user.service';
 import { userOptionsTemplate } from './userOptions.html';
 import { SignStates } from '../sign/sign.component';
 
@@ -39,9 +39,15 @@ export class UserOptionsComponent{
         this.router.navigate(['/sign']);
      }
 
+     /*
     getUserImageUrl(): SafeResourceUrl{
-       return this.sanitizer.bypassSecurityTrustResourceUrl(`data:${this.me.userImageMimeType}; base64,${this.me.userImageContent}`);
+       if (this.me.userImageMimeType) {
+            return this.sanitizer.bypassSecurityTrustResourceUrl(`data:${this.me.userImageMimeType}; base64,${this.me.userImageContent}`);
+       }else{
+           return null;
+       }     
     }
+*/
 
     onDisplayMenu(event:Event){
         this.displayOrHideMenu();

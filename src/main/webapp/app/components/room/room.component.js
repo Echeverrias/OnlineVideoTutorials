@@ -16,11 +16,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var platform_browser_1 = require("@angular/platform-browser");
-var user_service_1 = require("../../services/user.service");
+var user_service_1 = require("../../core/user.service");
 var room_service_1 = require("./room.service");
 var participants_service_1 = require("./participants.service");
 var participant_component_1 = require("./participant/participant.component");
-var user_1 = require("../../models/user");
+var userFactory_1 = require("./../../models/userFactory");
+var Subject_1 = require("rxjs/Subject");
 var room_html_1 = require("./room.html");
 var RoomComponent = (function () {
     function RoomComponent(room, _participants, router, me, route, sanitizer) {
@@ -30,30 +31,108 @@ var RoomComponent = (function () {
         this.me = me;
         this.route = route;
         this.sanitizer = sanitizer;
-        this.mainUser = new user_1.User();
+        this.destroyed$ = new Subject_1.Subject();
         console.log("");
         console.log("% Room constructor " + new Date().toLocaleTimeString());
         console.log("this.me: ", this.me);
         console.log("this.me.getMe(): ", this.me.getMe());
         console.log("this.me.getMyInfo(): ", this.me.getMyInfo());
-        console.log(this.users);
+        console.log(this.participants);
         console.log("/ Room constructor " + new Date().toLocaleTimeString());
         console.log("");
     }
     RoomComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.route.params.forEach(function (params) {
-            _this.id = params['roomId'];
+            _this.id = parseInt(params['roomId']);
         });
         console.log("RoomComponent.ngOnInit - this.id: " + this.id); //*
         this.room.init(this.me.getMyInfo());
-        this.room.getParticipants().subscribe(function (users) { _this.users = users; });
-        this.room.getMainParticipant().subscribe(function (mainUser) { _this.mainUser = mainUser; });
+        //this.room.getParticipants().subscribe((users: User[]): void => { this.users = users } );
+        //this.room.getMainParticipant().subscribe((mainUser: User): void  => { this.mainUser = mainUser });
+        this.room.getParticipants()
+            .takeUntil(this.destroyed$)
+            .subscribe(function (users) {
+            console.log('RoomComponent.getParticipants()');
+            var participants = users.map(function (u) { return userFactory_1.UserFactory.createAnUser(u); });
+            _this.setAvailableParticipants(participants);
+            console.log('These are the available participants:');
+            console.log(_this.participants);
+        });
+        this.room.getIncomingParticipant()
+            .takeUntil(this.destroyed$)
+            .subscribe(function (user) {
+            console.log('RoomComponent.getNewParticipant()');
+            var participant = userFactory_1.UserFactory.createAnUser(user);
+            _this.setNewParticipant(participant);
+        });
+        this.room.getOutcomingParticipant()
+            .takeUntil(this.destroyed$)
+            .subscribe(function (userName) { return _this.removeParticipant(userName); });
+    };
+    RoomComponent.prototype.setAvailableParticipants = function (participants) {
+        var students = this.getStudents(participants);
+        var tutor = this.findTutor(participants);
+        var me = this.findMe(participants);
+        if (this.me.amIATutor()) {
+            this.mainParticipant = students.splice(0, 1)[0];
+            this.participants = students;
+        }
+        else {
+            this.participants = students;
+        }
+        this.participants.push(me);
+        if (tutor && !this.mainParticipant && this.me.amIAStudent()) {
+            this.mainParticipant = tutor;
+        }
+    };
+    RoomComponent.prototype.findTutor = function (users) {
+        return users.find(function (user) { return user.isATutor(); });
+    };
+    RoomComponent.prototype.findMe = function (users) {
+        var _this = this;
+        return users.find(function (user) { return user.userName === _this.me.userName; });
+    };
+    RoomComponent.prototype.getStudents = function (users) {
+        var _this = this;
+        return users.filter(function (user) { return user.isAStudent() && (user.userName !== _this.me.userName); });
+    };
+    RoomComponent.prototype.setNewParticipant = function (participant) {
+        if (participant.userName === this.me.userName) {
+            this.participants.push(participant);
+        }
+        else if (participant.isAStudent() && (this.me.amIAStudent() || this.mainParticipant)) {
+            this.participants.splice(this.participants.length - 1, 0, participant);
+        }
+        else {
+            this.mainParticipant = participant;
+        }
+    };
+    RoomComponent.prototype.removeParticipant = function (userName) {
+        console.log("");
+        console.log("* RoomComponent.onRemoveParticipant: " + userName + " " + new Date().toLocaleTimeString());
+        if (this.mainParticipant.userName === userName) {
+            //this.mainUser.setToUndefined();
+            this.mainParticipant = undefined;
+        }
+        else {
+            console.log("The participant to remove isn't the main participant");
+            var index = this.getIndexOfParticipant(userName);
+            if (index > -1) {
+                this.participants.splice(index, 1);
+            }
+        }
+        console.log("users after: " + JSON.stringify(this.participants));
+        console.log("/ RoomComponent.onRemoveParticipant " + new Date().toLocaleTimeString());
+        console.log("");
+    };
+    RoomComponent.prototype.getIndexOfParticipant = function (userName) {
+        return this.participants.findIndex(function (p) { return p.userName === userName; });
     };
     RoomComponent.prototype.onExitOfRoom = function () {
         console.log("");
         console.log("<- Room.onExitOfRoom: " + this.id + " " + new Date().toLocaleTimeString());
-        this.room.onExit();
+        //this.room.onExit();
         this.router.navigate(['/rooms']);
         console.log("/ Room.onExitOfRoom " + new Date().toLocaleTimeString());
         console.log("");
@@ -77,8 +156,12 @@ var RoomComponent = (function () {
     };
     RoomComponent.prototype.ngOnDestroy = function () {
         console.log("* Room.OnDestroy " + new Date().toLocaleTimeString());
+        this.destroyed$.next(true);
+        this.destroyed$.complete();
         this._participants.destroy();
         this.room.destroy();
+        this.participants.length = 0;
+        this.mainParticipant = null; //this.mainUser.setToUndefined();
         this.me.deleteMyCurrentRoom();
     };
     return RoomComponent;
@@ -86,11 +169,11 @@ var RoomComponent = (function () {
 __decorate([
     core_1.ViewChild(participant_component_1.ParticipantComponent),
     __metadata("design:type", participant_component_1.ParticipantComponent)
-], RoomComponent.prototype, "mainParticipant", void 0);
+], RoomComponent.prototype, "mainParticipantComponent", void 0);
 __decorate([
     core_1.ViewChildren(participant_component_1.ParticipantComponent),
     __metadata("design:type", core_1.QueryList)
-], RoomComponent.prototype, "participants", void 0);
+], RoomComponent.prototype, "participantsComponent", void 0);
 RoomComponent = __decorate([
     core_1.Component({
         moduleId: module.id,

@@ -1,19 +1,29 @@
 
-
 import { IdMessage } from './../../models/types';
 
 export type SdpAnswerMessage = { sdpAnswer: any } & IdMessage;
 
 export type IceCandidateMessage = { candidate: any } & IdMessage;
 
-export type OfferMessage = { 
+export type OfferInfo = { 
+    roomId: number,
     userName: string, 
-    offer: any, 
-    roomName: string 
-} & IdMessage;
+    offerSdp: any,
+    answerSdp: any, 
+} ;
 
-export type AddressMessage = { 
+export type OfferMessage = IdMessage & OfferInfo;
+
+export type IceCandidate = {
+    candidate: string,
+    sdpMid: string,
+    sdpMLineIndex: number
+}
+export type AddressInfo = {
+    roomId: number, 
     userName: string, 
-    address: any, 
-    roomName: string 
-} & IdMessage;
+    iceCandidate: IceCandidate, 
+};
+
+export type AddressMessage = IdMessage & AddressInfo;
+

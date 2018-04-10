@@ -15,9 +15,9 @@ var HandlerService = (function () {
         console.log("*HandlerService constructor");
         this.handlers = new Map();
     }
-    HandlerService.prototype.attach = function (id, ee) {
+    HandlerService.prototype.attach = function (id, sub) {
         console.log("HandlerService.attach " + id);
-        this.handlers.set(id, ee);
+        this.handlers.set(id, sub);
     };
     HandlerService.prototype.detach = function (id) {
         console.log("HandlerService.detach " + id);
@@ -29,14 +29,16 @@ var HandlerService = (function () {
         var idMessage = parsedMessage.id;
         console.log("HandlerService.handler " + idMessage);
         console.log("message", message);
-        var ee = this.handlers.get(idMessage);
+        var sub = this.handlers.get(idMessage);
         try {
-            console.log("ee" + idMessage + ".next");
-            ee.next(parsedMessage);
+            console.log("subscription{" + idMessage + "}.next(" + parsedMessage.payload + ")");
+            sub.next(parsedMessage.payload);
             return true;
         }
         catch (e) {
             console.log("Can't find a handler for " + idMessage);
+            console.log("Handler keys:");
+            console.log(this.handlers.keys());
             return false;
         }
     };

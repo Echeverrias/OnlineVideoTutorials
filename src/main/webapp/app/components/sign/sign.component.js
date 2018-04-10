@@ -19,8 +19,8 @@ var forms_1 = require("@angular/forms");
 var platform_browser_1 = require("@angular/platform-browser");
 var Rx_1 = require("rxjs/Rx");
 var sign_service_1 = require("./sign.service");
-var user_service_1 = require("../../services/user.service");
-var file_service_1 = require("../../services/file.service");
+var user_service_1 = require("../../core/user.service");
+var file_service_1 = require("../../core/file.service");
 var sign_html_1 = require("./sign.html");
 var SignStates;
 (function (SignStates) {
@@ -136,7 +136,8 @@ var SignComponent = (function () {
     };
     /**
     * It checks, when a new user is going to register, that the user name and the email don't exists in the data base.
-    */ SignComponent.prototype.checkField = function (value, field) {
+    */
+    SignComponent.prototype.checkField = function (value, field) {
         var _this = this;
         console.log("check" + field + ": " + value);
         return new Rx_1.Observable(function (obs) {

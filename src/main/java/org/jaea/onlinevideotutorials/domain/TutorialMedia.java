@@ -23,6 +23,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.WebSocketSession;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  *
  * @author juanan
@@ -35,6 +38,13 @@ public class TutorialMedia implements Closeable{
     
     private final Logger log = LoggerFactory.getLogger(TutorialMedia.class);
     
+    public String TutorialMediaprueba;
+
+    @Exclude
+    @JsonIgnore
+    public String tutorialMediaPrueba2;
+
+    private Long roomId;
     private String userName;
     
     private final MediaPipeline pipeline;
@@ -44,11 +54,12 @@ public class TutorialMedia implements Closeable{
     private final ConcurrentMap<String, WebRtcEndpoint> incomingMediaByUserName = new ConcurrentHashMap<>();;
 
     
-    public TutorialMedia(final MediaPipeline pipeline, final WebSocketSession session, final String userName){
+    public TutorialMedia(final MediaPipeline pipeline, final WebSocketSession session, final String userName, final Long roomId){
         //Info.logInfoStart();
         log.info("");
         log.info("% TutorialMedia Constructor for user: {}", userName, Hour.getTime());
         
+        this.roomId = roomId;
         this.userName = userName;
         this.session = session;
         this.pipeline = pipeline;
@@ -68,9 +79,10 @@ public class TutorialMedia implements Closeable{
                 @Override
                 public void onEvent(OnIceCandidateEvent event) {
                     //Info.logInfoStart2("OnIceCandidateEvent");
-                    JsonObject response = OnIceCandidateMessage.getMessage(userName, event.getCandidate());
+                    IceCandidatePayloadWSMessage icpwsm = new IceCandidatePayloadWSMessage(roomId, userName, event.getCandidate());
                     synchronized (session) {
-                        SendMessage.toClient(response, session);
+                        WSMessage msg = new WSMessage(icpwsm.getIdForWsMessage(), icpwsm);
+                        SendMessage.toClient(msg, session);
                     }
                  //   Info.logInfoFinish2("OnIceCandidateEvent");
                 }    
@@ -78,18 +90,19 @@ public class TutorialMedia implements Closeable{
        //  Info.logInfoFinish("TutorialMedia.addOnIceCandidateListenerToWebRtc");
     }
     
-    public void addCandidate(JsonObject candidate, ParticipantSession participant) {
+    public void addCandidate(IceCandidate iceCandidate, ParticipantSession participant) {
        // Info.logInfoStart();
       //  log.info("");
       //  log.info("{} TutorialMedia.addCandidate {} to {} {}", Info.START_SYMBOL, candidate.toString(), userName, Hour.getTime());
-       
+       /*
         IceCandidate cand = new IceCandidate( candidate.get("candidate").getAsString(),
                                               candidate.get("sdpMid").getAsString(),
 					                          candidate.get("sdpMLineIndex").getAsInt()
                                               );
-        
+       
+        */                                      
        WebRtcEndpoint userWebRtc = this.getEndpointFromUser(participant);
-        userWebRtc.addIceCandidate(cand);
+        userWebRtc.addIceCandidate(iceCandidate);
 	
         
       //  Info.logInfoFinish("/ TutorialMedia.addCandidate");

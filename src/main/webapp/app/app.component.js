@@ -11,19 +11,25 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var common_1 = require("@angular/common");
-var connection_service_1 = require("./services/connection.service");
-var user_service_1 = require("./services/user.service");
 var userOptions_component_1 = require("./components/userOptions/userOptions.component");
+var handler_service_1 = require("./core/handler.service");
+var connection_service_1 = require("./core/connection.service");
+var user_service_1 = require("./core/user.service");
 var validUserOptionsPath = 'rooms';
 var WS_MSG_ID_CLOSE_TAB = 'closeTab';
 var AppComponent = (function () {
-    function AppComponent(location, connection, me) {
+    function AppComponent(handler, location, connection, me) {
+        this.handler = handler;
         this.location = location;
         this.connection = connection;
         this.me = me;
         console.log("% AppComponent constructor");
         console.log(this.userOptions);
         console.log("/ AppComponent constructor");
+        this.eeDebug = new core_1.EventEmitter()
+            .subscribe(function (data) { console.log(data), console.log(data.payload); });
+        this.handler.attach("debug", this.eeDebug);
+        this.connection.sendWSMessage("debug", "");
     }
     AppComponent.prototype.beforeunloadHandler = function (event) {
         console.log(event);
@@ -71,7 +77,7 @@ AppComponent = __decorate([
         styleUrls: ["app.css", "participant.css"],
         template: "\n        <div id=\"ovt-app\" (click)=\"onClickApp()\">\n          <router-outlet></router-outlet>\n          <ovt-user-options [ngClass]=\"{'ovt-user-options':true}\" [hidden]=\"!(this.me.logged && displayUserOptions)\"></ovt-user-options> \n       </div>"
     }),
-    __metadata("design:paramtypes", [common_1.Location, connection_service_1.ConnectionService, user_service_1.UserService])
+    __metadata("design:paramtypes", [handler_service_1.HandlerService, common_1.Location, connection_service_1.ConnectionService, user_service_1.UserService])
 ], AppComponent);
 exports.AppComponent = AppComponent;
 //# sourceMappingURL=app.component.js.map

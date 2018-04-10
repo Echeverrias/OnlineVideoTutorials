@@ -14,8 +14,9 @@
  */
 package org.jaea.onlinevideotutorials.handlers;
 
-import org.jaea.onlinevideotutorials.domain.WebSocketMessage;
+import org.jaea.onlinevideotutorials.domain.WSMessage;
 import org.jaea.onlinevideotutorials.domain.User;
+import org.jaea.onlinevideotutorials.SendMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.internal.LinkedTreeMap;
+import org.kurento.client.IceCandidate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -76,7 +78,11 @@ public class OnlineVideoTutorialsHandler extends TextMessageWebSocketHandler imp
         }   
         
         switch (id) { 
-
+        case "debug":
+            IceCandidate iceCandidate = new IceCandidate("hola", "hola",2);
+            SendMessage.toClient(new WSMessage("debug", iceCandidate), session); 
+            this.log.info("debug message sended"); 
+        break;    
         case ID_NEW_CONNECTION:
             break;
         case ID_RECONNECT:

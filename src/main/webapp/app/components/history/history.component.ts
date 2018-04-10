@@ -6,8 +6,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { Subject } from 'rxjs/Subject';
+
 import { HistoryService } from './history.service';
-import { UserService } from '../../services/user.service';
+import { UserService } from '../../core/user.service';
 
 import{ historyTemplate } from './history.html'
 
@@ -26,6 +28,7 @@ import { IRoomHistory, RoomHistory } from './history.types';
     private userName: string;
     private rooms: RoomHistory [];
     private selectedRoom: RoomHistory = null;
+    private destroyed$: Subject<boolean> = new Subject<boolean>();
     
         
     constructor(private history: HistoryService, private router: Router, private me: UserService){
@@ -44,9 +47,10 @@ import { IRoomHistory, RoomHistory } from './history.types';
 
     private getRoomsHistory(userName: string): void{
         this.history.getRoomsHistory(userName)
+        .takeUntil(this.destroyed$)
         .subscribe(
             (rooms: RoomHistory []) => {
-                this.rooms = rooms; 
+                this.rooms = rooms.reverse(); 
                 console.log(this.rooms)
             },
             error => console.log(error),
@@ -55,6 +59,7 @@ import { IRoomHistory, RoomHistory } from './history.types';
     }
 
     onSelectedRoom(room: RoomHistory){
+        console.log("click onSelectedRoom");
         if (this.selectedRoom == room){
             this.selectedRoom = null;
         }
@@ -73,8 +78,9 @@ import { IRoomHistory, RoomHistory } from './history.types';
         console.log("");
         console.log(`* <- History.ngOnDestroy ${new Date().toLocaleTimeString()}`);
         
-        this.history.destroy();
-        
+        this.destroyed$.next(true);
+        this.destroyed$.complete();
+     
         console.log(`/ History.ngOnDestroy ${new Date().toLocaleTimeString()}`);
         console.log("")
     }

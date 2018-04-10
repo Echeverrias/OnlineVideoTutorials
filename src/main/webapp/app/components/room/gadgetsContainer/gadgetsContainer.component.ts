@@ -20,12 +20,13 @@ export class GadgetsContainerComponent implements AfterViewInit {
     private imagePath: string = "app/components/room/gadgetsContainer/img/";
 
     constructor() {
+        console.log('*** GadgetsContainerComponent has been created');
         this.activeOption = new EventEmitter<boolean>();
         this.sharedFile = new EventEmitter<string>();
     }
 
     ngAfterViewInit() {
-
+        console.log(`GadgetsContainerComponent.address = ${this.address}`);
     }
 
     activateOption(option: string): void {

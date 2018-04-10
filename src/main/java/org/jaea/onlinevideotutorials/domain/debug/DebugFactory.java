@@ -9,7 +9,7 @@ import org.jaea.onlinevideotutorials.managers.RoomsManager;
 import org.jaea.onlinevideotutorials.managers.UserSessionsRegistry;
 import org.jaea.onlinevideotutorials.domain.User;
 import org.jaea.onlinevideotutorials.domain.UserSession;
-import org.jaea.onlinevideotutorials.domain.WebSocketMessage;
+import org.jaea.onlinevideotutorials.domain.WSMessage;
 import org.jaea.onlinevideotutorials.SendMessage;
 
 import com.google.gson.Gson;
@@ -27,7 +27,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 
-import org.jaea.onlinevideotutorials.domain.WebSocketMessage;
+import org.jaea.onlinevideotutorials.domain.WSMessage;
 import org.jaea.onlinevideotutorials.domain.Room;
 import org.jaea.onlinevideotutorials.domain.MediaRoom;
 
@@ -73,15 +73,15 @@ public class DebugFactory {
         return createFakeRoom();
     }
 
-    public static WebSocketMessage getRoomMessage(){
-        return new WebSocketMessage("roomMessage", createRoom());
+    public static WSMessage getRoomMessage(){
+        return new WSMessage("roomMessage", createRoom());
     }
 
-    public static WebSocketMessage getMediaRoomMessage(){
-        return new WebSocketMessage("mediaRoomMessage", createMediaRoom());
+    public static WSMessage getMediaRoomMessage(){
+        return new WSMessage("mediaRoomMessage", createMediaRoom());
     }
-    public static WebSocketMessage getFakeRoomMessage(){
-        return new WebSocketMessage("fakeRoomMessage", createFakeRoom());
+    public static WSMessage getFakeRoomMessage(){
+        return new WSMessage("fakeRoomMessage", createFakeRoom());
     }
     
 }

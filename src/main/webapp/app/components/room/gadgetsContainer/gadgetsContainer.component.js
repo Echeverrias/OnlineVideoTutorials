@@ -15,10 +15,12 @@ var option_directive_1 = require("./option.directive");
 var GadgetsContainerComponent = (function () {
     function GadgetsContainerComponent() {
         this.imagePath = "app/components/room/gadgetsContainer/img/";
+        console.log('*** GadgetsContainerComponent has been created');
         this.activeOption = new core_1.EventEmitter();
         this.sharedFile = new core_1.EventEmitter();
     }
     GadgetsContainerComponent.prototype.ngAfterViewInit = function () {
+        console.log("GadgetsContainerComponent.address = " + this.address);
     };
     GadgetsContainerComponent.prototype.activateOption = function (option) {
         console.log(option);

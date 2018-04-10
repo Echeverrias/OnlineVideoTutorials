@@ -1,3 +1,4 @@
+
 /**
  * @author Juan Antonio Echeverrías Aranda (juanan.echeve@gmail.com)
  * 
@@ -7,6 +8,7 @@ import { Injectable } from '@angular/core';
 import { HandlerService } from './handler.service';
 
 import { Message } from './../models/types';
+import { WSMessage } from './../../../copia/webapp/app/models/types';
 
 console.log("Module Connection");
 
@@ -95,7 +97,7 @@ export class ConnectionService {
     sendWSMessage(id: string, payload:any){
         //console.log(`---------->  ${jsonMessage.id} ${new Date().toLocaleTimeString()}`);
         //console.log(`-> message: ${JSON.stringify(jsonMessage)}`);
-        let message = {id: id, payload: payload};    
+        let message: WSMessage = {id: id, payload: payload};    
         let stringifyMessage = JSON.stringify(message);
         // while(this._ws.readyState === this._ws.CONNECTING) {}
         this.waitForConnection(() => this._ws.send(stringifyMessage));

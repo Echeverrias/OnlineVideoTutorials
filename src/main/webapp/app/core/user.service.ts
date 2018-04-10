@@ -74,16 +74,20 @@ export class UserService{
         return this._me.email;
     }
 
+    set userImage(userImage: UserFile){
+        this._me.userImage = userImage;
+    }
+
+    get userImage():UserFile{
+        return this._me.userImage;
+    }
+
     get userImageMimeType(): any{
         return this._me.userImage && this._me.userImage.mimeType;
     }
 
     get userImageContent(): any{
         return this._me.userImage && this._me.userImage.content;
-    }
-
-    set userImage(userImage: UserFile){
-        this._me.userImage = userImage;
     }
 
     registerCurrentRoom(room: IRoom) {

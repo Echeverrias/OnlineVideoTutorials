@@ -3,7 +3,7 @@ import { FileService } from '../../../../services/file.service';
 import { pdfLoaderTemplate } from './pdfLoader.html';
 import { NgUploaderOptions, UploadedFile } from 'ngx-uploader';
 
-import { File } from '../../../../models/types';
+import { AccessFile } from '../../../../models/types';
 
 
 @Component({
@@ -22,7 +22,7 @@ export class PdfLoaderComponent implements OnInit, OnDestroy{
   private uploadFile: string;
   private options: NgUploaderOptions ;
   private sizeLimit: number; 
-  private files : File [];
+  private files : AccessFile [];
 
   constructor (private file: FileService){
     console.log("*** new PdfLoaderComponent");
@@ -51,7 +51,7 @@ export class PdfLoaderComponent implements OnInit, OnDestroy{
 
   getSharedFiles(){
     this.file.getSharedFiles()
-    .subscribe((file: File): void => {
+    .subscribe((file: AccessFile): void => {
       this.files.push(file);
       let fileName = file.name;
       console.log(`shared file: ${fileName}`);

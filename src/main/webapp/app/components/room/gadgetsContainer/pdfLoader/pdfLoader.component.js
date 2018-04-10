@@ -10,37 +10,57 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
-var file_service_1 = require("../../../../services/file.service");
+var pdfLoader_service_1 = require("./pdfLoader.service");
 var pdfLoader_html_1 = require("./pdfLoader.html");
+var Subject_1 = require("rxjs/Subject");
 var PdfLoaderComponent = (function () {
-    function PdfLoaderComponent(file) {
-        this.file = file;
+    function PdfLoaderComponent(pdfLoader) {
+        this.pdfLoader = pdfLoader;
+        this.destroyed$ = new Subject_1.Subject();
         console.log("*** new PdfLoaderComponent");
-        this.sizeLimit = this.file.sizeLimit;
+        this.sizeLimit = this.pdfLoader.sizeLimit;
         this.sharedFile = new core_1.EventEmitter();
         this.newFile = new core_1.EventEmitter();
-        this.files = []; //*
+        // this.files = []; //*
     }
     PdfLoaderComponent.prototype.ngOnInit = function () {
         console.log("PdfLoaderComponent.ngOnInit");
         console.log("address: " + this.address);
-        this.file.init(this.address);
-        console.log("uploadFileUrl: " + this.file.uploadFileUrl);
+        //this.file.init(this.address);
+        this.pdfLoader.init(this.address);
+        console.log("uploadFileUrl: " + this.pdfLoader.uploadRoomFileUrl);
         this.options = {
-            url: this.file.uploadFileUrl
+            url: this.pdfLoader.uploadRoomFileUrl
         };
-        this.getExistingFiles();
-        this.getSharedFiles();
+        this.getExistingFiles(this.address);
+        this.getIncomingFiles();
     };
-    PdfLoaderComponent.prototype.getExistingFiles = function () {
+    PdfLoaderComponent.prototype.getExistingFiles = function (idRoom) {
         var _this = this;
+        /*
         this.file.getExistingFiles()
-            .subscribe(function (files) { _this.files = files.slice(0); });
+          .subscribe(files => { this.files = files.slice(0) });
+        */
+        console.log("PdfLoaderComponent.getExistingFiles(" + idRoom + ")");
+        this.pdfLoader.getRoomFiles(idRoom)
+            .takeUntil(this.destroyed$)
+            .subscribe(function (availableFiles) {
+            console.log('Available files:');
+            console.log(availableFiles);
+            _this.files = availableFiles;
+            if (availableFiles && availableFiles.length > 0) {
+                _this.alertOfANewFile("Available files of " + idRoom + " room");
+            }
+        });
     };
-    PdfLoaderComponent.prototype.getSharedFiles = function () {
+    PdfLoaderComponent.prototype.getIncomingFiles = function () {
         var _this = this;
-        this.file.getSharedFiles()
+        //this.file.getSharedFiles()
+        this.pdfLoader.getIncomingFile()
+            .takeUntil(this.destroyed$)
             .subscribe(function (file) {
+            console.log('files:');
+            console.log(_this.files);
             _this.files.push(file);
             var fileName = file.name;
             console.log("shared file: " + fileName);
@@ -77,8 +97,8 @@ var PdfLoaderComponent = (function () {
     };
     PdfLoaderComponent.prototype.onDownload = function () {
         // The download event trigger the beforeunload event
-        console.log('downloadEvent');
-        sessionStorage.setItem('downloadEvent', 'true');
+        // console.log('downloadEvent');
+        // sessionStorage.setItem('downloadEvent', 'true'); 
     };
     PdfLoaderComponent.prototype.alertOfANewFile = function (fileName) {
         console.log("PdfLoader.alertOfANewFile(" + fileName + ")");
@@ -88,7 +108,10 @@ var PdfLoaderComponent = (function () {
         return fileName.split('.').pop();
     };
     PdfLoaderComponent.prototype.ngOnDestroy = function () {
-        this.file.destroy();
+        this.destroyed$.next(true);
+        this.destroyed$.complete();
+        //  this.file.destroy();
+        this.pdfLoader.destroy();
     };
     return PdfLoaderComponent;
 }());
@@ -110,8 +133,9 @@ PdfLoaderComponent = __decorate([
         selector: 'ovt-pdf-loader',
         template: pdfLoader_html_1.pdfLoaderTemplate,
         styleUrls: ['pdfLoader.css'],
+        providers: [pdfLoader_service_1.PdfLoaderService]
     }),
-    __metadata("design:paramtypes", [file_service_1.FileService])
+    __metadata("design:paramtypes", [pdfLoader_service_1.PdfLoaderService])
 ], PdfLoaderComponent);
 exports.PdfLoaderComponent = PdfLoaderComponent;
 //# sourceMappingURL=pdfLoader.component.js.map

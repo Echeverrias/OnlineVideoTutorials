@@ -44,6 +44,7 @@ import javax.persistence.Transient;
 import javax.persistence.CascadeType;
 import org.kurento.client.Continuation;
 import org.kurento.client.MediaPipeline;
+import org.kurento.client.IceCandidate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.CreatedDate;
@@ -63,11 +64,15 @@ import org.springframework.transaction.annotation.Transactional;
 @EntityListeners(AuditingEntityListener.class)
 public class MediaRoom extends Room implements Closeable{
     
-    
+    @Exclude
     @Transient
     private final Logger log = LoggerFactory.getLogger(MediaRoom.class);
 
-    
+    public String mediaRoomPrueba;
+
+    @Exclude
+    @JsonIgnore
+    public String mediaRoomPrueba2;
     
     @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     @JoinTable(
@@ -79,6 +84,7 @@ public class MediaRoom extends Room implements Closeable{
     private List<ParticipantSession> participantsHistory = new ArrayList<>();
     
     // The tutor is included in the participants
+    @Exclude
     @Transient
     private final ConcurrentHashMap<String, ParticipantSession> participantsByUserName = new ConcurrentHashMap<>();
     
@@ -86,6 +92,7 @@ public class MediaRoom extends Room implements Closeable{
     @JsonIgnoreProperties(value = "room")
     private List<UserFile> filesHistory = new ArrayList<>();
 
+    @Exclude
     @Transient
     private MediaPipeline pipeline;
     
@@ -177,7 +184,8 @@ public class MediaRoom extends Room implements Closeable{
         
         this.addParticipantToHistory(user);
         log.info("### 1");
-        user.attachRoomMedia(new TutorialMedia(this.pipeline, user.getSession(), user.getUserName())); 
+        TutorialMedia tutorialMedia = new TutorialMedia(this.pipeline, user.getSession(), user.getUserName(), this.getId());
+        user.attachRoomMedia(tutorialMedia); 
         log.info("### 2");
         this.checkIfTheUserIsATutor(user);
         log.info("### 3");
@@ -316,14 +324,14 @@ public class MediaRoom extends Room implements Closeable{
         return sdpAnswer;
     }
     
-    public void manageAddress(String addresseeUserName, String senderUserName, JsonObject address){
+    public void manageAddress(String addresseeUserName, String senderUserName, IceCandidate iceCandidate){
      //   log.info("* RoomManager.manageAddress -> {} <- {}: {}", addresseeUserName, senderUserName);
         
         ParticipantSession addressee = this.getParticipant(addresseeUserName);
         ParticipantSession sender = this.getParticipant(senderUserName);
         
 	    if ((addressee != null) && (sender != null)) {
-            addressee.addAddress(address, sender);
+            addressee.addAddress(iceCandidate, sender);
 	    }
         else{
             log.error("Impossible to manage the ice candidate");

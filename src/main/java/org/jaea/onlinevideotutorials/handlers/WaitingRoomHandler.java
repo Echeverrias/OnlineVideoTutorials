@@ -9,7 +9,7 @@ import org.jaea.onlinevideotutorials.managers.RoomsManager;
 import org.jaea.onlinevideotutorials.managers.UserSessionsRegistry;
 import org.jaea.onlinevideotutorials.domain.User;
 import org.jaea.onlinevideotutorials.domain.UserSession;
-import org.jaea.onlinevideotutorials.domain.WebSocketMessage;
+import org.jaea.onlinevideotutorials.domain.WSMessage;
 import org.jaea.onlinevideotutorials.SendMessage;
 
 import com.google.gson.Gson;
@@ -27,7 +27,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 
-import org.jaea.onlinevideotutorials.domain.WebSocketMessage;
+import org.jaea.onlinevideotutorials.domain.WSMessage;
 import org.jaea.onlinevideotutorials.domain.Room;
 import org.jaea.onlinevideotutorials.domain.MediaRoom;
 import org.jaea.onlinevideotutorials.domain.debug.DebugFactory;
@@ -46,6 +46,11 @@ public class WaitingRoomHandler extends TextMessageWebSocketHandler {
     public static final String ID_ENTER_WAITING_ROOM = "enterWaitingRoom";
     public static final String ID_EXIT_WAITING_ROOM = "exitWaitingRoom";
     private String [] ids = { ID_ENTER_WAITING_ROOM, ID_EXIT_WAITING_ROOM}; 
+
+     /**
+     * The id values to the messages send by websocket to the client
+     */
+    public static final  String ID_AVAILABLE_ROOMS = "availableRooms";
 
     private static final String PAYLOAD_ATTRIBUTE_USER_NAME = "userName";
     private static final String PAYLOAD_ATTRIBUTE_USER_TYPE = "userType";
@@ -148,7 +153,7 @@ public class WaitingRoomHandler extends TextMessageWebSocketHandler {
         	availableRooms = this.roomsManager.getTutorAvailableRooms(userName);
         }
 
-        WebSocketMessage wsm = new WebSocketMessage("availableRooms", availableRooms);
+        WSMessage wsm = new WSMessage(ID_AVAILABLE_ROOMS, availableRooms);
         this.log.info("### {}", wsm.toString());
        
         

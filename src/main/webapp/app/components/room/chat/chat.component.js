@@ -15,7 +15,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var chat_service_1 = require("./chat.service");
-var user_service_1 = require("./../../../services/user.service");
+var user_service_1 = require("./../../../core/user.service");
 var chat_html_1 = require("./chat.html");
 var ChatComponent = (function () {
     function ChatComponent(chat, me) {

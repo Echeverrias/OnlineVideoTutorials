@@ -15,26 +15,30 @@ import org.slf4j.LoggerFactory;
 
 public class UserFileAccess{
     
+    @Exclude
     @JsonIgnore
 	private final Logger log = LoggerFactory.getLogger(UserFileAccess.class);
     
+    @Exclude
     @JsonIgnore
     @Value("${filesStore.path}")
     private String filesStorePath;
     
+    @Exclude
     @JsonIgnore
     private static final String filesStorePath2 = "/files";
     
+    @Exclude
     @JsonIgnore
     private String downloadEndpoint = FileController.DOWNLOAD_ENDPOINT;
     
-    @Expose
     private String name;
-    @Expose
+   
     private String loadUrl; 
-    @Expose
+   
     private String downloadUrl; 
     
+    @Exclude
     @JsonIgnore
     private Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
     

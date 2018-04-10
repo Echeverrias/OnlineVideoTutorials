@@ -81,6 +81,16 @@ var UserService = (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(UserService.prototype, "userImage", {
+        get: function () {
+            return this._me.userImage;
+        },
+        set: function (userImage) {
+            this._me.userImage = userImage;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(UserService.prototype, "userImageMimeType", {
         get: function () {
             return this._me.userImage && this._me.userImage.mimeType;
@@ -91,13 +101,6 @@ var UserService = (function () {
     Object.defineProperty(UserService.prototype, "userImageContent", {
         get: function () {
             return this._me.userImage && this._me.userImage.content;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UserService.prototype, "userImage", {
-        set: function (userImage) {
-            this._me.userImage = userImage;
         },
         enumerable: true,
         configurable: true

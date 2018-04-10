@@ -1,4 +1,4 @@
-import { Directive, ElementRef,  Renderer, HostListener, Input, AfterViewInit, Output, EventEmitter, OnChanges} from '@angular/core';
+import { Directive, ElementRef,  Renderer, HostListener, Input, AfterViewInit, Output, EventEmitter, OnChanges, OnDestroy} from '@angular/core';
 
 type DisplayAlertOptions = { option: string, initialState: string, data: string }; 
 
@@ -8,7 +8,7 @@ type DisplayAlertOptions = { option: string, initialState: string, data: string 
 })
 
 
-export class OptionDirective implements AfterViewInit, OnChanges, ngOnDestroy {
+export class OptionDirective implements AfterViewInit, OnChanges, OnDestroy {
 
   @Input('ovt-option') option: string;
   @Input('ovt-imagePath') imagePath: string;
@@ -110,7 +110,7 @@ export class OptionDirective implements AfterViewInit, OnChanges, ngOnDestroy {
     return changeImage;   
   }
 
-  onDestroy(){
+  ngOnDestroy(){
     clearInterval(this.intervalAlert);
   } 
  

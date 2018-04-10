@@ -88,6 +88,7 @@ public class FileController {
         String fileName = file.getOriginalFilename();
         String roomFolder = roomId.toString();
         String filePath = UPLOAD_PATH +  "/" + roomFolder + "/";
+
         
         ServletContext context = request.getServletContext();
         String fileAbsolutePath = context.getRealPath(filePath);
@@ -113,6 +114,8 @@ public class FileController {
         MediaRoom room = this.roomsManager.getRoom(roomId);
         this.log.info("### MediaRoom.id {}", room.getId());
         UserFile uf = new UserFile(uploadedFile);
+        uf.setLoadUrl(filePath + fileName);
+        uf.setDownloadUrl(DOWNLOAD_ENDPOINT + "/" + roomFolder + "/" + fileName);
         this.log.info("### {}", uf.getName());
         this.log.info("### {}", room.getName());
         try{
@@ -142,13 +145,15 @@ public class FileController {
         this.log.info("### The room has added the file");
         this.log.info("### room.getFilesHistory().size: {}", room.getFilesHistory().size());
        
-        
+       /* 
         JsonObject msg = new JsonObject();
         msg.addProperty("name", fileName);
         msg.addProperty("loadUrl", filePath + fileName);
         msg.addProperty("downloadUrl", "/download/" + roomFolder + "/" + fileName);
-        
-        this.template.convertAndSend("/uploadedFile/shared/" + roomId.toString(), msg.toString());
+        */
+
+        //this.template.convertAndSend("/uploadedFile/shared/" + roomId.toString(), msg.toString());
+        this.template.convertAndSend("/uploadedFile/shared/" + roomId.toString(), uf.getAccessToTheFile());
         
 
         /*

@@ -2,6 +2,7 @@
 *.[oa]
 *~
 *.pdf
+prueba.*
 Dockerfile
 dockerfile
 settings.xml

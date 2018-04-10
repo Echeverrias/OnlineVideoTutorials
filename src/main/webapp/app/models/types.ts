@@ -12,7 +12,7 @@ export interface IMessage {
     date: string;
 };
 
-export type File = { 
+export type AccessFile = { 
     name: string, 
     loadUrl: string, 
     downloadUrl: string 
@@ -24,7 +24,8 @@ export type UserFile = {
     name: string, 
     extension: string, 
     mimeType: string, 
-    content: any};
+    content: any
+};
 
 
 export type IdMessage = { id: string };

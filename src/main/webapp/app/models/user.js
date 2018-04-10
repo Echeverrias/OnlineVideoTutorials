@@ -136,10 +136,10 @@ var User = (function () {
         this._userImage = null;
     };
     User.prototype.isATutor = function () {
-        return this._userType === User.tutorType;
+        return this._userType === TUTOR;
     };
     User.prototype.isAStudent = function () {
-        return this._userType === User.studentType;
+        return this._userType === STUDENT;
     };
     User.prototype.exist = function () {
         console.log("exist");

@@ -12,16 +12,14 @@ var forms_1 = require("@angular/forms");
 var http_1 = require("@angular/http");
 var app_routing_1 = require("./app.routing");
 var ngx_uploader_1 = require("ngx-uploader");
+var core_module_1 = require("./core/core.module");
 var room_module_1 = require("./components/room/room.module");
 var history_module_1 = require("./components/history/history.module");
+var pipes_module_1 = require("./pipes/pipes.module");
 var app_component_1 = require("./app.component");
 var sign_component_1 = require("./components/sign/sign.component");
 var userOptions_component_1 = require("./components/userOptions/userOptions.component");
 var waitingRoom_component_1 = require("./components/waitingRoom/waitingRoom.component");
-var connection_service_1 = require("./services/connection.service");
-var user_service_1 = require("./services/user.service");
-var handler_service_1 = require("./services/handler.service");
-var file_service_1 = require("./services/file.service");
 var auth_guard_1 = require("./guards/auth.guard");
 var AppModule = (function () {
     function AppModule() {
@@ -36,8 +34,10 @@ AppModule = __decorate([
             forms_1.ReactiveFormsModule,
             http_1.HttpModule,
             ngx_uploader_1.NgUploaderModule,
+            core_module_1.CoreModule,
             room_module_1.RoomModule,
             history_module_1.HistoryModule,
+            pipes_module_1.PipesModule,
             app_routing_1.routing,
         ],
         declarations: [
@@ -47,11 +47,7 @@ AppModule = __decorate([
             waitingRoom_component_1.WaitingRoomComponent,
         ],
         providers: [
-            handler_service_1.HandlerService,
-            connection_service_1.ConnectionService,
-            user_service_1.UserService,
-            auth_guard_1.AuthGuard,
-            file_service_1.FileService
+            auth_guard_1.AuthGuard
         ],
         bootstrap: [app_component_1.AppComponent]
     })
