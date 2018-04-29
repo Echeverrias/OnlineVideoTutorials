@@ -18,9 +18,17 @@ public class OVTHandlerTestConfig {
      */
     private final String ATTRIBUTE_NAME_MESSAGE_ID = "id";
     
+    
+     
+    /**
+     * Name of the message payload attribute that has 
+     * the information.
+     */
+     private final String ATTRIBUTE_NAME_MESSAGE_PAYLOAD = "paylaod";
+    
     @Bean
     public OnlineVideoTutorialsHandler onlineVideoTutorialsHandler() {
-        return new OnlineVideoTutorialsHandler(ATTRIBUTE_NAME_MESSAGE_ID);
+        return new OnlineVideoTutorialsHandler(ATTRIBUTE_NAME_MESSAGE_ID, ATTRIBUTE_NAME_MESSAGE_PAYLOAD);
     }
 
    

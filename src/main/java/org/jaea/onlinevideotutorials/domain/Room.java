@@ -19,6 +19,7 @@ import org.jaea.onlinevideotutorials.Info;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.JsonObject;
 
 import java.io.Closeable;
 import java.util.Collections;
@@ -52,13 +53,15 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.google.gson.annotations.Expose;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 /**
- * MediaRoom
+ * Room
  * 
  * @author Juan Antonio Echeverrías Aranda (juanan.echeve@gmail.com)
 */
 @MappedSuperclass
+//@EnableJpaAuditing
 public class Room implements  Comparable<Room>{
     
     @Exclude
@@ -95,17 +98,23 @@ public class Room implements  Comparable<Room>{
     };
 
     public Room(MediaRoom room){
+        this.log.info("new Room");
+        this.log.info(room.toString());
         this.id = room.getId();
         this.name = room.getName();
         this.createdAt = room.getCreatedAt();
         this.tutor = room.getTutor() ;
+        this.log.info(this.toString());
     }
 
     public Room(Room room){
+        this.log.info("new Room");
+        this.log.info(room.toString());
         this.id = room.getId();
         this.name = room.getName();
         this.createdAt = room.getCreatedAt();
         this.tutor = room.getTutor() ;
+        this.log.info(this.toString());
     }
     
     
@@ -126,9 +135,19 @@ public class Room implements  Comparable<Room>{
     }
 
     public void setTutor(String tutor){
-        if (this.tutor == ""){
+        if (this.tutor.equals("")){
             this.tutor = tutor;
         }
+    }
+    
+    @Override
+    public String toString(){
+            JsonObject json = new JsonObject();
+            json.addProperty("id", this.getId().toString());
+            json.addProperty("createdAt", this.getCreatedAt().toString());
+            json.addProperty("name", this.name);
+            json.addProperty("tutor", this.tutor);
+        return json.toString();
     }
 
     @JsonIgnore
@@ -141,20 +160,23 @@ public class Room implements  Comparable<Room>{
     
     @Override
     public int compareTo(Room room) {
+      //  log.info("Room.compareTo");
+       // log.info(room.toString());
+       // log.info(this.toString());
         if ((room == null) || !(room instanceof Room)) {
             return 1;
         }
         int result = 0;
         try{
-            result = this.id.compareTo(room.id);
+            result = this.getId().compareTo(room.getId());
         }
         catch(Exception e){ result = 0;}    
         if (result == 0) {
-            result = this.createdAt.compareTo(room.getCreatedAt());
+            result = this.getCreatedAt().compareTo(room.getCreatedAt());
             if (result == 0) {
-                result = this.name.compareTo(room.getName());
+                result = this.getName().compareTo(room.getName());
                 if (result == 0) {
-                    result = this.tutor.compareTo(room.tutor);
+                    result = this.getTutor().compareTo(room.getTutor());
                 }
             }
         }

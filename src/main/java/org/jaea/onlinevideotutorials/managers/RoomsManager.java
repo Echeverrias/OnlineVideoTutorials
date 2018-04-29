@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Stream;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -66,52 +67,71 @@ public class RoomsManager {
 
     public MediaRoom createRoom(Room room){
         //We supose the room name will never be repeated
-        log.info("{} MediaRoom.createRoom {} if doesn't exist. Will create now! {}", Info.START_SYMBOL, room.getId(), Hour.getTime());
+        log.info("{} RoomsManager.createRoom {} if doesn't exist. Will create now! {}", Info.START_SYMBOL, room.getId(), Hour.getTime());
 	
-        MediaRoom mediaRoom = this.getRoom(room.getId());
+        // First we check if the room is an available room
+        MediaRoom solicitedRoom = this.getRoom(room.getId());
         
-        if (mediaRoom == null){
+        if (solicitedRoom == null){
+            // The room is not available, so we try to retrieve it from the repository
             log.info("La room {} no está registrada", room.getId());
-            mediaRoom = this.roomRepository.findOne(room.getId());
-            if (mediaRoom == null){    
+            solicitedRoom = this.roomRepository.findOne(room.getId());
+           
+            
+            if (solicitedRoom == null){    
                 log.info("La room {} no está en la BBDD", room.getId());
-                mediaRoom = this.createRoom(room.getName(), room.getTutor());
+                solicitedRoom = this.createRoom(room.getName(), room.getTutor());
             }
-            else{
+            else{ // The room exists in the repository
                 log.info("La room {} está en la BBDD y se va a registrar", room.getId());
-                mediaRoom.attachPipeline(kurento.createMediaPipeline());
-                this.registerRoom(mediaRoom);
+                log.info("La room del tutor {} está en la BBDD", solicitedRoom.getTutor());
+                solicitedRoom.attachPipeline(kurento.createMediaPipeline());
+                log.info(solicitedRoom.toString());
+                this.registerRoom(solicitedRoom);
             }    
         }
 
-        log.info("{} MediaRoom.createRoom {}", Info.FINISH_SYMBOL, Hour.getTime());
-        return mediaRoom;
+        log.info("{} RoomsManager.createRoom {}", Info.FINISH_SYMBOL, Hour.getTime());
+        log.info(solicitedRoom.toString());
+        return solicitedRoom;
     }
 
     public MediaRoom createRoom(String roomName, String tutor){
         //We supose the room name will never be repeated
-        log.info("{} MediaRoom.createRoom {}. Will create now! {}", Info.START_SYMBOL, roomName, Hour.getTime());
+        log.info("{} RoomsManager.createRoom {}. Will create now! {}", Info.START_SYMBOL, roomName, Hour.getTime());
 	
         MediaRoom room = new MediaRoom(roomName, tutor, kurento.createMediaPipeline());
         this.roomRepository.save(room); //* #*
         
         log.info("The room has been persisted and his id is {}", room.getId());
-	    this.registerRoom(room);
+	this.registerRoom(room);
 
-        log.info("{} MediaRoom.createRoom {}", Info.FINISH_SYMBOL, Hour.getTime());
+        log.info("{} RoomsManager.createRoom {}", Info.FINISH_SYMBOL, Hour.getTime());
         return room;
     }
     
     private void registerRoom(MediaRoom room){
+        log.info("* RoomsManager.registerRoom");
+        log.info("La room del tutor {} está en la BBDD y se va a registrar", room.getTutor());
         this.roomsById.put(room.getId(), room); //# 
-        this.availableRooms.add(new Room(room)); //#
+        log.info(room.toString());
+        Room r = new Room(room);
+        this.availableRooms.add(r); //#
+        log.info(r.toString());
+        log.info("/ RoomsManager.registerRoom");
     }
 
     
     public boolean isThereRoom(Room room){
 
-        return this.roomsById.get(room.getId()) != null;
+        return this.existRoom(room.getId());
     }
+    
+    public boolean existRoom(Long roomId){
+        return roomsById.containsKey(roomId);
+    }
+
+    
     
     public MediaRoom getRoom(Long id) {
         log.info("{} RoomManager.getRoom: {} {}",Info.START_SYMBOL, id, Hour.getTime());
@@ -231,20 +251,25 @@ public class RoomsManager {
         Info.logInfoFinish("/ RoomManager.participantLeavesARoom");
         return user;
     }
-    /*
+    
     public void removeRoom(Long roomId) {
-        log.info("{} MediaRoom.removeRoom {} {}",Info.START_SYMBOL, roomId, Hour.getTime());
+        log.info("{} RoomManager.removeRoom {} {}",Info.START_SYMBOL, roomId, Hour.getTime());
         
         MediaRoom room = this.roomsById.get(roomId);
+        this.log.info("NUMBER OF AVAILABLE ROOMS: {}", this.availableRooms.size() ); //#
         this.removeRoom(room);
         
-	   Info.logInfoFinish("/ MediaRoom.remove: removed and closed");
+	   Info.logInfoFinish("/ RoomManager.remove: removed and closed");
     }
-    */
+    
+    
     public void removeRoom(MediaRoom room) {
-        log.info("{} MediaRoom.removeRoom");
+        log.info("{} RoomManager.removeRoom");
         
         if (room != null){
+            this.log.info(room.toString());
+            this.log.info("NUMBER OF AVAILABLE ROOMS: {}", this.availableRooms.size() ); //#
+            this.log.info(this.availableRooms.get(0).toString()); //#
             this.availableRooms.remove(room);
             room.close();
             this.roomsById.remove(room.getId());
@@ -259,7 +284,7 @@ public class RoomsManager {
                 this.log.info("!!! Error al persistir la room: " + e.getMessage());
             }    
 	    }
-	Info.logInfoFinish("/ MediaRoom.remove: removed and closed");
+	Info.logInfoFinish("/ RoomManager.remove: removed and closed");
     }
     
     public String manageOfferVideo(String addresseeUserName, String senderUserName, String offer){
@@ -284,10 +309,6 @@ public class RoomsManager {
             room.manageAddress(addresseeUserName, senderUserName, iceCandidate);
         }
      //   log.info("/ RoomManager.manageAddress"); 
-    }
-
-    public boolean existRoom(Long roomId){
-        return roomsById.containsKey(roomId);
     }
 
     public void addIncomingParticipant (UserSession user){

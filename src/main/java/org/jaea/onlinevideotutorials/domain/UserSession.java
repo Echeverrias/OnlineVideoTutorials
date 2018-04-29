@@ -55,6 +55,14 @@ public class UserSession extends User{
         log.info("/ UserSession: {} {}", name, Hour.getTime());
     }
     
+    public UserSession(User user){
+        
+        super(user);
+       
+        log.info("% UserSession {}", Hour.getTime());
+        log.info("/ UserSession: {} {}", name, Hour.getTime());
+    }
+    
     public UserSession(UserSession user){
         
         super(user.getUserName(), user.getUserType(), user.getUserName());

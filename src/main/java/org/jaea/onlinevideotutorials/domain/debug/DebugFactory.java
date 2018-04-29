@@ -5,26 +5,6 @@
  */
 package org.jaea.onlinevideotutorials.domain.debug;
 
-import org.jaea.onlinevideotutorials.managers.RoomsManager;
-import org.jaea.onlinevideotutorials.managers.UserSessionsRegistry;
-import org.jaea.onlinevideotutorials.domain.User;
-import org.jaea.onlinevideotutorials.domain.UserSession;
-import org.jaea.onlinevideotutorials.domain.WSMessage;
-import org.jaea.onlinevideotutorials.SendMessage;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.common.reflect.TypeToken;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Arrays;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
 
 
 import org.jaea.onlinevideotutorials.domain.WSMessage;

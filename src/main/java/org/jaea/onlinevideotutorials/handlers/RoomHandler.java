@@ -55,7 +55,7 @@ public class RoomHandler extends TextMessageWebSocketHandler{
     public static final String ID_JOIN_ROOM = "joinRoom";
     public static final String ID_RECEIVE_VIDEO_FROM = "receiveVideoFrom";
     public static final String ID_RECEIVE_ADDRESS = "receiveAddress";
-    public static final  String ID_EXIT_ROOM = "exitRoom";
+    public static final String ID_EXIT_ROOM = "exitRoom";
     public static final String ID_GET_FILES = "getFiles";
     
     private String [] ids = {ID_JOIN_ROOM, ID_RECEIVE_VIDEO_FROM, ID_RECEIVE_ADDRESS, ID_GET_FILES, ID_EXIT_ROOM}; 
@@ -120,10 +120,12 @@ public class RoomHandler extends TextMessageWebSocketHandler{
         switch (id){
             case ID_JOIN_ROOM:
             try{
+                this.log.info("TT");
                 room = (Room) this.getTextMessagePayLoadDataAsObject(PAYLOAD_ATTRIBUTE_ROOM, new TypeToken<Room>() {}.getType(), message);
+                this.log.info("TT - " + room.toString());
             }
             catch(Exception e){
-                this.log.info("ERROR: {}", e.getMessage());
+                this.log.info("ERROR - {}: {}", ID_JOIN_ROOM, e.getMessage());
             }   
                 this.joinRoom(session, room);
                 break;
@@ -132,7 +134,7 @@ public class RoomHandler extends TextMessageWebSocketHandler{
                     offerPayloadWSMessage = (OfferPayloadWSMessage) this.getTextMessagePayLoadAsObject(new TypeToken<OfferPayloadWSMessage>() {}.getType(), message);
                 }
                 catch(Exception e){
-                    this.log.info("ERROR: {}", e.getMessage());
+                    this.log.info("ERROR - {}: {}",ID_RECEIVE_VIDEO_FROM, e.getMessage());
                 }   
                 this.receiveVideoFrom(session, offerPayloadWSMessage); 
                 break;
@@ -144,7 +146,7 @@ public class RoomHandler extends TextMessageWebSocketHandler{
                     
                 }
                 catch(Exception e){
-                    this.log.info("ERROR: {}", e.getMessage());
+                    this.log.info("ERROR - {}: {}",ID_RECEIVE_ADDRESS, e.getMessage());
                 }   
                 this.receiveAddress(session, iceCandidatePayloadWSMessage);
                 break;
@@ -166,7 +168,7 @@ public class RoomHandler extends TextMessageWebSocketHandler{
     * An user has come into the waiting room.
     */
     private synchronized void joinRoom (WebSocketSession session, Room room){
-        this.log.info("<- joinRoom -> id: {}, message: {}", session.getId());
+        this.log.info("<- joinRoom -> id: {}", session.getId());
         
         /* //*
         String name = jsonMessage.get("name").getAsString();
@@ -182,7 +184,7 @@ public class RoomHandler extends TextMessageWebSocketHandler{
         this.log.info("roomId: {}", roomId.toString());
        }
        catch(Exception e){
-           this.log.info("ERROR: {}", e.getMessage());
+           this.log.info("ERROR - Room.getId(): {}", e.getMessage());
        }
        UserSession newParticipant = this.usersRegistry.getUserBySessionId(session.getId());
         

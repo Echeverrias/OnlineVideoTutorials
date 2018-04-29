@@ -9,7 +9,7 @@ import java.io.IOException;
 
 /**
  *
- * @author juanan
+ * @author Juan Antonio Echeverrías Aranda
  */
 public class OKExceptionTest extends IOException{
     

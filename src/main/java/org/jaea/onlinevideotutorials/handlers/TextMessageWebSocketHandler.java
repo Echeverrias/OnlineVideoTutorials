@@ -171,7 +171,7 @@ public abstract class TextMessageWebSocketHandler extends TextWebSocketHandler {
             data = this.gson.fromJson(payload.getAsJsonObject(dataName), dataType);
         }
         catch (Exception e){
-            this.log.info("ERROR:{}", e.getMessage());
+            this.log.info("ERROR - Gson.fromJson({}, {}):{}", dataName, dataType.toString(), e.getMessage());
         }
         this.log.info("#########");
         return data;

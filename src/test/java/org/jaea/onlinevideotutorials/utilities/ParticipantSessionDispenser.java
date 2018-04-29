@@ -23,7 +23,7 @@ public class ParticipantSessionDispenser {
     /*
     * This method return a ParticipantSession object that 
     * hasn't been added yet to any Room object.
-    * The id of his WebSocketSessio attribute is his user name.
+    * The id of his WebSocketSession attribute is his user name.
     */
     public static ParticipantSession getTutorParticipant(String userName){
         User user = getTutor(userName);
@@ -37,14 +37,15 @@ public class ParticipantSessionDispenser {
     * has been added to a Room object.
     * The id of his WebSocketSessio attribute is his user name.
     */
-    public static ParticipantSession getTutorParticipant(String userName, MediaPipeline pipeline){
+    public static ParticipantSession getTutorParticipant(String userName, MediaPipeline pipeline, Long roomId){
         User user = getTutor(userName);
         WebSocketSession ws = new WebSocketSessionMock(userName);
         ParticipantSession participant = new ParticipantSession(ws, user);
-        TutorialMedia media = new TutorialMedia(pipeline, ws, userName);
-        participant.assignRoomMedia(media);
+        TutorialMedia media = new TutorialMedia(pipeline, ws, userName, roomId);
+        participant.attachRoomMedia(media);
         return participant;
     }
+    
     
     /*
     * This method return a ParticipantSession object that 
@@ -64,12 +65,12 @@ public class ParticipantSessionDispenser {
     * The id of his WebSocketSessio attribute is his user name.
     */
     
-    public static ParticipantSession getStudentParticipant(String userName, MediaPipeline pipeline){
+    public static ParticipantSession getStudentParticipant(String userName, MediaPipeline pipeline, Long roomId){
         User user = getStudent(userName);
         WebSocketSession ws = new WebSocketSessionMock(userName);
         ParticipantSession participant = new ParticipantSession(ws,user);
-        TutorialMedia media = new TutorialMedia(pipeline, ws, userName);
-        participant.assignRoomMedia(media);
+        TutorialMedia media = new TutorialMedia(pipeline, ws, userName, roomId);
+        participant.attachRoomMedia(media);
         return participant;
     }
     
@@ -97,13 +98,33 @@ public class ParticipantSessionDispenser {
     
     public static User getTutor(String userName){
         User user = new User(userName, User.TUTOR_TYPE, userName, DEFAULT_PASSWORD_TEST);
+        String [] name_surname = userName.split(".");
+        try{
+            user.setName(name_surname[0]);
+            user.setName(name_surname[1]);
+        }
+        catch(Exception e){}
+        user.setEmail(userName + "@ovt.com");
         return user;
     }
     
     public static User getStudent(String userName){
         User user = new User(userName, User.STUDENT_TYPE, userName, DEFAULT_PASSWORD_TEST);
+        String [] name_surname = userName.split(".");
+        try{
+            user.setName(name_surname[0]);
+            user.setName(name_surname[1]);
+        }
+        catch(Exception e){}
+        user.setEmail(userName + "@ovt.com");
         return user;
     }
     
+    public static String getDefaultPassword(){
+        String pass = DEFAULT_PASSWORD_TEST;
+        return pass;
+    }
+    
+  
      
 }

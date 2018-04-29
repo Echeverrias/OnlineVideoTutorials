@@ -22,6 +22,7 @@ import org.jaea.onlinevideotutorials.Info;
 import org.jaea.onlinevideotutorials.domain.ParticipantSession;
 import org.jaea.onlinevideotutorials.domain.UserSession;
 import org.jaea.onlinevideotutorials.domain.MediaRoom;
+import org.jaea.onlinevideotutorials.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.WebSocketSession;
@@ -48,7 +49,19 @@ public class UserSessionsRegistry {
         return this.usersByUserName.containsKey(userName);
     }
     
-    public void registerUser (UserSession user){
+    
+    
+    public void registerUser (User user){
+        log.info("{} UserRegistry.registerUser: {}, {}", Info.START_SYMBOL, user.getUserName(), Hour.getTime());
+        
+        this.usersByUserName.put(user.getUserName(), new ParticipantSession(user));
+        log.info("-------------------------------------------------------------------------");
+        log.info("");
+        this.log.info("THe user {} has been added to usersByUserName",user.getUserName());
+        Info.logInfoFinish("UserRegistry.addUser");
+    }
+    
+     public void registerUser (UserSession user){
         log.info("{} UserRegistry.registerUser: {}, {}", Info.START_SYMBOL, user.getUserName(), Hour.getTime());
         
         this.usersByUserName.put(user.getUserName(), user);
@@ -66,6 +79,7 @@ public class UserSessionsRegistry {
             log.error("!!! El usuario {} no se encuentra en el registro", userName);
             return false;
         }
+        
         user.attachSession(session);
         
         log.info(" add to usersBySessionId");
@@ -74,7 +88,7 @@ public class UserSessionsRegistry {
         return this.registerUserSession(user);
     }
 
-    public boolean registerUserSession (UserSession user){
+    private boolean registerUserSession (UserSession user){
         log.info("{} UserRegistry.registerUserSession: {}, {}", Info.START_SYMBOL, user.getUserName(), Hour.getTime());
         
         if ((user == null) || (user.getSession() == null)){

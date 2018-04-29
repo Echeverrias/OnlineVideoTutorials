@@ -61,6 +61,10 @@ public class ParticipantSession  extends UserSession{
     
     }
     
+    public ParticipantSession(User user){
+        super(user);
+    }
+    
     public ParticipantSession(UserSession user){
         super(user);
     }

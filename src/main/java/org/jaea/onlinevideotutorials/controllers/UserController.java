@@ -56,7 +56,7 @@ public class UserController {
    */
 
     @RequestMapping(value ="/validateUser", method = RequestMethod.POST)
-    public synchronized ResponseEntity<User> validateUser(@RequestBody UserSession userRequest){
+    public synchronized ResponseEntity<User> validateUser(@RequestBody User userRequest){
        
         log.info("Usercontroller.validateUser");
         log.info(userRequest.toString());

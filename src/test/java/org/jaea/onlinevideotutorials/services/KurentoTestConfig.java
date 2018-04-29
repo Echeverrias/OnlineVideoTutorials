@@ -27,15 +27,15 @@ import org.springframework.context.annotation.PropertySource;
  */
 
 @Configuration
-@PropertySource("application-test.properties")
+@PropertySource("application-test.properties") // no funciona
 public class KurentoTestConfig {
     
-    @Value("${test.kms.ws.uri}")
-    private String uri;
+    @Value("${test.kms.ws.uri}") // No funciona
+    private String websocketUrl;
     
     @Bean
     public KurentoClient kurentoClient() {
-        return KurentoClient.create(System.getProperty("kms.ws.uri", this.uri));
+        return KurentoClient.create(System.getProperty("test.kms.ws.uri", "ws://localhost:8888/kurento"));
     }
     
 }

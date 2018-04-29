@@ -13,6 +13,6 @@ public class LoginHandlerTestConfig {
     
     @Bean
     public LoginHandler loginHandler(){ 
-        return new LoginHandler("id");
+        return new LoginHandler("id", "payload");
     }
 }

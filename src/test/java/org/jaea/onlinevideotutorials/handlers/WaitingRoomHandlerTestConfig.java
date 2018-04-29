@@ -15,7 +15,7 @@ public class WaitingRoomHandlerTestConfig {
     
     @Bean
     public WaitingRoomHandler waitingRoomHanlder(){
-        return new WaitingRoomHandler("id");
+        return new WaitingRoomHandler("id", "payload");
     }
     
 }

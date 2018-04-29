@@ -1,8 +1,10 @@
 
 package org.jaea.onlinevideotutorials.handlers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 
 /**
@@ -13,9 +15,17 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RoomHandlerTestConfig {
     
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+    
     @Bean
-    public RoomHandler RoomHanlder(){
-        return new RoomHandler("id");
+    public SimpMessagingTemplate SimpMessagingTemplate(){
+        return this.simpMessagingTemplate;
+    }
+    
+    @Bean
+    public RoomHandler RoomHandler(){
+        return new RoomHandler("id", "payload");
     }
     
 }
