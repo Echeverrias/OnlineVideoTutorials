@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Bean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
@@ -18,7 +20,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
  * @author Juan Antonio Echeverrías Aranda (juanan.echeve@gmail.com)
  */
 @SpringBootApplication
-@EnableJpaAuditing
+// @EnableJpaAuditing // Movido al repositorio por error en tests
 public class OnlineVideoTutorialsApp extends SpringBootServletInitializer{
 
     

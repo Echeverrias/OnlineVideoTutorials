@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.jaea.onlinevideotutorials;
+package org.jaea.onlinevideotutorials.config;
 
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Bean;
+
 
 /**
  *
@@ -14,7 +15,7 @@ import org.springframework.context.annotation.Bean;
  */
 
 @Configuration
-public class AppConfig {
-    
+@EnableJpaAuditing
+public class ApplicationConfig {
     
 }
