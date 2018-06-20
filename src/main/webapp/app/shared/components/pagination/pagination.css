@@ -1,0 +1,12 @@
+div#ovt-pagination {
+  text-align: center;
+}
+
+
+#ovt-pagination nav.pages ul {
+    cursor: pointer;
+  }
+
+  div#ovt-pagination div.description span {
+  margin: 0 0.5em 0 0.5em;
+}

@@ -120,6 +120,10 @@ __decorate([
     __metadata("design:type", String)
 ], PdfLoaderComponent.prototype, "address", void 0);
 __decorate([
+    core_1.Input("ovt-valid-mime-types"),
+    __metadata("design:type", Object)
+], PdfLoaderComponent.prototype, "validMimeTypes", void 0);
+__decorate([
     core_1.Output("ovt-file"),
     __metadata("design:type", core_1.EventEmitter)
 ], PdfLoaderComponent.prototype, "sharedFile", void 0);

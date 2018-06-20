@@ -1,25 +1,26 @@
-import { PipesModule } from './../../pipes/pipes.module';
-import { DirectivesModule } from './../../directives/directives.module';
 import { NgModule } from '@angular/core';
-import { CommonModule } from "@angular/common";
+
 import { RouterModule, Routes } from "@angular/router";
 
+
 import { HistoryComponent } from './history.component';
-import { RoomDetailsComponent } from './roomDetails/roomDetails.component';
+import { RoomsListModule } from './roomsList/roomsList.module';
 import { HistoryService } from './history.service';
-import { FileLinkComponent } from '../share/fileLink/fileLink.component';
+import { SharedModule } from '../../shared/shared.module';
+
 
 const historyRoutes: Routes = [
     {path:"history", component: HistoryComponent}
 ] 
 
 @NgModule({
-    imports: [CommonModule, RouterModule.forChild(historyRoutes), DirectivesModule,  PipesModule],
+    imports: [
+        RouterModule.forChild(historyRoutes), 
+        SharedModule,
+    RoomsListModule],
     declarations: [
-       HistoryComponent,
-       RoomDetailsComponent,
-       FileLinkComponent
-   ],
+       HistoryComponent
+    ],
     providers: [HistoryService],
     exports: [HistoryComponent]
 

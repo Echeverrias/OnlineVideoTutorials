@@ -13,6 +13,7 @@ export class GadgetsContainerComponent implements AfterViewInit {
 
     @ViewChild(OptionDirective) od: OptionDirective;
     @Input("ovt-address") address: string;
+    @Input() options: {'validMimeTypes': string[] | {[key: string]: boolean}};
     @Output('ovt-activeOption') activeOption: EventEmitter<boolean>;
     @Output('ovt-file') sharedFile: EventEmitter<string>;
 
@@ -21,6 +22,7 @@ export class GadgetsContainerComponent implements AfterViewInit {
 
     constructor() {
         console.log('*** GadgetsContainerComponent has been created');
+        console.log('@Input options: ', this.options);
         this.activeOption = new EventEmitter<boolean>();
         this.sharedFile = new EventEmitter<string>();
     }

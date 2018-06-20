@@ -1,0 +1,22 @@
+/* 
+    Created on : 25-ene-2016, 19:24:29
+    Author     : juanan
+*/
+#ovt-rooms-list {
+    
+    padding: 1em;
+    width: 100%;
+    display: block;
+    background-color: #EEFACA;
+   
+    -webkit-transition: all 0.3s linear;
+    -moz-transition: all 0.3s linear;
+    -o-transition: all 0.3s linear;
+    transition: all 0.3s linear;
+    /*/position:relative;*/
+}
+
+
+div.ovt-rooms ul li{
+  margin-bottom: 0.2em; 
+}

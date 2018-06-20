@@ -11,13 +11,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
+var auth_service_1 = require("../core/auth.service");
 var AuthGuard = (function () {
-    function AuthGuard(router) {
+    function AuthGuard(router, auth) {
         this.router = router;
+        this.auth = auth;
     }
     ;
     AuthGuard.prototype.canActivate = function () {
-        if (localStorage.getItem('ovtUser')) {
+        //if(localStorage.getItem('ovtUser')){
+        if (this.auth.theUserIsLogged()) {
             return true;
         }
         else {
@@ -29,7 +32,7 @@ var AuthGuard = (function () {
 }());
 AuthGuard = __decorate([
     core_1.Injectable(),
-    __metadata("design:paramtypes", [router_1.Router])
+    __metadata("design:paramtypes", [router_1.Router, auth_service_1.AuthService])
 ], AuthGuard);
 exports.AuthGuard = AuthGuard;
 //# sourceMappingURL=auth.guard.js.map

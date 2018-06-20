@@ -32,6 +32,7 @@ var AppComponent = (function () {
         this.connection.sendWSMessage("debug", "");
     }
     AppComponent.prototype.beforeunloadHandler = function (event) {
+        console.log('$BEFOREUNLOAD EVENt');
         console.log(event);
         if (!sessionStorage.getItem("downloadEvent")) {
             console.log(this.me);

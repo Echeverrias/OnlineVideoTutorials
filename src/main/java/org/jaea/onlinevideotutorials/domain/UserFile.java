@@ -143,7 +143,7 @@ public class UserFile implements Comparable<UserFile>{
     }
 
     public AccessFile getAccessToTheFile(){
-        return new AccessFile(this.name, this.loadUrl, this.downloadUrl);
+        return new AccessFile(this.name, this.loadUrl, this.downloadUrl, this.mimeType);
     }
     
     // The extension of the file will not change
@@ -172,6 +172,10 @@ public class UserFile implements Comparable<UserFile>{
 
     public void setDownloadUrl(String downloadUrl){
         this.downloadUrl = downloadUrl;
+    }
+
+    public void setMimeType(String mimeType){
+        this.mimeType = mimeType;
     }
 
     

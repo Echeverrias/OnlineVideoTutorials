@@ -16,6 +16,7 @@ var GadgetsContainerComponent = (function () {
     function GadgetsContainerComponent() {
         this.imagePath = "app/components/room/gadgetsContainer/img/";
         console.log('*** GadgetsContainerComponent has been created');
+        console.log('@Input options: ', this.options);
         this.activeOption = new core_1.EventEmitter();
         this.sharedFile = new core_1.EventEmitter();
     }
@@ -51,6 +52,10 @@ __decorate([
     core_1.Input("ovt-address"),
     __metadata("design:type", String)
 ], GadgetsContainerComponent.prototype, "address", void 0);
+__decorate([
+    core_1.Input(),
+    __metadata("design:type", Object)
+], GadgetsContainerComponent.prototype, "options", void 0);
 __decorate([
     core_1.Output('ovt-activeOption'),
     __metadata("design:type", core_1.EventEmitter)

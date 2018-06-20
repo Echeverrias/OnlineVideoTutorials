@@ -13,6 +13,12 @@
                             <ovt-room-details *ngIf="selectedRoom == room" [room]="room"></ovt-room-details>
                             </li>
                         </ul>
+                        <div *ngIf="pageNumbers" class="btn-group pull-xs-right">
+                            <button *ngFor="let page of pageNumbers" (click)="changePage(page)"
+                                class="btn btn-outline-primary" [class.active]="page == selectedPage">
+                            {{page}}    
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div class="ovt-out">

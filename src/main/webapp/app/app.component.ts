@@ -31,6 +31,7 @@ export class AppComponent {
 
        @HostListener('window:beforeunload', ['$event'])
        beforeunloadHandler(event) {
+           console.log('$BEFOREUNLOAD EVENt');
            console.log(event);
            if (! sessionStorage.getItem("downloadEvent")){
                console.log(this.me);

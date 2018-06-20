@@ -17,6 +17,7 @@ import { ParticipantComponent } from './participant/participant.component';
 import { UserFactory } from './../../models/userFactory';
 import { User, IUser } from '../../models/user';
 import { Subject } from 'rxjs/Subject';
+import { ContentDisplayerComponent } from '../../shared/components/contentDisplayer/contentDisplayer.component';
 
 import { roomTemplate } from './room.html'
 
@@ -39,8 +40,10 @@ export class RoomComponent implements OnInit, OnDestroy{
     private activeGadget: boolean;  
     private mainParticipant: User;
     private participants: User[];
-    private fileUrl: SafeResourceUrl;
-    private showCloseButton: boolean;
+    private safeFileUrl: SafeResourceUrl;
+    private fileUrl: string;
+    private showCloseButton: boolean; //b
+    options: any = { validMimeTypes: null };
     
     private destroyed$: Subject<boolean> = new Subject<boolean>();
 
@@ -48,6 +51,7 @@ export class RoomComponent implements OnInit, OnDestroy{
       
       console.log("");
       console.log(`% Room constructor ${new Date().toLocaleTimeString()}`);
+      this.options.validMimeTypes = ContentDisplayerComponent.getValidMimeTypes();
       console.log("this.me: ", this.me)
       console.log("this.me.getMe(): ", this.me.getMe());
       console.log("this.me.getMyInfo(): ", this.me.getMyInfo());
@@ -73,7 +77,7 @@ export class RoomComponent implements OnInit, OnDestroy{
        let participants = users.map(u => UserFactory.createAnUser(u));
        this.setAvailableParticipants(participants);
        console.log('These are the available participants:');
-       console.log(this.participants);
+       console.log('this.participants: ', this.participants);
       });
 
       
@@ -176,19 +180,20 @@ export class RoomComponent implements OnInit, OnDestroy{
 
     onLoadFile(fileUrl: string){
       console.log(`RoomComponent.onLoadFile(${fileUrl})`); 
-      this.showCloseButton = false;
+      this.showCloseButton = false; //b
       console.log(this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl));
-      this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl); 
+      this.safeFileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl); 
+      this.fileUrl = fileUrl; 
     }
 
     onMouseOverFile(){
         console.log("onMouseOverFile");
-        this.showCloseButton = true;
+        this.showCloseButton = true; //b
     }
     
     onCloseFile(){
       this.fileUrl = undefined;
-      this.showCloseButton = false;
+      this.showCloseButton = false; //b
     }
 
     ngOnDestroy(){

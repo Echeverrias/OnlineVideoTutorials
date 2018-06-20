@@ -106,7 +106,7 @@ export class SignService {
 
     login(user: IUserInfo): void {
         console.log("");
-        console.log(`* SignService.createUser ${new Date().toLocaleTimeString()}`);
+        console.log(`* SignService.login ${new Date().toLocaleTimeString()}`);
         console.log(user);
 
         /* //*
@@ -161,7 +161,7 @@ export class SignService {
         console.log(`* <- SignService.logOut ${new Date().toLocaleTimeString()}`);
        
         this.connection.sendWSMessage(WS_MSG_ID_LOGOUT, user);
-        this.me.deleteMe();
+        //this.me.deleteMe();
         
         console.log(`/ SignService.logOut ${new Date().toLocaleTimeString()}`);
         console.log("")

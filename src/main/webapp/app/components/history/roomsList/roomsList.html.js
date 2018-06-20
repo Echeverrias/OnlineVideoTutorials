@@ -1,0 +1,7 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+/*
+ * @author Juan Antonio Echeverrías Aranda (juanan.echeve@gmail.com)
+ */
+exports.roomsListTemplate = "<div id=\"ovt-rooms-list\" class=\"animate\"> \n    \n               \n                <!--\n                <div class=\"ovt-content-displayer\">\n                    <ovt-content-displayer *ngIf=\"fileUrl\" [className]=\"'ovt-content-displayer'\" [ovt-file-url]=\"fileUrl\" [ovt-type]=\"'application/pdf'\" (ovt-close)=\"onCloseContentDisplayer()\"></ovt-content-displayer> \n                </div>\n                -->\n                    <ul>\n                        <li  *ngFor=\"let room of rooms\">\n                        <!--\n                        <div class=\"ovt-selectable\" [class.selectedRoom]=\"selectedRoom==room\" [detailsSelected]=\"selectedRoom==room\" (click)=\"onSelectedRoom(room)\">{{room.name}} ({{room.getCreatedAtTimeStamp()}})\n                            <ovt-room-details *ngIf=\"selectedRoom == room\" [room]=\"room\"></ovt-room-details>\n                        </div>\n                        -->\n                        \n                        <ovt-room-details [ngClass]=\"'ovt-room-details'\" [detailsSelected]=\"selectedRoom==room\" (click)=\"onSelectedRoom(room, event)\" [room]=\"room\"></ovt-room-details>\n \n                        </li>\n                    </ul>\n             \n </div>";
+//# sourceMappingURL=roomsList.html.js.map

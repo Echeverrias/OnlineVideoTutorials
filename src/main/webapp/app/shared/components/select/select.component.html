@@ -1,0 +1,8 @@
+<div class="ovt/select">
+<ng-content></ng-content>
+<select #select [name]="name" (change)="onChange(select.value)">
+  <option *ngFor="let op of options" [value]="op.value">
+  {{op.textContent}} 
+  </option>
+</select>
+</div>

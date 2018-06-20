@@ -7,6 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
+var auth_service_1 = require("./auth.service");
 var connection_service_1 = require("./connection.service");
 var file_service_1 = require("./file.service");
 var handler_service_1 = require("./handler.service");
@@ -18,7 +19,7 @@ var CoreModule = (function () {
 }());
 CoreModule = __decorate([
     core_1.NgModule({
-        providers: [connection_service_1.ConnectionService, file_service_1.FileService, handler_service_1.HandlerService, user_service_1.UserService]
+        providers: [connection_service_1.ConnectionService, file_service_1.FileService, handler_service_1.HandlerService, auth_service_1.AuthService, user_service_1.UserService]
     })
 ], CoreModule);
 exports.CoreModule = CoreModule;

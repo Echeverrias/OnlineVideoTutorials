@@ -3,7 +3,7 @@
     Author     : juanan
 */
 #ovt-history {
-    position:relative;
+    
     top: 1em;
     width: 70%;
     display: block;
@@ -19,6 +19,7 @@
     -moz-transition: all 0.3s linear;
     -o-transition: all 0.3s linear;
     transition: all 0.3s linear;
+    /*/position:relative;*/
 }
 
 #ovt-history:before {
@@ -34,10 +35,24 @@
    
 }
 
+#ovt-history .rooms-per-page {
+  margin: 0.5em;
+   
+}
+
+#ovt-history div.ovt-container{
+  position: relative;
+  height: fit-content;
+}
+
+div.ovt-pagination {
+   margin: 1.5em;
+}
+
+
 
 
 #ovt-history .ovt-out {
-  margin:3em 0 1em 0;
   text-align: center;
   
 }
@@ -124,10 +139,6 @@ div.ovt-create-room button{
   padding-left: 1em;
 }
 
-div.ovt-out button{
-  margin: 2em auto 0em auto;
-}
-
 
 /*
 .ovt-room-details{
@@ -137,12 +148,13 @@ div.ovt-out button{
 
 */
 
-div.header div {
-  display:inline;  
+
+ .ovt-hide{
+  display: none;
  }
 
  div.header div.subheader {
-  margin-right: 3em;
+  margin-bottom: 1em;
  }
 
 @media screen and (max-width: 1140px){

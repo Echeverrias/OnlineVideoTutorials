@@ -1,0 +1,58 @@
+div.ovt-content-displayer {
+    position: relative;
+    width:100%;
+}
+
+div.displayer-container{
+    width:100%;
+}
+
+div.object {
+    width:100%;
+
+}
+
+div.ovt-content-displayer img.btn {
+    position: absolute;
+    margin-left: -8%;
+    z-index:4;
+}
+
+div.ovt-content-displayer img.btn.valid-type {
+    top: 0.8em;
+}
+
+div.ovt-content-displayer img.btn.validtype {
+    top: 0.8em;
+}
+
+div.ovt-content-displayer img.btn.no-valid-type {
+    top: 0em;
+ }
+
+ div.ovt-content-displayer img.btn.novalidtype {
+    top: 0em;
+ }
+
+div.object object{
+    height: 100%;
+    width: 100%;
+    border: 0.4em solid #1C1C1C;
+    background: #414141;
+}
+
+div.object object.text{
+    background: white;
+}
+
+div.object object.image{
+    height: auto;
+    width: auto;
+}
+
+div .no-valid-type{
+    border: 0.4em solid #1C1C1C;
+    background: rgb(240, 125, 125);
+}
+
+

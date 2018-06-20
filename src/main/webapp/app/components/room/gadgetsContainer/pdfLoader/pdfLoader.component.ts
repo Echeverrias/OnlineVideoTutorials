@@ -7,7 +7,7 @@ import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 
 
-import { DownloadDirective } from '../../../../directives/download.directive';
+//b import { DownloadDirective } from '../../../../directives/download.directive';
 
 import { AccessFile } from '../../../../models/types';
 
@@ -23,6 +23,7 @@ import { AccessFile } from '../../../../models/types';
 export class PdfLoaderComponent implements OnInit, OnDestroy{
   
   @Input("ovt-address") address: string;
+  @Input("ovt-valid-mime-types") validMimeTypes: string[] | {[key: string]: boolean}
   @Output("ovt-file") sharedFile: EventEmitter<string>; 
   @Output("ovt-new-file") newFile: EventEmitter<string>;
 

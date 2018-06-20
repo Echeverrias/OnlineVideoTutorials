@@ -92,7 +92,7 @@ var SignService = (function () {
     };
     SignService.prototype.login = function (user) {
         console.log("");
-        console.log("* SignService.createUser " + new Date().toLocaleTimeString());
+        console.log("* SignService.login " + new Date().toLocaleTimeString());
         console.log(user);
         /* //*
         let um :LoginMessage = {
@@ -135,7 +135,7 @@ var SignService = (function () {
         console.log("");
         console.log("* <- SignService.logOut " + new Date().toLocaleTimeString());
         this.connection.sendWSMessage(WS_MSG_ID_LOGOUT, user);
-        this.me.deleteMe();
+        //this.me.deleteMe();
         console.log("/ SignService.logOut " + new Date().toLocaleTimeString());
         console.log("");
     };

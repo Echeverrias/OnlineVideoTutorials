@@ -7,7 +7,7 @@ export const gadgetsContainerTemplate = `<div class="ovt-gadgetsContainer">
   </div> 
  
  <div class="ovt-option">
-     <ovt-pdf-loader [ovt-address]="address" (ovt-file)="onSelectedFile($event)" (ovt-new-file)="displayNewFileAlert($event)"></ovt-pdf-loader>
+     <ovt-pdf-loader [ovt-address]="address" [ovt-valid-mime-types]="options && options.validMimeTypes" (ovt-file)="onSelectedFile($event)" (ovt-new-file)="displayNewFileAlert($event)"></ovt-pdf-loader>
  </div>
 
 </div>`

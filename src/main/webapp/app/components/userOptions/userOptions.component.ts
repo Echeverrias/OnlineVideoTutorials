@@ -4,7 +4,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 import { UserService } from '../../core/user.service';
 import { userOptionsTemplate } from './userOptions.html';
-import { SignStates } from '../sign/sign.component';
+//import { SignStates } from '../sign/sign.component';
 
 @Component({
     moduleId: module.id,
@@ -24,7 +24,8 @@ export class UserOptionsComponent{
 
     onEditAccount(){
         this.displayOrHideMenu();
-        this.router.navigate(['/sign', { state: SignStates.EditPerfil }]);
+        //this.router.navigate(['/sign', { state: SignStates.EditPerfil }]);
+        this.router.navigate(['/editPerfil']);
     }
 
     onGoToHistorial(){
@@ -36,7 +37,8 @@ export class UserOptionsComponent{
         console.log("");
         console.log(`* <- UserOptions.onSignOut ${new Date().toLocaleTimeString()}`);
         this.displayOrHideMenu();
-        this.router.navigate(['/sign']);
+        //this.router.navigate(['/sign']);
+        this.router.navigate(['/']);
      }
 
      /*

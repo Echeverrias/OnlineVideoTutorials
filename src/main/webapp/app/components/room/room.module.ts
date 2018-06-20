@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
-import { FormsModule }   from '@angular/forms';
-import { CommonModule } from "@angular/common";
+
 
 import { GadgetsContainerModule } from './gadgetsContainer/gadgetsContainer.module';
 import { ParticipantModule } from './participant/participant.module';
@@ -10,14 +9,17 @@ import { RoomService } from './room.service';
 import { ParticipantsService } from './participants.service';
 
 import { RoomComponent } from './room.component';
-import { ChatComponent } from './chat/chat.component';
-import { ChatMessageComponent } from './chat/chatMessage/chatMessage.component';
+import { SharedModule } from '../../shared/shared.module';
+//b import { FormsModule }   from '@angular/forms';
+//b import { CommonModule } from "@angular/common";
+//b import { ChatComponent } from './chat/chat.component';
+//b import { ChatMessageComponent } from './chat/chatMessage/chatMessage.component';
+
 
 
 @NgModule({
     imports: [ 
-        CommonModule, 
-        FormsModule, 
+        SharedModule,
         GadgetsContainerModule,
         ParticipantModule,
         ChatModule

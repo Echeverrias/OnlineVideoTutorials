@@ -5,13 +5,16 @@ import { HttpModule }    from '@angular/http';
 import { routing } from './app.routing';
 import { NgUploaderModule } from 'ngx-uploader';
 
+import { SharedModule } from './shared/shared.module';
 import { CoreModule } from './core/core.module';
+import { SignModule } from './components/sign/sign.module';
+import { UserOptionsModule } from './components/userOptions/userOptions.module';
 import { RoomModule } from './components/room/room.module';
 import { HistoryModule } from './components/history/history.module';
-import { PipesModule } from './pipes/pipes.module';
+
 
 import { AppComponent }  from './app.component';
-import { SignComponent } from './components/sign/sign.component';
+//import { SignComponent } from './components/sign/sign.component';
 import { UserOptionsComponent } from './components/userOptions/userOptions.component';
 import { WaitingRoomComponent } from './components/waitingRoom/waitingRoom.component';
 
@@ -22,20 +25,19 @@ import { AuthGuard } from './guards/auth.guard';
 @NgModule({
   imports: [
     BrowserModule,
-    FormsModule,
     ReactiveFormsModule,
     HttpModule,
     NgUploaderModule, 
     CoreModule,
+    SharedModule,
+    UserOptionsModule,
     RoomModule,
     HistoryModule,
-    PipesModule,
+    SignModule,
     routing, 
   ],
   declarations: [
-    UserOptionsComponent,
     AppComponent,
-    SignComponent,
     WaitingRoomComponent,
   ],
   providers: [

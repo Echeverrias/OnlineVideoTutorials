@@ -15,7 +15,8 @@ export interface IMessage {
 export type AccessFile = { 
     name: string, 
     loadUrl: string, 
-    downloadUrl: string 
+    downloadUrl: string,
+    mimeType: string 
 };
 
 export type ParticipantInfo = IUserInfo & {room: IRoom};
@@ -32,4 +33,7 @@ export type IdMessage = { id: string };
 export type Message = IdMessage & Object;
 export type WSMessage = { id: string, payload: any };
 export type UserInfoMessage = IdMessage & IUserInfo;
+
+export type Size = { width: string, height: string }
+export type AttributesValues = {[key: string]: string};
 

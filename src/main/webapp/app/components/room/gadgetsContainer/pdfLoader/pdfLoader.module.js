@@ -7,11 +7,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
-var forms_1 = require("@angular/forms");
-var common_1 = require("@angular/common");
 var pdfLoader_component_1 = require("./pdfLoader.component");
 var ngx_uploader_1 = require("ngx-uploader");
-var directives_module_1 = require("./../../../../directives/directives.module");
+var shared_module_1 = require("./../../../../shared/shared.module");
+//b import { DirectivesModule } from './../../../../directives/directives.module';
+//b import { FormsModule }   from '@angular/forms';
+//b import { CommonModule } from "@angular/common";
 var PdfLoaderModule = (function () {
     function PdfLoaderModule() {
     }
@@ -19,7 +20,7 @@ var PdfLoaderModule = (function () {
 }());
 PdfLoaderModule = __decorate([
     core_1.NgModule({
-        imports: [common_1.CommonModule, forms_1.FormsModule, ngx_uploader_1.NgUploaderModule, directives_module_1.DirectivesModule],
+        imports: [ngx_uploader_1.NgUploaderModule, shared_module_1.SharedModule],
         declarations: [pdfLoader_component_1.PdfLoaderComponent],
         exports: [pdfLoader_component_1.PdfLoaderComponent]
     })

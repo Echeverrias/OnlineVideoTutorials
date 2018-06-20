@@ -12,13 +12,13 @@ var forms_1 = require("@angular/forms");
 var http_1 = require("@angular/http");
 var app_routing_1 = require("./app.routing");
 var ngx_uploader_1 = require("ngx-uploader");
+var shared_module_1 = require("./shared/shared.module");
 var core_module_1 = require("./core/core.module");
+var sign_module_1 = require("./components/sign/sign.module");
+var userOptions_module_1 = require("./components/userOptions/userOptions.module");
 var room_module_1 = require("./components/room/room.module");
 var history_module_1 = require("./components/history/history.module");
-var pipes_module_1 = require("./pipes/pipes.module");
 var app_component_1 = require("./app.component");
-var sign_component_1 = require("./components/sign/sign.component");
-var userOptions_component_1 = require("./components/userOptions/userOptions.component");
 var waitingRoom_component_1 = require("./components/waitingRoom/waitingRoom.component");
 var auth_guard_1 = require("./guards/auth.guard");
 var AppModule = (function () {
@@ -30,20 +30,19 @@ AppModule = __decorate([
     core_1.NgModule({
         imports: [
             platform_browser_1.BrowserModule,
-            forms_1.FormsModule,
             forms_1.ReactiveFormsModule,
             http_1.HttpModule,
             ngx_uploader_1.NgUploaderModule,
             core_module_1.CoreModule,
+            shared_module_1.SharedModule,
+            userOptions_module_1.UserOptionsModule,
             room_module_1.RoomModule,
             history_module_1.HistoryModule,
-            pipes_module_1.PipesModule,
+            sign_module_1.SignModule,
             app_routing_1.routing,
         ],
         declarations: [
-            userOptions_component_1.UserOptionsComponent,
             app_component_1.AppComponent,
-            sign_component_1.SignComponent,
             waitingRoom_component_1.WaitingRoomComponent,
         ],
         providers: [

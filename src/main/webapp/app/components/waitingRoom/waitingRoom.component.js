@@ -89,7 +89,8 @@ var WaitingRoomComponent = (function () {
     WaitingRoomComponent.prototype.onSignOut = function () {
         console.log("");
         console.log("* <- WaitingRoom.onLogOut " + new Date().toLocaleTimeString());
-        this.router.navigate(['/sign']);
+        //this.router.navigate(['/sign']);
+        this.router.navigate(['/']);
     };
     WaitingRoomComponent.prototype.ngOnDestroy = function () {
         console.log("");

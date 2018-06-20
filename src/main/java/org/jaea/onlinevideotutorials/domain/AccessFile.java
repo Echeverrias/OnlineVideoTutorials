@@ -23,15 +23,18 @@ public class AccessFile {
     private String loadUrl;
     
     private String downloadUrl;
+
+    private String mimeType;
     
-    public AccessFile (String name, String loadUrl, String downloadUrl){
+    public AccessFile (String name, String loadUrl, String downloadUrl, String mimeType){
         
         this.name = name;
         this.loadUrl = loadUrl;
         this.downloadUrl = downloadUrl;
+        this.mimeType = mimeType;
     }
-    
-   public String getName(){
+
+    public String getName(){
         return this.name;
     }
 
@@ -41,6 +44,9 @@ public class AccessFile {
 
     public String getDownloadUrl(){
         return this.downloadUrl;
+    }
+    public String getMimeType(){
+        return this.mimeType;
     }
     
    

@@ -112,7 +112,8 @@ import { Subject } from 'rxjs/Subject';
     onSignOut(){
         console.log("");
         console.log(`* <- WaitingRoom.onLogOut ${new Date().toLocaleTimeString()}`);
-        this.router.navigate(['/sign']);
+        //this.router.navigate(['/sign']);
+        this.router.navigate(['/']);
     }
     
     ngOnDestroy(){

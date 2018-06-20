@@ -22,6 +22,7 @@ var participants_service_1 = require("./participants.service");
 var participant_component_1 = require("./participant/participant.component");
 var userFactory_1 = require("./../../models/userFactory");
 var Subject_1 = require("rxjs/Subject");
+var contentDisplayer_component_1 = require("../../shared/components/contentDisplayer/contentDisplayer.component");
 var room_html_1 = require("./room.html");
 var RoomComponent = (function () {
     function RoomComponent(room, _participants, router, me, route, sanitizer) {
@@ -31,9 +32,11 @@ var RoomComponent = (function () {
         this.me = me;
         this.route = route;
         this.sanitizer = sanitizer;
+        this.options = { validMimeTypes: null };
         this.destroyed$ = new Subject_1.Subject();
         console.log("");
         console.log("% Room constructor " + new Date().toLocaleTimeString());
+        this.options.validMimeTypes = contentDisplayer_component_1.ContentDisplayerComponent.getValidMimeTypes();
         console.log("this.me: ", this.me);
         console.log("this.me.getMe(): ", this.me.getMe());
         console.log("this.me.getMyInfo(): ", this.me.getMyInfo());
@@ -57,7 +60,7 @@ var RoomComponent = (function () {
             var participants = users.map(function (u) { return userFactory_1.UserFactory.createAnUser(u); });
             _this.setAvailableParticipants(participants);
             console.log('These are the available participants:');
-            console.log(_this.participants);
+            console.log('this.participants: ', _this.participants);
         });
         this.room.getIncomingParticipant()
             .takeUntil(this.destroyed$)
@@ -142,17 +145,18 @@ var RoomComponent = (function () {
     };
     RoomComponent.prototype.onLoadFile = function (fileUrl) {
         console.log("RoomComponent.onLoadFile(" + fileUrl + ")");
-        this.showCloseButton = false;
+        this.showCloseButton = false; //b
         console.log(this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl));
-        this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
+        this.safeFileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
+        this.fileUrl = fileUrl;
     };
     RoomComponent.prototype.onMouseOverFile = function () {
         console.log("onMouseOverFile");
-        this.showCloseButton = true;
+        this.showCloseButton = true; //b
     };
     RoomComponent.prototype.onCloseFile = function () {
         this.fileUrl = undefined;
-        this.showCloseButton = false;
+        this.showCloseButton = false; //b
     };
     RoomComponent.prototype.ngOnDestroy = function () {
         console.log("* Room.OnDestroy " + new Date().toLocaleTimeString());

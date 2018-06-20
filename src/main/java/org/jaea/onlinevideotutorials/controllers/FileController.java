@@ -116,6 +116,7 @@ public class FileController {
         UserFile uf = new UserFile(uploadedFile);
         uf.setLoadUrl(filePath + fileName);
         uf.setDownloadUrl(DOWNLOAD_ENDPOINT + "/" + roomFolder + "/" + fileName);
+        uf.setMimeType(file.getContentType());
         this.log.info("### {}", uf.getName());
         this.log.info("### {}", room.getName());
         try{

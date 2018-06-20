@@ -6,15 +6,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var pipes_module_1 = require("./../../pipes/pipes.module");
-var directives_module_1 = require("./../../directives/directives.module");
 var core_1 = require("@angular/core");
-var common_1 = require("@angular/common");
 var router_1 = require("@angular/router");
 var history_component_1 = require("./history.component");
-var roomDetails_component_1 = require("./roomDetails/roomDetails.component");
+var roomsList_module_1 = require("./roomsList/roomsList.module");
 var history_service_1 = require("./history.service");
-var fileLink_component_1 = require("../share/fileLink/fileLink.component");
+var shared_module_1 = require("../../shared/shared.module");
 var historyRoutes = [
     { path: "history", component: history_component_1.HistoryComponent }
 ];
@@ -25,11 +22,13 @@ var HistoryModule = (function () {
 }());
 HistoryModule = __decorate([
     core_1.NgModule({
-        imports: [common_1.CommonModule, router_1.RouterModule.forChild(historyRoutes), directives_module_1.DirectivesModule, pipes_module_1.PipesModule],
+        imports: [
+            router_1.RouterModule.forChild(historyRoutes),
+            shared_module_1.SharedModule,
+            roomsList_module_1.RoomsListModule
+        ],
         declarations: [
-            history_component_1.HistoryComponent,
-            roomDetails_component_1.RoomDetailsComponent,
-            fileLink_component_1.FileLinkComponent
+            history_component_1.HistoryComponent
         ],
         providers: [history_service_1.HistoryService],
         exports: [history_component_1.HistoryComponent]

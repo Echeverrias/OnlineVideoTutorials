@@ -14,7 +14,7 @@ var router_1 = require("@angular/router");
 var platform_browser_1 = require("@angular/platform-browser");
 var user_service_1 = require("../../core/user.service");
 var userOptions_html_1 = require("./userOptions.html");
-var sign_component_1 = require("../sign/sign.component");
+//import { SignStates } from '../sign/sign.component';
 var UserOptionsComponent = (function () {
     function UserOptionsComponent(router, sanitizer, me) {
         this.router = router;
@@ -25,7 +25,8 @@ var UserOptionsComponent = (function () {
     }
     UserOptionsComponent.prototype.onEditAccount = function () {
         this.displayOrHideMenu();
-        this.router.navigate(['/sign', { state: sign_component_1.SignStates.EditPerfil }]);
+        //this.router.navigate(['/sign', { state: SignStates.EditPerfil }]);
+        this.router.navigate(['/editPerfil']);
     };
     UserOptionsComponent.prototype.onGoToHistorial = function () {
         this.displayOrHideMenu();
@@ -35,7 +36,8 @@ var UserOptionsComponent = (function () {
         console.log("");
         console.log("* <- UserOptions.onSignOut " + new Date().toLocaleTimeString());
         this.displayOrHideMenu();
-        this.router.navigate(['/sign']);
+        //this.router.navigate(['/sign']);
+        this.router.navigate(['/']);
     };
     /*
    getUserImageUrl(): SafeResourceUrl{

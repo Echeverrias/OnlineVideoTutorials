@@ -162,7 +162,30 @@ ovt-participant.minimized{
     height: 31.5%;
 }
 
-
+div.ovt-content-displayer {
+    
+    -webkit-flex: 0 3 619px;
+    -webkit-order: 2;
+    flex: 0 3 619px;
+    order: 2;
+    max-height: 99%;
+    height: 99%;
+    margin:0em;
+   
+}
+/*
+::deep div.ovt-content-displayer {
+    
+    -webkit-flex: 0 3 619px;
+    -webkit-order: 2;
+    flex: 0 3 619px;
+    order: 2;
+    max-height: 99%;
+    height: 99%;
+    margin:0em;
+   
+}
+*/
 div.ovt-file {
     -webkit-flex: 0 3 619px;
     -webkit-order: 2;
