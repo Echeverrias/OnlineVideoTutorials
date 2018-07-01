@@ -45,8 +45,8 @@ var EditPerfilComponent = (function () {
         console.log(this.me);
         console.log(this.me.getMe());
         this.editPerfilForm = this.formBuilder.group({
-            password: [sessionStorage.getItem(this.me.userName), [forms_1.Validators.minLength(this.validation.minPasswordLength)]],
-            confirmationPassword: [sessionStorage.getItem(this.me.userName), [forms_1.Validators.minLength(this.validation.minPasswordLength), this.validation.confirmPassword.bind(this.validation)]],
+            password: [this.auth.getPassword(this.me.userName), [forms_1.Validators.minLength(this.validation.minPasswordLength)]],
+            confirmationPassword: [this.auth.getPassword(this.me.userName), [forms_1.Validators.minLength(this.validation.minPasswordLength), this.validation.confirmPassword.bind(this.validation)]],
             name: [this.me.name, [forms_1.Validators.required, forms_1.Validators.minLength(this.validation.minLength)]],
             surname: [this.me.surname, [forms_1.Validators.required, forms_1.Validators.minLength(this.validation.minLength)]],
             email: [this.me.email, [forms_1.Validators.required, this.validation.validateEmailPattern], this.validation.validateEmail.bind(this.validation)],

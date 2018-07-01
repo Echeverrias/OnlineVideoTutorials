@@ -20,7 +20,7 @@ export const paginationTemplate = `<div id="ovt-pagination" *ngIf=" (!loading) &
 </ul>
 </nav>
 <div class="description">
-		<span class="total-items">{{ getMin() }} - {{ getMax() }} de {{ totalItems }}</span>
+		<span class="total-items">{{ getMin() }} - {{ getMax() }} de {{ totalItems }} salas</span>
 		<span class="total-pages"> {{ totalPages() }} páginas</span>
 </div>
 </div>`

@@ -92,7 +92,7 @@ export const editPerfilTemplate = ` <div id="ovt-edit-perfil" class="animate con
                                 <input id="userTypeTutor" class="form-control ovt-radio" name="userType" type="radio" formControlName="userType" 
                                     value="tutor" required><span>Tutor</span>
                                 <input id="userTypeStudent" class="form-control ovt-radio" name="userType" type="radio" formControlName="userType" 
-                                    value="student" required><span>Student</span>
+                                    value="student" required><span>Estudiante</span>
                                 <div class="ovt-display-alert" *ngIf="editPerfilForm.controls.userType.errors && checkFields">       
                                     <div *ngIf="editPerfilForm.controls.userType.errors.required" class="alert-danger alert">El tipo de usuario es requerido</div>
                                 </div>    

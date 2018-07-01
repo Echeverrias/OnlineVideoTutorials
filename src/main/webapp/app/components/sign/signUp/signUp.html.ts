@@ -84,7 +84,7 @@ export const signUpTemplate = ` <div id="ovt-sign-up" class="animate container">
                                 <input id="userTypeTutor" class="form-control ovt-radio" name="userType" type="radio" formControlName="userType" 
                                     value="tutor" required><span>Tutor</span>
                                 <input id="userTypeStudent" class="form-control ovt-radio" name="userType" type="radio" formControlName="userType" 
-                                    value="student" required><span>Student</span>
+                                    value="student" required><span>Estudiante</span>
                                 <div class="ovt-display-alert" *ngIf="signUpForm.controls.userType.errors && checkFields">       
                                     <div *ngIf=" signUpForm.controls.userType.errors.required" class="alert-danger alert">El tipo de usuario es requerido</div>
                                 </div>    

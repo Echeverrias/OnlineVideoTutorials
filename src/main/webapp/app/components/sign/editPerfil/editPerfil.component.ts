@@ -52,7 +52,7 @@ export class EditPerfilComponent implements OnInit {
 
 
 
-    constructor(private router: Router,  private sanitizer: DomSanitizer, private validation: ValidationService, private formBuilder: FormBuilder, private sign: SignService, private me: UserService, private file: FileService, private auth: AuthService) {
+    constructor(private router: Router, private sanitizer: DomSanitizer, private validation: ValidationService, private formBuilder: FormBuilder, private sign: SignService, private me: UserService, private file: FileService, private auth: AuthService) {
         console.log(`% Edit Perfil constructor `);
         this.userImage$ = new Subject<UserFile>();
         this.sizeLimit = this.file.sizeLimit;
@@ -67,8 +67,8 @@ export class EditPerfilComponent implements OnInit {
         console.log(this.me.getMe());
         
         this.editPerfilForm = this.formBuilder.group({
-                password: [sessionStorage.getItem(this.me.userName), [Validators.minLength(this.validation.minPasswordLength)]],
-                confirmationPassword: [sessionStorage.getItem(this.me.userName), [Validators.minLength(this.validation.minPasswordLength), this.validation.confirmPassword.bind(this.validation)]],
+                password: [this.auth.getPassword(this.me.userName), [Validators.minLength(this.validation.minPasswordLength)]],
+                confirmationPassword: [this.auth.getPassword(this.me.userName), [Validators.minLength(this.validation.minPasswordLength), this.validation.confirmPassword.bind(this.validation)]],
                 name: [this.me.name, [Validators.required, Validators.minLength(this.validation.minLength)]],
                 surname: [this.me.surname, [Validators.required, Validators.minLength(this.validation.minLength)]],
                 email: [this.me.email, [Validators.required, this.validation.validateEmailPattern], this.validation.validateEmail.bind(this.validation)],

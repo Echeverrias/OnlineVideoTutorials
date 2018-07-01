@@ -62,12 +62,13 @@ var AuthService = (function () {
         this.setEncrypTionToken(this.rememberedUserName);
     }
     AuthService.prototype.authenticate = function (userName, password) {
+        console.log("AuthService.authenticate(" + userName + ", " + password + ")");
         this.auth_token = userName;
         return new Observable_1.Observable();
     };
     Object.defineProperty(AuthService.prototype, "authenticated", {
         get: function () {
-            return this.auth_token && this.auth_token.length > 0;
+            return this.validString(this.auth_token);
         },
         enumerable: true,
         configurable: true
@@ -113,6 +114,9 @@ var AuthService = (function () {
         if (this._rememberPassword) {
             this.saveCredentials(this.ec(user.userName), this.ec(user.password));
         }
+        else {
+            sessionStorage.setItem(this.ec(user.userName), this.ec(user.password));
+        }
     };
     AuthService.prototype.setEncrypTionToken = function (seed) {
         var count = seed.split('')
@@ -129,13 +133,19 @@ var AuthService = (function () {
     };
     AuthService.prototype.decrypt = function (value) {
         var _this = this;
-        var newValue = value.split('.').map(function (c) { return String.fromCharCode(Number(c) - _this.encryption_token); });
-        return newValue.join('');
+        if (this.validString(value)) {
+            console.log("AuthService.decrypt(" + value + ")");
+            var newValue = value.split('.').map(function (c) { return String.fromCharCode(Number(c) - _this.encryption_token); });
+            return newValue.join('');
+        }
+        else {
+            return '';
+        }
     };
     AuthService.prototype.theUserIsLogged = function () {
         console.log('AuthService.theUserIsLogged: ', this.auth_token && this.auth_token.length > 0),
             console.log('AuthService..auth_token: ', this.auth_token);
-        return (this.auth_token && this.auth_token.length > 0);
+        return (this.validString(this.auth_token));
     };
     Object.defineProperty(AuthService.prototype, "loggedUser", {
         get: function () {
@@ -153,8 +163,8 @@ var AuthService = (function () {
     });
     Object.defineProperty(AuthService.prototype, "rememberedPassword", {
         get: function () {
-            var userName = localStorage.getItem(LAST_USER_NAME_KEY);
-            return localStorage.getItem(this.ec(userName)) || '';
+            var lastUserName = localStorage.getItem(LAST_USER_NAME_KEY);
+            return this.getPassword(lastUserName);
         },
         enumerable: true,
         configurable: true
@@ -165,7 +175,7 @@ var AuthService = (function () {
             pass = sessionStorage.getItem(this.ec(userName));
         }
         ;
-        console.log("Auth.service.getPassword(" + userName + "): " + pass, this.ec(userName));
+        console.log("Auth.service.getPassword(" + userName + "): " + (pass ? this.decrypt(pass) : ""), 'encrypted userName: ' + this.ec(userName));
         return pass ? this.decrypt(pass) : "";
     };
     AuthService.prototype.saveCredentials = function (userName, password) {
@@ -187,6 +197,9 @@ var AuthService = (function () {
         //  sessionStorage.setItem(localStorage.getItem(LAST_USER_NAME_KEY), undefined),
         this.rememberPassword = localStorage.getItem(REMEMBER_PASSWORD_KEY) === 'true';
         this.auth_token = '';
+    };
+    AuthService.prototype.validString = function (value) {
+        return value ? value.length > 0 : false;
     };
     return AuthService;
 }());

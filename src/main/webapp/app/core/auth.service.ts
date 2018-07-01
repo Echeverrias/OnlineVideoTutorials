@@ -66,12 +66,13 @@ export class AuthService{
 
    
     authenticate(userName: string, password: string): Observable<boolean>{
+        console.log(`AuthService.authenticate(${userName}, ${password})`);
         this.auth_token = userName;
         return new Observable<boolean>();
     }
 
     get authenticated(): boolean{
-        return this.auth_token && this.auth_token.length > 0;
+        return this.validString(this.auth_token);
     }
 
     get rememberPassword(): boolean{
@@ -92,7 +93,7 @@ export class AuthService{
             return false;
         }    
     }
-seed
+
     login(user: any){
         console.log('AuthService.login()', user);
         this.authenticate(user.userName, user.password);
@@ -117,6 +118,9 @@ seed
         if (this._rememberPassword){
             this.saveCredentials(this.ec(user.userName), this.ec(user.password));
         }
+        else{
+            sessionStorage.setItem(this.ec(user.userName), this.ec(user.password));
+        }
     }
 
     private setEncrypTionToken(seed: string): void{
@@ -134,14 +138,20 @@ seed
     }
 
     private decrypt(value: string): string{
-        let newValue = value.split('.').map(c => String.fromCharCode(Number(c) - this.encryption_token));
-        return newValue.join('');
+        if (this.validString(value)){
+            console.log(`AuthService.decrypt(${value})`);
+            let newValue = value.split('.').map(c => String.fromCharCode(Number(c) - this.encryption_token));
+            return newValue.join('');
+        }
+        else{
+            return '';
+        }    
     }
 
     theUserIsLogged(): boolean{
         console.log('AuthService.theUserIsLogged: ', this.auth_token  && this.auth_token.length > 0),
         console.log('AuthService..auth_token: ', this.auth_token);
-        return (this.auth_token  && this.auth_token.length > 0);
+        return (this.validString(this.auth_token));
     }
 
     get loggedUser(): IUserInfo{
@@ -153,8 +163,8 @@ seed
     }
 
     get rememberedPassword(): string{
-        let userName = localStorage.getItem(LAST_USER_NAME_KEY);
-        return  localStorage.getItem(this.ec(userName)) || '';
+        let lastUserName = localStorage.getItem(LAST_USER_NAME_KEY);
+        return  this.getPassword(lastUserName);
     }
 
     getPassword(userName: string): string{
@@ -162,7 +172,7 @@ seed
         if (!pass){
             pass = sessionStorage.getItem(this.ec(userName))
         };
-        console.log(`Auth.service.getPassword(${userName}): ${pass}`, this.ec(userName));
+        console.log(`Auth.service.getPassword(${userName}): ${pass? this.decrypt(pass) : ""}`, 'encrypted userName: ' + this.ec(userName));
         return  pass? this.decrypt(pass) : "";
     }
     
@@ -190,6 +200,10 @@ seed
          //  sessionStorage.setItem(localStorage.getItem(LAST_USER_NAME_KEY), undefined),
            this.rememberPassword = localStorage.getItem(REMEMBER_PASSWORD_KEY) === 'true';
            this.auth_token = '';
+    }
+
+    private validString(value: string){
+        return value? value.length > 0 : false;
     }
 
 
