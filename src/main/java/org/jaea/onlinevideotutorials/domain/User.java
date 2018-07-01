@@ -161,10 +161,6 @@ public  class User implements Comparable<User>{
     		this.password = user.password;
     	}
     }
-
-    public void setUserType(String userType) {
-		this.userType = userType;
-	}
     
     @JsonIgnore
     public boolean isATutor(){

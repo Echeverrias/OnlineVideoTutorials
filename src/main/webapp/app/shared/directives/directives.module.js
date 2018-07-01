@@ -11,6 +11,7 @@ var download_directive_1 = require("./download.directive");
 var size_directive_1 = require("./size.directive");
 var stopPropagation_directive_1 = require("./stopPropagation.directive");
 var attributes_directive_1 = require("./attributes.directive");
+var commentaryAnchor_module_1 = require("./commentaryAnchor/commentaryAnchor.module");
 var DirectivesModule = (function () {
     function DirectivesModule() {
     }
@@ -18,8 +19,9 @@ var DirectivesModule = (function () {
 }());
 DirectivesModule = __decorate([
     core_1.NgModule({
+        imports: [commentaryAnchor_module_1.CommentaryAnchorModule],
         declarations: [download_directive_1.DownloadDirective, stopPropagation_directive_1.StopPropagationDirective, size_directive_1.SizeDirective, attributes_directive_1.AttributesDirective],
-        exports: [download_directive_1.DownloadDirective, stopPropagation_directive_1.StopPropagationDirective, size_directive_1.SizeDirective, attributes_directive_1.AttributesDirective]
+        exports: [commentaryAnchor_module_1.CommentaryAnchorModule, download_directive_1.DownloadDirective, stopPropagation_directive_1.StopPropagationDirective, size_directive_1.SizeDirective, attributes_directive_1.AttributesDirective]
     })
 ], DirectivesModule);
 exports.DirectivesModule = DirectivesModule;

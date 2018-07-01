@@ -33,6 +33,7 @@ var ContentDisplayerComponent = ContentDisplayerComponent_1 = (function () {
         this.mimeType = this.getMimeType(this.fileUrl);
         this.validMimeType = ContentDisplayerComponent_1._validMimeTypes.some(function (mt) { return mt === _this.mimeType; });
         this.showCloseButton = false;
+        console.log('mimeType: ', this.mimeType);
         // this.saveFileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.fileUrl);
         //this.typeFile=this.getTypeFile(this.fileUrl);
     };

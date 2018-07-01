@@ -89,10 +89,8 @@ var PdfLoaderComponent = (function () {
         }
     };
     PdfLoaderComponent.prototype.onSelectedFile = function (file) {
-        console.log("selected file");
-        if (this.getExtension(file) === 'pdf') {
-            this.sharedFile.emit(file);
-        }
+        console.log("PdfLoaderComponent.selected file(" + file + ")");
+        this.sharedFile.emit(file);
         // this.file.downloadFile(file);
     };
     PdfLoaderComponent.prototype.onDownload = function () {

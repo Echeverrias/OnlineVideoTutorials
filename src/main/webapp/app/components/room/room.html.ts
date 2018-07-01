@@ -13,7 +13,7 @@ export const roomTemplate = `<div id="ovt-room">
             </div>
         -->
            <div class="ovt-content-displayer">
-                <ovt-content-displayer *ngIf="fileUrl" [className]="'ovt-content-displayer'" [ovt-file-url]="fileUrl"  (ovt-close)="onCloseFile()"></ovt-content-displayer> 
+            <ovt-content-displayer *ngIf="fileUrl" [className]="'ovt-content-displayer'" [ovt-file-url]="fileUrl"  (ovt-close)="onCloseFile()"></ovt-content-displayer> 
            </div>
         </div>
         \n\

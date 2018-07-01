@@ -1,0 +1,118 @@
+/* 
+    Created on : 25-ene-2016, 19:24:29
+    Author     : juanan
+*/
+
+
+.ovt-room-data{
+  position: relative;
+  left: 0.5em;
+  margin-bottom: 1em;
+}
+
+
+div.ovt-rooms{
+  width: 70%;
+  margin:auto;
+}
+
+div.ovt-selectable ul{
+  padding:0;  
+  margin:0; 
+  text-align: left;
+}
+
+div.ovt-room-data ul li{
+  position:relative;
+  left: 1.4em;
+  cursor: auto;
+}
+
+.ovt-selectable:hover{
+  font-weight: bold;
+}
+
+.ovt-selectable.ovt-select{
+  font-weight: bold;
+}
+
+.ovt-selectable.ovt-select lu{
+  padding-left: 0.5em;
+}
+
+
+.ovt-selectable.ovt-select li{
+  font-weight: initial;
+}
+
+div.ovt-selectable {
+  display: inline;
+}
+
+/*
+div.ovt-rooms li.ovt-room-selector::before{
+ content: '\2022';
+ padding-right:7px;
+}
+*/
+
+div.ovt-rooms li.ovt-room-selector span:hover{
+  cursor: pointer;
+  background: #FFEB3B;
+  font-weight: bold;
+}
+
+
+
+
+
+
+
+button.ovt-inline{
+  display: inline-block;
+}
+
+div.ovt-inline p{
+  display: inline;
+  margin-right: 0.5em;
+}
+
+div.ovt-create-room div div input{
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  border: 0.5px solid;
+  border-radius: 5px;
+}
+
+div.ovt-create-room div div{
+margin-bottom: 1em;
+}
+
+div.ovt-create-room div div{
+  display: inline-block;
+  margin-left: 0.5em;
+}
+
+div.ovt-create-room button{
+  padding-left: 1em;
+}
+
+div.ovt-out button{
+  margin: 2em auto 0em auto;
+}
+
+img.participantImage{
+  margin-left:0.5em;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: block;
+  margin: 0em;
+  overflow: hidden;
+  position: absolute;
+  right: -6em;
+  top: -1em;
+}
+
+
+

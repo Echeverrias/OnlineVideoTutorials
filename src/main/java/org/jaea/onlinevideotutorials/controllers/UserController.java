@@ -171,9 +171,8 @@ public class UserController {
         	 user.setName(userRequest.getName());
         	 user.setSurname(userRequest.getSurname());
         	 user.setEmail(userRequest.getEmail());
-        	 user.setUserType(userRequest.getUserType());
-             user.setPasswordFromOtherUser(userRequest);
-             this.participantRepository.save(user);
+        	 user.setPasswordFromOtherUser(userRequest);
+        	 this.participantRepository.save(user);
              log.info("The user has been modified");
         	 response = new ResponseEntity(user, HttpStatus.OK);
         }

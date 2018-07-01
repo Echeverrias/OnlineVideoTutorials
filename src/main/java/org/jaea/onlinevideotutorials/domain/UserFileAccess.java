@@ -37,6 +37,8 @@ public class UserFileAccess{
     private String loadUrl; 
    
     private String downloadUrl; 
+
+    private String mimeType; 
     
     @Exclude
     @JsonIgnore
@@ -75,6 +77,10 @@ public class UserFileAccess{
 
     public String getDownloadUrl(){
         return this.downloadUrl;
+    }
+
+    public String getMimeType(){
+        return this.mimeType;
     }
     
     @JsonIgnore

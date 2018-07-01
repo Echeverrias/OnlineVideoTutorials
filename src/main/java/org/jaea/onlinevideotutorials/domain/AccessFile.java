@@ -33,8 +33,8 @@ public class AccessFile {
         this.downloadUrl = downloadUrl;
         this.mimeType = mimeType;
     }
-
-    public String getName(){
+    
+   public String getName(){
         return this.name;
     }
 
@@ -45,6 +45,7 @@ public class AccessFile {
     public String getDownloadUrl(){
         return this.downloadUrl;
     }
+
     public String getMimeType(){
         return this.mimeType;
     }

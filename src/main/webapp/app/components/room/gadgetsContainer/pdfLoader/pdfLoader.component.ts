@@ -118,10 +118,10 @@ export class PdfLoaderComponent implements OnInit, OnDestroy{
     }
 
   onSelectedFile(file: string){
-    console.log("selected file");
-    if (this.getExtension(file) === 'pdf'){
+    console.log(`PdfLoaderComponent.selected file(${file})`);
+    
       this.sharedFile.emit(file);
-    }  
+    
      // this.file.downloadFile(file);
   }
 

@@ -43,6 +43,7 @@ export class ContentDisplayerComponent{
         this.mimeType = this.getMimeType(this.fileUrl);
         this.validMimeType = ContentDisplayerComponent._validMimeTypes.some(mt => mt === this.mimeType);
         this.showCloseButton = false;
+        console.log('mimeType: ', this.mimeType);
         
        // this.saveFileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.fileUrl);
         //this.typeFile=this.getTypeFile(this.fileUrl);

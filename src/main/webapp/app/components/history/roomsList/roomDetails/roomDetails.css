@@ -48,6 +48,12 @@ div.ovt-selectable {
   display: inline;
 }
 
+div.file-links{
+  position:relative;
+}
+
+
+
 /*
 div.ovt-rooms li.ovt-room-selector::before{
  content: '\2022';
